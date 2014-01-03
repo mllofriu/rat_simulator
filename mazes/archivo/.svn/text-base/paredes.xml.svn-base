@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="us-ascii"?>
+
+<!-- azul cr='0' cg='0' cb='1' -->
+<!-- rojo cr='1' cg='0' cb='0' -->
+<!-- verde cr='0' cg='1' cb='0' -->
+
+
+<world>
+
+		<!-- Por algun motivo z es y :D -->
+		<!-- Paredes grosos 0.01 y alto 0.15 -->
+		<!-- Begin Laberinto -->        
+        <box x='0.01' y='0.05' z='0.1' cr='1' cg='0' cb='0' xp='0.390' yp='0' zp='0.390'/>
+        <box x='0.01' y='0.05' z='0.1' cr='0' cg='1' cb='0' xp='-0.390' yp='0' zp='-0.390'/>
+        
+        <!-- End Laberinto -->
+		
+        <floor r='2' cr='0' cg='0.5' cb='0' xp='0' yp='-0.075' zp='0'/>
+        
+        <food r='0.005' h='0.1' cr='0' cg='0' cb='1' xp='0' yp='0' zp='0'/>
+        <topview x='0' y='3' z='0'/>
+        <thirdview x='.7' y='.4' z='.7'/>
+        <robotview x='0' y='-0.025' z='0.495'/> 
+        <!--<robotview x='0.495' y='-0.025' z='-0.425'/> -->
+</world>
+

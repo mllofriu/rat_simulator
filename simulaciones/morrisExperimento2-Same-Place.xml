@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!-- los inicios de los HAs, inicio TestA opuesto a la plataforma, cambiar la posicion de la comida -->
+
+<simulation>
+	<!--Definicion de localidades de partida del robot-->
+	<point name='W' xp='-0.4' yp='0' zp='0' rot='0'/>
+	<point name='N' xp='0' yp='0' zp='-0.4' rot='0'/>
+	<point name='E' xp='0.4' yp='0' zp='0' rot='0'/>
+	<point name='S' xp='0' yp='0' zp='0.4' rot='0'/>
+
+	<!--Definicion de localidades de la plataforma oculta (meta)-->
+	<point name='SE' xp='0.2' yp='0' zp='0.2' rot='0'/>
+	<point name='SW' xp='-0.2' yp='0' zp='0.2' rot='0'/>
+	<point name='NE' xp='0.2' yp='0' zp='-0.2' rot='0'/>
+	<point name='NW' xp='-0.2' yp='0' zp='-0.2' rot='0'/>
+
+	<!--Definicion de etapas de la simulacion-->
+	<!--Un preentrenamiento de 180 segundos arrancando de los puntos mas alejados-->
+	<trial type='habituation' name ='HA1' pointName='W' reps='1' time='360'/>
+
+	<!--Dia 2 a 4 - 15 entrenamientos -->
+	<trial type='training' exploration='0.2' name ='Dia2' pointName='W' reps='6' time='0'/>
+	<trial type='training' exploration='0.4' name ='Dia3' pointName='W' reps='6' time='0'/>
+	<trial type='training' exploration='0.6' name ='Dia4' pointName='W' reps='3' time='0'/>
+
+	<!--Dia 5 - Test trials -->
+	<trial type='training' exploration='0.8' name ='Dia5S' pointName='S' reps='1' time='0'/>
+	<trial type='training' exploration='0.8' name ='Dia5N' pointName='N' reps='1' time='0'/>
+	<trial type='training' exploration='0.8' name ='Dia5E' pointName='E' reps='1' time='0'/>
+
+	<!--Muevo la comida al inicio del entrenamiento -->
+	<operation name = 'move' primitive = 'food' trial = 'Dia2a4' pointName = 'NE'/>
+
+	<!--Muevo la comida al principio -->
+	<operation name = 'move' primitive = 'food' trial = 'HA1' pointName = 'NE'/>
+
+
+</simulation>
