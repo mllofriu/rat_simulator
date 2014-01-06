@@ -9,12 +9,10 @@ package neural;
  * Fecha: 20 de agosto de 2012.
  */
 
-import nslj.src.lang.NslDinDouble0;
 import nslj.src.lang.NslDoutDouble0;
 import nslj.src.lang.NslModule;
-import java.awt.geom.Point2D;
-
-import robot.*;
+import robot.IRobot;
+import robot.RobotFactory;
 
 
 public class HeadAndSpeed extends NslModule {
