@@ -1,20 +1,16 @@
 package robot;
 
-import javax.media.j3d.*;
-import javax.vecmath.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.GraphicsConfiguration;
 import java.awt.image.BufferedImage;
 
-import javax.media.j3d.BoundingSphere;
-import javax.media.j3d.Appearance;
-import javax.media.j3d.Material;
+import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
-
-import robot.ImageProcessing;
+import javax.vecmath.Vector3f;
 
 public class robotWorldCanvas extends WorldCanvas {
     public static final int DESCARTE=121; //ImageProcessing.color2RGB(Color.ORANGE);
-	private static final int WALL_COLOR = ImageProcessing.color2RGB(Color.RED);
+	private static final int WALL_COLOR = 100; //ImageProcessing.color2RGB(Color.RED);
     
     
     public BufferedImage Matrix;

@@ -1,7 +1,4 @@
 import java.awt.Color;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
-import java.awt.HeadlessException;
 import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -10,12 +7,9 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Vector;
 
-import com.sun.j3d.utils.universe.SimpleUniverse;
-import javax.vecmath.*;
-import javax.swing.*;
+import javax.vecmath.Point3d;
 
 import robot.IRobot;
-import robot.ImageProcessing;
 import robot.worldBranchGroup;
 import simulation.Simulation;
 import simulation.SimulationItem;
@@ -183,59 +177,60 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 
 	// devuelve si es consistente la panoramica
 	private boolean checkConsistency(BufferedImage panoramica) {
-		final int OFF = 0;
-		final int ON = 1;
-		final int ON_OFF = 2;
-		int itColor;
-		int contadorColumna[] = new int [landmarkColors.length];
-		int checkStatus[] = new int [landmarkColors.length];
-		Arrays.fill(checkStatus, OFF);
-		boolean error = false;
-		
-		for (int iterW = 0; iterW < IMAGE_WIDTH*CANT_IMAGES2PANORAMA; iterW++) {
-			Arrays.fill(contadorColumna, 0);
-			for (int iterH = 0; iterH < IMAGE_HEIGHT; iterH++) {
-				for (itColor = 0; itColor < landmarkColors.length; itColor++) {
-					int colo1 = panoramica.getRGB(iterW,iterH);
-					int colo2 = ImageProcessing.color2RGB(landmarkColors[itColor]);
-
-					if (ImageProcessing.rgb2Color(panoramica.getRGB(iterW,iterH)).equals(landmarkColors[itColor]))
-						contadorColumna[itColor]++;
-							
-				}	
-			}
-			
-			// termine en este punto de procesar una columna para todos los colores
-			// entonces se implementa la máquina de estados
-			for (itColor = 0; itColor < landmarkColors.length; itColor++) {
-				switch (checkStatus[itColor]) {
-				case OFF:
-					if (contadorColumna[itColor] > 0) // si encontre el color actual en esta columna
-						checkStatus[itColor] = ON; // no habia encontrado este color hasta ahora
-					break;
-				case ON:
-					if (contadorColumna[itColor] == 0) // si no encontre el color actual en esta columna
-						checkStatus[itColor] = ON_OFF; // ya lo encontre y ahora no lo veo más
-					break;
-				case ON_OFF:
-					if (contadorColumna[itColor] > 0) {// si encontre el color actual en esta columna
-						error = true;  //vuelvo a ver una marca -> error
-						//System.err.println("RV::inconsistencia::PEPE PPPPPPPPPP*******************************");
-					}
-					break;
-				} // fin del case
-			}
-			
-			if (error) {
-				currentCameraDelay++;
-				picturesTakenWithoutIncrement=0;
-				System.err.println("RV::inconsistencia::incrementando delay de camara a "
-						+ currentCameraDelay);
-				break; // si encontre alguna inconsistencia entonces corto el bucle
-			}
-			
-		}
-		return !error;
+//		final int OFF = 0;
+//		final int ON = 1;
+//		final int ON_OFF = 2;
+//		int itColor;
+//		int contadorColumna[] = new int [landmarkColors.length];
+//		int checkStatus[] = new int [landmarkColors.length];
+//		Arrays.fill(checkStatus, OFF);
+//		boolean error = false;
+//		
+//		for (int iterW = 0; iterW < IMAGE_WIDTH*CANT_IMAGES2PANORAMA; iterW++) {
+//			Arrays.fill(contadorColumna, 0);
+//			for (int iterH = 0; iterH < IMAGE_HEIGHT; iterH++) {
+//				for (itColor = 0; itColor < landmarkColors.length; itColor++) {
+//					int colo1 = panoramica.getRGB(iterW,iterH);
+//					int colo2 = ImageProcessing.color2RGB(landmarkColors[itColor]);
+//
+//					if (ImageProcessing.rgb2Color(panoramica.getRGB(iterW,iterH)).equals(landmarkColors[itColor]))
+//						contadorColumna[itColor]++;
+//							
+//				}	
+//			}
+//			
+//			// termine en este punto de procesar una columna para todos los colores
+//			// entonces se implementa la máquina de estados
+//			for (itColor = 0; itColor < landmarkColors.length; itColor++) {
+//				switch (checkStatus[itColor]) {
+//				case OFF:
+//					if (contadorColumna[itColor] > 0) // si encontre el color actual en esta columna
+//						checkStatus[itColor] = ON; // no habia encontrado este color hasta ahora
+//					break;
+//				case ON:
+//					if (contadorColumna[itColor] == 0) // si no encontre el color actual en esta columna
+//						checkStatus[itColor] = ON_OFF; // ya lo encontre y ahora no lo veo más
+//					break;
+//				case ON_OFF:
+//					if (contadorColumna[itColor] > 0) {// si encontre el color actual en esta columna
+//						error = true;  //vuelvo a ver una marca -> error
+//						//System.err.println("RV::inconsistencia::PEPE PPPPPPPPPP*******************************");
+//					}
+//					break;
+//				} // fin del case
+//			}
+//			
+//			if (error) {
+//				currentCameraDelay++;
+//				picturesTakenWithoutIncrement=0;
+//				System.err.println("RV::inconsistencia::incrementando delay de camara a "
+//						+ currentCameraDelay);
+//				break; // si encontre alguna inconsistencia entonces corto el bucle
+//			}
+//			
+//		}
+//		return !error;
+		return true;
 	}
 
 	private boolean aBitDifferents(BufferedImage a, BufferedImage b) {
