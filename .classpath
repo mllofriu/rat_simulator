@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="deps"/>
+	<classpathentry kind="lib" path="deps/jCharts-0.7.5.jar"/>
+	<classpathentry kind="lib" path="deps/javacv-bin/javacv.jar"/>
+	<classpathentry kind="lib" path="deps/tcljava1.4.1/tcljava.jar"/>
+	<classpathentry kind="lib" path="deps/tcljava1.4.1/itcl.jar"/>
+	<classpathentry kind="lib" path="deps/tcljava1.4.1/itclsrc.jar"/>
+	<classpathentry kind="lib" path="deps/tcljava1.4.1/jacl.jar"/>
+	<classpathentry kind="lib" path="deps/tcljava1.4.1/jaclsrc.jar"/>
+	<classpathentry kind="lib" path="deps/tcljava1.4.1/janino.jar"/>
+	<classpathentry kind="lib" path="deps/tcljava1.4.1/janinosrc.jar"/>
+	<classpathentry kind="lib" path="deps/tcljava1.4.1/tcljavasrc.jar"/>
+	<classpathentry kind="lib" path="deps/tcljava1.4.1/tjc.jar"/>
+	<classpathentry kind="lib" path="deps/tcljava1.4.1/tjcsrc.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
