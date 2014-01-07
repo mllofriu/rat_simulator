@@ -4,7 +4,6 @@ package Schemas;
    Gonzalo Tejera Versin: 1.2 (agosto, 2009)
  */
 
-import Rat;
 import robot.IRobot;
 import robot.RobotFactory;
 import support.Utiles;
@@ -59,7 +58,7 @@ public class AffPerceptualSchema extends NslModule {
 
 		affRobot = RobotFactory.getRobot().affordances();
 		// el affordance de avanzar lo apago si llegue a la comida
-		if  (RobotFactory.getRobot().findFood()&&!Rat.habituation)
+		if  (RobotFactory.getRobot().findFood())
 			affRobot[Utiles.gradosRelative2Acccion(0)]=false;
 		
 		for (int i=0; i<PerceptualSchema.POS_GIROS.length;i++)

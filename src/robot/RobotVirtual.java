@@ -136,108 +136,108 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 	
 	@Override
 	synchronized public BufferedImage getPanoramica() {
-//		BufferedImage panoramicaTestigo1, panoramicaTestigo2;
-//		boolean consistente;
-//		long currentTake, iniTime = System.currentTimeMillis();
-//		
-//		// si el robot se movio (avanzo o giro) debo actualizar la panoramica
-//		if (robotHasMoved) {
-//			panoramicaTestigo1 = new BufferedImage(IMAGE_WIDTH*CANT_IMAGES2PANORAMA, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
-//			panoramicaTestigo2 = new BufferedImage(IMAGE_WIDTH*CANT_IMAGES2PANORAMA, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
-//			// para controlar inconcistencias tomo dos panoramicas y las
-//			// comparo, repito hasta que sean casi iguales
-//			do {
-//				takePanorama(panoramica);
-//				consistente = checkConsistency(panoramica);
-//
-//				// si no giro un poquito java 3d cachea la imagen se ve y
-//				// devuelve las dos imagenes con posibles inconsistencias (dos
-//				// marcas del mismo color, marcas cortadas, ...)
-//				if (consistente) {
-//					world.rotateRobotCamera(-ANGLE2CHECK_CONSISTENCY);
-//					takePanorama(panoramicaTestigo1);
-//					world.rotateRobotCamera(-ANGLE2CHECK_CONSISTENCY);
-//					takePanorama(panoramicaTestigo2);
-//					world.rotateRobotCamera(2*ANGLE2CHECK_CONSISTENCY); // vuelvo a dejar el robot en su posicion origianal
-//				}
-//				
-//			} while (!consistente || aBitDifferents(panoramicaTestigo1, panoramica) || aBitDifferents(panoramicaTestigo1, panoramicaTestigo2));
-//			picturesTakenWithoutIncrement++;
-//			if (picturesTakenWithoutIncrement>MAX_TAKES_TO_DECREMENT_DELAY_CAMERA) {
-//				picturesTakenWithoutIncrement=0;
-//				if (currentCameraDelay>DELAY_CAMERA_ROTATE) {
-//					currentCameraDelay--;
-//					System.err.println("RV::decrementando delay de camara a " + currentCameraDelay);
-//				}
-//			}
-//				
-//			robotHasMoved = false;
-//			currentTake = System.currentTimeMillis()-iniTime;
-//			if (currentTake > maxTakeTime) maxTakeTime=currentTake;
-//			if (currentTake < minTakeTime) minTakeTime=currentTake;
-//			cantTakes++;
-//			sumaTakeTime=sumaTakeTime+currentTake;
-//		}
-//		return panoramica;
-		return new BufferedImage(IMAGE_WIDTH*CANT_IMAGES2PANORAMA, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
+		BufferedImage panoramicaTestigo1, panoramicaTestigo2;
+		boolean consistente;
+		long currentTake, iniTime = System.currentTimeMillis();
+		
+		// si el robot se movio (avanzo o giro) debo actualizar la panoramica
+		if (robotHasMoved) {
+			panoramicaTestigo1 = new BufferedImage(IMAGE_WIDTH*CANT_IMAGES2PANORAMA, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
+			panoramicaTestigo2 = new BufferedImage(IMAGE_WIDTH*CANT_IMAGES2PANORAMA, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
+			// para controlar inconcistencias tomo dos panoramicas y las
+			// comparo, repito hasta que sean casi iguales
+			do {
+				takePanorama(panoramica);
+				consistente = checkConsistency(panoramica);
+
+				// si no giro un poquito java 3d cachea la imagen se ve y
+				// devuelve las dos imagenes con posibles inconsistencias (dos
+				// marcas del mismo color, marcas cortadas, ...)
+				if (consistente) {
+					world.rotateRobotCamera(-ANGLE2CHECK_CONSISTENCY);
+					takePanorama(panoramicaTestigo1);
+					world.rotateRobotCamera(-ANGLE2CHECK_CONSISTENCY);
+					takePanorama(panoramicaTestigo2);
+					world.rotateRobotCamera(2*ANGLE2CHECK_CONSISTENCY); // vuelvo a dejar el robot en su posicion origianal
+				}
+				
+			} while (!consistente || aBitDifferents(panoramicaTestigo1, panoramica) || aBitDifferents(panoramicaTestigo1, panoramicaTestigo2));
+			picturesTakenWithoutIncrement++;
+			if (picturesTakenWithoutIncrement>MAX_TAKES_TO_DECREMENT_DELAY_CAMERA) {
+				picturesTakenWithoutIncrement=0;
+				if (currentCameraDelay>DELAY_CAMERA_ROTATE) {
+					currentCameraDelay--;
+					System.err.println("RV::decrementando delay de camara a " + currentCameraDelay);
+				}
+			}
+				
+			robotHasMoved = false;
+			currentTake = System.currentTimeMillis()-iniTime;
+			if (currentTake > maxTakeTime) maxTakeTime=currentTake;
+			if (currentTake < minTakeTime) minTakeTime=currentTake;
+			cantTakes++;
+			sumaTakeTime=sumaTakeTime+currentTake;
+		}
+		return panoramica;
+//		return new BufferedImage(IMAGE_WIDTH*CANT_IMAGES2PANORAMA, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
 	}
 
 	// devuelve si es consistente la panoramica
 	private boolean checkConsistency(BufferedImage panoramica) {
-//		final int OFF = 0;
-//		final int ON = 1;
-//		final int ON_OFF = 2;
-//		int itColor;
-//		int contadorColumna[] = new int [landmarkColors.length];
-//		int checkStatus[] = new int [landmarkColors.length];
-//		Arrays.fill(checkStatus, OFF);
-//		boolean error = false;
-//		
-//		for (int iterW = 0; iterW < IMAGE_WIDTH*CANT_IMAGES2PANORAMA; iterW++) {
-//			Arrays.fill(contadorColumna, 0);
-//			for (int iterH = 0; iterH < IMAGE_HEIGHT; iterH++) {
-//				for (itColor = 0; itColor < landmarkColors.length; itColor++) {
-//					int colo1 = panoramica.getRGB(iterW,iterH);
-//					int colo2 = ImageProcessing.color2RGB(landmarkColors[itColor]);
-//
-//					if (ImageProcessing.rgb2Color(panoramica.getRGB(iterW,iterH)).equals(landmarkColors[itColor]))
-//						contadorColumna[itColor]++;
-//							
-//				}	
-//			}
-//			
-//			// termine en este punto de procesar una columna para todos los colores
-//			// entonces se implementa la máquina de estados
-//			for (itColor = 0; itColor < landmarkColors.length; itColor++) {
-//				switch (checkStatus[itColor]) {
-//				case OFF:
-//					if (contadorColumna[itColor] > 0) // si encontre el color actual en esta columna
-//						checkStatus[itColor] = ON; // no habia encontrado este color hasta ahora
-//					break;
-//				case ON:
-//					if (contadorColumna[itColor] == 0) // si no encontre el color actual en esta columna
-//						checkStatus[itColor] = ON_OFF; // ya lo encontre y ahora no lo veo más
-//					break;
-//				case ON_OFF:
-//					if (contadorColumna[itColor] > 0) {// si encontre el color actual en esta columna
-//						error = true;  //vuelvo a ver una marca -> error
-//						//System.err.println("RV::inconsistencia::PEPE PPPPPPPPPP*******************************");
-//					}
-//					break;
-//				} // fin del case
-//			}
-//			
-//			if (error) {
-//				currentCameraDelay++;
-//				picturesTakenWithoutIncrement=0;
-//				System.err.println("RV::inconsistencia::incrementando delay de camara a "
-//						+ currentCameraDelay);
-//				break; // si encontre alguna inconsistencia entonces corto el bucle
-//			}
-//			
-//		}
-//		return !error;
-		return true;
+		final int OFF = 0;
+		final int ON = 1;
+		final int ON_OFF = 2;
+		int itColor;
+		int contadorColumna[] = new int [landmarkColors.length];
+		int checkStatus[] = new int [landmarkColors.length];
+		Arrays.fill(checkStatus, OFF);
+		boolean error = false;
+		
+		for (int iterW = 0; iterW < IMAGE_WIDTH*CANT_IMAGES2PANORAMA; iterW++) {
+			Arrays.fill(contadorColumna, 0);
+			for (int iterH = 0; iterH < IMAGE_HEIGHT; iterH++) {
+				for (itColor = 0; itColor < landmarkColors.length; itColor++) {
+					int colo1 = panoramica.getRGB(iterW,iterH);
+					int colo2 = Utiles.color2RGB(landmarkColors[itColor]);
+
+					if (Utiles.rgb2Color(panoramica.getRGB(iterW,iterH)).equals(landmarkColors[itColor]))
+						contadorColumna[itColor]++;
+							
+				}	
+			}
+			
+			// termine en este punto de procesar una columna para todos los colores
+			// entonces se implementa la máquina de estados
+			for (itColor = 0; itColor < landmarkColors.length; itColor++) {
+				switch (checkStatus[itColor]) {
+				case OFF:
+					if (contadorColumna[itColor] > 0) // si encontre el color actual en esta columna
+						checkStatus[itColor] = ON; // no habia encontrado este color hasta ahora
+					break;
+				case ON:
+					if (contadorColumna[itColor] == 0) // si no encontre el color actual en esta columna
+						checkStatus[itColor] = ON_OFF; // ya lo encontre y ahora no lo veo más
+					break;
+				case ON_OFF:
+					if (contadorColumna[itColor] > 0) {// si encontre el color actual en esta columna
+						error = true;  //vuelvo a ver una marca -> error
+						//System.err.println("RV::inconsistencia::PEPE PPPPPPPPPP*******************************");
+					}
+					break;
+				} // fin del case
+			}
+			
+			if (error) {
+				currentCameraDelay++;
+				picturesTakenWithoutIncrement=0;
+				System.err.println("RV::inconsistencia::incrementando delay de camara a "
+						+ currentCameraDelay);
+				break; // si encontre alguna inconsistencia entonces corto el bucle
+			}
+			
+		}
+		return !error;
+//		return true;
 	}
 
 	private boolean aBitDifferents(BufferedImage a, BufferedImage b) {
@@ -291,108 +291,108 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 	}
 	
 	// TODO: seguro se puede mejorar
-//	void takePanorama(BufferedImage image) {
-//		if(CANT_IMAGES2PANORAMA==1)
-//			takePanorama1(image);
-//		else if(CANT_IMAGES2PANORAMA==5)
-//				takePanorama5(image);
-//		else {
-//			System.out.println("ERROR A MEJORAR");
-//			System.err.println("ERROR A MEJORAR");
-//
-//			System.exit(0);
-//		}
-//
-//	}
+	void takePanorama(BufferedImage image) {
+		if(CANT_IMAGES2PANORAMA==1)
+			takePanorama1(image);
+		else if(CANT_IMAGES2PANORAMA==5)
+				takePanorama5(image);
+		else {
+			System.out.println("ERROR A MEJORAR");
+			System.err.println("ERROR A MEJORAR");
+
+			System.exit(0);
+		}
+
+	}
 	
 	// se le pasa una matriz creada y carga la imagenes para formar una
 	// panoramica
-//	void takePanorama1(BufferedImage image) {
-//		// tomo imagen al frente
-//		colorMatrixOAux = getColorMatrix();
-//
-//		// miro para un lado
-//		world.rotateRobotCamera(ANGLE_HEAD_TURN);
-//		colorMatrixRAux = getColorMatrix();
-//
-//		// miro para el otro lado
-//		world.rotateRobotCamera(-2 * ANGLE_HEAD_TURN);
-//		colorMatrixLAux = getColorMatrix();
-//
-//		// obtengo los laterales para los affordances
-//		world.rotateRobotCamera(ANGLE_HEAD_TURN + 90);
-//		colorMatrixAffR = getColorMatrix();
-//
-//		world.rotateRobotCamera(180);
-//		colorMatrixAffL = getColorMatrix();
-//
-//		// miro para adelante
-//		world.rotateRobotCamera(90);
-//
-//		// seteo contadores para affordances
-//		redL = Utiles.contador(colorMatrixAffL, Color.RED);
-//		redDL = Utiles.contador(colorMatrixLAux, Color.RED);
-//		redO = Utiles.contador(colorMatrixOAux, Color.RED);
-//		redDR = Utiles.contador(colorMatrixRAux, Color.RED);
-//		redR = Utiles.contador(colorMatrixAffR, Color.RED);
-//
-//		// cargo la matriz panoramica
-//		for (int iterW = 0; iterW < IMAGE_WIDTH; iterW++)
-//			for (int iterH = 0; iterH < IMAGE_HEIGHT; iterH++) {
-//				image.setRGB(iterW,iterH, colorMatrixOAux.getRGB(iterW, iterH));
-//			}
-//	}
+	void takePanorama1(BufferedImage image) {
+		// tomo imagen al frente
+		colorMatrixOAux = getColorMatrix();
+
+		// miro para un lado
+		world.rotateRobotCamera(ANGLE_HEAD_TURN);
+		colorMatrixRAux = getColorMatrix();
+
+		// miro para el otro lado
+		world.rotateRobotCamera(-2 * ANGLE_HEAD_TURN);
+		colorMatrixLAux = getColorMatrix();
+
+		// obtengo los laterales para los affordances
+		world.rotateRobotCamera(ANGLE_HEAD_TURN + 90);
+		colorMatrixAffR = getColorMatrix();
+
+		world.rotateRobotCamera(180);
+		colorMatrixAffL = getColorMatrix();
+
+		// miro para adelante
+		world.rotateRobotCamera(90);
+
+		// seteo contadores para affordances
+		redL = Utiles.contador(colorMatrixAffL, Color.RED);
+		redDL = Utiles.contador(colorMatrixLAux, Color.RED);
+		redO = Utiles.contador(colorMatrixOAux, Color.RED);
+		redDR = Utiles.contador(colorMatrixRAux, Color.RED);
+		redR = Utiles.contador(colorMatrixAffR, Color.RED);
+
+		// cargo la matriz panoramica
+		for (int iterW = 0; iterW < IMAGE_WIDTH; iterW++)
+			for (int iterH = 0; iterH < IMAGE_HEIGHT; iterH++) {
+				image.setRGB(iterW,iterH, colorMatrixOAux.getRGB(iterW, iterH));
+			}
+	}
 	
 	// se le pasa una matriz creada y carga la imagenes para formar una
 	// panoramica
-//	void takePanorama5(BufferedImage image) {
-//
-//		if (horario) {
-//			// imagen 0
-//			world.rotateRobotCamera(-2 * ANGLE_HEAD_TURN);
-//			colorMatrixAffL = getColorMatrix();	 
-//			world.rotateRobotCamera(ANGLE_HEAD_TURN);
-//			colorMatrixLAux = getColorMatrix();
-//			world.rotateRobotCamera(ANGLE_HEAD_TURN);
-//			colorMatrixOAux = getColorMatrix();
-//			world.rotateRobotCamera(ANGLE_HEAD_TURN);
-//			colorMatrixRAux = getColorMatrix();			
-//			world.rotateRobotCamera(ANGLE_HEAD_TURN);
-//			colorMatrixAffR = getColorMatrix();
-//			world.rotateRobotCamera(-2 * ANGLE_HEAD_TURN);
-//		} else {
-//			// imagen 0
-//			world.rotateRobotCamera(2 * ANGLE_HEAD_TURN);
-//			colorMatrixAffR = getColorMatrix();
-//			world.rotateRobotCamera(-ANGLE_HEAD_TURN);
-//			colorMatrixRAux = getColorMatrix();			
-//			world.rotateRobotCamera(-ANGLE_HEAD_TURN);
-//			colorMatrixOAux = getColorMatrix();
-//			world.rotateRobotCamera(-ANGLE_HEAD_TURN);
-//			colorMatrixLAux = getColorMatrix();
-//			world.rotateRobotCamera(-ANGLE_HEAD_TURN);
-//			colorMatrixAffL = getColorMatrix();	 
-//			world.rotateRobotCamera(2 * ANGLE_HEAD_TURN);			
-//		}
-//		horario=!horario;
-//
-//		// seteo contadores para affordances
-//		redL = Utiles.contador(colorMatrixAffL, Color.RED);
-//		redDL = Utiles.contador(colorMatrixLAux, Color.RED);
-//		redO = Utiles.contador(colorMatrixOAux, Color.RED);
-//		redDR = Utiles.contador(colorMatrixRAux, Color.RED);
-//		redR = Utiles.contador(colorMatrixAffR, Color.RED);
-//
-//		// cargo la matriz panoramica
-//		for (int iterW = 0; iterW < IMAGE_WIDTH; iterW++)
-//			for (int iterH = 0; iterH < IMAGE_HEIGHT; iterH++) {
-//				image.setRGB(iterW,iterH, colorMatrixAffL.getRGB(iterW, iterH));
-//				image.setRGB(iterW + IMAGE_WIDTH,iterH, colorMatrixLAux.getRGB(iterW, iterH));
-//				image.setRGB(iterW + 2 * IMAGE_WIDTH,iterH, colorMatrixOAux.getRGB(iterW, iterH));
-//				image.setRGB(iterW + 3 * IMAGE_WIDTH,iterH, colorMatrixRAux.getRGB(iterW, iterH));
-//				image.setRGB(iterW + 4 * IMAGE_WIDTH,iterH, colorMatrixAffR.getRGB(iterW, iterH));
-//			}
-//	}
+	void takePanorama5(BufferedImage image) {
+
+		if (horario) {
+			// imagen 0
+			world.rotateRobotCamera(-2 * ANGLE_HEAD_TURN);
+			colorMatrixAffL = getColorMatrix();	 
+			world.rotateRobotCamera(ANGLE_HEAD_TURN);
+			colorMatrixLAux = getColorMatrix();
+			world.rotateRobotCamera(ANGLE_HEAD_TURN);
+			colorMatrixOAux = getColorMatrix();
+			world.rotateRobotCamera(ANGLE_HEAD_TURN);
+			colorMatrixRAux = getColorMatrix();			
+			world.rotateRobotCamera(ANGLE_HEAD_TURN);
+			colorMatrixAffR = getColorMatrix();
+			world.rotateRobotCamera(-2 * ANGLE_HEAD_TURN);
+		} else {
+			// imagen 0
+			world.rotateRobotCamera(2 * ANGLE_HEAD_TURN);
+			colorMatrixAffR = getColorMatrix();
+			world.rotateRobotCamera(-ANGLE_HEAD_TURN);
+			colorMatrixRAux = getColorMatrix();			
+			world.rotateRobotCamera(-ANGLE_HEAD_TURN);
+			colorMatrixOAux = getColorMatrix();
+			world.rotateRobotCamera(-ANGLE_HEAD_TURN);
+			colorMatrixLAux = getColorMatrix();
+			world.rotateRobotCamera(-ANGLE_HEAD_TURN);
+			colorMatrixAffL = getColorMatrix();	 
+			world.rotateRobotCamera(2 * ANGLE_HEAD_TURN);			
+		}
+		horario=!horario;
+
+		// seteo contadores para affordances
+		redL = Utiles.contador(colorMatrixAffL, Color.RED);
+		redDL = Utiles.contador(colorMatrixLAux, Color.RED);
+		redO = Utiles.contador(colorMatrixOAux, Color.RED);
+		redDR = Utiles.contador(colorMatrixRAux, Color.RED);
+		redR = Utiles.contador(colorMatrixAffR, Color.RED);
+
+		// cargo la matriz panoramica
+		for (int iterW = 0; iterW < IMAGE_WIDTH; iterW++)
+			for (int iterH = 0; iterH < IMAGE_HEIGHT; iterH++) {
+				image.setRGB(iterW,iterH, colorMatrixAffL.getRGB(iterW, iterH));
+				image.setRGB(iterW + IMAGE_WIDTH,iterH, colorMatrixLAux.getRGB(iterW, iterH));
+				image.setRGB(iterW + 2 * IMAGE_WIDTH,iterH, colorMatrixOAux.getRGB(iterW, iterH));
+				image.setRGB(iterW + 3 * IMAGE_WIDTH,iterH, colorMatrixRAux.getRGB(iterW, iterH));
+				image.setRGB(iterW + 4 * IMAGE_WIDTH,iterH, colorMatrixAffR.getRGB(iterW, iterH));
+			}
+	}
 	
 	@Override
 	public void doAction(int grados) {
@@ -435,42 +435,7 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 		if(cantTakes>0)
 			System.err.println("RVirtual::take min: " + minTakeTime + " . max: " + maxTakeTime + ". prom: " + (sumaTakeTime/cantTakes));
 		robotHasMoved = true;
-		updateWorld();
-	}
-	
-	
-	// Realiza la gestion del mundo agregando y eliminando elementos si corresponde segun archivo de simulacion utilizado
-	private void updateWorld() {
-		Vector<SimulationOperation> operations = Simulation.getOperations();
-		SimulationOperation operation;
-		int operIter = 0;
-
-//		if (Rat.simItem.getType()==SimulationItem.HABITUATION)
-//			world.constr.remove(worldBranchGroup.STRING_FOOD);
-//		else
-//			world.constr.add(worldBranchGroup.STRING_FOOD);
-//
-//		System.out.println("World::operation size: " + operations.size()
-//				+ ". Item name: " + Rat.simItem.getName());
-//		while (operIter < operations.size()) {
-//			operation = operations.elementAt(operIter);
-//			if (operation.getTrialApply().equals(Rat.simItem.getName())) {
-//				System.out.println("World::trial: " + operation.getTrialApply()
-//						+ "/" + Simulation.getCurrenTrial() + ". ope: "
-//						+ operation.getOperation() + "box: "
-//						+ operation.getPrimitiveName());
-//				if (operation.getOperation().equals(SimulationOperation.ADD))
-//					world.constr.add(operation.getPrimitiveName());
-//				else if (operation.getOperation().equals(
-//						SimulationOperation.REMOVE))
-//					world.constr.remove(operation.getPrimitiveName());
-//				else if (operation.getOperation().equals(
-//						SimulationOperation.MOVE))
-//					world.constr.move(operation.getPrimitiveName(),Simulation.getPoint(operation.getPointName()));
-//				operations.remove(operIter);
-//			} else
-//				operIter++;
-//		}
+//		updateWorld();
 	}
 
 	public BufferedImage getColorMatrix() {
@@ -485,7 +450,6 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 
 	public void rotateRobot(int actionDegrees) {
 		// TODO Auto-generated method stub
-		System.out.println(actionDegrees);
 		world.rotateRobot(actionDegrees);
 		robotHasMoved = true;
 	}

@@ -8,9 +8,11 @@ import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.vecmath.Vector3f;
 
+import support.Utiles;
+
 public class robotWorldCanvas extends WorldCanvas {
-    public static final int DESCARTE=121; //ImageProcessing.color2RGB(Color.ORANGE);
-	private static final int WALL_COLOR = 100; //ImageProcessing.color2RGB(Color.RED);
+    public static final int DESCARTE= Utiles.color2RGB(Color.ORANGE);
+	private static final int WALL_COLOR = Utiles.color2RGB(Color.RED);
     
     
     public BufferedImage Matrix;

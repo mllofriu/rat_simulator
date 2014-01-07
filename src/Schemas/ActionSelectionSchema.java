@@ -4,26 +4,32 @@ package Schemas;
    Versi�n: 1 (Febrero, 2005)
  */
 
-import nslj.src.system.*;
-import nslj.src.cmd.*;
-import nslj.src.lang.*;
-import nslj.src.math.*;
-import nslj.src.display.*;
+import java.util.Random;
 
-import java.util.*;
-
-import support.Configuration;
+import nslj.src.lang.NslDoutInt0;
+import nslj.src.lang.NslModule;
+import robot.IRobot;
 
 public class ActionSelectionSchema extends NslModule {
 	public NslDoutInt0 actionTaken;
+	private IRobot robot;
 
-	public ActionSelectionSchema(String nslName, NslModule nslParent) {
+	public ActionSelectionSchema(String nslName, NslModule nslParent, IRobot robot) {
 		super(nslName, nslParent);
 		actionTaken = new NslDoutInt0("ActionTaken", this);
+		this.robot = robot;
 	}
 
 	public void simRun() {
 		// Driver - Always go forward 
-		actionTaken.set(4);
+//		for (boolean i : robot.affordances())
+//			System.out.print(i + " ");
+//		System.out.println("");
+		
+		int action;
+		do{
+			action = new Random().nextInt(8);
+		} while (!robot.affordances()[action]);
+		actionTaken.set(action);
 	} 
 }
