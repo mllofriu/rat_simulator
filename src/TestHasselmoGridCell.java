@@ -17,8 +17,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Vector;
 
+import Schemas.HasselmoGridCellLayer;
+import Schemas.HebbianNetwork;
 import support.Configuration;
-
 import neural.GridCell;
 import neural.HeadAndSpeed;
 import nslj.src.system.*;

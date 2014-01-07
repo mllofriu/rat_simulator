@@ -23,69 +23,38 @@ import javax.management.OperationsException;
 import javax.vecmath.Point3d;
 import javax.vecmath.Point4d;
 
+import Schemas.Drive;
 import robot.RobotFactory;
 import simulation.SimulationItem;
 import support.Configuration;
 import support.Utiles;
-
 import nslj.src.lang.*;
 
 public class World extends NslModule {
-	public NslDinInt0 newHeadAngleRat;
-	public NslDinInt0 ActionTaken;
-	public NslDoutInt0 currentHeadAngle;
-
-	public static int headAngle;
-	private int action;
-	private int actionDegrees;
-
-	private boolean inicio;
-	public static int testingTrialNumber;
-	public static int trainingTrialNumber;
-	private static final String DEFAULT_DIR=Configuration.getString("Log.DIRECTORY");
-	private static final String DEFAULT_FILE_NAME=Configuration.getString("WorldFrame.MAZE_FILE");
-	private static final String DEFAULT_FILE= System.getProperty("user.dir")+File.separatorChar+DEFAULT_DIR+File.separatorChar+DEFAULT_FILE_NAME+System.currentTimeMillis()+".log";
+	public NslDoutInt0 actionTaken;
 
 	public World(String nslName, NslModule nslParent, int d1, int d2,
 			int angleInit) {
 		super(nslName, nslParent);
-		trainingTrialNumber = 0;
-		testingTrialNumber = 0;
-		action = 4;
-		headAngle = angleInit;
-		inicio = true;
-		newHeadAngleRat = new NslDinInt0("newHeadAngleRat", this);
-		ActionTaken = new NslDinInt0("ActionTaken", this);
-		currentHeadAngle = new NslDoutInt0("currentHeadAngle", this);
+		actionTaken = new NslDoutInt0("ActionTaken", this);
+
 	}
 
+	/**
+	 * This simRun commands the robot to perform the selected action by the ActionSelection module.
+	 */
 	public void simRun() {
-		if (!inicio) {
-			headAngle = newHeadAngleRat.get();
-			action = ActionTaken.get();
-		} else {
-			inicio = false;
- 			RobotFactory.getRobot().startRobot();
+		// For visualization purposes
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-	 
-		//pw.println(Rat.simulation.getCurrenTrial()+"\t"+Rat.simItem.getName()+"\t"+RobotFactory.getRobot().getGlobalCoodinate().x+"\t"+RobotFactory.getRobot().getGlobalCoodinate().y+"\t"+"\t"+Drive.getReward()+"\t"+timeElapsed);
-		//pw.flush();
-		// Convertir la accion en grados...
-		actionDegrees = Utiles.acccion2GradosRelative(action);
-		//RobotFactory.getRobot().rotateRobot(actionDegrees);
-
-		if (Rat.newTrial) {
-			if (Rat.simItem.getType()==SimulationItem.TESTING)
-				Drive.setReallyHangry(); // do not explore :D
-			else if (Rat.simItem.getType()==SimulationItem.TRAINING)
-				if (Rat.simItem.getExploration()>0) //si el valor de exploración es mayor a cero lo ajusto si no mantengo exploración actual
-				Drive.setValue(Rat.simItem.getExploration());
-				
- 			RobotFactory.getRobot().startRobot();
-		} else
-			RobotFactory.getRobot().doAction(actionDegrees);
-
-		currentHeadAngle.set(headAngle);
+		// Move the robot according to the last selected action taken
+		int actionDegrees = Utiles.acccion2GradosRelative(actionTaken.get());
+		RobotFactory.getRobot().doAction(actionDegrees);
+		
 	}
 
 }
