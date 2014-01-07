@@ -1,30 +1,27 @@
+package robot;
 import java.awt.Color;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsEnvironment;
+import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Enumeration;
 import java.util.Hashtable;
-import java.awt.geom.Point2D.Double;
 
-import com.sun.j3d.utils.universe.SimpleUniverse;
-import javax.vecmath.*;
-import javax.media.j3d.GraphicsConfigTemplate3D;
-import javax.swing.*;
+import javax.swing.JFileChooser;
+import javax.vecmath.Point3d;
+import javax.vecmath.Point4d;
+import javax.vecmath.Vector3f;
 
-import robot.RobotFactory;
-import robot.TopWorldCanvas;
-import robot.WorldConstructor;
-import robot.robotWorldCanvas;
-import robot.smallRobotWorldCanvas;
 import support.Configuration;
 import support.Utiles;
+
+import com.sun.j3d.utils.universe.SimpleUniverse;
 
 public class WorldFrame extends java.awt.Frame {
 	private final String DEFAULT_MAZE_DIR=Configuration.getString("WorldFrame.MAZE_DIRECTORY");
 	private final String DEFAULT_MAZE_FILE=Configuration.getString("WorldFrame.MAZE_FILE");
 	private final String CURRENT_MAZE_DIR= System.getProperty("user.dir")+File.separatorChar+DEFAULT_MAZE_DIR+File.separatorChar;
 
+	final double STEP = 0.1;
+	
 	robotWorldCanvas world1;
     TopWorldCanvas world2;
     //ThirdViewWorldCanvas world3;
@@ -44,7 +41,7 @@ public class WorldFrame extends java.awt.Frame {
         panel2.add(world1);
 //        world3 = new ThirdViewWorldCanvas(SimpleUniverse.getPreferredConfiguration());
     	openFile(false);
-//        startRobot(0, 0, 0.5);
+        startRobot(new Point4d(.0, .0, .4,0));
     }
         
 	public Double getGlobalCoodinate() {
@@ -319,9 +316,9 @@ public class WorldFrame extends java.awt.Frame {
         System.exit(0);
     }
     
-    public static void main(String args[]) {
-        new WorldFrame().show();
-    }
+//    public static void main(String args[]) {
+//        new WorldFrame().show();
+//    }
     
     float angle2 = 0;
     public void rotateRobot(float angle) {
@@ -365,6 +362,13 @@ public class WorldFrame extends java.awt.Frame {
 		//world3.moveRobot(new Vector3f((float) x, (float) y, (float) z));
 		// rotateRobot(point.w);
         updatePosRat();
+	}
+	
+	public void moveRobotForward() {
+		// Move the robot one step along the current direction
+		double x = STEP * Math.sin(getGlobalAngle() * Math.PI / 180);
+		double z = -STEP * Math.cos(getGlobalAngle() * Math.PI / 180);
+		moveRobot(new Point3d(x,0,z));
 	}
 	
 ////By Gonzalo
@@ -422,4 +426,6 @@ public class WorldFrame extends java.awt.Frame {
 		// TODO Auto-generated method stub
 		return (int)angle2;
 	}
+
+	
 }

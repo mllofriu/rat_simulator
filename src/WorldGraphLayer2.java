@@ -14,7 +14,6 @@
  Se implementa Q-Learning para el ajuste de la recompensa usando los pesos e de las aristas.
  */
 import nslj.src.lang.*;
-
 import graph.Edge;
 import graph.NodeMap;
 import graph.NodePattern;
@@ -26,6 +25,9 @@ import java.awt.*;
 
 import javax.vecmath.Point2d;
 
+import Schemas.Drive;
+import Schemas.HasselmoGridCellLayer;
+import Schemas.PathIntegrationFeatureDetectorLayer;
 import robot.IRobot;
 import robot.RobotFactory;
 import support.Configuration;

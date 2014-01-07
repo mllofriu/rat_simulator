@@ -17,6 +17,7 @@ import java.util.logging.Level;
 
 import javax.vecmath.Point2d;
 
+import Schemas.LandmarksPerceptualSchema;
 import robot.IRobot;
 import robot.RobotFactory;
 import simulation.Simulation;
@@ -133,111 +134,111 @@ public class Rat extends NslModule {
 	private Percentage porcentaje = new Percentage("Rat", 10); // para mostrar porcentaje del avance de una estapa de tiempo
 	
 	public void simRun() {
-		long currentTime = System.currentTimeMillis();
-		int cuadrante = Utiles.getCuadrante(coordAnt); // Ojo que este metodo tiene memoria para balancear los bordes de los cuadrantes, no llamar varias veces para un mismo punto en una misma actualizacion
-		IRobot robot = RobotFactory.getRobot();
-		Double robotCoors = robot.getGlobalCoodinate();
-		angleAux = headAngleRat.get();
-		epocasPorEnsayo++;
-		
-		if (Rat.newTrial) {
-			latencia = 0;
-			largoCamino = 0;
-			Arrays.fill(tiempoCuadrantes, 0);
-			tiempoPasoAnterior = currentTime;
-		} else {
-			// actualizo información para estadísticas de morris
-			latencia = latencia + currentTime - tiempoPasoAnterior;
-			largoCamino = largoCamino + robotCoors.distance(coordAnt);
-			// tiempo en cuadrante
-			//tiempoCuadrantes[cuadrante]=tiempoCuadrantes[cuadrante]+currentTime - tiempoPasoAnterior;
-			//tiempoPasoAnterior = currentTime;
-			// cantidad de acciones por cuadrante
-			tiempoCuadrantes[cuadrante]=tiempoCuadrantes[cuadrante]+1;
-		}
-		coordAnt = robotCoors;
-		
-        // System.out.println("Rat::Pixeles de comida: " + contAzulFrente);
-		// Nmero de veces que llega a la meta en el entrenamiento
-		//System.err.println("WGL::porcentaje exploracion: " + (100*WorldGraphLayer.map_list.size()/WorldGraphLayer.MAX_NODOS)+". Latencia: "+(currentTime-milisInit));
-		// Cuando encuentra la comida se deja unos segundos reconociemdo el lugar para luego finalizar el ensayo
-		if ((robot.findFood())&&(simItem.getTime()==0)) {
-			simItem.setTime(epocasPorEnsayo+SEG_EXPLORAR_COMIDA);
-			//millisIni=System.currentTimeMillis();
-		}
-		//System.err.println("Rat::Coordenadas: "+robotCoors.x+", "+robotCoors.y + ". Direccion: "+ robot.getGlobalDirection());
-		
-		log.writeln(""+currentTime+log.SEPARATOR+(simulation.getCurrenTrial()-1)+log.SEPARATOR+simItem.getName()+ log.SEPARATOR+df.format(robotCoors.x)+log.SEPARATOR+df.format(robotCoors.y)+log.SEPARATOR+df.format(robot.getGlobalDirection()));
-//		if ((simItem.getTime()>0)&&(simItem.getTime()*1000<(currentTime-millisIni))) { // en milisegundos
-		if ((simItem.getTime()>0)&&(simItem.getTime()<epocasPorEnsayo)) {
-	        	System.err.print("Rat::End trial "+(simulation.getCurrenTrial()-1)+"/"+simulation.getNumberTrials()+". "+simItem.getName()+" -> ");
-	        	// escribo en el archivo de loss las estadisticas de morris para este ensayo	
-	        	logResumen.writeln(""+ (simulation.getCurrenTrial()-1)+ log.SEPARATOR+epocasPorEnsayo+log.SEPARATOR+simItem.getName()+log.SEPARATOR+latencia+log.SEPARATOR+largoCamino+log.SEPARATOR+tiempoCuadrantes[0]+log.SEPARATOR+tiempoCuadrantes[1]+log.SEPARATOR+tiempoCuadrantes[2]+log.SEPARATOR+tiempoCuadrantes[3]);
-	        	simItem=simulation.next();
-	        	epocasPorEnsayo=0;
-	        	
-	        	if (simItem==null) {
-						System.out.println("Rat::Fin de la simulacion. Genero archivo con grafo.");
-						PajekFormat.generateGraph(WorldGraphLayer.map_list);
-						PajekFormat.generateMaxExpectedPathGraph(WorldGraphLayer.map_list);
-						Utiles.speak("finish");
-						log.close();
-						logResumen.close();
-						while (true); //TODO "tranca" simulacion.  
-				} else {
-					Utiles.speak("end trial");
-		        	System.err.println(simItem.getName()+".");
-
-					switch (simItem.getType()) {
-					case (SimulationItem.HABITUATION):
-						nextHabituation=true;
-						break;
-					case (SimulationItem.TRAINING):
-						nextTraining=true;
-						break;
-					case (SimulationItem.TESTING):
-						nextTesting = true;
-						break;
-					default:
-						assert true:"Tipo de ensayo erroneo";
-						System.out.println("Rat::Nueva etapa.");
-					
-					}
-				} // fin del switch por tipo de elemento de simulacion
-				System.out.println("Rat::Nueva etapa.");
-				millisIni=System.currentTimeMillis();
-		}
-
-		porcentaje .printPorcentage(epocasPorEnsayo, simItem.getTime());
-		
-		// hasFindFood se utiliza para refozar o decrementar la exploracion solo una vez por ensayo
-		if (Rat.newTrial)
-			hasFindFood = false;
-		
-		// Calculo el refuerzo por encontrar comida
-		if (robot.findFood()&&!hasFindFood) {
-			hasFindFood = true;
-			turnToFoodAux = -1;
-			distFoodAux = 0;
-		} else {
-			turnToFoodAux = -1;
-			distFoodAux = -1;
-		}
-		
-		Arrays.fill(distLandmarksAux, -1);
-		Arrays.fill(angleLandmarksAux, -1);
-
-		Double[] landmarks = robot.findLandmarks();
-		
-		// Calculo de Angulo y distancia para cada marca
-		for (int iterLand=0; iterLand<LandmarksPerceptualSchema.LANDMARK_NUMBER;iterLand++)
-			calculoAngDistLand(iterLand, landmarks[iterLand]);
-		
-		currentHeadAngleRat.set(angleAux);
-		distLandmarks.set(distLandmarksAux);
-		angleLandmarks.set(angleLandmarksAux);
-		distFood.set(distFoodAux);
-		turnToFood.set(turnToFoodAux);
+//		long currentTime = System.currentTimeMillis();
+//		int cuadrante = Utiles.getCuadrante(coordAnt); // Ojo que este metodo tiene memoria para balancear los bordes de los cuadrantes, no llamar varias veces para un mismo punto en una misma actualizacion
+//		IRobot robot = RobotFactory.getRobot();
+//		Double robotCoors = robot.getGlobalCoodinate();
+//		angleAux = headAngleRat.get();
+//		epocasPorEnsayo++;
+//		
+//		if (Rat.newTrial) {
+//			latencia = 0;
+//			largoCamino = 0;
+//			Arrays.fill(tiempoCuadrantes, 0);
+//			tiempoPasoAnterior = currentTime;
+//		} else {
+//			// actualizo información para estadísticas de morris
+//			latencia = latencia + currentTime - tiempoPasoAnterior;
+//			largoCamino = largoCamino + robotCoors.distance(coordAnt);
+//			// tiempo en cuadrante
+//			//tiempoCuadrantes[cuadrante]=tiempoCuadrantes[cuadrante]+currentTime - tiempoPasoAnterior;
+//			//tiempoPasoAnterior = currentTime;
+//			// cantidad de acciones por cuadrante
+//			tiempoCuadrantes[cuadrante]=tiempoCuadrantes[cuadrante]+1;
+//		}
+//		coordAnt = robotCoors;
+//		
+//        // System.out.println("Rat::Pixeles de comida: " + contAzulFrente);
+//		// Nmero de veces que llega a la meta en el entrenamiento
+//		//System.err.println("WGL::porcentaje exploracion: " + (100*WorldGraphLayer.map_list.size()/WorldGraphLayer.MAX_NODOS)+". Latencia: "+(currentTime-milisInit));
+//		// Cuando encuentra la comida se deja unos segundos reconociemdo el lugar para luego finalizar el ensayo
+//		if ((robot.findFood())&&(simItem.getTime()==0)) {
+//			simItem.setTime(epocasPorEnsayo+SEG_EXPLORAR_COMIDA);
+//			//millisIni=System.currentTimeMillis();
+//		}
+//		//System.err.println("Rat::Coordenadas: "+robotCoors.x+", "+robotCoors.y + ". Direccion: "+ robot.getGlobalDirection());
+//		
+//		log.writeln(""+currentTime+log.SEPARATOR+(simulation.getCurrenTrial()-1)+log.SEPARATOR+simItem.getName()+ log.SEPARATOR+df.format(robotCoors.x)+log.SEPARATOR+df.format(robotCoors.y)+log.SEPARATOR+df.format(robot.getGlobalDirection()));
+////		if ((simItem.getTime()>0)&&(simItem.getTime()*1000<(currentTime-millisIni))) { // en milisegundos
+//		if ((simItem.getTime()>0)&&(simItem.getTime()<epocasPorEnsayo)) {
+//	        	System.err.print("Rat::End trial "+(simulation.getCurrenTrial()-1)+"/"+simulation.getNumberTrials()+". "+simItem.getName()+" -> ");
+//	        	// escribo en el archivo de loss las estadisticas de morris para este ensayo	
+//	        	logResumen.writeln(""+ (simulation.getCurrenTrial()-1)+ log.SEPARATOR+epocasPorEnsayo+log.SEPARATOR+simItem.getName()+log.SEPARATOR+latencia+log.SEPARATOR+largoCamino+log.SEPARATOR+tiempoCuadrantes[0]+log.SEPARATOR+tiempoCuadrantes[1]+log.SEPARATOR+tiempoCuadrantes[2]+log.SEPARATOR+tiempoCuadrantes[3]);
+//	        	simItem=simulation.next();
+//	        	epocasPorEnsayo=0;
+//	        	
+//	        	if (simItem==null) {
+//						System.out.println("Rat::Fin de la simulacion. Genero archivo con grafo.");
+//						PajekFormat.generateGraph(WorldGraphLayer.map_list);
+//						PajekFormat.generateMaxExpectedPathGraph(WorldGraphLayer.map_list);
+//						Utiles.speak("finish");
+//						log.close();
+//						logResumen.close();
+//						while (true); //TODO "tranca" simulacion.  
+//				} else {
+//					Utiles.speak("end trial");
+//		        	System.err.println(simItem.getName()+".");
+//
+//					switch (simItem.getType()) {
+//					case (SimulationItem.HABITUATION):
+//						nextHabituation=true;
+//						break;
+//					case (SimulationItem.TRAINING):
+//						nextTraining=true;
+//						break;
+//					case (SimulationItem.TESTING):
+//						nextTesting = true;
+//						break;
+//					default:
+//						assert true:"Tipo de ensayo erroneo";
+//						System.out.println("Rat::Nueva etapa.");
+//					
+//					}
+//				} // fin del switch por tipo de elemento de simulacion
+//				System.out.println("Rat::Nueva etapa.");
+//				millisIni=System.currentTimeMillis();
+//		}
+//
+//		porcentaje .printPorcentage(epocasPorEnsayo, simItem.getTime());
+//		
+//		// hasFindFood se utiliza para refozar o decrementar la exploracion solo una vez por ensayo
+//		if (Rat.newTrial)
+//			hasFindFood = false;
+//		
+//		// Calculo el refuerzo por encontrar comida
+//		if (robot.findFood()&&!hasFindFood) {
+//			hasFindFood = true;
+//			turnToFoodAux = -1;
+//			distFoodAux = 0;
+//		} else {
+//			turnToFoodAux = -1;
+//			distFoodAux = -1;
+//		}
+//		
+//		Arrays.fill(distLandmarksAux, -1);
+//		Arrays.fill(angleLandmarksAux, -1);
+//
+//		Double[] landmarks = robot.findLandmarks();
+//		
+//		// Calculo de Angulo y distancia para cada marca
+//		for (int iterLand=0; iterLand<LandmarksPerceptualSchema.LANDMARK_NUMBER;iterLand++)
+//			calculoAngDistLand(iterLand, landmarks[iterLand]);
+//		
+//		currentHeadAngleRat.set(angleAux);
+//		distLandmarks.set(distLandmarksAux);
+//		angleLandmarks.set(angleLandmarksAux);
+//		distFood.set(distFoodAux);
+//		turnToFood.set(turnToFoodAux);
 		//System.out.println("RAT: Head direction= " + angleAux +". Comida(d,a)= " + distFoodAux + ", "+ turnToFoodAux);
 	} // simRun
 
