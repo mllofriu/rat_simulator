@@ -45,12 +45,12 @@ public class World extends NslModule {
 	 */
 	public void simRun() {
 		// For visualization purposes
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			Thread.sleep(2000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		// Move the robot according to the last selected action taken
 		int actionDegrees = Utiles.acccion2GradosRelative(actionTaken.get());
 		RobotFactory.getRobot().doAction(actionDegrees);

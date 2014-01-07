@@ -7,22 +7,10 @@
 
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
+import robot.IRobot;
 import robot.RobotFactory;
 import support.Configuration;
-import Schemas.APathIntegrationLayer;
 import Schemas.ActionSelectionSchema;
-import Schemas.AffPerceptualSchema;
-import Schemas.Drive;
-import Schemas.DynamicRemappingLayer;
-import Schemas.HasselmoGridCellLayer;
-import Schemas.HebbianNetwork;
-import Schemas.InputToPlaceCellLayer;
-import Schemas.LandmarksFeatureDetectorLayer;
-import Schemas.LandmarksLayer;
-import Schemas.LandmarksPerceptualSchema;
-import Schemas.MotivationalSchema;
-import Schemas.PathIntegrationFeatureDetectorLayer;
-import Schemas.PlaceCellLayer;
 
 public class WGModel extends NslModel {
 	private World world;
@@ -47,8 +35,10 @@ public class WGModel extends NslModel {
 			System.exit(1);
 		}
 		NslMain.TopLoaded = true;
+		
+		IRobot robot = RobotFactory.getRobot();;
 
-		actionSel = new ActionSelectionSchema("actionSel", this);
+		actionSel = new ActionSelectionSchema("actionSel", this, robot);
 		System.out.println("WGModel::Action ... OK");
 		world = new World("world", this, COMPACT_IMAGE_HEIGHT, COMPACT_IMAGE_WIDTH, INITIAL_RAT_HEAD_ANGLE);
 		System.out.println("WGModel::World ... OK");
@@ -75,12 +65,12 @@ public class WGModel extends NslModel {
 		initSys();
 		
 		// Load the robot to display the frames
-		RobotFactory.getRobot();
+		
 	}
 	
 	
 	public void initSys() {
-		system.setRunEndTime(1);
+		system.setRunEndTime(100);
 		system.nslSetRunDelta(0.1);
 		system.setNumRunEpochs(EPOCHS);
 	}

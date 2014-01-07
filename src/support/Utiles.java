@@ -312,7 +312,7 @@ public class Utiles {
 		return (int)(3.0*(double)ANGLE_HEAD_TURN * (double)pos/(double)imagen[0].length - 3.0*(double)ANGLE_HEAD_TURN/2.0);
 	}
 
-	static Color rgb2Color(int rgb) {
+	public static Color rgb2Color(int rgb) {
 		int red = (rgb & 0x00ff0000) >> 16;
 		int green = (rgb & 0x0000ff00) >> 8;
 		int blue = rgb & 0x000000ff;
