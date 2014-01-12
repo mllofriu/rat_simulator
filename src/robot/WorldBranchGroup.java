@@ -43,6 +43,7 @@ import com.sun.j3d.utils.geometry.Sphere;
 public class WorldBranchGroup extends BranchGroup {
 	private static final float MOVE_REMOVE = 10; // un valor que quede fuera del mapa
 	public static final String STRING_FOOD = "food";
+	public final int NUM_ROBOT_VIEWS = 5;
 
 	private TransformGroup robotTransGroup;
 	private Hashtable<String, TransformGroup> boxs = new Hashtable<String, TransformGroup>();
@@ -50,7 +51,9 @@ public class WorldBranchGroup extends BranchGroup {
 	private Hashtable<String, Vector3f> boxsPosition = new Hashtable<String, Vector3f>();
 
 	private Set<String> boxHiden = new HashSet<String>();
+	// Views
 	private View topView;
+	private View[] robotViews = new View[NUM_ROBOT_VIEWS];
 	// By Gonzalo private CollisionReporter reporter = new CollisionReporter();
 
 	public WorldBranchGroup(String filename){
@@ -403,7 +406,6 @@ public class WorldBranchGroup extends BranchGroup {
 
 	}
 
-	int id = 0;
 	////By Gonzalo
 	//	public void addCollisionBehavior(Primitive vol, double x, double y, double z) {
 	//		Behavior collisionbehavior = new CollisionBehavior(reporter, vol, id);
@@ -412,11 +414,7 @@ public class WorldBranchGroup extends BranchGroup {
 	//		this.addChild(collisionbehavior);
 	//		id++;
 	//	}
-	private CameraView rView;
-	private CameraView leftRobotView;
-	private CameraView rightRobotView;
-	private CameraView leftMostRobotView;
-	private CameraView rightMostRobotView;
+	
 
 	protected Material createMaterial(Color3f color) {
 		Material mat = new Material();
@@ -438,9 +436,6 @@ public class WorldBranchGroup extends BranchGroup {
 		// Keep it public to move the robot in the future
 		Transform3D rPos = new Transform3D();
 		rPos.setTranslation(initialPos);
-//		Transform3D rRot = new Transform3D();
-//		rRot.rotY(Math.PI / 180.0d * 90);
-//		rPos.mul(rRot);
 		this.robotTransGroup = new TransformGroup();
 		this.robotTransGroup
 		.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
@@ -481,69 +476,25 @@ public class WorldBranchGroup extends BranchGroup {
 		camTG.setTransform(camT);
 		robotBG.addChild(camTG);
 		
+		// Add views 
+		for (int i = 0; i < NUM_ROBOT_VIEWS; i++){
+			TransformGroup vTG = new TransformGroup();
+			Transform3D vT = new Transform3D();
+			vT.rotY(Math.toRadians(90 - i * 45));
+			vTG.setTransform(vT);
+			CameraView cv = new CameraView();
+			robotViews[i] = cv.getView();
+			vTG.addChild(cv.getRootBG());
+			camTG.addChild(vTG);
+		}	
 		// Add center view
-		rView = new CameraView();
-		camTG.addChild(rView.getRootBG());
 		
-		// Add left views
-		TransformGroup leftTG = new TransformGroup();
-		Transform3D leftT = new Transform3D();
-		leftT.rotY(Math.toRadians(45));
-		leftTG.setTransform(leftT);
-		leftRobotView = new CameraView();
-		leftTG.addChild(leftRobotView.getRootBG());
-		camTG.addChild(leftTG);
-		
-		// Add right views
-		TransformGroup rightTG = new TransformGroup();
-		Transform3D rightT = new Transform3D();
-		rightT.rotY(Math.toRadians(-45));
-		rightTG.setTransform(rightT);
-		rightRobotView = new CameraView();
-		rightTG.addChild(rightRobotView.getRootBG());
-		camTG.addChild(rightTG);
-		
-		// Add left views
-		TransformGroup leftMostTG = new TransformGroup();
-		Transform3D leftMostT = new Transform3D();
-		leftMostT.rotY(Math.toRadians(90));
-		leftMostTG.setTransform(leftMostT);
-		leftMostRobotView = new CameraView();
-		leftMostTG.addChild(leftMostRobotView.getRootBG());
-		camTG.addChild(leftMostTG);
-		
-		// Add right views
-		TransformGroup rightMostTG = new TransformGroup();
-		Transform3D rightMostT = new Transform3D();
-		rightMostT.rotY(Math.toRadians(-90));
-		rightMostTG.setTransform(rightMostT);
-		rightMostRobotView = new CameraView();
-		rightMostTG.addChild(rightMostRobotView.getRootBG());
-		camTG.addChild(rightMostTG); 
 	}
 
-
-
-	public View getLeftMostRobotView() {
-		return leftMostRobotView.view;
+	public View getRobotView(int index){
+		return robotViews[index];
 	}
-
-	public View getRightMostRobotView() {
-		return rightMostRobotView.view;
-	}
-
-	public View getLeftRobotView() {
-		return leftRobotView.getView();
-	}
-
-	public View getRightRobotView() {
-		return rightRobotView.getView();
-	}
-
-	public View getRobotView() {
-		return rView.getView();
-	}
-
+	
 	public void moveRobot(Vector3f vector) {
 		// Create a new transforme with the translation
 		Transform3D trans = new Transform3D();
@@ -614,6 +565,7 @@ public class WorldBranchGroup extends BranchGroup {
 
 }
 
+/* Taken from https://www.java.net//node/647937 */
 class CameraView {
 
 	protected static final PhysicalBody physBody = new PhysicalBody();
