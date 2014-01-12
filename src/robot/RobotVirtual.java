@@ -73,7 +73,7 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 	// sin el static no camina el asunto :S
 	private int redL, redO, redR, redDL, redDR; // contadores de pixeles
 
-	public static WorldFrame world;
+	public static WorldBranchGroup world;
 
 	private BufferedImage panoramica = new BufferedImage(IMAGE_WIDTH*CANT_IMAGES2PANORAMA, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
 	private boolean[] affordances = new boolean[IRobot.CANT_ACCIONES];
@@ -85,8 +85,9 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 	int currentCameraDelay=DELAY_CAMERA_ROTATE;
 	
 	public RobotVirtual() {
-		world = new WorldFrame();
-		world.show();
+		WorldBranchGroup bg = new WorldBranchGroup(CURRENT_MAZE_DIR+DEFAULT_MAZE_FILE);
+		WorldFrame worldFrame = new WorldFrame(bg);
+		worldFrame.setVisible(true);
 	}
 
 	@Override
@@ -154,11 +155,11 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 				// devuelve las dos imagenes con posibles inconsistencias (dos
 				// marcas del mismo color, marcas cortadas, ...)
 				if (consistente) {
-					world.rotateRobotCamera(-ANGLE2CHECK_CONSISTENCY);
+					world.rotateRobot(-ANGLE2CHECK_CONSISTENCY);
 					takePanorama(panoramicaTestigo1);
-					world.rotateRobotCamera(-ANGLE2CHECK_CONSISTENCY);
+					world.rotateRobot(-ANGLE2CHECK_CONSISTENCY);
 					takePanorama(panoramicaTestigo2);
-					world.rotateRobotCamera(2*ANGLE2CHECK_CONSISTENCY); // vuelvo a dejar el robot en su posicion origianal
+					world.rotateRobot(2*ANGLE2CHECK_CONSISTENCY); // vuelvo a dejar el robot en su posicion origianal
 				}
 				
 			} while (!consistente || aBitDifferents(panoramicaTestigo1, panoramica) || aBitDifferents(panoramicaTestigo1, panoramicaTestigo2));
@@ -207,7 +208,7 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 			}
 			
 			// termine en este punto de procesar una columna para todos los colores
-			// entonces se implementa la máquina de estados
+			// entonces se implementa la m��quina de estados
 			for (itColor = 0; itColor < landmarkColors.length; itColor++) {
 				switch (checkStatus[itColor]) {
 				case OFF:
@@ -216,7 +217,7 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 					break;
 				case ON:
 					if (contadorColumna[itColor] == 0) // si no encontre el color actual en esta columna
-						checkStatus[itColor] = ON_OFF; // ya lo encontre y ahora no lo veo más
+						checkStatus[itColor] = ON_OFF; // ya lo encontre y ahora no lo veo m��s
 					break;
 				case ON_OFF:
 					if (contadorColumna[itColor] > 0) {// si encontre el color actual en esta columna
@@ -312,22 +313,22 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 		colorMatrixOAux = getColorMatrix();
 
 		// miro para un lado
-		world.rotateRobotCamera(ANGLE_HEAD_TURN);
+		world.rotateRobot(ANGLE_HEAD_TURN);
 		colorMatrixRAux = getColorMatrix();
 
 		// miro para el otro lado
-		world.rotateRobotCamera(-2 * ANGLE_HEAD_TURN);
+		world.rotateRobot(-2 * ANGLE_HEAD_TURN);
 		colorMatrixLAux = getColorMatrix();
 
 		// obtengo los laterales para los affordances
-		world.rotateRobotCamera(ANGLE_HEAD_TURN + 90);
+		world.rotateRobot(ANGLE_HEAD_TURN + 90);
 		colorMatrixAffR = getColorMatrix();
 
-		world.rotateRobotCamera(180);
+		world.rotateRobot(180);
 		colorMatrixAffL = getColorMatrix();
 
 		// miro para adelante
-		world.rotateRobotCamera(90);
+		world.rotateRobot(90);
 
 		// seteo contadores para affordances
 		redL = Utiles.contador(colorMatrixAffL, Color.RED);
@@ -349,30 +350,30 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 
 		if (horario) {
 			// imagen 0
-			world.rotateRobotCamera(-2 * ANGLE_HEAD_TURN);
+			world.rotateRobot(-2 * ANGLE_HEAD_TURN);
 			colorMatrixAffL = getColorMatrix();	 
-			world.rotateRobotCamera(ANGLE_HEAD_TURN);
+			world.rotateRobot(ANGLE_HEAD_TURN);
 			colorMatrixLAux = getColorMatrix();
-			world.rotateRobotCamera(ANGLE_HEAD_TURN);
+			world.rotateRobot(ANGLE_HEAD_TURN);
 			colorMatrixOAux = getColorMatrix();
-			world.rotateRobotCamera(ANGLE_HEAD_TURN);
+			world.rotateRobot(ANGLE_HEAD_TURN);
 			colorMatrixRAux = getColorMatrix();			
-			world.rotateRobotCamera(ANGLE_HEAD_TURN);
+			world.rotateRobot(ANGLE_HEAD_TURN);
 			colorMatrixAffR = getColorMatrix();
-			world.rotateRobotCamera(-2 * ANGLE_HEAD_TURN);
+			world.rotateRobot(-2 * ANGLE_HEAD_TURN);
 		} else {
 			// imagen 0
-			world.rotateRobotCamera(2 * ANGLE_HEAD_TURN);
+			world.rotateRobot(2 * ANGLE_HEAD_TURN);
 			colorMatrixAffR = getColorMatrix();
-			world.rotateRobotCamera(-ANGLE_HEAD_TURN);
+			world.rotateRobot(-ANGLE_HEAD_TURN);
 			colorMatrixRAux = getColorMatrix();			
-			world.rotateRobotCamera(-ANGLE_HEAD_TURN);
+			world.rotateRobot(-ANGLE_HEAD_TURN);
 			colorMatrixOAux = getColorMatrix();
-			world.rotateRobotCamera(-ANGLE_HEAD_TURN);
+			world.rotateRobot(-ANGLE_HEAD_TURN);
 			colorMatrixLAux = getColorMatrix();
-			world.rotateRobotCamera(-ANGLE_HEAD_TURN);
+			world.rotateRobot(-ANGLE_HEAD_TURN);
 			colorMatrixAffL = getColorMatrix();	 
-			world.rotateRobotCamera(2 * ANGLE_HEAD_TURN);			
+			world.rotateRobot(2 * ANGLE_HEAD_TURN);			
 		}
 		horario=!horario;
 
@@ -399,10 +400,10 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 		previusPoint = getGlobalCoodinate();
 
 		// If no rotation, translate
-		if (grados == 0)
-			world.moveRobotForward();
-		else
-			rotateRobot(grados);
+//		if (grados == 0)
+//			world.moveRobotForward();
+//		else
+//			rotateRobot(grados);
 
 		robotHasMoved = true;
 		currentPoint = getGlobalCoodinate();
@@ -412,7 +413,7 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 	@Override
 	public Double getGlobalCoodinate() {
 		// TODO Auto-generated method stub
-		return world.getGlobalCoodinate();
+		return new Double();
 	}
 	
 	@Override
@@ -445,7 +446,8 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 			System.out.println(e);
 		}
 
-		return world.getColorMatrix();
+//		return world.getColorMatrix();
+		return null;
 	}
 
 	public void rotateRobot(int actionDegrees) {
@@ -456,12 +458,14 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 
 	@Override
 	public boolean findFood() {
-		double distanciaAComida = world.getFood().distance(world.getGlobalCoodinate()) ;
-		//System.err.println("RV::distancia a la comida: " + distanciaAComida);
-		return distanciaAComida < DISTANCIA_ENTRE_PUNTOS_CERCANOS;
+//		double distanciaAComida = world.getFood().distance(world.getGlobalCoodinate()) ;
+//		//System.err.println("RV::distancia a la comida: " + distanciaAComida);
+//		return distanciaAComida < DISTANCIA_ENTRE_PUNTOS_CERCANOS;
+		return false;
 	}
 	public static final int MAX_PIXEL_MARCA = Configuration.getInt("Rat.MAX_PIXEL_MARCA");	
-	public static final int MIN_PIXEL_MARCA = Configuration.getInt("Rat.MIN_PIXEL_MARCA");	
+	public static final int MIN_PIXEL_MARCA = Configuration.getInt("Rat.MIN_PIXEL_MARCA");
+	private static final float STEP = 0.1f;	
 
 	/* (non-Javadoc)
 	 * @see khepera.IRobot#findLandmarks()
@@ -505,7 +509,7 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
         		// (position, size)
 // se queda con el mas grande       		if (b[iterLand].y>a[iterLand].y)
 //        			a[iterLand]=b[iterLand];
-        		// tomo el promedio de los dos tamaños
+        		// tomo el promedio de los dos tama��os
         		a[iterLand].y = (a[iterLand].y + b[iterLand].y)/2; 
         	} else if (b[iterLand]!=null) {
         		a[iterLand]=b[iterLand];
