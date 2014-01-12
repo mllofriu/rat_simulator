@@ -137,50 +137,10 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 	
 	@Override
 	synchronized public BufferedImage getPanoramica() {
-		BufferedImage panoramicaTestigo1, panoramicaTestigo2;
-		boolean consistente;
-		long currentTake, iniTime = System.currentTimeMillis();
+		panoramica = new BufferedImage(IMAGE_WIDTH*CANT_IMAGES2PANORAMA, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		
-		// si el robot se movio (avanzo o giro) debo actualizar la panoramica
-		if (robotHasMoved) {
-			panoramicaTestigo1 = new BufferedImage(IMAGE_WIDTH*CANT_IMAGES2PANORAMA, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
-			panoramicaTestigo2 = new BufferedImage(IMAGE_WIDTH*CANT_IMAGES2PANORAMA, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
-			// para controlar inconcistencias tomo dos panoramicas y las
-			// comparo, repito hasta que sean casi iguales
-			do {
-				takePanorama(panoramica);
-				consistente = checkConsistency(panoramica);
-
-				// si no giro un poquito java 3d cachea la imagen se ve y
-				// devuelve las dos imagenes con posibles inconsistencias (dos
-				// marcas del mismo color, marcas cortadas, ...)
-				if (consistente) {
-					world.rotateRobot(-ANGLE2CHECK_CONSISTENCY);
-					takePanorama(panoramicaTestigo1);
-					world.rotateRobot(-ANGLE2CHECK_CONSISTENCY);
-					takePanorama(panoramicaTestigo2);
-					world.rotateRobot(2*ANGLE2CHECK_CONSISTENCY); // vuelvo a dejar el robot en su posicion origianal
-				}
-				
-			} while (!consistente || aBitDifferents(panoramicaTestigo1, panoramica) || aBitDifferents(panoramicaTestigo1, panoramicaTestigo2));
-			picturesTakenWithoutIncrement++;
-			if (picturesTakenWithoutIncrement>MAX_TAKES_TO_DECREMENT_DELAY_CAMERA) {
-				picturesTakenWithoutIncrement=0;
-				if (currentCameraDelay>DELAY_CAMERA_ROTATE) {
-					currentCameraDelay--;
-					System.err.println("RV::decrementando delay de camara a " + currentCameraDelay);
-				}
-			}
-				
-			robotHasMoved = false;
-			currentTake = System.currentTimeMillis()-iniTime;
-			if (currentTake > maxTakeTime) maxTakeTime=currentTake;
-			if (currentTake < minTakeTime) minTakeTime=currentTake;
-			cantTakes++;
-			sumaTakeTime=sumaTakeTime+currentTake;
-		}
+		
 		return panoramica;
-//		return new BufferedImage(IMAGE_WIDTH*CANT_IMAGES2PANORAMA, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
 	}
 
 	// devuelve si es consistente la panoramica

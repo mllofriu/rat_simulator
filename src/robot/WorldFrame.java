@@ -22,9 +22,8 @@ public class WorldFrame extends java.awt.Frame {
 	private static final String DEFAULT_MAZE_DIR=Configuration.getString("WorldFrame.MAZE_DIRECTORY");
 	private final String CURRENT_MAZE_DIR= System.getProperty("user.dir")+File.separatorChar+DEFAULT_MAZE_DIR+File.separatorChar;
 
-	Canvas3D topViewCanvas, robotViewCanvas, leftRobotViewCanvas, 
-		centerRobotViewCanvas, rightRobotViewCanvas, 
-		leftMostRobotViewCanvas, rightMostRobotViewCanvas;
+	Canvas3D topViewCanvas, robotViewCanvas;
+	Canvas3D[] robotViewsCanvas;
 
 	private WorldBranchGroup world;
 
@@ -32,7 +31,6 @@ public class WorldFrame extends java.awt.Frame {
 		this.world = bg;
 		VirtualUniverse universe = new VirtualUniverse();
 		Locale l = new Locale( universe );
-		l.addBranchGraph(bg);
 
 		initComponents();
 
@@ -40,37 +38,26 @@ public class WorldFrame extends java.awt.Frame {
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
 
 		// Wide view canvases
-		leftMostRobotViewCanvas = new Canvas3D(config);
-		leftMostRobotViewCanvas.setSize(80,80);
-		bg.getLeftMostRobotView().addCanvas3D(leftMostRobotViewCanvas);
-		wideViewPanel.add(leftMostRobotViewCanvas);
-		leftRobotViewCanvas = new Canvas3D(config);
-		leftRobotViewCanvas.setSize(80,80);
-		bg.getLeftRobotView().addCanvas3D(leftRobotViewCanvas);
-		wideViewPanel.add(leftRobotViewCanvas);
-		centerRobotViewCanvas = new Canvas3D(config);
-		centerRobotViewCanvas.setSize(80,80);
-		bg.getRobotView().addCanvas3D(centerRobotViewCanvas);
-		wideViewPanel.add(centerRobotViewCanvas);
-		rightRobotViewCanvas = new Canvas3D(config);
-		rightRobotViewCanvas.setSize(80,80);
-		bg.getRightRobotView().addCanvas3D(rightRobotViewCanvas);
-		wideViewPanel.add(rightRobotViewCanvas);
-		rightMostRobotViewCanvas = new Canvas3D(config);
-		rightMostRobotViewCanvas.setSize(80,80);
-		bg.getRightMostRobotView().addCanvas3D(rightMostRobotViewCanvas);
-		wideViewPanel.add(rightMostRobotViewCanvas);
+		robotViewsCanvas = new Canvas3D[bg.NUM_ROBOT_VIEWS];
+		for (int i=0; i<bg.NUM_ROBOT_VIEWS; i++){
+			robotViewsCanvas[i] = new Canvas3D(config);
+			robotViewsCanvas[i].setSize(80,80);
+			bg.getRobotView(i).addCanvas3D(robotViewsCanvas[i]);
+			wideViewPanel.add(robotViewsCanvas[i]);
+		}
 		
 		// Main robot view canvas
 		robotViewCanvas = new Canvas3D(config);
 		robotViewCanvas.setSize(240,240);
-		bg.getRobotView().addCanvas3D(robotViewCanvas);
+		bg.getRobotView(bg.NUM_ROBOT_VIEWS / 2 + 1).addCanvas3D(robotViewCanvas);
 		robotViewPanel.add(robotViewCanvas);
 		// Top view canvas
 		topViewCanvas = new Canvas3D(config);
 		bg.getTopView().addCanvas3D(topViewCanvas);
 		topViewCanvas.setSize(240,240);
 		topViewPanel.add(topViewCanvas);
+		
+		l.addBranchGraph(bg);
 	}
 
 
