@@ -30,13 +30,8 @@ public class WGModel extends NslModel {
 
 	public WGModel(String nslName, NslModule nslParent) {
 		super(nslName, nslParent);
-		if (NslMain.TopLoaded) {
-			System.err.println("ERROR: construction without (name,parent)");
-			System.exit(1);
-		}
-		NslMain.TopLoaded = true;
 		
-		IRobot robot = RobotFactory.getRobot();;
+		IRobot robot = RobotFactory.getRobot();
 
 		actionSel = new ActionSelectionSchema("actionSel", this, robot);
 		System.out.println("WGModel::Action ... OK");
@@ -62,10 +57,7 @@ public class WGModel extends NslModel {
 //		placeViewer = new CellsViewer(this, "activationPlace.data", DEFAULT_PLACES_NUMBER);
 //		System.out.println("WGModel::Grid Viewer ... OK");
 
-		initSys();
-		
-		// Load the robot to display the frames
-		
+		initSys();		
 	}
 	
 	
