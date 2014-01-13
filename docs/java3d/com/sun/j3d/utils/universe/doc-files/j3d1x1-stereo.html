@@ -1,0 +1,37 @@
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+<pre>
+/*
+ ************************************************************************
+ *  
+ * Java 3D configuration file for single fullscreen stereo desktop
+ * configuration with no head tracking.
+ *  
+ ************************************************************************
+ */
+
+(NewScreen center 0)
+(ScreenProperty center WindowSize NoBorderFullScreen)
+
+// Define the physical body.
+//
+// The head origin is halfway between the eyes, with X extending to the right,
+// Y up, and positive Z extending into the skull.
+// 
+(NewPhysicalBody SiteUser)
+
+// Set the interpupilary distance.  This sets the LeftEyePosition and
+// RightEyePosition to offsets of half this distance along both directions of
+// the X axis.
+// 
+(PhysicalBodyProperty SiteUser StereoEyeSeparation 0.066)
+
+// Create a view using the defined screen and physical body.
+//
+(NewView view0)
+(ViewProperty view0 Screen       center)
+(ViewProperty view0 PhysicalBody SiteUser)
+
+// Enable stereo viewing.
+// 
+(ViewProperty view0 StereoEnable true)
+</pre>
