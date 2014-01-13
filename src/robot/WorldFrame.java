@@ -49,7 +49,7 @@ public class WorldFrame extends java.awt.Frame {
 		// Main robot view canvas
 		robotViewCanvas = new Canvas3D(config);
 		robotViewCanvas.setSize(240,240);
-		bg.getRobotView(bg.NUM_ROBOT_VIEWS / 2 + 1).addCanvas3D(robotViewCanvas);
+		bg.getRobotView(bg.NUM_ROBOT_VIEWS / 2).addCanvas3D(robotViewCanvas);
 		robotViewPanel.add(robotViewCanvas);
 		// Top view canvas
 		topViewCanvas = new Canvas3D(config);
@@ -72,11 +72,11 @@ public class WorldFrame extends java.awt.Frame {
 		forwardBtn = new java.awt.Button();
 		backBtn = new java.awt.Button();
 		button9 = new java.awt.Button();
-		buttonCW =new java.awt.Button();
+		turnRightBtn =new java.awt.Button();
 
 		posRat = new java.awt.Label();
 
-		buttonACW =new java.awt.Button();
+		turnLeftBtn =new java.awt.Button();
 		robotViewPanel = new java.awt.Panel();
 		topViewPanel = new java.awt.Panel();
 		wideViewPanel = new java.awt.Panel();
@@ -180,30 +180,30 @@ public class WorldFrame extends java.awt.Frame {
 		panel1.add(button9, gridBagConstraints);
 
 		// boton rotar horario
-		buttonACW.setLabel("<(");
-		buttonACW.addActionListener(new java.awt.event.ActionListener() {
+		turnLeftBtn.setLabel("<(");
+		turnLeftBtn.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				buttonACWActionPerformed(evt);
+				turnLeftBtnAction(evt);
 			}
 		});
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 2;
 		gridBagConstraints.gridy = 3;
-		panel1.add(buttonACW, gridBagConstraints);
+		panel1.add(turnLeftBtn, gridBagConstraints);
 
 		// boton rotar anti-horario
-		buttonCW.setLabel(")>");
-		buttonCW.addActionListener(new java.awt.event.ActionListener() {
+		turnRightBtn.setLabel(")>");
+		turnRightBtn.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				buttonCWActionPerformed(evt);
+				turnRightBtnAction(evt);
 			}
 		});
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 4;
 		gridBagConstraints.gridy = 3;
-		panel1.add(buttonCW, gridBagConstraints);
+		panel1.add(turnRightBtn, gridBagConstraints);
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 3;
@@ -244,13 +244,13 @@ public class WorldFrame extends java.awt.Frame {
 	}
 
 	// accion asociada al boton de girar horario
-	private void buttonCWActionPerformed(java.awt.event.ActionEvent evt) {
+	private void turnRightBtnAction(java.awt.event.ActionEvent evt) {
 		rotateRobot(45);
 		mostrarColores();
 	}
 
 	// accion asociada al boton de girar anti-horario
-	private void buttonACWActionPerformed(java.awt.event.ActionEvent evt) {
+	private void turnLeftBtnAction(java.awt.event.ActionEvent evt) {
 		rotateRobot(-45);
 		mostrarColores();
 	}
@@ -375,8 +375,8 @@ public class WorldFrame extends java.awt.Frame {
 	private java.awt.Button forwardBtn;
 	private java.awt.Button backBtn;
 	private java.awt.Button button9;
-	private java.awt.Button buttonCW;
-	private java.awt.Button buttonACW;
+	private java.awt.Button turnRightBtn;
+	private java.awt.Button turnLeftBtn;
 
 
 	private java.awt.Panel panel1;

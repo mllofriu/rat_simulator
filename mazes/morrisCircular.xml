@@ -31,7 +31,7 @@
         
         <topview x='0' y='2' z='0'/>
         <thirdview x='2.1' y='2.5' z='2.1'/>
-        <robotview x='0' y='-0.025' z='0.495'/> 
+        <robotview x='0' y='-0.025' z='0.295'/> 
         <!--<robotview x='0.495' y='-0.025' z='-0.425'/> -->
 </world>
 

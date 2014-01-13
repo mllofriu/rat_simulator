@@ -256,11 +256,13 @@ public class Utiles {
 				if (rgb2Color(imagen.getRGB(iterH,iterW)).equals(color))
 					contador++;
 			}
+		
+		System.out.println(contador);
 		return contador;
 	}
 
-	/* para una imágen panoramica de 80*3X80 devuelve un numero [0..79]
-	 * de la mayor aparición de pixeles en el histograma del color
+	/* para una im��gen panoramica de 80*3X80 devuelve un numero [0..79]
+	 * de la mayor aparici��n de pixeles en el histograma del color
 	 */
 	public static double anguloColor(BufferedImage imagen, Color color) {
 		final int THRES = 10;
@@ -426,11 +428,11 @@ public class Utiles {
 	static private int entreIVyI=0; // cantidad de veces que paso entre el ...
 	
 	// dado un punto devuelve el cuadrante al que pertenece entre 0 y 3
-	// detalle de implementación: ocurre muchas veces que se cumple el == a 0 por lo que balaceo entre los cuadrantes correspondientes
+	// detalle de implementaci��n: ocurre muchas veces que se cumple el == a 0 por lo que balaceo entre los cuadrantes correspondientes
 	static DecimalFormat df = new DecimalFormat("#.####");
 	public static int getCuadrante(Double coord) {
 		int result;
-		// redondeo a cuatro dígitos decimales
+		// redondeo a cuatro d��gitos decimales
 		coord.x = java.lang.Double.parseDouble(df.format(coord.x));
 		coord.y = java.lang.Double.parseDouble(df.format(coord.y));
 		if ((coord.x>0)&&(coord.y>0))
