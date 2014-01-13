@@ -235,7 +235,7 @@ public class WorldBranchGroup extends BranchGroup {
 		zp = getFParam(attributes, "zp");
 
 
-		addFood(r, h, new Color3f(cr, cg, cb), x, y, z);
+		addFood(r, h, new Color3f(cr, cg, cb), xp, yp, zp);
 
 
 		addDirectionalLight(new Vector3f(0f, 0f, -5), new Color3f(1f, 1f, 1f));
@@ -246,6 +246,7 @@ public class WorldBranchGroup extends BranchGroup {
 		addDirectionalLight(new Vector3f(0f, 5f, 5), new Color3f(.5f, .5f, .5f));
 		addDirectionalLight(new Vector3f(0f, -5, 0), new Color3f(1f, 1f, 1f));
 
+		compile();
 	}
 
 	private void addTopView(Vector3f initialPos) {
@@ -259,7 +260,7 @@ public class WorldBranchGroup extends BranchGroup {
 		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 		tg.setTransform(rPos);
 		
-		CameraView cv = new CameraView();
+		CameraView cv = new CameraView(false);
 		this.topView = cv.getView();
 		tg.addChild(cv.getRootBG());
 		
@@ -482,13 +483,11 @@ public class WorldBranchGroup extends BranchGroup {
 			Transform3D vT = new Transform3D();
 			vT.rotY(Math.toRadians(90 - i * 45));
 			vTG.setTransform(vT);
-			CameraView cv = new CameraView();
+			CameraView cv = new CameraView(true);
 			robotViews[i] = cv.getView();
 			vTG.addChild(cv.getRootBG());
 			camTG.addChild(vTG);
 		}	
-		// Add center view
-		
 	}
 
 	public View getRobotView(int index){
@@ -578,7 +577,7 @@ class CameraView {
 	protected View view = null;
 	protected Canvas3D canvas = null;
 
-	public CameraView() {
+	public CameraView(boolean close) {
 
 		GraphicsConfigTemplate3D gconfigTempl =
 				new GraphicsConfigTemplate3D();
@@ -592,7 +591,9 @@ class CameraView {
 		view.setPhysicalBody( physBody );
 		view.setPhysicalEnvironment( physEnv );
 		view.attachViewPlatform( viewPlatform );
-		view.setFrontClipDistance(0.0001);
+		// Modify front clip distance if seeing close objects
+		if (close)
+			view.setFrontClipDistance(0.0001);
 //		view.addCanvas3D( canvas );
 
 		vpTG = new TransformGroup();
