@@ -58,6 +58,8 @@ public class WorldFrame extends java.awt.Frame {
 		topViewPanel.add(topViewCanvas);
 		
 		l.addBranchGraph(bg);
+		
+		
 	}
 
 
@@ -274,7 +276,6 @@ public class WorldFrame extends java.awt.Frame {
 	}
 
 	private void button9ActionPerformed(java.awt.event.ActionEvent evt) {
-		//        w2Canvas.moveCamera(new Vector3f(0f, -1f, 0f));
 	}
 
 	// accion asociada al boton de avanzar
