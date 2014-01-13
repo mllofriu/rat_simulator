@@ -1,0 +1,69 @@
+<body text="#000000" bgcolor="#FFFFFF" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+<pre>
+/*
+ ************************************************************************
+ *  
+ * Java 3D configuration file for 3 screens.  Left and right screens are
+ * rotated 45 degrees from the center screen.
+ *  
+ ************************************************************************
+ */
+
+// Create new screen objects and associate them with logical names and numbers.
+// These numbers are used as indices to retrieve the AWT GraphicsDevice from
+// the array that GraphicsEnvironment.getScreenDevices() returns.
+// 
+// NOTE: The GraphicsDevice order in the array is specific to the local
+// site and display system.
+// 
+(NewScreen left   0)
+(NewScreen center 1)
+(NewScreen right  2)
+
+// Set the available image areas for full screens.  
+// 
+(ScreenProperty left   PhysicalScreenWidth  0.360)
+(ScreenProperty left   PhysicalScreenHeight 0.288)
+
+(ScreenProperty center PhysicalScreenWidth  0.360)
+(ScreenProperty center PhysicalScreenHeight 0.288)
+
+(ScreenProperty right  PhysicalScreenWidth  0.360)
+(ScreenProperty right  PhysicalScreenHeight 0.288)
+
+// Specify full screen windows.
+// 
+(ScreenProperty left   WindowSize NoBorderFullScreen)
+(ScreenProperty center WindowSize NoBorderFullScreen)
+(ScreenProperty right  WindowSize NoBorderFullScreen)
+
+// Set the TrackerBaseToImagePlate transforms for these screens.
+// 
+// The tracker base and center of coexistence are set here to the middle of the
+// center screen. The basis vectors are aligned with the center screen image
+// plate.  The left and right screens are rotated 45 degrees toward each other
+// about their shared edges with the center screen.
+//
+(ScreenProperty center TrackerBaseToImagePlate
+                        (Translate 0.180000    0.144000 0.000000))
+
+// cos(45) * 0.360 * 0.5 = 0.127279; 0.360 + 0.127279 = 0.487279
+(ScreenProperty left  TrackerBaseToImagePlate
+                       (RotateTranslate
+		        (Rotate     0.000000 -45.000000 0.000000)
+                        (Translate  0.487279   0.144000 0.127279)))
+
+// cos(45) * 0.360 * 0.5 = 0.127279
+(ScreenProperty right TrackerBaseToImagePlate
+                       (RotateTranslate
+		        (Rotate     0.000000  45.000000 0.000000)
+                        (Translate -0.127279   0.144000 0.127279)))
+
+// Create a view using the defined screens.
+// 
+(NewView      view0)
+(ViewProperty view0 Screen left)
+(ViewProperty view0 Screen center)
+(ViewProperty view0 Screen right)
+(ViewProperty view0 CenterEyeInCoexistence (0.0 0.0 0.5))
+</pre>
