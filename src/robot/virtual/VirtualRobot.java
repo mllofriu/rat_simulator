@@ -125,6 +125,7 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 				RobotNode.IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		
 		for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++){
+			// TODO: fix offscreen rendering
 			offScreenCanvas[i].renderOffScreenBuffer();
 			offScreenCanvas[i].waitForOffScreenRendering();
 			BufferedImage image = offScreenImages[i].getImage();
