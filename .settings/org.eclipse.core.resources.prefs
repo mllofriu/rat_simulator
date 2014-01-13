@@ -1,5 +1,5 @@
 eclipse.preferences.version=1
 encoding//src/Schemas/ActionSelectionSchema.java=UTF-8
 encoding//src/robot/IRobot.java=UTF-8
-encoding//src/robot/RobotVirtual.java=UTF-8
+encoding//src/robot/virtual/VirtualRobot.java=UTF-8
 encoding//src/support/Utiles.java=UTF-8
