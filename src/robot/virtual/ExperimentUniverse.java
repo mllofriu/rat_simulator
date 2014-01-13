@@ -3,6 +3,8 @@ package robot.virtual;
 import java.io.File;
 
 import javax.media.j3d.BranchGroup;
+import javax.media.j3d.Canvas3D;
+import javax.media.j3d.ImageComponent2D;
 import javax.media.j3d.Locale;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.View;
@@ -137,6 +139,13 @@ public class ExperimentUniverse extends VirtualUniverse{
 		return robot.getRobotViews();
 	}
 	
+	public Canvas3D[] getRobotOffscreenCanvas() {
+		return robot.getOffScreenCanvas();
+	}
+
+	public ImageComponent2D[] getRobotOffscreenImages() {
+		return robot.getOffScreenImages();
+	}
 	/**
 	 * Return the virtual robot's position
 	 * @return

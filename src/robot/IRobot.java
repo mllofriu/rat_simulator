@@ -44,7 +44,7 @@ public interface IRobot {
 	/** se usa solamente para poder visualizar
 	 * @return
 	 */
-	public abstract BufferedImage getPanoramica();
+	public abstract BufferedImage[] getPanoramica();
 
 	public abstract Color [] getColorsLandmarks();
 
