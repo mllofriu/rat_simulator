@@ -1,4 +1,4 @@
-package robot;
+package robot.virtual;
 
 
 //import Rat;
@@ -17,6 +17,7 @@ import javax.media.j3d.Canvas3D;
 import javax.media.j3d.ImageComponent2D;
 import javax.vecmath.Vector3f;
 
+import robot.IRobot;
 import support.Configuration;
 import support.Utiles;
 
@@ -24,7 +25,12 @@ import com.sun.j3d.utils.universe.SimpleUniverse;
 
 
 
-public class RobotVirtual extends java.awt.Frame implements IRobot {
+public class VirtualRobot extends java.awt.Frame implements IRobot {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5581489496269696656L;
+
 	// esperas para que se estabilice la lectura de la camara luego de una
 	// rotacion
 	private int DELAY_CAMERA_ROTATE = Configuration
@@ -39,10 +45,6 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 	// giro de la cabeza para armar la panoramica
 	private final int ANGLE_HEAD_TURN = Configuration
 			.getInt("Robot.ANGLE_HEAD_TURN");
-	// altura de la imagen color
-	public static final int IMAGE_HEIGHT = 80;
-	// ancho de la imagen color
-	public static final int IMAGE_WIDTH = 80;
 	private final int MAX_PIXEL_LATERAL = Configuration
 			.getInt("RobotVirtual.MAX_PIXEL_LATERAL");
 	private final int MAX_PIXEL_DIAGONAL = Configuration
@@ -52,7 +54,7 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 	
 	public static final double SPEED_ERROR = Configuration.getDouble("Robot.SPEED_ERROR"); 
 	
-	public static WorldBranchGroup world;
+	public static ExperimentUniverse world;
 
 	private BufferedImage panoramica;
 	private boolean[] affordances = new boolean[IRobot.CANT_ACCIONES];
@@ -65,27 +67,8 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 	private ImageComponent2D[] offScreenImages;
 	private Canvas3D[] offScreenCanvas;
 	
-	public RobotVirtual() {
-		world = new WorldBranchGroup(CURRENT_MAZE_DIR+DEFAULT_MAZE_FILE);
-		
-		// Create off-screen canvas to see through the robots views
-		offScreenCanvas = new Canvas3D[world.NUM_ROBOT_VIEWS];
-		offScreenImages = new ImageComponent2D[world.NUM_ROBOT_VIEWS];
-		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
-		for (int i=0; i<world.NUM_ROBOT_VIEWS; i++){
-			offScreenCanvas[i] = new Canvas3D(config, true);
-			offScreenImages[i] = new ImageComponent2D(ImageComponent2D.FORMAT_RGB, 
-					new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB));
-			offScreenImages[i].setCapability(ImageComponent2D.ALLOW_IMAGE_READ);
-			world.getRobotView(i).addCanvas3D(offScreenCanvas[i]);
-			offScreenCanvas[i].setOffScreenBuffer(offScreenImages[i]);
-			offScreenCanvas[i].getScreen3D().setPhysicalScreenWidth(
-					0.0254d/90.0*IMAGE_WIDTH);
-			offScreenCanvas[i].getScreen3D().setPhysicalScreenHeight(
-					0.0254d/90.0*IMAGE_HEIGHT);
-			offScreenCanvas[i].getScreen3D().setSize(new Dimension(IMAGE_WIDTH, IMAGE_HEIGHT));
-			// Not added to the actual screen
-		}
+	public VirtualRobot() {
+		world = new ExperimentUniverse(CURRENT_MAZE_DIR+DEFAULT_MAZE_FILE);
 		
 		WorldFrame worldFrame = new WorldFrame(world);
 		worldFrame.setVisible(true);
@@ -138,16 +121,16 @@ public class RobotVirtual extends java.awt.Frame implements IRobot {
 	
 	@Override
 	synchronized public BufferedImage getPanoramica() {
-		panoramica = new BufferedImage(IMAGE_WIDTH*world.NUM_ROBOT_VIEWS,
-				IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
+		panoramica = new BufferedImage(RobotNode.IMAGE_WIDTH*RobotNode.NUM_ROBOT_VIEWS,
+				RobotNode.IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
 		
-		for (int i = 0; i < world.NUM_ROBOT_VIEWS; i++){
+		for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++){
 			offScreenCanvas[i].renderOffScreenBuffer();
 			offScreenCanvas[i].waitForOffScreenRendering();
 			BufferedImage image = offScreenImages[i].getImage();
-			for (int j = 0; j < IMAGE_WIDTH; j ++){
-				for (int k = 0; k < IMAGE_HEIGHT; k++){
-					panoramica.setRGB(j + IMAGE_WIDTH * i, k, image.getRGB(j, k));
+			for (int j = 0; j < RobotNode.IMAGE_WIDTH; j ++){
+				for (int k = 0; k < RobotNode.IMAGE_HEIGHT; k++){
+					panoramica.setRGB(j + RobotNode.IMAGE_WIDTH * i, k, image.getRGB(j, k));
 				}
 			}
 		}

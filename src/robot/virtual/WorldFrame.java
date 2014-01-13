@@ -1,4 +1,4 @@
-package robot;
+package robot.virtual;
 import java.awt.Color;
 import java.awt.GraphicsConfiguration;
 import java.io.File;
@@ -14,23 +14,19 @@ import support.Configuration;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
 public class WorldFrame extends java.awt.Frame {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -698020368303861261L;
 
-	private static final String DEFAULT_MAZE_DIR=Configuration.getString("WorldFrame.MAZE_DIRECTORY");
-	private final String CURRENT_MAZE_DIR= System.getProperty("user.dir")+File.separatorChar+DEFAULT_MAZE_DIR+File.separatorChar;
+	private static final long serialVersionUID = -698020368303861261L;
+	private final String DEFAULT_MAZE_DIR=Configuration.getString("WorldFrame.MAZE_DIRECTORY");
+	private final String CURRENT_MAZE_DIR= System.getProperty("user.dir")+File.separatorChar+
+			DEFAULT_MAZE_DIR+File.separatorChar;
 
 	Canvas3D topViewCanvas, robotViewCanvas;
 	Canvas3D[] robotViewsCanvas;
 
-	private WorldBranchGroup world;
+	private ExperimentUniverse expUniv;
 
-	public WorldFrame(WorldBranchGroup bg) {
-		this.world = bg;
-		VirtualUniverse universe = new VirtualUniverse();
-		Locale l = new Locale( universe );
+	public WorldFrame(ExperimentUniverse world) {
+		this.expUniv = world;
 
 		initComponents();
 
@@ -38,27 +34,24 @@ public class WorldFrame extends java.awt.Frame {
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
 
 		// Wide view canvases
-		robotViewsCanvas = new Canvas3D[bg.NUM_ROBOT_VIEWS];
-		for (int i=0; i<bg.NUM_ROBOT_VIEWS; i++){
+		robotViewsCanvas = new Canvas3D[RobotNode.NUM_ROBOT_VIEWS];
+		for (int i=0; i<RobotNode.NUM_ROBOT_VIEWS; i++){
 			robotViewsCanvas[i] = new Canvas3D(config);
 			robotViewsCanvas[i].setSize(80,80);
-			bg.getRobotView(i).addCanvas3D(robotViewsCanvas[i]);
+			world.getRobotViews()[i].addCanvas3D(robotViewsCanvas[i]);
 			wideViewPanel.add(robotViewsCanvas[i]);
 		}
 		
 		// Main robot view canvas
 		robotViewCanvas = new Canvas3D(config);
 		robotViewCanvas.setSize(240,240);
-		bg.getRobotView(bg.NUM_ROBOT_VIEWS / 2).addCanvas3D(robotViewCanvas);
+		world.getRobotViews()[RobotNode.NUM_ROBOT_VIEWS / 2].addCanvas3D(robotViewCanvas);
 		robotViewPanel.add(robotViewCanvas);
 		// Top view canvas
 		topViewCanvas = new Canvas3D(config);
-		bg.getTopView().addCanvas3D(topViewCanvas);
+		world.getTopView().addCanvas3D(topViewCanvas);
 		topViewCanvas.setSize(240,240);
 		topViewPanel.add(topViewCanvas);
-		
-		l.addBranchGraph(bg);
-		
 		
 	}
 
@@ -259,19 +252,19 @@ public class WorldFrame extends java.awt.Frame {
 
 	// accion asociada al boton de mover izquierda
 	private void button2ActionPerformed(java.awt.event.ActionEvent evt) {
-		world.moveRobot(new Vector3f(-0.1f,0f,0f));
+		expUniv.moveRobot(new Vector3f(-0.1f,0f,0f));
 		mostrarColores();
 	}
 
 	// accion asociada al boton de mover derecha
 	private void button4ActionPerformed(java.awt.event.ActionEvent evt) {
-		world.moveRobot(new Vector3f(0.1f,0f,0f));
+		expUniv.moveRobot(new Vector3f(0.1f,0f,0f));
 		mostrarColores();
 	}
 
 	// accion asociada al boton de retroceder
 	private void backBtnAction(java.awt.event.ActionEvent evt) {
-		world.moveRobot(new Vector3f(0f,0f,.1f));
+		expUniv.moveRobot(new Vector3f(0f,0f,.1f));
 		mostrarColores();
 	}
 
@@ -280,7 +273,7 @@ public class WorldFrame extends java.awt.Frame {
 
 	// accion asociada al boton de avanzar
 	private void forwardBtnAction(java.awt.event.ActionEvent evt) {
-		world.moveRobot(new Vector3f(0f,0f,-.1f));
+		expUniv.moveRobot(new Vector3f(0f,0f,-.1f));
 		mostrarColores();
 	}
 
@@ -308,7 +301,7 @@ public class WorldFrame extends java.awt.Frame {
 	//    }
 
 	public void rotateRobot(float angle) {
-		world.rotateRobot(Math.toRadians(-angle));
+		expUniv.rotateRobot(Math.toRadians(-angle));
 		System.out.println("Robot rotate");
 	}
 
@@ -409,9 +402,9 @@ public class WorldFrame extends java.awt.Frame {
 		String DEFAULT_MAZE_DIR=Configuration.getString("WorldFrame.MAZE_DIRECTORY");
 		String DEFAULT_MAZE_FILE=Configuration.getString("WorldFrame.MAZE_FILE");
 		String CURRENT_MAZE_DIR= System.getProperty("user.dir")+File.separatorChar+DEFAULT_MAZE_DIR+File.separatorChar;
-		WorldBranchGroup bg = new WorldBranchGroup(CURRENT_MAZE_DIR+DEFAULT_MAZE_FILE);
+		ExperimentUniverse expUniv = new ExperimentUniverse(CURRENT_MAZE_DIR+DEFAULT_MAZE_FILE);
 
-		WorldFrame worldFrame = new WorldFrame(bg);
+		WorldFrame worldFrame = new WorldFrame(expUniv);
 
 		worldFrame.setVisible(true);
 	}
