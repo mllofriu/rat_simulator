@@ -1,7 +1,7 @@
 package Schemas;
-/* M�dulo de selecci�n de acci�n.
+/* M���dulo de selecci���n de acci���n.
    Alejandra Barrera
-   Versi�n: 1 (Febrero, 2005)
+   Versi���n: 1 (Febrero, 2005)
  */
 
 import java.util.Random;
@@ -22,13 +22,14 @@ public class ActionSelectionSchema extends NslModule {
 
 	public void simRun() {
 		// Driver - Always go forward 
-//		for (boolean i : robot.affordances())
-//			System.out.print(i + " ");
-//		System.out.println("");
+		for (boolean i : robot.affordances())
+			System.out.print(i + " ");
+		System.out.println("");
 		
 		int action;
+		Random r = new Random();
 		do{
-			action = new Random().nextInt(8);
+			action = r.nextInt(IRobot.CANT_ACCIONES);
 		} while (!robot.affordances()[action]);
 		actionTaken.set(action);
 	} 

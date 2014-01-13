@@ -22,7 +22,7 @@ public interface IRobot {
 	public abstract void doAction(int grados);
 	
 	/* Devuelve las marcas encontradas a cada marca le corresponde un color
-	 * El elemento en un tupla formada por posicion y tamaño, ambos normalizados
+	 * El elemento en un tupla formada por posicion y tama��o, ambos normalizados
 	 */
 	Double[] findLandmarks();
 	
@@ -32,10 +32,10 @@ public interface IRobot {
 	// devuelve la direccion global (angulo absoluto) del robot
 	public abstract double getGlobalDirection();
 
-	// Devuelve los posibles giros que puede realizar el robot en la posición actual
+	// Devuelve los posibles giros que puede realizar el robot en la posici��n actual
 	public abstract boolean [] affordances();
 	
-	// Devuelve true si se encuentra en posición de alimentarse
+	// Devuelve true si se encuentra en posici��n de alimentarse
 	public abstract boolean findFood();
 
 	// invocada cada vez que se empueza una nueva operacion dentro de la sesion
