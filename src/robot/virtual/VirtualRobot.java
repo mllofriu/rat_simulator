@@ -4,8 +4,6 @@ package robot.virtual;
 //import Rat;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GraphicsConfiguration;
 import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -20,8 +18,6 @@ import javax.vecmath.Vector3f;
 import robot.IRobot;
 import support.Configuration;
 import support.Utiles;
-
-import com.sun.j3d.utils.universe.SimpleUniverse;
 
 
 
@@ -64,8 +60,6 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 	int picturesTakenWithoutIncrement=0;
 	// 
 	int currentCameraDelay=DELAY_CAMERA_ROTATE;
-	private ImageComponent2D[] offScreenImages;
-	private Canvas3D[] offScreenCanvas;
 	
 	public VirtualRobot() {
 		world = new ExperimentUniverse(CURRENT_MAZE_DIR+DEFAULT_MAZE_FILE);
@@ -76,7 +70,7 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 
 	@Override
 	public boolean[] affordances() {
-		getPanoramica();
+		BufferedImage[] pan = getPanoramica();
 		
 		Arrays.fill(affordances, false); // inicializo todos los affordances
 		// como no disponibles
@@ -84,22 +78,22 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 		// direccin
 		// if (redL.get() < 550 && whiteO.get() < 1000) {
 
-		if (Utiles.contador(this.offScreenImages[0].getImage(), Color.red) < MAX_PIXEL_LATERAL)
+		if (Utiles.contador(pan[0], Color.red) < MAX_PIXEL_LATERAL)
 			this.affordances[Utiles.gradosRelative2Acccion(-90)] = true;
-		if (Utiles.contador(this.offScreenImages[4].getImage(), Color.red) < MAX_PIXEL_LATERAL)
+		if (Utiles.contador(pan[4], Color.red) < MAX_PIXEL_LATERAL)
 			this.affordances[Utiles.gradosRelative2Acccion(90)] = true;
 		// Si no hay mucho rojo al frente entonces puedo avanzar, en algunos
 		// casos cuando esta muy cerca de la pared lee cero rojo
 		// if (redO.get() < 1100 && redO.get() >0 && whiteO.get() < 2600 ) {
-		if (Utiles.contador(this.offScreenImages[2].getImage(), Color.red) < MAX_PIXEL_FRENTE) { // && APS.redO.get() > 0)
+		if (Utiles.contador(pan[2], Color.red) < MAX_PIXEL_FRENTE) { // && APS.redO.get() > 0)
 			this.affordances[Utiles.gradosRelative2Acccion(0)] = true;
 			// si no puedo avanzar tampoco puedo ir a 45 grados
 			// this.affordances[Utiles.gradosRelative2Acccion(-45)] = true;
 			// this.affordances[Utiles.gradosRelative2Acccion(45)] = true;
 		}
-		if (Utiles.contador(this.offScreenImages[1].getImage(), Color.red) < MAX_PIXEL_DIAGONAL)
+		if (Utiles.contador(pan[1], Color.red) < MAX_PIXEL_DIAGONAL)
 			this.affordances[Utiles.gradosRelative2Acccion(-45)] = true;
-		if (Utiles.contador(this.offScreenImages[3].getImage(), Color.red) < MAX_PIXEL_DIAGONAL)
+		if (Utiles.contador(pan[3], Color.red) < MAX_PIXEL_DIAGONAL)
 			this.affordances[Utiles.gradosRelative2Acccion(45)] = true;
 		// agrego los affordances para todas las posiciones que no veo
 		this.affordances[Utiles.gradosRelative2Acccion(-180)] = true;
@@ -120,21 +114,19 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 	private Double currentPoint = new Double();
 	
 	@Override
-	synchronized public BufferedImage getPanoramica() {
-		panoramica = new BufferedImage(RobotNode.IMAGE_WIDTH*RobotNode.NUM_ROBOT_VIEWS,
-				RobotNode.IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
+	synchronized public BufferedImage[] getPanoramica() {
+		BufferedImage[] panoramica = new BufferedImage[RobotNode.NUM_ROBOT_VIEWS];
+		
+		Canvas3D[] offScreenCanvas = world.getRobotOffscreenCanvas();
+		ImageComponent2D[] offScreenImages = world.getRobotOffscreenImages();
 		
 		for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++){
 			// TODO: fix offscreen rendering
 			offScreenCanvas[i].renderOffScreenBuffer();
 			offScreenCanvas[i].waitForOffScreenRendering();
-			BufferedImage image = offScreenImages[i].getImage();
-			for (int j = 0; j < RobotNode.IMAGE_WIDTH; j ++){
-				for (int k = 0; k < RobotNode.IMAGE_HEIGHT; k++){
-					panoramica.setRGB(j + RobotNode.IMAGE_WIDTH * i, k, image.getRGB(j, k));
-				}
-			}
+			panoramica[i] = offScreenImages[i].getImage();
 		}
+		
 		return panoramica;
 	}
 	
