@@ -22,14 +22,14 @@ public class ActionSelectionSchema extends NslModule {
 
 	public void simRun() {
 		// Driver - Always go forward 
-		for (boolean i : robot.affordances())
-			System.out.print(i + " ");
-		System.out.println("");
+//		for (boolean i : robot.affordances())
+//			System.out.print(i + " ");
+//		System.out.println("");
 		
 		int action;
 		Random r = new Random();
 		do{
-			action = r.nextInt(IRobot.CANT_ACCIONES);
+			action = r.nextInt(IRobot.NUM_POSSIBLE_ACTIONS);
 		} while (!robot.affordances()[action]);
 		actionTaken.set(action);
 	} 

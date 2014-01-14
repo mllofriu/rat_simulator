@@ -1,8 +1,6 @@
 package robot;
-import java.awt.Color;
-import java.awt.geom.Point2D.Double;
+import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.util.Hashtable;
 
 /**
  * 
@@ -14,48 +12,43 @@ import java.util.Hashtable;
  */
 public interface IRobot {
 	
-	public static int CANT_ACCIONES = 8; // cantidad de acciones relacionada con los giros que puede realizar de a 45 grados
-	
-	/* hace que el robot ejecute una accion determinada cantidad de grados en el rango [-180,180]
-	 * si el angulo es cero avanza un paso y en caso cotrario solo gira el angulo indicado
+	/**
+	 * Number of possible actions the robot can perform
 	 */
-	public abstract void doAction(int grados);
+	public static int NUM_POSSIBLE_ACTIONS = 8; 
 	
-	/* Devuelve las marcas encontradas a cada marca le corresponde un color
-	 * El elemento en un tupla formada por posicion y tama��o, ambos normalizados
+	/**
+	 * Makes the robot perform an action. 
+	 * @param degrees If degrees == 0, the robot goes forward. Else, it turns the amount number of degrees. Negative degrees represent left turns.
 	 */
-	Double[] findLandmarks();
-	
-	// devuelve la posicion global del robot
-	public abstract Double getGlobalCoodinate();
+	public abstract void doAction(int degrees);
 
-	// devuelve la direccion global (angulo absoluto) del robot
-	public abstract double getGlobalDirection();
-
-	// Devuelve los posibles giros que puede realizar el robot en la posici��n actual
+	/**
+	 * Returns possible actions to perform
+	 * @return An array with true in the directions the robot can navigate
+	 */
 	public abstract boolean [] affordances();
 	
-	// Devuelve true si se encuentra en posici��n de alimentarse
-	public abstract boolean findFood();
+	/**
+	 * Return whether the robot has found food in the environment
+	 * @return 
+	 */
+	public abstract boolean hasFoundFood();
 
-	// invocada cada vez que se empueza una nueva operacion dentro de la sesion
+	/**
+	 * Method invocked at the beginning of each session
+	 */
 	public abstract void startRobot();
 	
-	/** se usa solamente para poder visualizar
+	/** Visualization purposes only
 	 * @return
 	 */
 	public abstract BufferedImage[] getPanoramica();
-
-	public abstract Color [] getColorsLandmarks();
-
+	
 	/**
+	 * Returns the robot's absolute position
 	 * @return
 	 */
-	public abstract double getSpeed();
-
-	/**
-	 * @return
-	 */
-	public abstract double getHeadDirection();
+    public abstract Point2D.Double getGlobalCoodinate();
 
 }

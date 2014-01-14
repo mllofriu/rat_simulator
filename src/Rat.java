@@ -3,34 +3,22 @@
    Fecha: 23 de marzo de 2005.
  */
 
-import java.awt.Color;
-import java.awt.Toolkit;
 import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
-import java.io.File;
-import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.Vector;
-import java.util.logging.Level;
 
-import javax.vecmath.Point2d;
-
-import Schemas.LandmarksPerceptualSchema;
-import robot.IRobot;
+import nslj.src.lang.NslDinInt0;
+import nslj.src.lang.NslDinInt2;
+import nslj.src.lang.NslDoutDouble0;
+import nslj.src.lang.NslDoutDouble1;
+import nslj.src.lang.NslDoutInt0;
+import nslj.src.lang.NslModule;
 import robot.RobotFactory;
 import simulation.Simulation;
 import simulation.SimulationItem;
 import support.Configuration;
 import support.LogerPlain;
-import support.PajekFormat;
 import support.Percentage;
-import support.Utiles;
-
-
-
-import nslj.src.lang.*;
 public class Rat extends NslModule {
 	public static final int MAX_PIXEL_MARCA = Configuration.getInt("Rat.MAX_PIXEL_MARCA");	
 	public static final int PIXELES_RUIDO = Configuration.getInt("Rat.PIXELES_RUIDO");
@@ -98,10 +86,10 @@ public class Rat extends NslModule {
 		distFoodAux = -1D;
 		turnToFood = new NslDoutInt0("turnToFood", this);
 		turnToFoodAux = -1;
-		distLandmarks = new NslDoutDouble1("distLandmarks", this, LandmarksPerceptualSchema.LANDMARK_NUMBER);
-		angleLandmarks = new NslDoutDouble1("angleLandmarks", this, LandmarksPerceptualSchema.LANDMARK_NUMBER);
-		distLandmarksAux = new double[LandmarksPerceptualSchema.LANDMARK_NUMBER];
-		angleLandmarksAux = new double[LandmarksPerceptualSchema.LANDMARK_NUMBER];
+//		distLandmarks = new NslDoutDouble1("distLandmarks", this, LandmarksPerceptualSchema.LANDMARK_NUMBER);
+//		angleLandmarks = new NslDoutDouble1("angleLandmarks", this, LandmarksPerceptualSchema.LANDMARK_NUMBER);
+//		distLandmarksAux = new double[LandmarksPerceptualSchema.LANDMARK_NUMBER];
+//		angleLandmarksAux = new double[LandmarksPerceptualSchema.LANDMARK_NUMBER];
 		// cargo el primer elemento de habituacion
 		simItem=simulation.next();
 		System.out.println("Rat::estado: " +simItem.getType()+". Total trials:"+simulation.getNumberTrials());
