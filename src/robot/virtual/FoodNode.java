@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.ColoringAttributes;
 import javax.vecmath.Color3f;
+import javax.vecmath.Vector3f;
 
 import org.w3c.dom.Node;
 
@@ -13,6 +14,8 @@ import com.sun.j3d.utils.geometry.Primitive;
 import com.sun.j3d.utils.geometry.Sphere;
 
 public class FoodNode extends ExpUniverseNode {
+
+	private Vector3f location;
 
 	public FoodNode(Node node){
 		Map<String, Float> values = readValues(node);
@@ -28,5 +31,11 @@ public class FoodNode extends ExpUniverseNode {
 		app.setColoringAttributes(new ColoringAttributes (color,1));
 		Primitive vol = new Cylinder(r, h, app);
 		addVolume(null, vol, xp, yp, zp);
+		
+		location = new Vector3f(xp, yp, zp);
+	}
+
+	public Vector3f getLocation() {
+		return location;
 	}
 }

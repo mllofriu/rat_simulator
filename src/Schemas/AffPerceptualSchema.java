@@ -58,7 +58,7 @@ public class AffPerceptualSchema extends NslModule {
 
 		affRobot = RobotFactory.getRobot().affordances();
 		// el affordance de avanzar lo apago si llegue a la comida
-		if  (RobotFactory.getRobot().findFood())
+		if  (RobotFactory.getRobot().hasFoundFood())
 			affRobot[Utiles.gradosRelative2Acccion(0)]=false;
 		
 		for (int i=0; i<PerceptualSchema.POS_GIROS.length;i++)
@@ -81,7 +81,7 @@ public class AffPerceptualSchema extends NslModule {
 		}
 
 		// determina si cambiaron las affordances 
-		// TODO: no está generalizado a todas las direcciones
+		// TODO: no est�� generalizado a todas las direcciones
 //		Arrays.fills(affCurrent, false);
 //		for (int i = 1; i <= 4; i++)
 //			switch (i) {

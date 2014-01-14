@@ -29,8 +29,8 @@ public class NodeMap {
 
 	public NodeMap(int i) {
 		pointerWGtoWG = new LinkedList<Edge>();
-		w = new double[IRobot.CANT_ACCIONES];
-		e = new double[IRobot.CANT_ACCIONES];
+		w = new double[IRobot.NUM_POSSIBLE_ACTIONS];
+		e = new double[IRobot.NUM_POSSIBLE_ACTIONS];
 		Arrays.fill(w, 0);
 		Arrays.fill(e, 0);
 		id = i;

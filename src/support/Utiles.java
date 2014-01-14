@@ -183,49 +183,6 @@ public class Utiles {
 		}
 		return -1;
 	}
-	
-	public static Hashtable heights(BufferedImage imagen) {
-		int iterH, iterW;
-		Integer height, contador;
-		Color color;
-		Hashtable<Color, Integer> contadores, contadoresMax = new Hashtable<Color, Integer>();
-
-		for (iterW=0; iterW<imagen.getWidth();iterW++) {
-			contadores = new Hashtable<Color, Integer>();
-			for (iterH=0; iterH<imagen.getHeight();iterH++) {
-				color=rgb2Color(imagen.getRGB(iterW,iterH));
-				
-				contador = ((Integer)contadores.get(color));
-				if (contador==null) { 
-					contador=0;
-				} else
-					contador++;
-				contadores.put(color, contador);
-			}
-			
-			merge2max(contadoresMax, contadores);
-		}
-			
-		return contadoresMax;
-	}
-	
-	/**
-	 * @param contadoresMax
-	 * @param contadores
-	 */
-	private static void merge2max(Hashtable<Color, Integer> a,Hashtable<Color, Integer> b) {
-		Color[] colors = RobotFactory.getRobot().getColorsLandmarks();
-		Integer aH, bH;
-		
-        for (int iterLand=0; iterLand<colors.length;iterLand++){
-        	aH = a.get(colors[iterLand]);
-        	bH = b.get(colors[iterLand]);
-        	if ((aH!=null)&&(bH!=null)) {
-        		if (bH>aH) a.put(colors[iterLand], bH);
-        	} else if (bH!=null)
-        		a.put(colors[iterLand], bH);
-        }
-	}
 
 	public static Hashtable contadores(BufferedImage imagen) {
 		int iterH, iterW;
@@ -257,7 +214,7 @@ public class Utiles {
 					contador++;
 			}
 		
-		System.out.println(contador);
+//		System.out.println(contador);
 		return contador;
 	}
 

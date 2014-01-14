@@ -1,5 +1,6 @@
 package robot.virtual;
 
+import java.awt.geom.Point2D;
 import java.io.File;
 
 import javax.media.j3d.BranchGroup;
@@ -29,6 +30,7 @@ public class ExperimentUniverse extends VirtualUniverse{
 	
 	private View topView;
 	private RobotNode robot;
+	private FoodNode food;
 
 	public ExperimentUniverse(String filename){
 		super();
@@ -92,7 +94,8 @@ public class ExperimentUniverse extends VirtualUniverse{
 		//food
 		list = doc.getElementsByTagName("food");
 		params = list.item(0);
-		bg.addChild(new FoodNode(params));
+		food = new FoodNode(params);
+		bg.addChild(food);
 
 		bg.addChild(new DirectionalLightNode(new Vector3f(0f, 0f, -5), new Color3f(1f, 1f, 1f)));
 		bg.addChild(new DirectionalLightNode(new Vector3f(0f, 0f, 5), new Color3f(.5f, .5f, .5f)));
@@ -200,5 +203,9 @@ public class ExperimentUniverse extends VirtualUniverse{
 		rPos.mul(trans);
 		// Set the new transform
 		robot.getTransformGroup().setTransform(rPos);
+	}
+
+	public Vector3f getFood() {
+		return food.getLocation();
 	}
 }
