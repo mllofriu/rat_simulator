@@ -26,11 +26,15 @@ public class ActionSelectionSchema extends NslModule {
 //			System.out.print(i + " ");
 //		System.out.println("");
 		
+		System.out.println("calling affordances");
+		boolean[] affordances = robot.affordances();
+		System.out.println("got affordances");
+		
 		int action;
 		Random r = new Random();
 		do{
 			action = r.nextInt(IRobot.NUM_POSSIBLE_ACTIONS);
-		} while (!robot.affordances()[action]);
+		} while (!affordances[action]);
 		actionTaken.set(action);
 	} 
 }

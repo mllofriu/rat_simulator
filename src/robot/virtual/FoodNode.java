@@ -15,7 +15,7 @@ import com.sun.j3d.utils.geometry.Sphere;
 
 public class FoodNode extends ExpUniverseNode {
 
-	private Vector3f location;
+	private Vector3f position;
 
 	public FoodNode(Node node){
 		Map<String, Float> values = readValues(node);
@@ -32,10 +32,21 @@ public class FoodNode extends ExpUniverseNode {
 		Primitive vol = new Cylinder(r, h, app);
 		addVolume(null, vol, xp, yp, zp);
 		
-		location = new Vector3f(xp, yp, zp);
+		position = new Vector3f(xp, yp, zp);
+	}
+	
+	public FoodNode(float x, float y, float z){
+		Color3f color = new Color3f(0,0,1);
+		
+		Appearance app = new Appearance();
+		app.setColoringAttributes(new ColoringAttributes (color,1));
+		Primitive vol = new Cylinder(0.038f, 0, app);
+		addVolume(null, vol, x, y, z);
+		
+		position = new Vector3f(x, y, z);
 	}
 
-	public Vector3f getLocation() {
-		return location;
+	public Vector3f getPosition() {
+		return position;
 	}
 }

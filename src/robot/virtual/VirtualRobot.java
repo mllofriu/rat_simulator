@@ -4,21 +4,18 @@ package robot.virtual;
 //import Rat;
 
 import java.awt.Color;
-import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Hashtable;
 
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.ImageComponent2D;
+import javax.media.j3d.VirtualUniverse;
 import javax.vecmath.Vector3f;
 
 import robot.IRobot;
 import support.Configuration;
 import support.Utiles;
+import experiment.ExpUniverseFactory;
+import experiment.ExperimentUniverse;
 
 
 
@@ -28,31 +25,27 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 	 */
 	private static final long serialVersionUID = -5581489496269696656L;
 
-	private final String DEFAULT_MAZE_DIR = Configuration
-			.getString("WorldFrame.MAZE_DIRECTORY");
-	private final String DEFAULT_MAZE_FILE = Configuration
-			.getString("WorldFrame.MAZE_FILE");
-	private final String CURRENT_MAZE_DIR = System.getProperty("user.dir")
-			+ File.separatorChar + DEFAULT_MAZE_DIR + File.separatorChar;
 	private final int MAX_PIXEL_LATERAL = Configuration
 			.getInt("RobotVirtual.MAX_PIXEL_LATERAL");
 	private final int MAX_PIXEL_DIAGONAL = Configuration
 			.getInt("RobotVirtual.MAX_PIXEL_DIAGONAL");
 	private final int MAX_PIXEL_FRENTE = Configuration
 			.getInt("RobotVirtual.MAX_PIXEL_FRENTE");
-	public static final double SPEED_ERROR = Configuration.getDouble("Robot.SPEED_ERROR");
-	private static final double CLOSE_TO_FOOD_THRS = 0.015; 
 	private static final float STEP = 0.1f;
 	
-	public ExperimentUniverse world;
+	public VirtualExpUniverse world;
 	
 	public VirtualRobot(){
-		this.world = new ExperimentUniverse(CURRENT_MAZE_DIR+DEFAULT_MAZE_FILE);
+		ExperimentUniverse univ = ExpUniverseFactory.getUniverse();
+		if (! (univ instanceof VirtualExpUniverse) )
+			throw new RuntimeException("Virtual robot can only be run with a virtual universe");
+		
+		this.world = (VirtualExpUniverse) univ;
 		WorldFrame worldFrame = new WorldFrame(world);
 		worldFrame.setVisible(true);
 	}
 
-	public VirtualRobot(ExperimentUniverse world) {
+	public VirtualRobot(VirtualExpUniverse world) {
 		this.world = world;
 		
 		WorldFrame worldFrame = new WorldFrame(world);
@@ -119,16 +112,7 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 
 	@Override
 	public boolean hasFoundFood() {
-		Vector3f food = world.getFood();
-		food.sub(world.getRobotPosition());
-		double distanceToFood = food.length();
-		return distanceToFood < CLOSE_TO_FOOD_THRS;
-	}
-
-	@Override
-	public Point2D.Double getGlobalCoodinate() {
-		Vector3f rPos = world.getRobotPosition();
-		return new Point2D.Double(rPos.x, rPos.z);
+		return world.hasRobotFoundFood();
 	}
 
 }

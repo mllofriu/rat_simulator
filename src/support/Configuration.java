@@ -81,4 +81,8 @@ public class Configuration {
 
 	}
 
+	public static void setProperty(String name, String val) {
+		configuracion.setProperty(name, val);
+	}
+
 }

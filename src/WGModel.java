@@ -18,7 +18,6 @@ public class WGModel extends NslModel {
 	private ActionSelectionSchema actionSel;
 
 	private static final String DEFAULT_MODEL_NAME = "WGModel (nombre por defecto)";
-    public static final int EPOCHS = Configuration.getInt("WGModel.EPOCHS");
 
     //SpatialCognitionInterfaceOpenCV pepe = new SpatialCognitionInterfaceOpenCV();
     
@@ -60,9 +59,9 @@ public class WGModel extends NslModel {
 	
 	
 	public void initSys() {
-		system.setRunEndTime(100);
+		system.setRunEndTime(1);
 		system.nslSetRunDelta(0.1);
-		system.setNumRunEpochs(EPOCHS);
+		system.setNumRunEpochs(1);
 	}
 
 	public void makeConn() {
