@@ -23,9 +23,9 @@ public class WorldFrame extends java.awt.Frame {
 	Canvas3D topViewCanvas, robotViewCanvas;
 	Canvas3D[] robotViewsCanvas;
 
-	private ExperimentUniverse expUniv;
+	private VirtualExpUniverse expUniv;
 
-	public WorldFrame(ExperimentUniverse world) {
+	public WorldFrame(VirtualExpUniverse world) {
 		this.expUniv = world;
 
 		initComponents();
@@ -399,11 +399,7 @@ public class WorldFrame extends java.awt.Frame {
 	}
 
 	public static void main(String args[]){
-		String DEFAULT_MAZE_DIR=Configuration.getString("WorldFrame.MAZE_DIRECTORY");
-		String DEFAULT_MAZE_FILE=Configuration.getString("WorldFrame.MAZE_FILE");
-		String CURRENT_MAZE_DIR= System.getProperty("user.dir")+File.separatorChar+DEFAULT_MAZE_DIR+File.separatorChar;
-		ExperimentUniverse expUniv = new ExperimentUniverse(CURRENT_MAZE_DIR+DEFAULT_MAZE_FILE);
-
+		VirtualExpUniverse expUniv = new VirtualExpUniverse();
 		WorldFrame worldFrame = new WorldFrame(expUniv);
 
 		worldFrame.setVisible(true);

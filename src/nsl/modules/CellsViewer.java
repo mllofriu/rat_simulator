@@ -47,14 +47,14 @@ public class CellsViewer extends NslModule {
 	}
 
 	public void simRun() {
-		double [] cellsActivation = cellsActivationNSL.get();
-		String line = robot.getGlobalCoodinate().x+ "\t" +robot.getGlobalCoodinate().y;
-		
-		for (int i=0; i<cellsActivation.length;i++)
-				line = line + "\t" + cellsActivation[i];
-		line = line + "\n";
-		//System.err.print("CellsViewer::line: " + line);
-		pw.print(line);
+//		double [] cellsActivation = cellsActivationNSL.get();
+//		String line = robot.getGlobalCoodinate().x+ "\t" +robot.getGlobalCoodinate().y;
+//		
+//		for (int i=0; i<cellsActivation.length;i++)
+//				line = line + "\t" + cellsActivation[i];
+//		line = line + "\n";
+//		//System.err.print("CellsViewer::line: " + line);
+//		pw.print(line);
 	}
 
 }

@@ -17,19 +17,19 @@ public class MSMExperiment extends Experiment {
 	@Override
 	public Trial createTrainingTrial(Map<String, String> params,
 			Hashtable<String, Point4d> points2) {
-		return null;
+		return new MSMTrial(params);
 	}
 
 	@Override
 	public Trial createTestingTrial(Map<String, String> params,
 			Hashtable<String, Point4d> points2) {
-		return null;
+		return new MSMTrial(params);
 	}
 
 	@Override
 	public Trial createHabituationTrial(Map<String, String> params,
 			Hashtable<String, Point4d> points2) {
-		return new MSMorrisHabituation(params);
+		throw new RuntimeException("There are no habituation trials in multiscale morris experiment.");
 	}
 
 	public static void main(String[] args){

@@ -2,20 +2,24 @@ package experiment.multiscalemorris;
 
 import java.util.Map;
 
-import robot.virtual.ExperimentUniverse;
+import robot.IRobot;
+import robot.RobotFactory;
+import robot.virtual.VirtualExpUniverse;
 import robot.virtual.VirtualRobot;
+import support.Configuration;
 import nslj.src.lang.NslModel;
+import experiment.ExpUniverseFactory;
+import experiment.ExperimentUniverse;
 import experiment.TimeStop;
 import experiment.Trial;
 
-public class MSMorrisHabituation extends Trial {
-
-	private ExperimentUniverse world;
-	private VirtualRobot robot;
-	private HabituationModel model;
+public class MSMTrial extends Trial {
+	
+	
+	private MSMModel model;
 	private int time;
 
-	public MSMorrisHabituation(Map<String, String> params) {
+	public MSMTrial(Map<String, String> params) {
 		super(params);
 		
 		time = Integer.parseInt(params.get(STR_TIME));
@@ -24,15 +28,13 @@ public class MSMorrisHabituation extends Trial {
 	@Override
 	public NslModel initModel() {
 		System.out.println("Init model");
-		world = new ExperimentUniverse(getParams().get(Trial.STR_MAZE));
-		robot = new VirtualRobot(world);
-		model = new HabituationModel("MSMHabituationModel", (NslModel) null, robot);
+		model = new MSMModel("MSMHabituationModel", (NslModel) null, getRobot());
 		return model;
 	}
 
 	@Override
 	public void loadConditions() {
-		addStopCond(new FoundFoodStopCond(robot));
+		addStopCond(new FoundFoodStopCond(getRobot()));
 		// Add default stop condition - time constraints
 		addStopCond(new TimeStop(time));
 	}

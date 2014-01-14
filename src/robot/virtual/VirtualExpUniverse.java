@@ -1,5 +1,8 @@
 package robot.virtual;
 
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
+
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.ImageComponent2D;
@@ -13,6 +16,9 @@ import javax.vecmath.Vector3f;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import com.sun.tools.doclets.internal.toolkit.Configuration;
+
+import experiment.ExperimentUniverse;
 import support.XMLDocReader;
 
 /**
@@ -21,23 +27,27 @@ import support.XMLDocReader;
  * @author ludo
  *
  */
-public class ExperimentUniverse extends VirtualUniverse{
+public class VirtualExpUniverse extends VirtualUniverse implements ExperimentUniverse{
+	
+	private static final double CLOSE_TO_FOOD_THRS = 0.015; 
 	
 	private View topView;
 	private RobotNode robot;
 	private FoodNode food;
 
-	public ExperimentUniverse(String filename){
+	private BranchGroup bg;
+
+	public VirtualExpUniverse(){  
 		super();
 		
 		Locale l = new Locale(this);
 		
-		BranchGroup bg = new BranchGroup();
+		bg = new BranchGroup();
 		bg.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
 		bg.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
 		l.addBranchGraph(bg);
 
-		Document doc = XMLDocReader.readDocument(filename);
+		Document doc = XMLDocReader.readDocument(support.Configuration.getString("WorldFrame.MAZE_FILE"));
 
 		// Build the group
 		NodeList list;
@@ -103,8 +113,6 @@ public class ExperimentUniverse extends VirtualUniverse{
 //		bg.compile();
 	}
 	
-	
-
 	public View getTopView() {
 		return topView;
 	}
@@ -120,25 +128,28 @@ public class ExperimentUniverse extends VirtualUniverse{
 	public ImageComponent2D[] getRobotOffscreenImages() {
 		return robot.getOffScreenImages();
 	}
+	
 	/**
 	 * Return the virtual robot's position
 	 * @return
 	 */
-	public Vector3f getRobotPosition(){
+	public Point2D.Float getRobotPosition(){
 		Transform3D t = new Transform3D();
 		robot.getTransformGroup().getTransform(t);
 		Vector3f pos = new Vector3f();
 		t.get(pos);
-		return pos;
+		
+		return new Point2D.Float(pos.x, pos.z);
 	}
 	
 	/** 
 	 * Sets the virtual robot position
 	 * @param vector Robots position
 	 */
-	public void setRobotPosition(Vector3f vector) {
+	@Override
+	public void setRobotPosition(Point2D.Float pos) {
 		Transform3D translate = new Transform3D();
-		translate.setTranslation(new Vector3f(vector.x, vector.y + 0.05f, vector.z));
+		translate.setTranslation(new Vector3f(pos.x, 0.05f, pos.y));
 		robot.getTransformGroup().setTransform(translate);
 	}
 	
@@ -176,7 +187,23 @@ public class ExperimentUniverse extends VirtualUniverse{
 		robot.getTransformGroup().setTransform(rPos);
 	}
 
-	public Vector3f getFood() {
-		return food.getLocation();
+	public Point2D.Float getFoodPosition() {
+		Vector3f foodPos = food.getPosition();
+		return new Point2D.Float(foodPos.x, foodPos.z);
+	}
+
+
+	@Override
+	public void setFoodPosition(Point2D.Float pos) {
+		bg.removeChild(food);
+		food = new FoodNode(pos.x, 0, pos.y);
+		bg.addChild(food);
+	}
+
+	@Override
+	public boolean hasRobotFoundFood() {
+		Point2D.Float food = getFoodPosition();
+		double distanceToFood = food.distance(getRobotPosition());
+		return distanceToFood < CLOSE_TO_FOOD_THRS;
 	}
 }

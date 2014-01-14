@@ -44,11 +44,5 @@ public interface IRobot {
 	 * @return
 	 */
 	public abstract BufferedImage[] getPanoramica();
-	
-	/**
-	 * Returns the robot's absolute position
-	 * @return
-	 */
-    public abstract Point2D.Double getGlobalCoodinate();
 
 }

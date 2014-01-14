@@ -15,13 +15,22 @@
     <point name='NW' xp='-0.2' yp='0' zp='-0.2' rot='0'/>
 
     <!--Experiment Trials-->
-    <!--4 habituation trials-->
+    <!-- 8 training trials-->
     <trial>
-        <type>habituation</type>
+        <type>training</type>
         <name>HA1</name>
         <start>S</start>
         <time>270</time>
-        <reps>1</reps>
+        <reps>8</reps>
+        <maze>mazes/morrisCircular.xml</maze>
+    </trial>
+    <!-- 4 testing trials-->
+    <trial>
+        <type>testing</type>
+        <name>HA1</name>
+        <start>S</start>
+        <time>270</time>
+        <reps>4</reps>
         <maze>mazes/morrisCircular.xml</maze>
     </trial>
     

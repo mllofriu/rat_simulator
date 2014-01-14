@@ -12,11 +12,11 @@ import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
 import robot.IRobot;
 
-public class HabituationModel extends NslModel {
+public class MSMModel extends NslModel {
 	private World world;
 	private ActionSelectionSchema actionSel;
 
-	public HabituationModel(String nslName, NslModule nslParent, IRobot robot) {
+	public MSMModel(String nslName, NslModule nslParent, IRobot robot) {
 		super(nslName, nslParent);
 		
 		actionSel = new ActionSelectionSchema("actionSel", this, robot);

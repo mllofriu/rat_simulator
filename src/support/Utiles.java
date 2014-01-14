@@ -326,32 +326,6 @@ public class Utiles {
 	  return (int)Math.sqrt((((512+rmean)*red*red)>>8) + 4*green*green + (((767-rmean)*blue*blue)>>8));
 	}
 	
-	private static final double DELTA_STEP = Configuration.getDouble("Simulation.DeltaStep")/100;///Math.sqrt(2);
-	public static final double SPEED_ERROR = Configuration.getDouble("Robot.SPEED_ERROR"); 
-	public static final double ANGLE_ERROR = Configuration.getDouble("Robot.ANGLE_ERROR"); 
-
-	public static double speed(Point2D.Double start, Point2D.Double end) {
-		double deltaX = end.x-start.x;
-		double deltaY = end.y-start.y;
-		double result = Math.sqrt(Math.pow(deltaX/DELTA_STEP,2.0)+Math.pow(deltaY/DELTA_STEP,2.0));
-//		double error = (2*SPEED_ERROR*Math.random()-SPEED_ERROR)/100;
-//		if (error!=0)
-//			System.err.println("UTILES::speed error: "+ error);
-//		return result*(1+error);
-		return result;
-	}
-	
-	public static double headDirection(Point2D.Double start, Point2D.Double end) {
-		double deltaX = end.x-start.x;
-		double deltaY = end.y-start.y;
-		double result = Math.atan2(deltaY/DELTA_STEP, deltaX/DELTA_STEP);
-//		double error = (2*ANGLE_ERROR*Math.random()-ANGLE_ERROR)/100;
-//		if (error!=0)
-//			System.err.println("UTILES::speed error: "+ error);
-
-//		return result*(1+error);
-		return result;
-	}
 
 	public static String getCurrentDirectoryAbsolute() {
 		return System.getProperty("user.dir");
