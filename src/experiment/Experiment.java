@@ -23,11 +23,14 @@ import org.w3c.dom.NodeList;
 
 import com.sun.tools.corba.se.idl.InvalidArgument;
 
+import robot.IRobot;
+import robot.RobotFactory;
 import support.Configuration;
 import support.XMLDocReader;
 import experiment.Trial.Type;
 
-public abstract class Experiment {
+public abstract class Experiment implements Runnable {
+
 	public static final String STR_NAME = "name";
 	private final String STR_POINT = "point";
 
@@ -42,18 +45,10 @@ public abstract class Experiment {
 	private final String STR_Z_POSITION = "zp";
 	private final String STR_ANGLE = "rot";
 
-	private final String DEFAULT_DIR = Configuration
-			.getString("Simulation.DIRECTORY");
-	private final String DEFAULT_FILE_NAME = Configuration
-			.getString("Simulation.FILE");
-	private final String DEFAULT_FILE = System.getProperty("user.dir")
-			+ File.separatorChar + DEFAULT_DIR + File.separatorChar
-			+ DEFAULT_FILE_NAME;
-
 	private Vector<Trial> trials = new Vector<Trial>();
 
-	public Experiment() {
-		Document doc = XMLDocReader.readDocument(DEFAULT_FILE);
+	public Experiment(String filename) {
+		Document doc = XMLDocReader.readDocument(filename);
 
 		// Load points from xml
 		Hashtable<String, Point4d> points = loadPoints(doc
@@ -66,9 +61,13 @@ public abstract class Experiment {
 		for (int i = 0; i < list.getLength(); i++) {
 			Map<String, String> params = new HashMap<String, String>();
 			NodeList paramNodes = list.item(i).getChildNodes();
-			
-			for (int j = 0; j < paramNodes.getLength(); j++)
-				params.put(paramNodes.item(j).getNodeName(), paramNodes.item(j).getNodeValue());
+
+			for (int j = 0; j < paramNodes.getLength(); j++) {
+				// System.out.println(paramNodes.item(j).getNodeName() + " " +
+				// paramNodes.item(j).getTextContent());
+				params.put(paramNodes.item(j).getNodeName(), paramNodes.item(j)
+						.getTextContent());
+			}
 
 			Trial t = createTrial(params, points);
 			trials.add(t);
@@ -116,7 +115,7 @@ public abstract class Experiment {
 			return Trial.Type.TESTING;
 		else if (strType.equals(STR_TRAINING))
 			return Trial.Type.TRAINING;
-		
+
 		throw new RuntimeException("Invalid argurment");
 	}
 
@@ -128,5 +127,14 @@ public abstract class Experiment {
 
 	public abstract Trial createHabituationTrial(Map<String, String> params,
 			Hashtable<String, Point4d> points2);
+
+	@Override
+	public void run() {
+		System.out.println("Running experiment");
+		for (Trial t : trials)
+			t.run();
+		
+		System.exit(0);
+	}
 
 }

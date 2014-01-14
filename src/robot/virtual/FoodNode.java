@@ -23,7 +23,7 @@ public class FoodNode extends ExpUniverseNode {
 		Color3f color = new Color3f(values.get("cr"),values.get("cg"),values.get("cb"));
 		float xp = values.get("xp");
 		float yp = values.get("yp");
-		float zp = values.get("yp");
+		float zp = values.get("zp");
 		float r = values.get("r");
 		float h = values.get("h");
 		

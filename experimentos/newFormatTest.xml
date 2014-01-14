@@ -21,7 +21,8 @@
         <name>HA1</name>
         <start>S</start>
         <time>270</time>
-        <reps>4</reps>
+        <reps>1</reps>
+        <maze>mazes/morrisCircular.xml</maze>
     </trial>
     
 

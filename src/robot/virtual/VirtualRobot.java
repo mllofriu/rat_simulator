@@ -44,10 +44,16 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 	private static final double CLOSE_TO_FOOD_THRS = 0.015; 
 	private static final float STEP = 0.1f;
 	
-	public static ExperimentUniverse world;
+	public ExperimentUniverse world;
+	
+	public VirtualRobot(){
+		this.world = new ExperimentUniverse(CURRENT_MAZE_DIR+DEFAULT_MAZE_FILE);
+		WorldFrame worldFrame = new WorldFrame(world);
+		worldFrame.setVisible(true);
+	}
 
-	public VirtualRobot() {
-		world = new ExperimentUniverse(CURRENT_MAZE_DIR+DEFAULT_MAZE_FILE);
+	public VirtualRobot(ExperimentUniverse world) {
+		this.world = world;
 		
 		WorldFrame worldFrame = new WorldFrame(world);
 		worldFrame.setVisible(true);
