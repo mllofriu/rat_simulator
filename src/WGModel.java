@@ -5,12 +5,13 @@
  */
 
 
+import nsl.modules.ActionSelectionSchema;
+import nsl.modules.World;
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
 import robot.IRobot;
 import robot.RobotFactory;
 import support.Configuration;
-import Schemas.ActionSelectionSchema;
 
 public class WGModel extends NslModel {
 	private World world;

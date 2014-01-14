@@ -1,3 +1,4 @@
+package nsl.modules;
 /* Mdulo NSL que representa la funcionalidad de la rata simulada.
    Alejandra Barrera
    Fecha: 23 de marzo de 2005.

@@ -1,3 +1,4 @@
+package nsl.modules;
 import java.awt.geom.Point2D;
 import java.io.FileWriter;
 import java.io.IOException;

@@ -1,3 +1,4 @@
+package nsl.modules;
 /*
  * World.java
  * Este mdulo sirve de interfaz entre el ambiente virtual y el modelo.
@@ -10,25 +11,10 @@
  * Soporte para levantar configuracion desde archivo de simulacion
  */
 
-import java.awt.Color;
-import java.awt.Toolkit;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.util.Vector;
-
-import javax.management.OperationsException;
-import javax.vecmath.Point3d;
-import javax.vecmath.Point4d;
-
-import Schemas.Drive;
+import nslj.src.lang.NslDoutInt0;
+import nslj.src.lang.NslModule;
 import robot.RobotFactory;
-import simulation.SimulationItem;
-import support.Configuration;
 import support.Utiles;
-import nslj.src.lang.*;
 
 public class World extends NslModule {
 	public NslDoutInt0 actionTaken;
