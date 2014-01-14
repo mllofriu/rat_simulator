@@ -13,16 +13,18 @@ package nsl.modules;
 
 import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
+import robot.IRobot;
 import robot.RobotFactory;
 import support.Utiles;
 
 public class World extends NslModule {
 	public NslDoutInt0 actionTaken;
+	private IRobot robot;
 
-	public World(String nslName, NslModule nslParent) {
+	public World(String nslName, NslModule nslParent, IRobot robot) {
 		super(nslName, nslParent);
 		actionTaken = new NslDoutInt0("ActionTaken", this);
-
+		this.robot = robot;
 	}
 
 	/**
@@ -38,7 +40,7 @@ public class World extends NslModule {
 //		}
 		// Move the robot according to the last selected action taken
 		int actionDegrees = Utiles.acccion2GradosRelative(actionTaken.get());
-		RobotFactory.getRobot().doAction(actionDegrees);
+		robot.doAction(actionDegrees);
 		
 	}
 

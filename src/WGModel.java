@@ -17,9 +17,6 @@ public class WGModel extends NslModel {
 	private World world;
 	private ActionSelectionSchema actionSel;
 
-	private final int COMPACT_IMAGE_HEIGHT = 80;
-	private final int COMPACT_IMAGE_WIDTH = 80;
-	private final int INITIAL_RAT_HEAD_ANGLE =90;
 	private static final String DEFAULT_MODEL_NAME = "WGModel (nombre por defecto)";
     public static final int EPOCHS = Configuration.getInt("WGModel.EPOCHS");
 
@@ -36,7 +33,7 @@ public class WGModel extends NslModel {
 
 		actionSel = new ActionSelectionSchema("actionSel", this, robot);
 		System.out.println("WGModel::Action ... OK");
-		world = new World("world", this, COMPACT_IMAGE_HEIGHT, COMPACT_IMAGE_WIDTH, INITIAL_RAT_HEAD_ANGLE);
+		world = new World("world", this, robot);
 		System.out.println("WGModel::World ... OK");
 		
 		
@@ -58,7 +55,7 @@ public class WGModel extends NslModel {
 //		placeViewer = new CellsViewer(this, "activationPlace.data", DEFAULT_PLACES_NUMBER);
 //		System.out.println("WGModel::Grid Viewer ... OK");
 
-		initSys();		
+		initSys();	
 	}
 	
 	

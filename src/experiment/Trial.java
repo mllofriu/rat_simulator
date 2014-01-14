@@ -3,6 +3,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 
+import nslj.src.lang.NslHierarchy;
 import nslj.src.lang.NslModel;
 import nslj.src.system.NslInterpreter;
 import nslj.src.system.NslMultiClockScheduler;
@@ -28,6 +29,7 @@ public abstract class Trial implements Runnable {
 	public static final String STR_REPETITIONS = "reps";
 	public static final String STR_TIME = "time";
 	public static final String STR_NAME = "name";
+	public static final Object STR_MAZE = "maze";
 		
 	private int repetitions;
 	private String name;
@@ -36,15 +38,15 @@ public abstract class Trial implements Runnable {
 	private NslInterpreter interpreter;
 	private NslMultiClockScheduler scheduler;
 	private Collection<ExperimentTask> tasks;
+	private Map<String, String> params;
 	
 	public Trial(Map<String, String> params) {
 		super();
+		this.setParams(params);
 		this.name = params.get(STR_NAME);
 		this.repetitions = Integer.parseInt(params.get(STR_REPETITIONS));
 		
 		stopConds = new LinkedList<StopCondition>();
-		// Add default stop condition - time constraints
-		stopConds.add(new TimeStop(Integer.parseInt(params.get(STR_TIME))));
 		
 		tasks = new LinkedList<ExperimentTask>();
 		
@@ -59,34 +61,59 @@ public abstract class Trial implements Runnable {
     	system.setInterpreter(interpreter);
     	system.nslSetScheduler(scheduler);
     	system.nslSetSchedulerMethod("pre");
+    	
+    	system.setRunEndTime(100);
+		system.nslSetRunDelta(0.1);
+		system.setNumRunEpochs(100);
+    	
+    	NslHierarchy.nslSetSystem(system);  
 	}
 
 	@Override
 	public void run() {
 		for(int r = 0; r < repetitions; r++){
+			System.out.println("Starting repetition");
 			// Create the model
 			NslModel model = initModel();
+			// Load the trial tasks
+			loadTasks();
+			// Load the stop conditions
+			loadConditions();
 			// Load it into nsl
 			system.addModel(model);
 			// init Run epochs
 			scheduler.initRun();
-			
 			boolean stop; 
 			do {
+//				System.out.println("Beginning cycle");
 				// One cycle to the trial
-				scheduler.stepCycle();
+				scheduler.stepCycle(1);
+				// Sleep to appreciate changes
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				// Do all after-cycle tasks
 				for (ExperimentTask task : tasks)
 					task.perform();
-				// Check all stop conds
+//				// Check all stop conds
 				stop = false;
 				for (StopCondition sc : stopConds)
 					stop = stop || sc.experimentFinished();
 			} while (!stop);
 			
 			finalizeModel(model);
+			
+			stopConds.clear();
+			tasks.clear();
 		}
 	}
+
+	public abstract void loadConditions();
+
+	public abstract void loadTasks();
 
 	public abstract NslModel initModel();
 	
@@ -103,5 +130,13 @@ public abstract class Trial implements Runnable {
 	
 	public void addStopCond(StopCondition sc){
 		stopConds.add(sc);
+	}
+
+	public Map<String, String> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, String> params) {
+		this.params = params;
 	}
 }
