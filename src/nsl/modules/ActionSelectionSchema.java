@@ -1,4 +1,4 @@
-package Schemas;
+package nsl.modules;
 /* M���dulo de selecci���n de acci���n.
    Alejandra Barrera
    Versi���n: 1 (Febrero, 2005)
