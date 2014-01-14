@@ -1,4 +1,4 @@
-package simulation;
+package experiment;
 import javax.vecmath.Vector3f;
 
 /*

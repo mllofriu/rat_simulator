@@ -19,8 +19,7 @@ import support.Utiles;
 public class World extends NslModule {
 	public NslDoutInt0 actionTaken;
 
-	public World(String nslName, NslModule nslParent, int d1, int d2,
-			int angleInit) {
+	public World(String nslName, NslModule nslParent) {
 		super(nslName, nslParent);
 		actionTaken = new NslDoutInt0("ActionTaken", this);
 
