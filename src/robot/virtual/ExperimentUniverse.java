@@ -1,8 +1,5 @@
 package robot.virtual;
 
-import java.awt.geom.Point2D;
-import java.io.File;
-
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.ImageComponent2D;
@@ -12,13 +9,11 @@ import javax.media.j3d.View;
 import javax.media.j3d.VirtualUniverse;
 import javax.vecmath.Color3f;
 import javax.vecmath.Vector3f;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
+
+import support.XMLDocReader;
 
 /**
  * This universe class creates a universe from an XML file and exposes 
@@ -42,7 +37,7 @@ public class ExperimentUniverse extends VirtualUniverse{
 		bg.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
 		l.addBranchGraph(bg);
 
-		Document doc = readDocument(filename);
+		Document doc = XMLDocReader.readDocument(filename);
 
 		// Build the group
 		NodeList list;
@@ -108,31 +103,7 @@ public class ExperimentUniverse extends VirtualUniverse{
 //		bg.compile();
 	}
 	
-	private Document readDocument(String filename) {
-		// Read the XML
-		Document doc = null;
-		try {
-			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-
-			doc = docBuilder.parse(new File(filename));
-
-			doc.getDocumentElement ().normalize ();
-		} catch (SAXParseException err) {
-			System.out.println ("** Parsing error" 
-					+ ", line " + err.getLineNumber ()
-					+ ", uri " + err.getSystemId ());
-			System.out.println("   " + err.getMessage ());
-		} catch (SAXException e) {
-			Exception	x = e.getException ();
-			((x == null) ? e : x).printStackTrace ();
-		} catch (Throwable t) {
-			t.printStackTrace ();
-		}
-
-		return doc;
-
-	}
+	
 
 	public View getTopView() {
 		return topView;
