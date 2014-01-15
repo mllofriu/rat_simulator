@@ -12,6 +12,7 @@ import nslj.src.system.NslSystem;
 import robot.IRobot;
 import robot.RobotFactory;
 import support.Configuration;
+import tcl.lang.Namespace.DeleteProc;
 
 /*
  * SimulationItem.java
@@ -35,12 +36,11 @@ public abstract class Trial implements Runnable {
 		HABITUATION, TRAINING, TESTING
 	};
 
-	public static final String STR_REPETITIONS = "reps";
 	public static final String STR_TIME = "time";
 	public static final String STR_NAME = "name";
-	public static final Object STR_MAZE = "maze";
+	public static final String STR_MAZE = "maze";
+	public static final String STR_STARTS = "start";
 
-	private int repetitions;
 	private String name;
 	private Collection<StopCondition> stopConds;
 	private NslSystem system;
@@ -48,31 +48,33 @@ public abstract class Trial implements Runnable {
 	private NslScheduler scheduler;
 	private Collection<ExperimentTask> tasks;
 	private Map<String, String> params;
-	private ExperimentUniverse world;
+	private ExperimentUniverse universe;
 	private IRobot robot;
 
 	public Trial(Map<String, String> params) {
 		super();
 		this.setParams(params);
 		this.name = params.get(STR_NAME);
-		this.repetitions = Integer.parseInt(params.get(STR_REPETITIONS));
 
 		stopConds = new LinkedList<StopCondition>();
+		// Add default stop condition - time constraints
+		int times = Integer.parseInt(params.get(STR_TIME));
+		addStopCond(new TimeStop(times));
 
 		tasks = new LinkedList<ExperimentTask>();
 
 		// Set the maze to execute
-		Configuration.setProperty("WorldFrame.MAZE_FILE",
+		Configuration.setProperty("Experiment.MAZE_FILE",
 				getParams().get(Trial.STR_MAZE));
-		setWorld(ExpUniverseFactory.getUniverse());
+		setUniverse(ExpUniverseFactory.getUniverse());
 		// Get the robot
 		setRobot(RobotFactory.getRobot());
 
 		system = new NslSystem(); // Create System
 		interpreter = new NslInterpreter(system); // Create Interpreter
-//		scheduler = new NslMultiClockScheduler(system); // Create Scheduler
+		// scheduler = new NslMultiClockScheduler(system); // Create Scheduler
 		scheduler = new NslSequentialScheduler(system); // Create Scheduler
-		
+
 		system.setNoDisplay(false);
 		system.setDebug(0);
 		system.setStdOut(true);
@@ -81,7 +83,7 @@ public abstract class Trial implements Runnable {
 		system.nslSetScheduler(scheduler);
 		system.nslSetSchedulerMethod("pre");
 
-		system.setRunEndTime(1);
+		system.setRunEndTime(10000000);
 		system.nslSetRunDelta(.1);
 		system.setNumRunEpochs(1);
 
@@ -90,49 +92,33 @@ public abstract class Trial implements Runnable {
 
 	@Override
 	public void run() {
-		for (int r = 0; r < repetitions; r++) {
-			System.out.println("Starting repetition");
-			// Create the model
-			NslModel model = initModel();
-			// Load the trial tasks
-			loadTasks();
-			// Load the stop conditions
-			loadConditions();
-			// Load it into nsl
-			system.addModel(model);
+		// Create the model
+		NslModel model = initModel();
+		// Load the trial tasks
+		loadTasks();
+		// Load the stop conditions
+		loadConditions();
+		// Load it into nsl
+		system.addModel(model);
 
-			// init Run epochs
-			scheduler.initRun();
+		// init Run epochs
+		scheduler.initRun();
 
-			boolean stop;
-			do {
-				System.out.println("Beginning cycle");
-				// One cycle to the trial
-				scheduler.stepCycle();
-				
-				// Do all after-cycle tasks
-				for (ExperimentTask task : tasks)
-					task.perform();
-				System.out.println("End cycle");
-				// // Check all stop conds
-				stop = false;
-				for (StopCondition sc : stopConds)
-					stop = stop || sc.experimentFinished();
-			} while (!stop);
-			System.out.println("Repetition finished");
-			// // Sleep to appreciate changes
-			// try {
-			// Thread.sleep(5000);
-			// } catch (InterruptedException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
+		boolean stop;
+		do {
+			// One cycle to the trial
+			scheduler.stepCycle();
 
-			finalizeModel(model);
+			// Do all after-cycle tasks
+			for (ExperimentTask task : tasks)
+				task.perform(getUniverse());
+			// // Check all stop conds
+			stop = false;
+			for (StopCondition sc : stopConds)
+				stop = stop || sc.experimentFinished();
+		} while (!stop);
 
-			stopConds.clear();
-			tasks.clear();
-		}
+		finalizeModel(model);
 	}
 
 	public abstract void loadConditions();
@@ -164,12 +150,12 @@ public abstract class Trial implements Runnable {
 		this.params = params;
 	}
 
-	public ExperimentUniverse getWorld() {
-		return world;
+	public ExperimentUniverse getUniverse() {
+		return universe;
 	}
 
-	public void setWorld(ExperimentUniverse world) {
-		this.world = world;
+	public void setUniverse(ExperimentUniverse world) {
+		this.universe = world;
 	}
 
 	public IRobot getRobot() {
@@ -179,4 +165,11 @@ public abstract class Trial implements Runnable {
 	public void setRobot(IRobot robot) {
 		this.robot = robot;
 	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+	}
+	
+	
 }

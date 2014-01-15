@@ -7,13 +7,13 @@ package experiment.multiscalemorris;
 
 
 import nsl.modules.ActionSelectionSchema;
-import nsl.modules.World;
+import nsl.modules.ActionPerformer;
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
 import robot.IRobot;
 
 public class MSMModel extends NslModel {
-	private World world;
+	private ActionPerformer actionPerf;
 	private ActionSelectionSchema actionSel;
 
 	public MSMModel(String nslName, NslModule nslParent, IRobot robot) {
@@ -21,9 +21,7 @@ public class MSMModel extends NslModel {
 		
 		actionSel = new ActionSelectionSchema("actionSel", this, robot);
 		System.out.println("WGModel::Action ... OK");
-		world = new World("world", this, robot);
-		System.out.println("WGModel::World ... OK");
-
+		actionPerf = new ActionPerformer("ActionPerforme", this, robot);
 	}
 	
 	public void initSys() {
@@ -33,7 +31,7 @@ public class MSMModel extends NslModel {
 	}
 
 	public void makeConn() {
-		nslConnect(world.actionTaken, actionSel.actionTaken);
+		nslConnect(actionPerf.actionTaken, actionSel.actionTaken);
 	}
 
 }
