@@ -28,6 +28,7 @@ import com.sun.j3d.utils.universe.SimpleUniverse;
 public class RobotNode extends ExpUniverseNode {
 
 	public static final int NUM_ROBOT_VIEWS = 5;
+	public static final float ROBOT_PLANE_HEIGHT = -0.025f;
 	// Off-screen image sizes
 	public static final int IMAGE_HEIGHT = 80;
 	public static final int IMAGE_WIDTH = 80;

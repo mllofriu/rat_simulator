@@ -31,7 +31,7 @@ public class ExpUniverseFactory {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			Object[] args = new Object[] {}; // constructor sin argumentos
+			Object[] args = new Object[] {}; 
 			try {
 				universe = (ExperimentUniverse) cons.newInstance(args);
 			} catch (IllegalArgumentException e) {

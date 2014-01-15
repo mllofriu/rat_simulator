@@ -17,11 +17,11 @@ import robot.IRobot;
 import robot.RobotFactory;
 import support.Utiles;
 
-public class World extends NslModule {
+public class ActionPerformer extends NslModule {
 	public NslDoutInt0 actionTaken;
 	private IRobot robot;
 
-	public World(String nslName, NslModule nslParent, IRobot robot) {
+	public ActionPerformer(String nslName, NslModule nslParent, IRobot robot) {
 		super(nslName, nslParent);
 		actionTaken = new NslDoutInt0("ActionTaken", this);
 		this.robot = robot;
@@ -39,7 +39,7 @@ public class World extends NslModule {
 //			e.printStackTrace();
 //		}
 		// Move the robot according to the last selected action taken
-		System.out.println("Performing action");
+//		System.out.println("Performing action");
 		int actionDegrees = Utiles.acccion2GradosRelative(actionTaken.get());
 		robot.doAction(actionDegrees);
 		

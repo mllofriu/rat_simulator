@@ -29,7 +29,7 @@ import support.XMLDocReader;
  */
 public class VirtualExpUniverse extends VirtualUniverse implements ExperimentUniverse{
 	
-	private static final double CLOSE_TO_FOOD_THRS = 0.015; 
+	private static final double CLOSE_TO_FOOD_THRS = 0.03; 
 	
 	private View topView;
 	private RobotNode robot;
@@ -47,7 +47,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements ExperimentUni
 		bg.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
 		l.addBranchGraph(bg);
 
-		Document doc = XMLDocReader.readDocument(support.Configuration.getString("WorldFrame.MAZE_FILE"));
+		Document doc = XMLDocReader.readDocument(support.Configuration.getString("Experiment.MAZE_FILE"));
 
 		// Build the group
 		NodeList list;
@@ -149,7 +149,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements ExperimentUni
 	@Override
 	public void setRobotPosition(Point2D.Float pos) {
 		Transform3D translate = new Transform3D();
-		translate.setTranslation(new Vector3f(pos.x, 0.05f, pos.y));
+		translate.setTranslation(new Vector3f(pos.x, RobotNode.ROBOT_PLANE_HEIGHT, pos.y));
 		robot.getTransformGroup().setTransform(translate);
 	}
 	
