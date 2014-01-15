@@ -13,7 +13,7 @@ import support.Configuration;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
-public class WorldFrame extends java.awt.Frame {
+public class UniverseFrame extends java.awt.Frame {
 
 	private static final long serialVersionUID = -698020368303861261L;
 	private final String DEFAULT_MAZE_DIR=Configuration.getString("WorldFrame.MAZE_DIRECTORY");
@@ -25,7 +25,7 @@ public class WorldFrame extends java.awt.Frame {
 
 	private VirtualExpUniverse expUniv;
 
-	public WorldFrame(VirtualExpUniverse world) {
+	public UniverseFrame(VirtualExpUniverse world) {
 		this.expUniv = world;
 
 		initComponents();
@@ -400,7 +400,7 @@ public class WorldFrame extends java.awt.Frame {
 
 	public static void main(String args[]){
 		VirtualExpUniverse expUniv = new VirtualExpUniverse();
-		WorldFrame worldFrame = new WorldFrame(expUniv);
+		UniverseFrame worldFrame = new UniverseFrame(expUniv);
 
 		worldFrame.setVisible(true);
 	}
