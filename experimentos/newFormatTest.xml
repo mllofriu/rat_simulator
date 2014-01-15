@@ -20,7 +20,7 @@
         <type>training</type>
         <name>HA1</name>
         <start>S</start>
-        <time>270</time>
+        <time>200</time>
         <reps>8</reps>
         <maze>mazes/morrisCircular.xml</maze>
     </trial>

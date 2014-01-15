@@ -41,14 +41,14 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 			throw new RuntimeException("Virtual robot can only be run with a virtual universe");
 		
 		this.world = (VirtualExpUniverse) univ;
-		WorldFrame worldFrame = new WorldFrame(world);
+		UniverseFrame worldFrame = new UniverseFrame(world);
 		worldFrame.setVisible(true);
 	}
 
 	public VirtualRobot(VirtualExpUniverse world) {
 		this.world = world;
 		
-		WorldFrame worldFrame = new WorldFrame(world);
+		UniverseFrame worldFrame = new UniverseFrame(world);
 		worldFrame.setVisible(true);
 	}
 
