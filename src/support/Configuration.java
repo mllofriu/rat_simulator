@@ -48,7 +48,8 @@ public class Configuration {
 	public static Object getObject(String objectName) {
 		String objectClassName = Configuration.getString(objectName);
 		// Reflexion para levantar la clase desde archivo de configuracion
-		Class[] types = new Class[] {};
+		Class<?>[] types = new Class[] {};
+		@SuppressWarnings("rawtypes")
 		Constructor cons = null;
 		Object result = null;
 

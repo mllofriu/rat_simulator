@@ -25,7 +25,6 @@ public class BoxNode extends ExpUniverseNode {
 		float xp = values.get("xp");
 		float yp = values.get("yp");
 		float zp = values.get("yp");
-		float r = values.get("r");
 
 		Appearance app = new Appearance();
 		TransparencyAttributes ta = new TransparencyAttributes(

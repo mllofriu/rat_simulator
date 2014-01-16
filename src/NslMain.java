@@ -272,7 +272,7 @@ public class NslMain {
 		try {
 			NslHierarchy.nslSetSystem(system);
 
-			Class classRef = Class.forName(s);
+			Class<?> classRef = Class.forName(s);
 
 			// the following line not only instantiates the
 			// model, it also instantiates the children and grandchildren
@@ -295,7 +295,7 @@ public class NslMain {
 				NslFrame.nslSetSystem(system);
 
 				executive = new NslExecutive(system);
-				executive.show();
+				executive.setVisible(true);
 
 				system.redirectMessages();
 				system.addModel(model);

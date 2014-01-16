@@ -17,7 +17,6 @@ import robot.RobotFactory;
  */
 public class ActionRobot extends NslModule {
 	private static final String DEFAULT_MODULE_NAME = "Cells viewer (nombre por defecto)";
-	private static final String DEFAULT_FILE_NAME = "activationLog.data";
 	public static double DEFAULT_MIN_ACTIVATION = 1.8;
 	public static int NON_SENSE_ACTION = 0;
 

@@ -15,7 +15,8 @@ public class RobotFactory {
 
 			// Reflexion para levantar la clase aprendizaje desde archivo de
 			// configuracion
-			Class[] types = new Class[] {};
+			Class<?>[] types = new Class[] {};
+			@SuppressWarnings("rawtypes")
 			Constructor cons = null;
 			try {
 				cons = Class.forName(robotClassName).getConstructor(types);
