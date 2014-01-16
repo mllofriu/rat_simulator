@@ -15,22 +15,22 @@ public class XMLDocReader {
 		// Read the XML
 		Document doc = null;
 		try {
-			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
+					.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
 
 			doc = docBuilder.parse(new File(filename));
 
-			doc.getDocumentElement ().normalize ();
+			doc.getDocumentElement().normalize();
 		} catch (SAXParseException err) {
-			System.out.println ("** Parsing error" 
-					+ ", line " + err.getLineNumber ()
-					+ ", uri " + err.getSystemId ());
-			System.out.println("   " + err.getMessage ());
+			System.out.println("** Parsing error" + ", line "
+					+ err.getLineNumber() + ", uri " + err.getSystemId());
+			System.out.println("   " + err.getMessage());
 		} catch (SAXException e) {
-			Exception	x = e.getException ();
-			((x == null) ? e : x).printStackTrace ();
+			Exception x = e.getException();
+			((x == null) ? e : x).printStackTrace();
 		} catch (Throwable t) {
-			t.printStackTrace ();
+			t.printStackTrace();
 		}
 
 		return doc;

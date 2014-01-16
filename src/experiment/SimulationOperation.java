@@ -1,5 +1,4 @@
 package experiment;
-import javax.vecmath.Vector3f;
 
 /*
  * SimulationItem.java
@@ -17,16 +16,18 @@ public class SimulationOperation {
 	private String primitiveName;
 	private String trialApply;
 	private String pointName;
-	
-	public SimulationOperation(String operation, String primitiveName, String trialApply) {
+
+	public SimulationOperation(String operation, String primitiveName,
+			String trialApply) {
 		super();
 		this.operation = operation;
 		this.trialApply = trialApply;
-		this.primitiveName=primitiveName;
+		this.primitiveName = primitiveName;
 	}
-	
-	public SimulationOperation(String operation, String primitiveName, String trialApply,String pointName) {
-		this(operation,primitiveName,trialApply);
+
+	public SimulationOperation(String operation, String primitiveName,
+			String trialApply, String pointName) {
+		this(operation, primitiveName, trialApply);
 		this.pointName = pointName;
 	}
 
@@ -41,7 +42,7 @@ public class SimulationOperation {
 	public String getPrimitiveName() {
 		return primitiveName;
 	}
-	
+
 	public String getPointName() {
 		return pointName;
 	}

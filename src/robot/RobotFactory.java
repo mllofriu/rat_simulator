@@ -1,22 +1,20 @@
 package robot;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import robot.IRobot;
 import support.Configuration;
 
-
-
-import nslj.src.lang.NslModule;
-
 public class RobotFactory {
-	private static IRobot robot=null;
-	private static final String robotClassName = Configuration.getString("Reflexion.Robot");
+	private static IRobot robot = null;
+	private static final String robotClassName = Configuration
+			.getString("Reflexion.Robot");
 
 	public static IRobot getRobot() {
-		if(robot==null) {
+		if (robot == null) {
 
-			// Reflexion para levantar la clase aprendizaje desde archivo de configuracion
+			// Reflexion para levantar la clase aprendizaje desde archivo de
+			// configuracion
 			Class[] types = new Class[] {};
 			Constructor cons = null;
 			try {
@@ -50,9 +48,7 @@ public class RobotFactory {
 
 		}
 
-
 		return robot;
 	}
-
 
 }

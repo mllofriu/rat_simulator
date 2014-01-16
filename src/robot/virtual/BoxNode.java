@@ -11,14 +11,14 @@ import org.w3c.dom.Node;
 
 import com.sun.j3d.utils.geometry.Box;
 import com.sun.j3d.utils.geometry.Primitive;
-import com.sun.j3d.utils.geometry.Sphere;
 
 public class BoxNode extends ExpUniverseNode {
 
-	public BoxNode(Node node){
+	public BoxNode(Node node) {
 		Map<String, Float> values = readValues(node);
-		
-		Color3f color = new Color3f(values.get("cr"),values.get("cg"),values.get("cb"));
+
+		Color3f color = new Color3f(values.get("cr"), values.get("cg"),
+				values.get("cb"));
 		float x = values.get("x");
 		float y = values.get("y");
 		float z = values.get("y");
@@ -26,10 +26,11 @@ public class BoxNode extends ExpUniverseNode {
 		float yp = values.get("yp");
 		float zp = values.get("yp");
 		float r = values.get("r");
-		
+
 		Appearance app = new Appearance();
-		TransparencyAttributes ta= new TransparencyAttributes(TransparencyAttributes.FASTEST,0);
-		app.setColoringAttributes(new ColoringAttributes (color,1));
+		TransparencyAttributes ta = new TransparencyAttributes(
+				TransparencyAttributes.FASTEST, 0);
+		app.setColoringAttributes(new ColoringAttributes(color, 1));
 		app.setTransparencyAttributes(ta);
 		// x,y,z: length, width, and height.
 		Primitive vol = new Box(x, y, z, app);
