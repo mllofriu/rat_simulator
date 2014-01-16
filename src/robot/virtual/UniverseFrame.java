@@ -117,7 +117,7 @@ public class UniverseFrame extends java.awt.Frame {
 		leftBtn.setLabel("<");
 		leftBtn.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				button2ActionPerformed(evt);
+				leftBtnAction(evt);
 			}
 		});
 
@@ -129,7 +129,7 @@ public class UniverseFrame extends java.awt.Frame {
 		rightBtn.setLabel(">");
 		rightBtn.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				button4ActionPerformed(evt);
+				rightBtnAction(evt);
 			}
 		});
 
@@ -240,31 +240,31 @@ public class UniverseFrame extends java.awt.Frame {
 
 	// accion asociada al boton de girar horario
 	private void turnRightBtnAction(java.awt.event.ActionEvent evt) {
-		rotateRobot(45);
+		expUniv.rotateRobot(Math.toRadians(-45));
 		mostrarColores();
 	}
 
 	// accion asociada al boton de girar anti-horario
 	private void turnLeftBtnAction(java.awt.event.ActionEvent evt) {
-		rotateRobot(-45);
+		expUniv.rotateRobot(Math.toRadians(45));
 		mostrarColores();
 	}
 
 	// accion asociada al boton de mover izquierda
-	private void button2ActionPerformed(java.awt.event.ActionEvent evt) {
-		expUniv.moveRobot(new Vector3f(-0.1f,0f,0f));
+	private void leftBtnAction(java.awt.event.ActionEvent evt) {
+		expUniv.moveRobot(new Vector3f(0f,0f,-0.1f));
 		mostrarColores();
 	}
 
 	// accion asociada al boton de mover derecha
-	private void button4ActionPerformed(java.awt.event.ActionEvent evt) {
-		expUniv.moveRobot(new Vector3f(0.1f,0f,0f));
+	private void rightBtnAction(java.awt.event.ActionEvent evt) {
+		expUniv.moveRobot(new Vector3f(0f,0f,0.1f));
 		mostrarColores();
 	}
 
 	// accion asociada al boton de retroceder
 	private void backBtnAction(java.awt.event.ActionEvent evt) {
-		expUniv.moveRobot(new Vector3f(0f,0f,.1f));
+		expUniv.moveRobot(new Vector3f(-.1f,0f,0f));
 		mostrarColores();
 	}
 
@@ -273,7 +273,7 @@ public class UniverseFrame extends java.awt.Frame {
 
 	// accion asociada al boton de avanzar
 	private void forwardBtnAction(java.awt.event.ActionEvent evt) {
-		expUniv.moveRobot(new Vector3f(0f,0f,-.1f));
+		expUniv.moveRobot(new Vector3f(.1f,0f,0f));
 		mostrarColores();
 	}
 
@@ -300,10 +300,6 @@ public class UniverseFrame extends java.awt.Frame {
 	//        new WorldFrame().show();
 	//    }
 
-	public void rotateRobot(float angle) {
-		expUniv.rotateRobot(Math.toRadians(-angle));
-		System.out.println("Robot rotate");
-	}
 
 	//Alejandra Barrera
 	//Mover desde World slo la cmara del robot y tomar tres snapshots

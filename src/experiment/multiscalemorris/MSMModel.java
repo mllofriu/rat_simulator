@@ -6,21 +6,22 @@ package experiment.multiscalemorris;
  */
 
 
+import experiment.ExperimentUniverse;
 import nsl.modules.ActionSelectionSchema;
 import nsl.modules.ActionPerformer;
+import nsl.modules.TaxicFoodFinderSchema;
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
 import robot.IRobot;
 
 public class MSMModel extends NslModel {
 	private ActionPerformer actionPerf;
-	private ActionSelectionSchema actionSel;
+	private TaxicFoodFinderSchema actionSel;
 
-	public MSMModel(String nslName, NslModule nslParent, IRobot robot) {
+	public MSMModel(String nslName, NslModule nslParent, IRobot robot, ExperimentUniverse univ) {
 		super(nslName, nslParent);
 		
-		actionSel = new ActionSelectionSchema("actionSel", this, robot);
-		System.out.println("WGModel::Action ... OK");
+		actionSel = new TaxicFoodFinderSchema("actionSel", this, robot, univ);
 		actionPerf = new ActionPerformer("ActionPerforme", this, robot);
 	}
 	

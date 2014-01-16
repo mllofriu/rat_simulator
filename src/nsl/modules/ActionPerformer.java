@@ -14,7 +14,6 @@ package nsl.modules;
 import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
 import robot.IRobot;
-import robot.RobotFactory;
 import support.Utiles;
 
 public class ActionPerformer extends NslModule {

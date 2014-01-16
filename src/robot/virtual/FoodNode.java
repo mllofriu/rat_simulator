@@ -47,6 +47,6 @@ public class FoodNode extends ExpUniverseNode {
 	}
 
 	public Vector3f getPosition() {
-		return position;
+		return new Vector3f(position);
 	}
 }

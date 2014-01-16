@@ -1,7 +1,6 @@
 package robot.virtual;
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
@@ -11,15 +10,14 @@ import javax.media.j3d.Transform3D;
 import javax.media.j3d.View;
 import javax.media.j3d.VirtualUniverse;
 import javax.vecmath.Color3f;
+import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import com.sun.tools.doclets.internal.toolkit.Configuration;
-
-import experiment.ExperimentUniverse;
 import support.XMLDocReader;
+import experiment.ExperimentUniverse;
 
 /**
  * This universe class creates a universe from an XML file and exposes 
@@ -133,13 +131,13 @@ public class VirtualExpUniverse extends VirtualUniverse implements ExperimentUni
 	 * Return the virtual robot's position
 	 * @return
 	 */
-	public Point2D.Float getRobotPosition(){
+	public Vector3f	getRobotPosition(){
 		Transform3D t = new Transform3D();
 		robot.getTransformGroup().getTransform(t);
 		Vector3f pos = new Vector3f();
 		t.get(pos);
 		
-		return new Point2D.Float(pos.x, pos.z);
+		return pos;
 	}
 	
 	/** 
@@ -149,7 +147,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements ExperimentUni
 	@Override
 	public void setRobotPosition(Point2D.Float pos) {
 		Transform3D translate = new Transform3D();
-		translate.setTranslation(new Vector3f(pos.x, RobotNode.ROBOT_PLANE_HEIGHT, pos.y));
+		translate.setTranslation(new Vector3f(pos.x, 0, pos.y));
 		robot.getTransformGroup().setTransform(translate);
 	}
 	
@@ -187,9 +185,9 @@ public class VirtualExpUniverse extends VirtualUniverse implements ExperimentUni
 		robot.getTransformGroup().setTransform(rPos);
 	}
 
-	public Point2D.Float getFoodPosition() {
+	public Vector3f getFoodPosition() {
 		Vector3f foodPos = food.getPosition();
-		return new Point2D.Float(foodPos.x, foodPos.z);
+		return foodPos;
 	}
 
 
@@ -202,8 +200,20 @@ public class VirtualExpUniverse extends VirtualUniverse implements ExperimentUni
 
 	@Override
 	public boolean hasRobotFoundFood() {
-		Point2D.Float food = getFoodPosition();
-		double distanceToFood = food.distance(getRobotPosition());
+		Vector3f food = getFoodPosition();
+		food.sub(getRobotPosition());
+		double distanceToFood = food.length();
 		return distanceToFood < CLOSE_TO_FOOD_THRS;
+	}
+
+	@Override
+	public Quat4f getRobotOrientation() {
+		Transform3D t = new Transform3D();
+		robot.getTransformGroup().getTransform(t);
+		// Get the rotation from the quaternion
+		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+		Quat4f rot = new Quat4f();
+		t.get(rot);
+		return rot;
 	}
 }
