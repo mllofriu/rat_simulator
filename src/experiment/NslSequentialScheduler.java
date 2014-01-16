@@ -19,6 +19,7 @@ public class NslSequentialScheduler extends NslScheduler {
 	@Override
 	public void stepCycle() {
 		NslModel m = (NslModel) system.nslGetModelRef();
+		@SuppressWarnings("unchecked")
 		Vector<NslModule> children = (Vector<NslModule>) m
 				.nslGetModuleChildrenVector();
 		for (NslModule c : children) {
@@ -29,14 +30,15 @@ public class NslSequentialScheduler extends NslScheduler {
 	}
 
 	public void updateBuffers(NslModule module) {
-		Vector moduleChildren = module.nslGetModuleChildrenVector();
+		@SuppressWarnings("unchecked")
+		Vector<NslModule> moduleChildren = module.nslGetModuleChildrenVector();
 		NslModule child;
 
-		Enumeration e = moduleChildren.elements();
+		Enumeration<NslModule> e = moduleChildren.elements();
 
 		module.nslUpdateBuffers();
 		while (e.hasMoreElements()) {
-			child = (NslModule) e.nextElement();
+			child = e.nextElement();
 			updateBuffers(child);
 		}
 	}

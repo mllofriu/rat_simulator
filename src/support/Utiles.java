@@ -149,7 +149,7 @@ public class Utiles {
 		return -1;
 	}
 
-	public static Hashtable contadores(BufferedImage imagen) {
+	public static Hashtable<Color, Integer> contadores(BufferedImage imagen) {
 		int iterH, iterW;
 		Integer contador;
 		Color color;
@@ -159,7 +159,7 @@ public class Utiles {
 			for (iterW = 0; iterW < imagen.getWidth(); iterW++) {
 				color = rgb2Color(imagen.getRGB(iterW, iterH));
 
-				contador = ((Integer) contadores.get(color));
+				contador = contadores.get(color);
 				if (contador == null) {
 					contador = 0;
 				} else
@@ -189,7 +189,7 @@ public class Utiles {
 	 */
 	public static double anguloColor(BufferedImage imagen, Color color) {
 		final int THRES = 10;
-		int iterH, iterW, h, pos, val, count, distance, colorHUE;
+		int iterH, iterW, h, pos, val, count, distance;
 		pos = -1;
 		val = 0;
 
@@ -316,27 +316,6 @@ public class Utiles {
 		return System.getProperty("user.dir");
 	}
 
-	public static void speak(String text) {
-		Runtime runtime = Runtime.getRuntime();
-		// if (System.getProperty("os.name").equals("Linux"))
-		// try {
-		// Process process = runtime.exec("espeak \'" + text + "\'");
-		// BufferedReader bufferedReader = new BufferedReader(
-		// new InputStreamReader(process.getInputStream()));
-		// String line;
-		// while ((line = bufferedReader.readLine()) != null) {
-		// System.out.println(line);
-		// }
-		// process.waitFor();
-		//
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-	}
-
 	static private int enOrigen = 0; // cantidad de veces que paso por el origen
 	static private int entreIyII = 0; // cantidad de veces que paso entre el
 										// cuadrante I y II
@@ -403,7 +382,6 @@ public class Utiles {
 	}
 
 	private static void swap(Object[] a, int i, int change) {
-		Object helper = a[i];
 		a[i] = a[change];
 		a[change] = a[i];
 	}

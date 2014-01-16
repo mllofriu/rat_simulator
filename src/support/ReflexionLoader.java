@@ -11,7 +11,8 @@ public class ReflexionLoader {
 			Object owner) {
 		NslModule result = null;
 
-		Class[] types = new Class[] { String.class, NslModule.class };
+		Class<?>[] types = new Class[] { String.class, NslModule.class };
+		@SuppressWarnings("rawtypes")
 		Constructor cons = null;
 		try {
 			cons = Class.forName(module).getConstructor(types);
