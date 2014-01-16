@@ -1,29 +1,22 @@
 package support;
+
 import java.awt.Color;
+import java.awt.geom.Point2D.Double;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Random;
 
-import java.awt.geom.Point2D.Double;
-
-import robot.RobotFactory;
-
-import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
-
 public class Utiles {
 
 	public static int NO_HUE = -1;
-	private static final int ANGLE_HEAD_TURN = Configuration.getInt("Robot.ANGLE_HEAD_TURN");
-	public static final int[] actions = {-180, -135, -90, -45, 0, 45, 90, 135};
-	
-	// retorna una direccion absoluta 
+	private static final int ANGLE_HEAD_TURN = Configuration
+			.getInt("Robot.ANGLE_HEAD_TURN");
+	public static final int[] actions = { -180, -135, -90, -45, 0, 45, 90, 135 };
+
+	// retorna una direccion absoluta
 	public static int relativa2absolute(int currentAbs, int rel) {
 		int k = currentAbs - rel;
 		int j = (k - 4) % 8;
@@ -32,16 +25,18 @@ public class Utiles {
 		return j;
 	}
 
-	// a partir de una orientacion absoluta actual y una orientacion absoluta deseada
+	// a partir de una orientacion absoluta actual y una orientacion absoluta
+	// deseada
 	// retorna una direccion relativa a tomar para alcanzarla
 	public static int absolute2relative(int currentAbs, int abs) {
-//		int result;
-//		if (Math.abs(currentAbs-abs)<=4) 
-//			result=currentAbs - abs; 
-//		else 
-//			result=currentAbs - abs + 4 - 8;
-//		return result + 4; // 4 es la posicion del cero en direcciones relativas
-				int k = currentAbs - abs;
+		// int result;
+		// if (Math.abs(currentAbs-abs)<=4)
+		// result=currentAbs - abs;
+		// else
+		// result=currentAbs - abs + 4 - 8;
+		// return result + 4; // 4 es la posicion del cero en direcciones
+		// relativas
+		int k = currentAbs - abs;
 		int j = (k + 4) % 8;
 		if (j < 0)
 			j += 8;
@@ -52,7 +47,7 @@ public class Utiles {
 	public static int acccion2GradosRelative(int action) {
 		return actions[action];
 	}
-	
+
 	// Convertir la accion a grados
 	public static int gradosRelative2Acccion(int grados) {
 		int actionDegrees;
@@ -85,13 +80,13 @@ public class Utiles {
 		case 180:
 			actionDegrees = 0;
 			break;
-	default:
+		default:
 			actionDegrees = 0;
 			break;
 		}
 		return actionDegrees;
 	}
-	
+
 	// Convertir laos grados absolutos a accion
 	public static int gradosAbsolute2Acccion(int grados) {
 		int actionDegrees;
@@ -124,7 +119,7 @@ public class Utiles {
 		case 360:
 			actionDegrees = 0;
 			break;
-	default:
+		default:
 			actionDegrees = -1;
 			break;
 		}
@@ -160,110 +155,127 @@ public class Utiles {
 		Color color;
 		Hashtable<Color, Integer> contadores = new Hashtable<Color, Integer>();
 
-		for (iterH=0; iterH<imagen.getHeight();iterH++)
-			for (iterW=0; iterW<imagen.getWidth();iterW++) {
-				color=rgb2Color(imagen.getRGB(iterW,iterH));
-				
-				contador = ((Integer)contadores.get(color));
-				if (contador==null) { 
-					contador=0;
+		for (iterH = 0; iterH < imagen.getHeight(); iterH++)
+			for (iterW = 0; iterW < imagen.getWidth(); iterW++) {
+				color = rgb2Color(imagen.getRGB(iterW, iterH));
+
+				contador = ((Integer) contadores.get(color));
+				if (contador == null) {
+					contador = 0;
 				} else
 					contador++;
 				contadores.put(color, contador);
 			}
 		return contadores;
 	}
-	
+
 	public static int contador(BufferedImage imagen, Color color) {
 		int iterH, iterW;
-		int contador=0;
+		int contador = 0;
 
-		for (iterH=0; iterH<imagen.getHeight();iterH++)
-			for (iterW=0; iterW<imagen.getWidth();iterW++) {
-				if (rgb2Color(imagen.getRGB(iterH,iterW)).equals(color))
+		for (iterH = 0; iterH < imagen.getHeight(); iterH++)
+			for (iterW = 0; iterW < imagen.getWidth(); iterW++) {
+				if (rgb2Color(imagen.getRGB(iterH, iterW)).equals(color))
 					contador++;
 			}
-		
-//		System.out.println(contador);
+
+		// System.out.println(contador);
 		return contador;
 	}
 
-	/* para una im��gen panoramica de 80*3X80 devuelve un numero [0..79]
-	 * de la mayor aparici��n de pixeles en el histograma del color
+	/*
+	 * para una im��gen panoramica de 80*3X80 devuelve un numero [0..79] de la
+	 * mayor aparici��n de pixeles en el histograma del color
 	 */
 	public static double anguloColor(BufferedImage imagen, Color color) {
 		final int THRES = 10;
 		int iterH, iterW, h, pos, val, count, distance, colorHUE;
-		pos=-1; val=0;
-				
-		for (iterW=0; iterW<imagen.getWidth();iterW++) { // columnas
+		pos = -1;
+		val = 0;
+
+		for (iterW = 0; iterW < imagen.getWidth(); iterW++) { // columnas
 			count = 0;
-			for (iterH=0; iterH<imagen.getHeight();iterH++) { // filas
-				h=imagen.getRGB(iterW,iterH);
-				distance = distancia(rgb2Color(h),color);
-				if (distance<THRES) {
+			for (iterH = 0; iterH < imagen.getHeight(); iterH++) { // filas
+				h = imagen.getRGB(iterW, iterH);
+				distance = distancia(rgb2Color(h), color);
+				if (distance < THRES) {
 					count++;
-					//imagen[iterH][iterW]=color2RGB(color);
+					// imagen[iterH][iterW]=color2RGB(color);
 				}
 			}
-			if (count>val) {
-				val=count;
-				pos=iterW;
+			if (count > val) {
+				val = count;
+				pos = iterW;
 			}
-			//System.out.print("("+iterW+")"+count+".");
+			// System.out.print("("+iterW+")"+count+".");
 		}
-		
-		// devuelve angulos return (int)(3.0*(double)ANGLE_HEAD_TURN * (double)pos/(double)imagen.length - 3.0*(double)ANGLE_HEAD_TURN/2.0);
-		return (double)pos/(double)imagen.getWidth();
+
+		// devuelve angulos return (int)(3.0*(double)ANGLE_HEAD_TURN *
+		// (double)pos/(double)imagen.length - 3.0*(double)ANGLE_HEAD_TURN/2.0);
+		return (double) pos / (double) imagen.getWidth();
 	}
-	
-	public static int anguloColorHUE(int [][]imagen, Color color) {
+
+	public static int anguloColorHUE(int[][] imagen, Color color) {
 		final int THRES = 10;
 		int iterH, iterW, h, pos, val, count, distance, colorHUE;
-		pos=-1; val=0;
-		colorHUE=RGB2HUE(color2RGB(color));
-		
-		for (iterW=0; iterW<imagen[0].length;iterW++) { // columnas
+		pos = -1;
+		val = 0;
+		colorHUE = RGB2HUE(color2RGB(color));
+
+		for (iterW = 0; iterW < imagen[0].length; iterW++) { // columnas
 			count = 0;
-			for (iterH=0; iterH<imagen.length;iterH++) { // filas
-				h=RGB2HUE(imagen[iterH][iterW]);
-				if (h==NO_HUE) {
-					distance = Math.abs(h-colorHUE);
-					if (distance>126) distance =253-distance;
-					if (distance<THRES) count++;
+			for (iterH = 0; iterH < imagen.length; iterH++) { // filas
+				h = RGB2HUE(imagen[iterH][iterW]);
+				if (h == NO_HUE) {
+					distance = Math.abs(h - colorHUE);
+					if (distance > 126)
+						distance = 253 - distance;
+					if (distance < THRES)
+						count++;
 				}
 			}
-			if (count>val) {
-				val=count;
-				pos=iterW;
+			if (count > val) {
+				val = count;
+				pos = iterW;
 			}
 		}
-		return (int)(3.0*(double)ANGLE_HEAD_TURN * (double)pos/(double)imagen[0].length - 3.0*(double)ANGLE_HEAD_TURN/2.0);
+		return (int) (3.0 * (double) ANGLE_HEAD_TURN * (double) pos
+				/ (double) imagen[0].length - 3.0 * (double) ANGLE_HEAD_TURN / 2.0);
 	}
 
 	public static Color rgb2Color(int rgb) {
 		int red = (rgb & 0x00ff0000) >> 16;
 		int green = (rgb & 0x0000ff00) >> 8;
 		int blue = rgb & 0x000000ff;
-		return new Color(red, green, blue);	
+		return new Color(red, green, blue);
 	}
 
 	public static int color2RGB(Color color) {
-		return (color.getRed() << 16)+(color.getGreen() << 8)+color.getBlue();
+		return (color.getRed() << 16) + (color.getGreen() << 8)
+				+ color.getBlue();
 	}
-	
+
 	static String toString(Color color) {
 		String result;
-		if (color.equals(Color.BLACK)) result="BLACK";
-		else if (color.equals(Color.WHITE)) result="WHITE";
-		else if (color.equals(Color.RED)) result="RED";
-		else if (color.equals(Color.BLUE)) result="BLUE";
-		else if (color.equals(Color.GREEN)) result="GREEN";
-		else if (color.equals(Color.CYAN)) result="CYAN";
-		else if (color.equals(Color.MAGENTA)) result="MAGENTA";
-		else if (color.equals(Color.YELLOW)) result="YELLOW";
-		else result=color.toString();
-		
+		if (color.equals(Color.BLACK))
+			result = "BLACK";
+		else if (color.equals(Color.WHITE))
+			result = "WHITE";
+		else if (color.equals(Color.RED))
+			result = "RED";
+		else if (color.equals(Color.BLUE))
+			result = "BLUE";
+		else if (color.equals(Color.GREEN))
+			result = "GREEN";
+		else if (color.equals(Color.CYAN))
+			result = "CYAN";
+		else if (color.equals(Color.MAGENTA))
+			result = "MAGENTA";
+		else if (color.equals(Color.YELLOW))
+			result = "YELLOW";
+		else
+			result = color.toString();
+
 		return result;
 	}
 
@@ -273,29 +285,32 @@ public class Utiles {
 		int g = (rgb & 0x0000ff00) >> 8;
 		int b = rgb & 0x000000ff;
 
-		max=Math.max(r, Math.max(g,b));
-		min=Math.min(r, Math.min(g,b));
-		delta=max-min;
-		hue =0;
-		
-		if (2*delta<=max) hue=NO_HUE;
+		max = Math.max(r, Math.max(g, b));
+		min = Math.min(r, Math.min(g, b));
+		delta = max - min;
+		hue = 0;
+
+		if (2 * delta <= max)
+			hue = NO_HUE;
 		else {
-			if (r==max) hue =42+42*(g-b)/delta;
-			else if (g==max) hue = 126 + 42 * (b-r)/delta;
-			else if (b==max) hue = 210 + 42 * (r-g)/delta;
+			if (r == max)
+				hue = 42 + 42 * (g - b) / delta;
+			else if (g == max)
+				hue = 126 + 42 * (b - r) / delta;
+			else if (b == max)
+				hue = 210 + 42 * (r - g) / delta;
 		}
 		return hue;
 	}
 
-	static int distancia(Color a, Color b)
-	{
-	  long rmean = (a.getRed() + b.getRed()) / 2;
-	  long red = a.getRed() - b.getRed();
-	  long green = a.getGreen() - b.getGreen();
-	  long blue = a.getBlue()-b.getBlue();
-	  return (int)Math.sqrt((((512+rmean)*red*red)>>8) + 4*green*green + (((767-rmean)*blue*blue)>>8));
+	static int distancia(Color a, Color b) {
+		long rmean = (a.getRed() + b.getRed()) / 2;
+		long red = a.getRed() - b.getRed();
+		long green = a.getGreen() - b.getGreen();
+		long blue = a.getBlue() - b.getBlue();
+		return (int) Math.sqrt((((512 + rmean) * red * red) >> 8) + 4 * green
+				* green + (((767 - rmean) * blue * blue) >> 8));
 	}
-	
 
 	public static String getCurrentDirectoryAbsolute() {
 		return System.getProperty("user.dir");
@@ -303,86 +318,94 @@ public class Utiles {
 
 	public static void speak(String text) {
 		Runtime runtime = Runtime.getRuntime();
-//    	if (System.getProperty("os.name").equals("Linux"))
-//			try {
-//				Process process = runtime.exec("espeak \'" + text + "\'");
-//				BufferedReader bufferedReader = new BufferedReader(
-//						new InputStreamReader(process.getInputStream()));
-//				String line;
-//				while ((line = bufferedReader.readLine()) != null) {
-//					System.out.println(line);
-//				}
-//				process.waitFor();
-//
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+		// if (System.getProperty("os.name").equals("Linux"))
+		// try {
+		// Process process = runtime.exec("espeak \'" + text + "\'");
+		// BufferedReader bufferedReader = new BufferedReader(
+		// new InputStreamReader(process.getInputStream()));
+		// String line;
+		// while ((line = bufferedReader.readLine()) != null) {
+		// System.out.println(line);
+		// }
+		// process.waitFor();
+		//
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// } catch (InterruptedException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 	}
-	
-	static private int enOrigen=0; // cantidad de veces que paso por el origen
-	static private int entreIyII=0; // cantidad de veces que paso entre el cuadrante I y II
-	static private int entreIIyIII=0; // cantidad de veces que paso entre el ...
-	static private int entreIIIyIV=0; // cantidad de veces que paso entre el ...
-	static private int entreIVyI=0; // cantidad de veces que paso entre el ...
-	
+
+	static private int enOrigen = 0; // cantidad de veces que paso por el origen
+	static private int entreIyII = 0; // cantidad de veces que paso entre el
+										// cuadrante I y II
+	static private int entreIIyIII = 0; // cantidad de veces que paso entre el
+										// ...
+	static private int entreIIIyIV = 0; // cantidad de veces que paso entre el
+										// ...
+	static private int entreIVyI = 0; // cantidad de veces que paso entre el ...
+
 	// dado un punto devuelve el cuadrante al que pertenece entre 0 y 3
-	// detalle de implementaci��n: ocurre muchas veces que se cumple el == a 0 por lo que balaceo entre los cuadrantes correspondientes
+	// detalle de implementaci��n: ocurre muchas veces que se cumple el == a 0
+	// por lo que balaceo entre los cuadrantes correspondientes
 	static DecimalFormat df = new DecimalFormat("#.####");
+
 	public static int getCuadrante(Double coord) {
 		int result;
 		// redondeo a cuatro d��gitos decimales
 		coord.x = java.lang.Double.parseDouble(df.format(coord.x));
 		coord.y = java.lang.Double.parseDouble(df.format(coord.y));
-		if ((coord.x>0)&&(coord.y>0))
+		if ((coord.x > 0) && (coord.y > 0))
 			result = 0;
-		else if ((coord.x<0)&&(coord.y>0))
+		else if ((coord.x < 0) && (coord.y > 0))
 			result = 1;
-		else if ((coord.x<0)&&(coord.y<0))
+		else if ((coord.x < 0) && (coord.y < 0))
 			result = 2;
-		else if ((coord.x>0)&&(coord.y<0))
+		else if ((coord.x > 0) && (coord.y < 0))
 			result = 3;
-		else if ((coord.x==0)&&(coord.y==0)) { // paso por el centro de coordenadas
-			enOrigen=(enOrigen+1)%4;
+		else if ((coord.x == 0) && (coord.y == 0)) { // paso por el centro de
+														// coordenadas
+			enOrigen = (enOrigen + 1) % 4;
 			result = enOrigen;
-		} else if ((coord.x==0)&&(coord.y>0)) {
-			entreIyII=(entreIyII+1)%2;
+		} else if ((coord.x == 0) && (coord.y > 0)) {
+			entreIyII = (entreIyII + 1) % 2;
 			result = entreIyII;
-		} else if ((coord.x==0)&&(coord.y<0)) {
-			entreIIIyIV=(entreIIIyIV+1)%2;
-			result = entreIIIyIV+2;
-		} else if ((coord.x>0)&&(coord.y==0)) {
-			entreIVyI=(entreIVyI+1)%2;
-			result = (entreIVyI+3)%4; // devuelve alternadamente los cuadrantes I y IV
-		} else if ((coord.x<0)&&(coord.y==0)) {
-			entreIIyIII=(entreIIyIII+1)%2;
-			result = entreIIyIII+1; // devuelve alternadamente los cuadrantes II y III
+		} else if ((coord.x == 0) && (coord.y < 0)) {
+			entreIIIyIV = (entreIIIyIV + 1) % 2;
+			result = entreIIIyIV + 2;
+		} else if ((coord.x > 0) && (coord.y == 0)) {
+			entreIVyI = (entreIVyI + 1) % 2;
+			result = (entreIVyI + 3) % 4; // devuelve alternadamente los
+											// cuadrantes I y IV
+		} else if ((coord.x < 0) && (coord.y == 0)) {
+			entreIIyIII = (entreIIyIII + 1) % 2;
+			result = entreIIyIII + 1; // devuelve alternadamente los cuadrantes
+										// II y III
 		} else
 			result = -1;
-		//System.err.println("Utiles::cuadrante: "+result);
+		// System.err.println("Utiles::cuadrante: "+result);
 		return result;
 	}
-	
+
 	public static void shuffleList(Object[] array) {
 		Collections.shuffle(Arrays.asList(array));
 	}
-	
+
 	public static void shuffleListAMano(Object[] array) {
 		int n = array.length;
 		Random random = new Random();
 		random.nextInt();
 		for (int i = 0; i < n; i++) {
 			int change = i + random.nextInt(n - i);
-		    swap(array, i, change);
+			swap(array, i, change);
 		}
-	 }
-		
-	 private static void swap(Object[] a, int i, int change) {
-		 Object helper = a[i];
-		 a[i] = a[change];
-		 a[change] = a[i];
-	 }
-	  
+	}
+
+	private static void swap(Object[] a, int i, int change) {
+		Object helper = a[i];
+		a[i] = a[change];
+		a[change] = a[i];
+	}
+
 }

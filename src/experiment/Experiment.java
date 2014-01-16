@@ -13,7 +13,6 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.vecmath.Point4d;
 import javax.vecmath.Point4f;
 
 import org.w3c.dom.Document;
@@ -64,7 +63,7 @@ public abstract class Experiment implements Runnable {
 			}
 
 			// Create <reps> copies of the trial
-			for (int j = 0; j < Integer.parseInt(params.get(STR_REPETITIONS)); j++){
+			for (int j = 0; j < Integer.parseInt(params.get(STR_REPETITIONS)); j++) {
 				Trial t = createTrial(params, points);
 				trials.add(t);
 			}
@@ -90,12 +89,12 @@ public abstract class Experiment implements Runnable {
 
 		for (int i = 0; i < list.getLength(); i++) {
 			NamedNodeMap attributes = list.item(i).getAttributes();
-			float x = Float.parseFloat(attributes.getNamedItem(
-					STR_X_POSITION).getNodeValue());
-			float y = Float.parseFloat(attributes.getNamedItem(
-					STR_Y_POSITION).getNodeValue());
-			float z = Float.parseFloat(attributes.getNamedItem(
-					STR_Z_POSITION).getNodeValue());
+			float x = Float.parseFloat(attributes.getNamedItem(STR_X_POSITION)
+					.getNodeValue());
+			float y = Float.parseFloat(attributes.getNamedItem(STR_Y_POSITION)
+					.getNodeValue());
+			float z = Float.parseFloat(attributes.getNamedItem(STR_Z_POSITION)
+					.getNodeValue());
 			float r = Float.parseFloat(attributes.getNamedItem(STR_ANGLE)
 					.getNodeValue());
 			String pointName = attributes.getNamedItem(STR_NAME).getNodeValue();
@@ -130,7 +129,7 @@ public abstract class Experiment implements Runnable {
 		System.out.println("Running experiment");
 		for (Trial t : trials)
 			t.run();
-		
+
 		System.exit(0);
 	}
 

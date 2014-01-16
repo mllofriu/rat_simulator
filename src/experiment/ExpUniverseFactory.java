@@ -1,22 +1,20 @@
 package experiment;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import robot.IRobot;
 import support.Configuration;
 
-
-
-import nslj.src.lang.NslModule;
-
 public class ExpUniverseFactory {
-	private static ExperimentUniverse universe=null;
-	private static final String universeClassName = Configuration.getString("Reflexion.Universe");
+	private static ExperimentUniverse universe = null;
+	private static final String universeClassName = Configuration
+			.getString("Reflexion.Universe");
 
 	public static ExperimentUniverse getUniverse() {
-		if(universe==null) {
+		if (universe == null) {
 
-			// Reflexion para levantar la clase aprendizaje desde archivo de configuracion
+			// Reflexion para levantar la clase aprendizaje desde archivo de
+			// configuracion
 			Class[] types = new Class[] {};
 			Constructor cons = null;
 			try {
@@ -31,7 +29,7 @@ public class ExpUniverseFactory {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			Object[] args = new Object[] {}; 
+			Object[] args = new Object[] {};
 			try {
 				universe = (ExperimentUniverse) cons.newInstance(args);
 			} catch (IllegalArgumentException e) {
@@ -52,6 +50,5 @@ public class ExpUniverseFactory {
 
 		return universe;
 	}
-
 
 }

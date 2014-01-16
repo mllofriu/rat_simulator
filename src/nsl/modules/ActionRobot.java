@@ -1,16 +1,11 @@
 package nsl.modules;
-import java.awt.geom.Point2D;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Vector;
 
-import robot.IRobot;
-import robot.RobotFactory;
+import java.io.PrintWriter;
 
 import nslj.src.lang.NslDinDouble1;
-import nslj.src.lang.NslDoutDouble1;
 import nslj.src.lang.NslModule;
+import robot.IRobot;
+import robot.RobotFactory;
 
 /**
  * 
@@ -18,7 +13,7 @@ import nslj.src.lang.NslModule;
 
 /**
  * @author gtejera
- *
+ * 
  */
 public class ActionRobot extends NslModule {
 	private static final String DEFAULT_MODULE_NAME = "Cells viewer (nombre por defecto)";
@@ -29,7 +24,7 @@ public class ActionRobot extends NslModule {
 	public NslDinDouble1 cellsActivationNSL;
 	IRobot robot = RobotFactory.getRobot();
 	PrintWriter pw = null;
-	
+
 	public ActionRobot(NslModule nslParent) {
 		this(DEFAULT_MODULE_NAME, nslParent);
 	}
@@ -41,5 +36,5 @@ public class ActionRobot extends NslModule {
 	public void simRun() {
 		robot.doAction(NON_SENSE_ACTION); // avanza al siguiente punto
 	}
-	
+
 }

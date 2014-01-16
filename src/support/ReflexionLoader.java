@@ -7,7 +7,8 @@ import nslj.src.lang.NslModule;
 
 public class ReflexionLoader {
 
-	public static NslModule getReflexionModel(String module, String moduleName, Object owner) {
+	public static NslModule getReflexionModel(String module, String moduleName,
+			Object owner) {
 		NslModule result = null;
 
 		Class[] types = new Class[] { String.class, NslModule.class };

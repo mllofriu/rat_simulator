@@ -7,7 +7,7 @@ import javax.vecmath.Vector3f;
 
 public class DirectionalLightNode extends ExpUniverseNode {
 
-	public DirectionalLightNode(Vector3f direction, Color3f color){
+	public DirectionalLightNode(Vector3f direction, Color3f color) {
 		BoundingSphere bounds = new BoundingSphere();
 		bounds.setRadius(1000d);
 		BoundingSphere bounds1 = new BoundingSphere();

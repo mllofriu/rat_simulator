@@ -12,7 +12,6 @@ import nslj.src.system.NslSystem;
 import robot.IRobot;
 import robot.RobotFactory;
 import support.Configuration;
-import tcl.lang.Namespace.DeleteProc;
 
 /*
  * SimulationItem.java
@@ -111,7 +110,7 @@ public abstract class Trial implements Runnable {
 		// Do all after-cycle tasks
 		for (ExperimentTask task : initialTasks)
 			task.perform(getUniverse());
-		
+
 		boolean stop;
 		do {
 			// One cycle to the trial
@@ -138,7 +137,7 @@ public abstract class Trial implements Runnable {
 	public abstract void loadConditions();
 
 	public abstract void loadAfterCycleTasks();
-	
+
 	public abstract void loadInitialTasks();
 
 	public abstract NslModel initModel();
@@ -153,7 +152,7 @@ public abstract class Trial implements Runnable {
 	public void addInitialTask(ExperimentTask t) {
 		initialTasks.add(t);
 	}
-	
+
 	public void addAfterCycleTask(ExperimentTask t) {
 		afterCycleTasks.add(t);
 	}
@@ -190,6 +189,5 @@ public abstract class Trial implements Runnable {
 	protected void finalize() throws Throwable {
 		super.finalize();
 	}
-	
-	
+
 }
