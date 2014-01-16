@@ -40,13 +40,15 @@ public abstract class Trial implements Runnable {
 	public static final String STR_NAME = "name";
 	public static final String STR_MAZE = "maze";
 	public static final String STR_STARTS = "start";
+	private static final long SLEEP_BETWEEN_CYCLES = 000;
 
 	private String name;
 	private Collection<StopCondition> stopConds;
 	private NslSystem system;
 	private NslInterpreter interpreter;
 	private NslScheduler scheduler;
-	private Collection<ExperimentTask> tasks;
+	private Collection<ExperimentTask> initialTasks;
+	private Collection<ExperimentTask> afterCycleTasks;
 	private Map<String, String> params;
 	private ExperimentUniverse universe;
 	private IRobot robot;
@@ -61,7 +63,8 @@ public abstract class Trial implements Runnable {
 		int times = Integer.parseInt(params.get(STR_TIME));
 		addStopCond(new TimeStop(times));
 
-		tasks = new LinkedList<ExperimentTask>();
+		initialTasks = new LinkedList<ExperimentTask>();
+		afterCycleTasks = new LinkedList<ExperimentTask>();
 
 		// Set the maze to execute
 		Configuration.setProperty("Experiment.MAZE_FILE",
@@ -95,7 +98,8 @@ public abstract class Trial implements Runnable {
 		// Create the model
 		NslModel model = initModel();
 		// Load the trial tasks
-		loadTasks();
+		loadInitialTasks();
+		loadAfterCycleTasks();
 		// Load the stop conditions
 		loadConditions();
 		// Load it into nsl
@@ -104,13 +108,23 @@ public abstract class Trial implements Runnable {
 		// init Run epochs
 		scheduler.initRun();
 
+		// Do all after-cycle tasks
+		for (ExperimentTask task : initialTasks)
+			task.perform(getUniverse());
+		
 		boolean stop;
 		do {
 			// One cycle to the trial
 			scheduler.stepCycle();
 
+			try {
+				Thread.sleep(SLEEP_BETWEEN_CYCLES);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			// Do all after-cycle tasks
-			for (ExperimentTask task : tasks)
+			for (ExperimentTask task : afterCycleTasks)
 				task.perform(getUniverse());
 			// // Check all stop conds
 			stop = false;
@@ -123,7 +137,9 @@ public abstract class Trial implements Runnable {
 
 	public abstract void loadConditions();
 
-	public abstract void loadTasks();
+	public abstract void loadAfterCycleTasks();
+	
+	public abstract void loadInitialTasks();
 
 	public abstract NslModel initModel();
 
@@ -134,8 +150,12 @@ public abstract class Trial implements Runnable {
 		return name;
 	}
 
-	public void addTask(ExperimentTask t) {
-		tasks.add(t);
+	public void addInitialTask(ExperimentTask t) {
+		initialTasks.add(t);
+	}
+	
+	public void addAfterCycleTask(ExperimentTask t) {
+		afterCycleTasks.add(t);
 	}
 
 	public void addStopCond(StopCondition sc) {

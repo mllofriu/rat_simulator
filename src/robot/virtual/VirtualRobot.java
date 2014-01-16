@@ -31,7 +31,7 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 			.getInt("RobotVirtual.MAX_PIXEL_DIAGONAL");
 	private final int MAX_PIXEL_FRENTE = Configuration
 			.getInt("RobotVirtual.MAX_PIXEL_FRENTE");
-	private static final float STEP = 0.1f;
+	private static final float STEP = 0.01f;
 	
 	public VirtualExpUniverse world;
 	
@@ -97,7 +97,7 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 	public void doAction(int grados) {
 		// If no rotation, do translation
 		if (grados == 0)
-			world.moveRobot(new Vector3f(0f,0f,-STEP));
+			world.moveRobot(new Vector3f(STEP,0f,0f));
 		else
 			rotateRobot(grados);
 	}

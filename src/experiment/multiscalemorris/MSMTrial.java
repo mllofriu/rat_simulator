@@ -24,7 +24,7 @@ public class MSMTrial extends Trial {
 	@Override
 	public NslModel initModel() {
 		System.out.println("Init model");
-		model = new MSMModel("MSMHabituationModel", (NslModel) null, getRobot());
+		model = new MSMModel("MSMHabituationModel", (NslModel) null, getRobot(), getUniverse());
 		return model;
 	}
 
@@ -34,8 +34,12 @@ public class MSMTrial extends Trial {
 	}
 
 	@Override
-	public void loadTasks() {
-		addTask(new PlaceRobotInitallyTask(initPos));
+	public void loadAfterCycleTasks() {
+	}
+	
+	@Override
+	public void loadInitialTasks() {
+		addInitialTask(new PlaceRobotInitallyTask(initPos));
 	}
 	
 	@Override

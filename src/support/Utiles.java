@@ -21,6 +21,7 @@ public class Utiles {
 
 	public static int NO_HUE = -1;
 	private static final int ANGLE_HEAD_TURN = Configuration.getInt("Robot.ANGLE_HEAD_TURN");
+	public static final int[] actions = {-180, -135, -90, -45, 0, 45, 90, 135};
 	
 	// retorna una direccion absoluta 
 	public static int relativa2absolute(int currentAbs, int rel) {
@@ -48,39 +49,8 @@ public class Utiles {
 	}
 
 	// Convertir la accion a grados
-	public static int acccion2GradosRelative(int accion) {
-		int actionDegrees;
-
-		switch (accion) {
-		case 0:
-			actionDegrees = -180;
-			break;
-		case 1:
-			actionDegrees = -135;
-			break;
-		case 2:
-			actionDegrees = -90;
-			break;
-		case 3:
-			actionDegrees = -45;
-			break;
-		case 4:
-			actionDegrees = 0;
-			break;
-		case 5:
-			actionDegrees = 45;
-			break;
-		case 6:
-			actionDegrees = 90;
-			break;
-		case 7:
-			actionDegrees = 135;
-			break;
-		default:
-			actionDegrees = 0;
-			break;
-		}
-		return actionDegrees;
+	public static int acccion2GradosRelative(int action) {
+		return actions[action];
 	}
 	
 	// Convertir la accion a grados

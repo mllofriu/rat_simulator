@@ -28,7 +28,7 @@ import com.sun.j3d.utils.universe.SimpleUniverse;
 public class RobotNode extends ExpUniverseNode {
 
 	public static final int NUM_ROBOT_VIEWS = 5;
-	public static final float ROBOT_PLANE_HEIGHT = -0.025f;
+	public static final float CAMERA_HEIGHT = 0.025f;
 	// Off-screen image sizes
 	public static final int IMAGE_HEIGHT = 80;
 	public static final int IMAGE_WIDTH = 80;
@@ -38,7 +38,7 @@ public class RobotNode extends ExpUniverseNode {
 	private Canvas3D[] offScreenCanvas;
 	private ImageComponent2D[] offScreenImages;
 
-	public RobotNode(Node node){
+	public RobotNode(Node node) {
 		Map<String, Float> values = readValues(node);
 
 		float x = values.get("x");
@@ -48,7 +48,7 @@ public class RobotNode extends ExpUniverseNode {
 		// Initialize the transform group
 		// Keep it public to move the robot in the future
 		Transform3D rPos = new Transform3D();
-		rPos.setTranslation(new Vector3f(x,y,z));
+		rPos.setTranslation(new Vector3f(x, y, z));
 		tg = new TransformGroup();
 		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
 		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
@@ -56,39 +56,47 @@ public class RobotNode extends ExpUniverseNode {
 		// Add the transform group to the world branch group
 		addChild(tg);
 
-		// Create the robot itself		
+		// Create the robot itself
 		BranchGroup robotBG = new BranchGroup();
 		tg.addChild(robotBG);
 
 		// Create the cylinder for the robot
 		Appearance app = new Appearance();
-		Material mat = createMaterial(new Color3f(0.5f, 0f, 1f));
-		app.setMaterial(mat);		
+		Material mat = createMaterial(new Color3f(1f, 0f, .5f));
+		app.setMaterial(mat);
 		TransformGroup cylTG = new TransformGroup();
 		Transform3D cylT = new Transform3D();
-		cylT.rotX(Math.toRadians(90));
+		cylT.rotZ(Math.toRadians(90));
 		cylTG.setTransform(cylT);
 		Cylinder bodyCylinder = new Cylinder(0.025f, 0.1f, app);
 		cylTG.addChild(bodyCylinder);
 		robotBG.addChild(cylTG);
 
+		// Transforms
+		Vector3f robotCameraOffset = new Vector3f(0.05f, CAMERA_HEIGHT, 0);
+		TransformGroup camTG = new TransformGroup();
+		Transform3D camT = new Transform3D();
+		camT.setTranslation(robotCameraOffset);
+		Transform3D camRot = new Transform3D();
+		camRot.rotY(-Math.PI / 2);
+		camT.mul(camRot);
+		camTG.setTransform(camT);
+		robotBG.addChild(camTG);
+
 		// Camera cone
+		TransformGroup cConeTG = new TransformGroup();
+		Transform3D cConeT = new Transform3D();
+		cConeT.rotX(Math.toRadians(90));
+		cConeTG.setTransform(cConeT);
 		app = new Appearance();
 		mat = createMaterial(new Color3f(0.5f, 0.5f, 0f));
 		app.setMaterial(mat);
 		Cone viewCone = new Cone(0.025f, 0.11f, app);
-		cylTG.addChild(viewCone);
+		cConeTG.addChild(viewCone);
+		camTG.addChild(cConeTG);
 
-		// Transforms
-		Vector3f robotCameraOffset = new Vector3f(0, 0.05f, 0);
-		TransformGroup camTG = new TransformGroup();
-		Transform3D camT = new Transform3D();
-		camT.setTranslation(robotCameraOffset);
-		camTG.setTransform(camT);
-		robotBG.addChild(camTG);
-
-		// Add on-screen views 
-		for (int i = 0; i < NUM_ROBOT_VIEWS; i++){
+		// Add on-screen views
+		for (int i = 0; i < NUM_ROBOT_VIEWS; i++) {
 			TransformGroup vTG = new TransformGroup();
 			Transform3D vT = new Transform3D();
 			vT.rotY(Math.toRadians(90 - i * 45));
@@ -97,25 +105,28 @@ public class RobotNode extends ExpUniverseNode {
 			robotViews[i] = cv.getView();
 			vTG.addChild(cv.getRootBG());
 			camTG.addChild(vTG);
-		}	
+		}
 
 		// Add off-screen views
 		// Create off-screen canvas to see through the robots views
 		offScreenCanvas = new Canvas3D[NUM_ROBOT_VIEWS];
 		offScreenImages = new ImageComponent2D[NUM_ROBOT_VIEWS];
-		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
-		for (int i=0; i<NUM_ROBOT_VIEWS; i++){
+		GraphicsConfiguration config = SimpleUniverse
+				.getPreferredConfiguration();
+		for (int i = 0; i < NUM_ROBOT_VIEWS; i++) {
 			offScreenCanvas[i] = new Canvas3D(config, true);
-			offScreenImages[i] = new ImageComponent2D(ImageComponent2D.FORMAT_RGB, 
-					new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB));
+			offScreenImages[i] = new ImageComponent2D(
+					ImageComponent2D.FORMAT_RGB, new BufferedImage(IMAGE_WIDTH,
+							IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB));
 			offScreenImages[i].setCapability(ImageComponent2D.ALLOW_IMAGE_READ);
 			robotViews[i].addCanvas3D(offScreenCanvas[i]);
 			offScreenCanvas[i].setOffScreenBuffer(offScreenImages[i]);
 			offScreenCanvas[i].getScreen3D().setPhysicalScreenWidth(
-					0.0254d/90.0*IMAGE_WIDTH);
+					0.0254d / 90.0 * IMAGE_WIDTH);
 			offScreenCanvas[i].getScreen3D().setPhysicalScreenHeight(
-					0.0254d/90.0*IMAGE_HEIGHT);
-			offScreenCanvas[i].getScreen3D().setSize(new Dimension(IMAGE_WIDTH, IMAGE_HEIGHT));
+					0.0254d / 90.0 * IMAGE_HEIGHT);
+			offScreenCanvas[i].getScreen3D().setSize(
+					new Dimension(IMAGE_WIDTH, IMAGE_HEIGHT));
 		}
 	}
 
@@ -126,7 +137,7 @@ public class RobotNode extends ExpUniverseNode {
 	public View[] getRobotViews() {
 		return robotViews;
 	}
-	
+
 	public static int getImageHeight() {
 		return IMAGE_HEIGHT;
 	}
@@ -134,7 +145,7 @@ public class RobotNode extends ExpUniverseNode {
 	public static int getImageWidth() {
 		return IMAGE_WIDTH;
 	}
-	
+
 	public Canvas3D[] getOffScreenCanvas() {
 		return offScreenCanvas;
 	}
@@ -143,4 +154,3 @@ public class RobotNode extends ExpUniverseNode {
 		return offScreenImages;
 	}
 }
-

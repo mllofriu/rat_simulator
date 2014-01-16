@@ -68,7 +68,7 @@ class CameraView {
 		view.attachViewPlatform( viewPlatform );
 		// Modify front clip distance if seeing close objects
 		if (close)
-			view.setFrontClipDistance(0.0001);
+			view.setFrontClipDistance(0.002);
 
 		TransformGroup vpTG = new TransformGroup();
 		vpTG.setCapability( TransformGroup.ALLOW_TRANSFORM_READ );
