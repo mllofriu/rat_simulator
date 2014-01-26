@@ -8,6 +8,7 @@ package experiment;
  * Fecha: 11 de agosto de 2010
  */
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.NodeList;
 
+import support.Configuration;
 import support.XMLDocReader;
 
 public abstract class Experiment implements Runnable {
@@ -41,16 +43,42 @@ public abstract class Experiment implements Runnable {
 	private Vector<Trial> trials = new Vector<Trial>();
 
 	public Experiment(String filename) {
+		// Read experiments from xml file
 		Document doc = XMLDocReader.readDocument(filename);
+		
+		String logPath = getLogPath();
+		setupLogDir(logPath);
 
 		// Load points from xml
 		Hashtable<String, Point4f> points = loadPoints(doc
 				.getElementsByTagName(STR_POINT));
 
-		loadTrials(doc.getElementsByTagName(STR_TRIAL), points);
+		loadTrials(doc.getElementsByTagName(STR_TRIAL), points, logPath);
 	}
 
-	private void loadTrials(NodeList list, Hashtable<String, Point4f> points) {
+	private void setupLogDir(String logPath) {
+		File file = new File(logPath);
+		file.getParentFile().mkdirs();		
+		// TODO: copy configuration file and other important info for traceability
+		
+	}
+
+	private String getLogPath() {
+		// Setup the logPath to be the log directory + name of the experiment
+		String logDir = Configuration.getString("Log.DIRECTORY");
+		String name = this.getClass().getSimpleName();
+		String logPath = logDir + File.separator + name;
+		if (new File(logPath).exists()) {
+			int i = 1;
+			while (new File(logPath + i).exists())
+				i++;
+			logPath = logPath + i;
+		}
+		return logPath;
+	}
+
+	private void loadTrials(NodeList list, Hashtable<String, Point4f> points,
+			String experimetnLogPath) {
 		for (int i = 0; i < list.getLength(); i++) {
 			Map<String, String> params = new HashMap<String, String>();
 			NodeList paramNodes = list.item(i).getChildNodes();
@@ -64,21 +92,27 @@ public abstract class Experiment implements Runnable {
 
 			// Create <reps> copies of the trial
 			for (int j = 0; j < Integer.parseInt(params.get(STR_REPETITIONS)); j++) {
-				Trial t = createTrial(params, points);
+				// Compose trial logPath with expLogPath + trialName + trial rep
+				String trialLogPath = experimetnLogPath
+						+ File.separator
+						+ params.get(STR_NAME)
+						+ File.separator + j
+						+ File.separator;
+				Trial t = createTrial(params, points, trialLogPath);
 				trials.add(t);
 			}
 		}
 	}
 
 	private Trial createTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points) {
+			Hashtable<String, Point4f> points, String trialLogPath) {
 		switch (stringType2TrialType(params.get(STR_TRIAL_TYPE))) {
 		case HABITUATION:
-			return createHabituationTrial(params, points);
+			return createHabituationTrial(params, points, trialLogPath);
 		case TESTING:
-			return createTestingTrial(params, points);
+			return createTestingTrial(params, points, trialLogPath);
 		case TRAINING:
-			return createTrainingTrial(params, points);
+			return createTrainingTrial(params, points, trialLogPath);
 		}
 
 		return null;
@@ -116,21 +150,21 @@ public abstract class Experiment implements Runnable {
 	}
 
 	public abstract Trial createTrainingTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points2);
+			Hashtable<String, Point4f> points2, String trialLogPath);
 
 	public abstract Trial createTestingTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points2);
+			Hashtable<String, Point4f> points2, String trialLogPath);
 
 	public abstract Trial createHabituationTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points2);
+			Hashtable<String, Point4f> points2, String trialLogPath);
 
 	@Override
 	public void run() {
-		System.out.println("Running experiment");
-		for (Trial t : trials)
-			t.run();
 
-		System.exit(0);
+		for (Trial t : trials){
+			t.run();
+		}
+
 	}
 
 }

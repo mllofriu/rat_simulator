@@ -2,9 +2,11 @@ package experiment.multiscalemorris;
 
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.vecmath.Point4f;
 
+import support.Configuration;
 import nslj.src.lang.NslModel;
 import experiment.Trial;
 
@@ -14,8 +16,8 @@ public class MSMTrial extends Trial {
 	private Point4f initPos;
 
 	public MSMTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points) {
-		super(params);
+			Hashtable<String, Point4f> points, String trialLogPath) {
+		super(params, trialLogPath);
 
 		// Get the initial position
 		initPos = points.get(params.get(Trial.STR_STARTS));
@@ -45,6 +47,11 @@ public class MSMTrial extends Trial {
 
 	@Override
 	public void finalizeModel(NslModel model) {
+	}
+
+	@Override
+	public void loadLoggers() {
+		addLogger(new PositionLogger(getLogPath()));
 	}
 
 }

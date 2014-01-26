@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
 public class Configuration {
-	private final static String PROP_FILE = "config.properties";
+	public final static String PROP_FILE = "config.properties";
 	private static Properties configuracion = new Properties();
 	static {
 		FileInputStream in;

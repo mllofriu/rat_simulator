@@ -18,7 +18,7 @@
     <!-- 8 training trials-->
     <trial>
         <type>training</type>
-        <name>HA1</name>
+        <name>tr</name>
         <start>S</start>
         <time>200</time>
         <reps>8</reps>
@@ -27,7 +27,7 @@
     <!-- 4 testing trials-->
     <trial>
         <type>testing</type>
-        <name>HA1</name>
+        <name>te</name>
         <start>S</start>
         <time>270</time>
         <reps>4</reps>
