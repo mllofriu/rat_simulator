@@ -1,8 +1,12 @@
 package experiment;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
 
 import nslj.src.lang.NslHierarchy;
 import nslj.src.lang.NslModel;
@@ -37,8 +41,9 @@ public abstract class Trial implements Runnable {
 
 	public static final String STR_TIME = "time";
 	public static final String STR_NAME = "name";
-	public static final String STR_MAZE = "maze";
 	public static final String STR_STARTS = "start";
+	private static final String STR_MAZE = "maze";
+	
 	private static final long SLEEP_BETWEEN_CYCLES = 000;
 
 	private String name;
@@ -51,12 +56,17 @@ public abstract class Trial implements Runnable {
 	private Map<String, String> params;
 	private ExperimentUniverse universe;
 	private IRobot robot;
+	private LinkedList<ExperimentLogger> loggers;
+	private String logPath;
 
-	public Trial(Map<String, String> params) {
+	public Trial(Map<String, String> params, String trialLogPath) {
 		super();
 		this.setParams(params);
 		this.name = params.get(STR_NAME);
+		setLogPath(trialLogPath);
 
+		setupLogDir(trialLogPath);
+		
 		stopConds = new LinkedList<StopCondition>();
 		// Add default stop condition - time constraints
 		int times = Integer.parseInt(params.get(STR_TIME));
@@ -64,6 +74,8 @@ public abstract class Trial implements Runnable {
 
 		initialTasks = new LinkedList<ExperimentTask>();
 		afterCycleTasks = new LinkedList<ExperimentTask>();
+		
+		loggers = new LinkedList<ExperimentLogger>();
 
 		// Set the maze to execute
 		Configuration.setProperty("Experiment.MAZE_FILE",
@@ -92,6 +104,32 @@ public abstract class Trial implements Runnable {
 		NslHierarchy.nslSetSystem(system);
 	}
 
+	private void setupLogDir(String trialLogPath) {
+		// Create directories
+		File dir = new File(trialLogPath + File.separator);
+		dir.mkdirs();
+		
+		// Copy maze file to log directory for plot purposes
+		File maze = new File(params.get(STR_MAZE));
+		File mazeCopy = new File(trialLogPath + File.separator + "maze.xml");
+		try {
+			FileUtils.copyFile(maze, mazeCopy);
+		} catch (IOException e) {
+			System.out.println("Could not copy maze file");
+			e.printStackTrace();
+		}
+		
+		// Copy config file for reproducibilty		
+		File config = new File(Configuration.PROP_FILE);
+		File configCopy = new File(trialLogPath + File.separator + "config.properties");
+		try {
+			FileUtils.copyFile(config, configCopy);
+		} catch (IOException e) {
+			System.out.println("Could not copy prop file");
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public void run() {
 		// Create the model
@@ -101,6 +139,8 @@ public abstract class Trial implements Runnable {
 		loadAfterCycleTasks();
 		// Load the stop conditions
 		loadConditions();
+		// Load loggers
+		loadLoggers();
 		// Load it into nsl
 		system.addModel(model);
 
@@ -119,9 +159,11 @@ public abstract class Trial implements Runnable {
 			try {
 				Thread.sleep(SLEEP_BETWEEN_CYCLES);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			// Run the loggers
+			for (ExperimentLogger logger : loggers)
+				logger.log(getUniverse());
 			// Do all after-cycle tasks
 			for (ExperimentTask task : afterCycleTasks)
 				task.perform(getUniverse());
@@ -139,6 +181,8 @@ public abstract class Trial implements Runnable {
 	public abstract void loadAfterCycleTasks();
 
 	public abstract void loadInitialTasks();
+	
+	public abstract void loadLoggers();
 
 	public abstract NslModel initModel();
 
@@ -164,6 +208,10 @@ public abstract class Trial implements Runnable {
 	public Map<String, String> getParams() {
 		return params;
 	}
+	
+	public void addLogger(ExperimentLogger logger) {
+		loggers.add(logger);
+	}
 
 	public void setParams(Map<String, String> params) {
 		this.params = params;
@@ -188,6 +236,14 @@ public abstract class Trial implements Runnable {
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();
+	}
+
+	public String getLogPath() {
+		return logPath;
+	}
+
+	public void setLogPath(String logPath) {
+		this.logPath = logPath;
 	}
 
 }
