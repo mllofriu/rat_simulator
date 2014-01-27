@@ -2,14 +2,15 @@ package experiment;
 
 import java.awt.geom.Point2D;
 
+import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 public interface ExperimentUniverse {
 
-	public Vector3f getFoodPosition();
+	public Point3f getFoodPosition();
 
-	public Vector3f getRobotPosition();
+	public Point3f getRobotPosition();
 
 	public void setRobotPosition(Point2D.Float pos);
 

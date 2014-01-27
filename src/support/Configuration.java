@@ -41,6 +41,10 @@ public class Configuration {
 		return Double.parseDouble(configuracion.getProperty(propertyName));
 	}
 
+	public static float getFloat(String propertyName) {
+		return Float.parseFloat(configuracion.getProperty(propertyName));
+	}
+	
 	public static boolean getBoolean(String propertyName) {
 		return Boolean.parseBoolean(configuracion.getProperty(propertyName));
 	}

@@ -10,6 +10,7 @@ import javax.media.j3d.Transform3D;
 import javax.media.j3d.View;
 import javax.media.j3d.VirtualUniverse;
 import javax.vecmath.Color3f;
+import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
@@ -141,13 +142,13 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	 * 
 	 * @return
 	 */
-	public Vector3f getRobotPosition() {
+	public Point3f getRobotPosition() {
 		Transform3D t = new Transform3D();
 		robot.getTransformGroup().getTransform(t);
 		Vector3f pos = new Vector3f();
 		t.get(pos);
 
-		return pos;
+		return new Point3f(pos);
 	}
 
 	/**
@@ -201,9 +202,9 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		robot.getTransformGroup().setTransform(rPos);
 	}
 
-	public Vector3f getFoodPosition() {
+	public Point3f getFoodPosition() {
 		Vector3f foodPos = food.getPosition();
-		return foodPos;
+		return new Point3f(foodPos);
 	}
 
 	@Override
@@ -215,10 +216,9 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	@Override
 	public boolean hasRobotFoundFood() {
-		Vector3f food = getFoodPosition();
-		food.sub(getRobotPosition());
-		double distanceToFood = food.length();
-		return distanceToFood < CLOSE_TO_FOOD_THRS;
+		Point3f food = getFoodPosition();
+		Point3f robot = getRobotPosition();
+		return robot.distance(food) < CLOSE_TO_FOOD_THRS;
 	}
 
 	@Override
