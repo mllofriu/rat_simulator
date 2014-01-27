@@ -4,7 +4,7 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import javax.vecmath.Vector3f;
+import javax.vecmath.Point3f;
 
 import experiment.ExperimentLogger;
 import experiment.ExperimentUniverse;
@@ -18,7 +18,7 @@ public class PositionLogger extends ExperimentLogger {
 
 	@Override
 	public void log(ExperimentUniverse universe) {
-		Vector3f pos = universe.getRobotPosition();
+		Point3f pos = universe.getRobotPosition();
 		// -Z coordinate corresponds to y
 		getLogger().log(Level.INFO, pos.x + "\t" + -pos.z);
 	}
