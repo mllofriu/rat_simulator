@@ -13,6 +13,22 @@
     <point name='SW' xp='-0.2' yp='0' zp='0.2' rot='0'/>
     <point name='NE' xp='0.2' yp='0' zp='-0.2' rot='0'/>
     <point name='NW' xp='-0.2' yp='0' zp='-0.2' rot='0'/>
+    
+    <!--Subjects-->
+    <subject name='r1'/>
+    <subject name='r2'/>
+    <subject name='r3'/>
+    <subject name='r4'/>
+    
+    <!--Subject groups-->
+    <group name='g1'>
+        <member name='r1'/>
+        <member name='r2'/>
+    </group>
+    <group name='g2'>
+        <member name='r3'/>
+        <member name='r4'/>
+    </group>
 
     <!--Experiment Trials-->
     <!-- 8 training trials-->
@@ -23,6 +39,7 @@
         <time>200</time>
         <reps>8</reps>
         <maze>mazes/morrisCircular.xml</maze>
+        <subjectGroup>g1</subjectGroup>
     </trial>
     <!-- 4 testing trials-->
     <trial>
@@ -31,6 +48,7 @@
         <start>S</start>
         <time>270</time>
         <reps>4</reps>
+        <subjectGroup>g2</subjectGroup>
         <maze>mazes/morrisCircular.xml</maze>
     </trial>
     

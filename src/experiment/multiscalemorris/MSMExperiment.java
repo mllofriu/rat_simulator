@@ -1,14 +1,22 @@
 package experiment.multiscalemorris;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Map;
 
 import javax.vecmath.Point4f;
 
+import org.apache.commons.io.FileUtils;
+
+import support.Configuration;
+import experiment.ExpSubject;
 import experiment.Experiment;
 import experiment.Trial;
 
 public class MSMExperiment extends Experiment {
+
+	private static final String PLOTTING_SCRIPT = "plot/plotMaze.R";
 
 	public MSMExperiment(String filename) {
 		super(filename);
@@ -20,20 +28,40 @@ public class MSMExperiment extends Experiment {
 
 	@Override
 	public Trial createTrainingTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points, String trialLogPath) {
-		return new MSMTrial(params, points, trialLogPath);
+			Hashtable<String, Point4f> points, ExpSubject subject, String trialLogPath) {
+		return new MSMTrial(params, points,subject, trialLogPath);
 	}
 
 	@Override
 	public Trial createTestingTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points, String trialLogPath) {
-		return new MSMTrial(params, points, trialLogPath);
+			Hashtable<String, Point4f> points,ExpSubject subject,  String trialLogPath) {
+		return new MSMTrial(params, points,subject, trialLogPath);
 	}
 
 	@Override
 	public Trial createHabituationTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points, String trialLogPath) {
+			Hashtable<String, Point4f> points,ExpSubject subject,  String trialLogPath) {
 		throw new RuntimeException(
 				"There are no habituation trials in multiscale morris experiment.");
+	}
+
+	@Override
+	public void loadPlottingScripts() {
+		try {
+			// Copy the maze to the experiment's folder
+			FileUtils.copyFile(new File(Configuration.getString("Experiment.MAZE_FILE")),
+					new File(getLogPath() + "/maze.xml"));
+			// Copy the plotting script to the experiment's folder
+			FileUtils.copyFile(new File(PLOTTING_SCRIPT),
+					new File(getLogPath() + "/plot.r"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public ExpSubject createSubject(String name) {
+		return new MSMSubject(name);
 	}
 }

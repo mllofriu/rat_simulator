@@ -1,19 +1,19 @@
 package experiment.multiscalemorris;
 
-import robot.IRobot;
+import experiment.ExperimentUniverse;
 import experiment.StopCondition;
 
 public class FoundFoodStopCond implements StopCondition {
 
-	private IRobot robot;
+	private ExperimentUniverse uni;
 
-	public FoundFoodStopCond(IRobot robot) {
-		this.robot = robot;
+	public FoundFoodStopCond(ExperimentUniverse uni) {
+		this.uni = uni;
 	}
 
 	@Override
 	public boolean experimentFinished() {
-		return robot.hasFoundFood();
+		return uni.hasRobotFoundFood();
 	}
 
 }
