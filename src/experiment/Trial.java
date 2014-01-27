@@ -193,11 +193,6 @@ public abstract class Trial implements Runnable {
 		this.params = params;
 	}
 
-	@Override
-	protected void finalize() throws Throwable {
-		super.finalize();
-	}
-
 	public String getLogPath() {
 		return logPath;
 	}

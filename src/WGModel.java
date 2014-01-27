@@ -5,7 +5,7 @@
  */
 
 import nsl.modules.ActionPerformer;
-import nsl.modules.ActionSelectionSchema;
+import nsl.modules.RandomActionSelSchema;
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
 import robot.IRobot;
@@ -13,7 +13,7 @@ import robot.RobotFactory;
 
 public class WGModel extends NslModel {
 	private ActionPerformer world;
-	private ActionSelectionSchema actionSel;
+	private RandomActionSelSchema actionSel;
 
 	private static final String DEFAULT_MODEL_NAME = "WGModel (nombre por defecto)";
 
@@ -29,7 +29,7 @@ public class WGModel extends NslModel {
 
 		IRobot robot = RobotFactory.getRobot();
 
-		actionSel = new ActionSelectionSchema("actionSel", this, robot);
+		actionSel = new RandomActionSelSchema("actionSel", this, robot);
 		System.out.println("WGModel::Action ... OK");
 		world = new ActionPerformer("world", this, robot);
 		System.out.println("WGModel::World ... OK");
