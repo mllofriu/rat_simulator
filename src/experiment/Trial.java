@@ -20,7 +20,7 @@ import support.Configuration;
 /*
  * SimulationItem.java
  * Este modulo representa un item simulable 
- * Autor: Gonzalo Tejera
+ * Autor: Gonzalo Tejera, Martin Llofriu
  * Fecha: 11 de agosto de 2010
  */
 /**
@@ -48,24 +48,26 @@ public abstract class Trial implements Runnable {
 
 	private String name;
 	private Collection<StopCondition> stopConds;
-	private NslSystem system;
-	private NslInterpreter interpreter;
-	private NslScheduler scheduler;
 	private Collection<ExperimentTask> initialTasks;
 	private Collection<ExperimentTask> afterCycleTasks;
 	private Map<String, String> params;
 	private ExperimentUniverse universe;
-	private IRobot robot;
 	private LinkedList<ExperimentLogger> loggers;
 	private String logPath;
+	private ExpSubject subject;
 
-	public Trial(Map<String, String> params, String trialLogPath) {
+	public Trial(Map<String, String> params, ExpSubject subject, String trialLogPath) {
 		super();
 		this.setParams(params);
 		this.name = params.get(STR_NAME);
+		this.subject = subject;
+		
+		// Set the log path adding the individual name
 		setLogPath(trialLogPath);
 
 		setupLogDir(trialLogPath);
+		
+		setUniverse(ExpUniverseFactory.getUniverse());
 		
 		stopConds = new LinkedList<StopCondition>();
 		// Add default stop condition - time constraints
@@ -79,29 +81,11 @@ public abstract class Trial implements Runnable {
 
 		// Set the maze to execute
 		Configuration.setProperty("Experiment.MAZE_FILE",
-				getParams().get(Trial.STR_MAZE));
-		setUniverse(ExpUniverseFactory.getUniverse());
-		// Get the robot
-		setRobot(RobotFactory.getRobot());
+				getParams().get(Trial.STR_MAZE));		
+	}
 
-		system = new NslSystem(); // Create System
-		interpreter = new NslInterpreter(system); // Create Interpreter
-		// scheduler = new NslMultiClockScheduler(system); // Create Scheduler
-		scheduler = new NslSequentialScheduler(system); // Create Scheduler
-
-		system.setNoDisplay(false);
-		system.setDebug(0);
-		system.setStdOut(true);
-		system.setStdErr(true);
-		system.setInterpreter(interpreter);
-		system.nslSetScheduler(scheduler);
-		system.nslSetSchedulerMethod("pre");
-
-		system.setRunEndTime(10000000);
-		system.nslSetRunDelta(.1);
-		system.setNumRunEpochs(1);
-
-		NslHierarchy.nslSetSystem(system);
+	private void setUniverse(ExperimentUniverse universe) {
+		this.universe = universe;
 	}
 
 	private void setupLogDir(String trialLogPath) {
@@ -132,8 +116,6 @@ public abstract class Trial implements Runnable {
 
 	@Override
 	public void run() {
-		// Create the model
-		NslModel model = initModel();
 		// Load the trial tasks
 		loadInitialTasks();
 		loadAfterCycleTasks();
@@ -141,12 +123,7 @@ public abstract class Trial implements Runnable {
 		loadConditions();
 		// Load loggers
 		loadLoggers();
-		// Load it into nsl
-		system.addModel(model);
-
-		// init Run epochs
-		scheduler.initRun();
-
+		
 		// Do all after-cycle tasks
 		for (ExperimentTask task : initialTasks)
 			task.perform(getUniverse());
@@ -154,7 +131,7 @@ public abstract class Trial implements Runnable {
 		boolean stop;
 		do {
 			// One cycle to the trial
-			scheduler.stepCycle();
+			subject.stepCycle();
 
 			try {
 				Thread.sleep(SLEEP_BETWEEN_CYCLES);
@@ -173,7 +150,10 @@ public abstract class Trial implements Runnable {
 				stop = stop || sc.experimentFinished();
 		} while (!stop);
 
-		finalizeModel(model);
+	}
+
+	public ExperimentUniverse getUniverse() {
+		return universe;
 	}
 
 	public abstract void loadConditions();
@@ -183,10 +163,6 @@ public abstract class Trial implements Runnable {
 	public abstract void loadInitialTasks();
 	
 	public abstract void loadLoggers();
-
-	public abstract NslModel initModel();
-
-	public abstract void finalizeModel(NslModel model);
 
 	@Override
 	public String toString() {
@@ -215,22 +191,6 @@ public abstract class Trial implements Runnable {
 
 	public void setParams(Map<String, String> params) {
 		this.params = params;
-	}
-
-	public ExperimentUniverse getUniverse() {
-		return universe;
-	}
-
-	public void setUniverse(ExperimentUniverse world) {
-		this.universe = world;
-	}
-
-	public IRobot getRobot() {
-		return robot;
-	}
-
-	public void setRobot(IRobot robot) {
-		this.robot = robot;
 	}
 
 	@Override
