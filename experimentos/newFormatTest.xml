@@ -36,7 +36,7 @@
         <type>training</type>
         <name>tr</name>
         <start>S</start>
-        <time>200</time>
+        <time>250</time>
         <reps>8</reps>
         <maze>mazes/morrisCircular.xml</maze>
         <subjectGroup>g1</subjectGroup>
@@ -46,7 +46,7 @@
         <type>testing</type>
         <name>te</name>
         <start>S</start>
-        <time>270</time>
+        <time>200</time>
         <reps>4</reps>
         <subjectGroup>g2</subjectGroup>
         <maze>mazes/morrisCircular.xml</maze>

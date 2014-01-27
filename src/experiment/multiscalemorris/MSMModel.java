@@ -7,6 +7,7 @@ package experiment.multiscalemorris;
  */
 
 import nsl.modules.ActionPerformer;
+import nsl.modules.RandomActionSelSchema;
 import nsl.modules.TaxicFoodFinderSchema;
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
@@ -16,13 +17,15 @@ import experiment.ExperimentUniverse;
 public class MSMModel extends NslModel {
 	private ActionPerformer actionPerf;
 	private TaxicFoodFinderSchema actionSel;
+//	private RandomActionSelSchema actionSel;
 
 	public MSMModel(String nslName, NslModule nslParent, IRobot robot,
 			ExperimentUniverse univ) {
 		super(nslName, nslParent);
 
-		actionSel = new TaxicFoodFinderSchema("actionSel", this, robot, univ);
-		actionPerf = new ActionPerformer("ActionPerforme", this, robot);
+		actionSel = new TaxicFoodFinderSchema("ActionSelector", this, robot, univ);
+//		actionSel = new RandomActionSelSchema("ActionSelector", nslParent, robot);
+		actionPerf = new ActionPerformer("ActionPerformer", this, robot);
 	}
 
 	public void initSys() {

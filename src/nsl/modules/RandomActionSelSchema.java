@@ -1,25 +1,22 @@
 package nsl.modules;
 
-/* M���dulo de selecci���n de acci���n.
- Alejandra Barrera
- Versi���n: 1 (Febrero, 2005)
- */
-
 import java.util.Random;
 
 import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
 import robot.IRobot;
 
-public class ActionSelectionSchema extends NslModule {
+public class RandomActionSelSchema extends NslModule {
 	public NslDoutInt0 actionTaken;
 	private IRobot robot;
+	private Random r;
 
-	public ActionSelectionSchema(String nslName, NslModule nslParent,
+	public RandomActionSelSchema(String nslName, NslModule nslParent,
 			IRobot robot) {
 		super(nslName, nslParent);
 		actionTaken = new NslDoutInt0("ActionTaken", this);
 		this.robot = robot;
+		r = new Random();
 	}
 
 	public void simRun() {
@@ -30,7 +27,7 @@ public class ActionSelectionSchema extends NslModule {
 		// System.out.println("");
 
 		int action;
-		Random r = new Random();
+		
 		do {
 			action = r.nextInt(IRobot.NUM_POSSIBLE_ACTIONS);
 		} while (!affordances[action]);
