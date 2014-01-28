@@ -19,36 +19,23 @@ public class ArtificialPlaceCellLayer extends NslModule {
 	private ExperimentUniverse universe;
 
 	public ArtificialPlaceCellLayer(String nslName, NslModule nslParent,
-			ExperimentUniverse universe) {
+			ExperimentUniverse universe, float radius, float minX, float minY) {
 		super(nslName, nslParent);
 		// Get some parameters from configuration
-		int numLayers = Configuration.getInt("ArtificialPlaceCells.numLayers");
-		float minRadius = Configuration
-				.getFloat("ArtificialPlaceCells.minRadius");
-		float maxRadius = Configuration
-				.getFloat("ArtificialPlaceCells.maxRadius");
-		float minX = Configuration.getFloat("ArtificialPlaceCells.minX");
+		
 		float maxX = Configuration.getFloat("ArtificialPlaceCells.maxX");
-		float minY = Configuration.getFloat("ArtificialPlaceCells.minY");
 		float maxY = Configuration.getFloat("ArtificialPlaceCells.maxY");
 
 		// Compute number of cells
 		cells = new LinkedList<ArtificialPlaceCell>();
-		float radius = minRadius;
-		for (int i = 1; i <= numLayers; i++) {
-			for (float x = minX; x < maxX; x += 2 * radius) {
-				for (float y = minY; y < maxY; y += 2 * radius) {
-					// Add a cell with center x,y
-					cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y),
-							radius));
-					// Add a cell of the phase shifted layer
-					cells.add(new ArtificialPlaceCell(new Point3f(x + radius,
-							0, y + radius), radius));
-				}
+		for (float x = minX; x < maxX; x += 2 * radius) {
+			for (float y = minY; y < maxY; y += 2 * radius) {
+				// Add a cell with center x,y
+				cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y),
+						radius));
 			}
-			// Update radius
-			radius += (maxRadius - minRadius) / (numLayers - 1);
 		}
+
 		activation = new NslDoutBoolean1(this, "activation", cells.size());
 
 		// Save the universe for later

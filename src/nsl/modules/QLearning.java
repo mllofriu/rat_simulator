@@ -50,14 +50,16 @@ public class QLearning extends NslModule {
 		if (!universe.hasRobotFoundFood()) {
 			// Look for the active state
 			int i = 0;
-			while (i < states.getSize() && states.get(i))
+			while (i < states.getSize() && !states.get(i))
 				i++;
 			if (i < states.getSize()) {
 				// Add at the head (for reverse q-learning)
 				visitedStates.add(0, i);
 				// Save last action
 				actionsTaken.add(0, actionTaken.get());
+//				System.out.println(i);
 			}
+			
 		} else {
 			float reward = Configuration.getFloat("QLearning.foodReward");
 			float discountFactor = Configuration
