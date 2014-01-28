@@ -20,10 +20,9 @@ public class MSMModel extends NslModel {
 			ExperimentUniverse univ) {
 		super(nslName, nslParent);
 
-		// Explorer actionSel = new Explorer("ActionSelector", this, robot,
-		// univ);
-		TaxicFoodFinderSchema actionPerf = new TaxicFoodFinderSchema(
-				"ActionPerformer", this, robot, univ);
+		Explorer actionSel = new Explorer("ActionSelector", this, robot, univ);
+		// TaxicFoodFinderSchema actionPerf = new TaxicFoodFinderSchema(
+		// "ActionPerformer", this, robot, univ);
 		headingAngle = new HeadingAngle("HeadingPublisher", this, univ);
 
 		// Get some configuration values for place cells + qlearning
