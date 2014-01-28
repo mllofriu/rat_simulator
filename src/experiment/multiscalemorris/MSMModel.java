@@ -8,6 +8,7 @@ package experiment.multiscalemorris;
 
 import nsl.modules.ActionPerformer;
 import nsl.modules.ArtificialPlaceCellLayer;
+import nsl.modules.QLearning;
 import nsl.modules.RandomActionSelSchema;
 import nsl.modules.TaxicFoodFinderSchema;
 import nslj.src.lang.NslModel;
@@ -20,6 +21,7 @@ public class MSMModel extends NslModel {
 	private TaxicFoodFinderSchema actionSel;
 	private ArtificialPlaceCellLayer pcl;
 //	private RandomActionSelSchema actionSel;
+	private QLearning qLearning;
 
 	public MSMModel(String nslName, NslModule nslParent, IRobot robot,
 			ExperimentUniverse univ) {
@@ -29,6 +31,7 @@ public class MSMModel extends NslModel {
 //		actionSel = new RandomActionSelSchema("ActionSelector", nslParent, robot);
 		actionPerf = new ActionPerformer("ActionPerformer", this, robot);
 		pcl = new ArtificialPlaceCellLayer("PlaceCellLayer", this, univ);
+		qLearning = new QLearning("QLearning", this, pcl.getSize(), univ);
 	}
 
 	public void initSys() {
@@ -39,6 +42,8 @@ public class MSMModel extends NslModel {
 
 	public void makeConn() {
 		nslConnect(actionPerf.actionTaken, actionSel.actionTaken);
+		nslConnect(pcl, "activation", qLearning, "states");
+		nslConnect(actionSel.actionTaken, qLearning.actionTaken);
 	}
 
 }

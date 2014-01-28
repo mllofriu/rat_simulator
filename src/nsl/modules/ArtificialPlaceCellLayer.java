@@ -49,7 +49,7 @@ public class ArtificialPlaceCellLayer extends NslModule {
 			// Update radius
 			radius += (maxRadius - minRadius) / (numLayers - 1);
 		}
-		activation = new NslDoutBoolean1(this, cells.size());
+		activation = new NslDoutBoolean1(this, "activation", cells.size());
 
 		// Save the universe for later
 		this.universe = universe;
@@ -64,6 +64,10 @@ public class ArtificialPlaceCellLayer extends NslModule {
 			i++;
 		}
 //		System.out.println();
+	}
+
+	public int getSize() {
+		return cells.size();
 	}
 
 }
