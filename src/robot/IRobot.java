@@ -25,7 +25,7 @@ public interface IRobot {
 	 *            amount number of degrees. Negative degrees represent left
 	 *            turns.
 	 */
-	public abstract void doAction(int degrees);
+	public abstract void rotate(float degrees);
 
 	/**
 	 * Returns possible actions to perform
@@ -52,5 +52,7 @@ public interface IRobot {
 	 * @return
 	 */
 	public abstract BufferedImage[] getPanoramica();
+
+	public abstract void forward();
 
 }

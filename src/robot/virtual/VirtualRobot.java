@@ -29,7 +29,7 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 			.getInt("RobotVirtual.MAX_PIXEL_FRENTE");
 	private static final float STEP = 0.01f;
 
-	public VirtualExpUniverse world;
+	public VirtualExpUniverse universe;
 
 	public VirtualRobot() {
 		ExperimentUniverse univ = ExpUniverseFactory.getUniverse();
@@ -37,16 +37,20 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 			throw new RuntimeException(
 					"Virtual robot can only be run with a virtual universe");
 
-		this.world = (VirtualExpUniverse) univ;
-		UniverseFrame worldFrame = new UniverseFrame(world);
-		worldFrame.setVisible(true);
+		this.universe = (VirtualExpUniverse) univ;
+		if (Configuration.getBoolean("UniverseFrame.display")){
+			UniverseFrame worldFrame = new UniverseFrame(universe);
+			worldFrame.setVisible(true);
+		}
 	}
 
 	public VirtualRobot(VirtualExpUniverse world) {
-		this.world = world;
+		this.universe = world;
 
-		UniverseFrame worldFrame = new UniverseFrame(world);
-		worldFrame.setVisible(true);
+		if (Configuration.getBoolean("UniverseFrame.display")){
+			UniverseFrame worldFrame = new UniverseFrame(world);
+			worldFrame.setVisible(true);
+		}
 	}
 
 	@Override
@@ -54,23 +58,22 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 		BufferedImage[] pan = getPanoramica();
 
 		boolean[] affordances = new boolean[IRobot.NUM_POSSIBLE_ACTIONS];
-		;
 
-		affordances[Utiles.gradosRelative2Acccion(-90)] = Utiles.contador(
+		affordances[Utiles.discretizeAction(-90)] = Utiles.contador(
 				pan[0], Color.red) < MAX_PIXEL_LATERAL;
-		affordances[Utiles.gradosRelative2Acccion(90)] = Utiles.contador(
+		affordances[Utiles.discretizeAction(90)] = Utiles.contador(
 				pan[4], Color.red) < MAX_PIXEL_LATERAL;
-		affordances[Utiles.gradosRelative2Acccion(0)] = Utiles.contador(pan[2],
+		affordances[Utiles.discretizeAction(0)] = Utiles.contador(pan[2],
 				Color.red) < MAX_PIXEL_FRENTE;
-		affordances[Utiles.gradosRelative2Acccion(-45)] = Utiles.contador(
+		affordances[Utiles.discretizeAction(-45)] = Utiles.contador(
 				pan[1], Color.red) < MAX_PIXEL_DIAGONAL;
-		affordances[Utiles.gradosRelative2Acccion(45)] = Utiles.contador(
+		affordances[Utiles.discretizeAction(45)] = Utiles.contador(
 				pan[3], Color.red) < MAX_PIXEL_DIAGONAL;
 
-		affordances[Utiles.gradosRelative2Acccion(-180)] = true;
-		affordances[Utiles.gradosRelative2Acccion(180)] = true;
-		affordances[Utiles.gradosRelative2Acccion(-135)] = true;
-		affordances[Utiles.gradosRelative2Acccion(135)] = true;
+		affordances[Utiles.discretizeAction(-180)] = true;
+		affordances[Utiles.discretizeAction(180)] = true;
+		affordances[Utiles.discretizeAction(-135)] = true;
+		affordances[Utiles.discretizeAction(135)] = true;
 
 		return affordances;
 	}
@@ -79,8 +82,8 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 	synchronized public BufferedImage[] getPanoramica() {
 		BufferedImage[] panoramica = new BufferedImage[RobotNode.NUM_ROBOT_VIEWS];
 
-		Canvas3D[] offScreenCanvas = world.getRobotOffscreenCanvas();
-		ImageComponent2D[] offScreenImages = world.getRobotOffscreenImages();
+		Canvas3D[] offScreenCanvas = universe.getRobotOffscreenCanvas();
+		ImageComponent2D[] offScreenImages = universe.getRobotOffscreenImages();
 
 		for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++) {
 			offScreenCanvas[i].renderOffScreenBuffer();
@@ -92,25 +95,22 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 	}
 
 	@Override
-	public void doAction(int grados) {
-		// If no rotation, do translation
-		if (grados == 0)
-			world.moveRobot(new Vector3f(STEP, 0f, 0f));
-		else
-			rotateRobot(grados);
+	public void rotate(float grados) {
+		universe.rotateRobot(grados);
 	}
 
 	@Override
 	public void startRobot() {
 	}
 
-	public void rotateRobot(int actionDegrees) {
-		world.rotateRobot(Math.toRadians(actionDegrees));
+	@Override
+	public boolean hasFoundFood() {
+		return universe.hasRobotFoundFood();
 	}
 
 	@Override
-	public boolean hasFoundFood() {
-		return world.hasRobotFoundFood();
+	public void forward() {
+		universe.moveRobot(new Vector3f(STEP, 0f, 0f));		
 	}
 
 }

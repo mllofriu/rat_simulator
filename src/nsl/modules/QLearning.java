@@ -17,7 +17,7 @@ import experiment.ExperimentUniverse;
 public class QLearning extends NslModule {
 
 	public NslDinBoolean1 states;
-	public NslDinInt0 actionTaken;
+	public NslDinInt0 directionTaken;
 
 	// The value function that maps between a pair of <state,action> to a float
 	// specifying its value
@@ -36,7 +36,7 @@ public class QLearning extends NslModule {
 		this.universe = universe;
 
 		states = new NslDinBoolean1(this, "states", stateSize);
-		actionTaken = new NslDinInt0(this, "actionTaken");
+		directionTaken = new NslDinInt0(this, "directionTaken");
 
 		value = new HashMap<Pair<Integer, Integer>, Float>();
 
@@ -56,7 +56,7 @@ public class QLearning extends NslModule {
 				// Add at the head (for reverse q-learning)
 				visitedStates.add(0, i);
 				// Save last action
-				actionsTaken.add(0, actionTaken.get());
+				actionsTaken.add(0, directionTaken.get());
 //				System.out.println(i);
 			}
 			

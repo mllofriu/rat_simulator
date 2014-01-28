@@ -24,6 +24,7 @@ public class MSMExperiment extends Experiment {
 
 	public static void main(String[] args) {
 		new MSMExperiment("experimentos/newFormatTest.xml").run();
+		System.exit(0);
 	}
 
 	@Override

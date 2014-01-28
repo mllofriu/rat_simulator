@@ -42,7 +42,7 @@ public class ActionPerformer extends NslModule {
 		// Move the robot according to the last selected action taken
 		// System.out.println("Performing action");
 		int actionDegrees = Utiles.acccion2GradosRelative(actionTaken.get());
-		robot.doAction(actionDegrees);
+		robot.rotate(actionDegrees);
 
 	}
 
