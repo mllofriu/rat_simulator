@@ -6,7 +6,7 @@
     <point name='W' xp='-0.4' yp='0' zp='0' rot='0'/>
     <point name='N' xp='0' yp='0' zp='-0.4' rot='0'/>
     <point name='E' xp='0.4' yp='0' zp='0' rot='0'/>
-    <point name='S' xp='0' yp='0' zp='0.4' rot='0'/>
+    <point name='S' xp='0' yp='0' zp='0.35' rot='0'/>
 
     <!--Hidden platform points-->
     <point name='SE' xp='0.2' yp='0' zp='0.2' rot='0'/>
@@ -36,7 +36,7 @@
         <type>training</type>
         <name>tr</name>
         <start>S</start>
-        <time>250</time>
+        <time>2000</time>
         <reps>8</reps>
         <maze>mazes/morrisCircular.xml</maze>
         <subjectGroup>g1</subjectGroup>

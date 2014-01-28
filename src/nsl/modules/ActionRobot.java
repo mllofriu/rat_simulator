@@ -33,7 +33,7 @@ public class ActionRobot extends NslModule {
 	}
 
 	public void simRun() {
-		robot.doAction(NON_SENSE_ACTION); // avanza al siguiente punto
+		robot.rotate(NON_SENSE_ACTION); // avanza al siguiente punto
 	}
 
 }

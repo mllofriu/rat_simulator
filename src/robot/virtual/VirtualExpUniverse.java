@@ -229,6 +229,18 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 		Quat4f rot = new Quat4f();
 		t.get(rot);
+		
 		return rot;
+	}
+
+	@Override
+	public float getRobotOrientationAngle() {
+		Transform3D t = new Transform3D();
+		robot.getTransformGroup().getTransform(t);
+		// Get the rotation from the quaternion
+		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+		Quat4f rot = new Quat4f();
+		t.get(rot);
+		return (float) (2 * Math.acos(rot.w));
 	}
 }
