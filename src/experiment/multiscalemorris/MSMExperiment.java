@@ -47,7 +47,7 @@ public class MSMExperiment extends Experiment {
 	}
 
 	@Override
-	public void loadPlottingScripts() {
+	public void execPlottingScripts() {
 		try {
 			// Copy the maze to the experiment's folder
 			FileUtils.copyFile(new File(Configuration.getString("Experiment.MAZE_FILE")),
@@ -55,6 +55,14 @@ public class MSMExperiment extends Experiment {
 			// Copy the plotting script to the experiment's folder
 			FileUtils.copyFile(new File(PLOTTING_SCRIPT),
 					new File(getLogPath() + "/plot.r"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// Execute the plotting script
+		try {
+			Runtime.getRuntime().exec("r --no-save < plot.r", null, new File(getLogPath()));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

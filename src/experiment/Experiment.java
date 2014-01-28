@@ -77,8 +77,6 @@ public abstract class Experiment implements Runnable {
 		Hashtable<String, Hashtable<String, ExpSubject>> groups = loadGroups(
 				doc, subjects);
 
-		loadPlottingScripts();
-
 		loadTrials(doc.getElementsByTagName(STR_TRIAL), points, groups, logPath);
 	}
 
@@ -120,8 +118,8 @@ public abstract class Experiment implements Runnable {
 		return logPath;
 	}
 
-	public abstract void loadPlottingScripts();
-
+	public abstract void execPlottingScripts();
+	
 	private String computeLogPath() {
 		// Setup the logPath to be the log directory + name of the experiment
 		String logDir = Configuration.getString("Log.DIRECTORY");
@@ -229,7 +227,10 @@ public abstract class Experiment implements Runnable {
 
 		for (Trial t : trials) {
 			t.run();
+			System.out.println("Trial " + t + " finished.");
 		}
+		
+		execPlottingScripts();
 
 	}
 
