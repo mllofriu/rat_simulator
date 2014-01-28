@@ -98,14 +98,14 @@ public class Utiles {
 		float angleDifference = (float) (Math.PI * 2);
 		for (int i = 0; i < actions.length; i++) {
 			// Make rotation for this action
-			Quat4f rotAction = new Quat4f(0, 1, 0,
-					(float) Math.cos(actions[i] / 2));
+			Quat4f rotAction = angleToRot(actions[i]);
 			// Invert
 			rotAction.inverse();
 			// Compose rotToMake and inverse of action.
-			rotAction.mul(rotToMake);
+			Quat4f tmpRot = new Quat4f(rotToMake);
+			tmpRot.mul(rotAction);
 			// Compare axis angle. The closer to 0, the more suitable
-			float resultingAngle = (float) (2 * Math.acos(rotAction.w));
+			float resultingAngle = (float) Math.abs(2 * Math.acos(tmpRot.w));
 			if (resultingAngle < angleDifference) {
 				angleDifference = resultingAngle;
 				action = i;
@@ -142,7 +142,7 @@ public class Utiles {
 			// Compose rotToMake and inverse of action.
 			rotAction.mul(allotRot);
 			// Compare axis angle. The closer to 0, the more suitable
-			float resultingAngle = (float) (2 * Math.acos(rotAction.w));
+			float resultingAngle = (float) Math.abs(2 * Math.acos(rotAction.w));
 			if (resultingAngle < angleDifference) {
 				angleDifference = resultingAngle;
 				angle = i;
