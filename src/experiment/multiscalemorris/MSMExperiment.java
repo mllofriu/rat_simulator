@@ -17,13 +17,15 @@ import experiment.Trial;
 public class MSMExperiment extends Experiment {
 
 	private static final String PLOTTING_SCRIPT = "plot/plotMaze.R";
+	private static final String EXPERIMENT_XML = "experimentos/morrisMultiscale.xml";
+	
 
 	public MSMExperiment(String filename) {
 		super(filename);
 	}
 
 	public static void main(String[] args) {
-		new MSMExperiment("experimentos/newFormatTest.xml").run();
+		new MSMExperiment(EXPERIMENT_XML).run();
 		System.exit(0);
 	}
 
