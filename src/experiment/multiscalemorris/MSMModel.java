@@ -4,6 +4,7 @@ import nsl.modules.ArtificialPlaceCellLayer;
 import nsl.modules.Explorer;
 import nsl.modules.HeadingAngle;
 import nsl.modules.QLearning;
+import nsl.modules.TaxicFoodFinderSchema;
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
 import robot.IRobot;
@@ -19,7 +20,10 @@ public class MSMModel extends NslModel {
 			ExperimentUniverse univ) {
 		super(nslName, nslParent);
 
-		Explorer actionSel = new Explorer("ActionSelector", this, robot, univ);
+		// Explorer actionSel = new Explorer("ActionSelector", this, robot,
+		// univ);
+		TaxicFoodFinderSchema actionPerf = new TaxicFoodFinderSchema(
+				"ActionPerformer", this, robot, univ);
 		headingAngle = new HeadingAngle("HeadingPublisher", this, univ);
 
 		// Get some configuration values for place cells + qlearning
@@ -61,7 +65,7 @@ public class MSMModel extends NslModel {
 	public void makeConn() {
 		for (int i = 0; i < pcls.length; i++) {
 			nslConnect(pcls[i], "activation", qLearnings[i], "states");
-			nslConnect(headingAngle.headingAngle,qLearnings[i].directionTaken);
+			nslConnect(headingAngle.headingAngle, qLearnings[i].directionTaken);
 		}
 	}
 
