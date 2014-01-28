@@ -59,7 +59,8 @@ public abstract class Trial implements Runnable {
 	public Trial(Map<String, String> params, ExpSubject subject, String trialLogPath) {
 		super();
 		this.setParams(params);
-		this.name = params.get(STR_NAME);
+		// Trial is identified by its logpath
+		this.name = trialLogPath;
 		this.subject = subject;
 		
 		// Set the log path adding the individual name

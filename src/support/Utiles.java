@@ -180,9 +180,9 @@ public class Utiles {
 		return action;
 	}
 	
-	public static void main(String[] args){
-		System.out.println(discretizeAction(0));
-		System.out.println(discretizeAction(-90));
-	}
+//	public static void main(String[] args){
+//		System.out.println(discretizeAction(0));
+//		System.out.println(discretizeAction(-90));
+//	}
 
 }

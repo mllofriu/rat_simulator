@@ -32,15 +32,11 @@ public class Explorer extends NslModule {
 			// Trim
 			action = action < 0 ? 0 : action;
 			action = action > Utiles.actions.length ? Utiles.actions.length - 1 : action;
-			
-			// Best idiothetic action to reach the desired rotation
-//			System.out.println("rotating " + Utiles.actions[action]);
+			// Rotate the robot to the desired action
 			robot.rotate(Utiles.actions[action]);
+			// Re-calculate affordances
 			affordances = robot.affordances();
-//			for (int i = 0; i < affordances.length; i++)
-//				System.out.print(affordances[i] + " ");
-//			System.out.println();
-		} while (!affordances[action]);
+		} while (!affordances[Utiles.discretizeAction(0)]);
 	
 		robot.forward();
 	}
