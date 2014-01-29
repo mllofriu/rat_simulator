@@ -19,7 +19,8 @@ import experiment.Trial;
 public class MSMExperiment extends Experiment {
 
 	private static final String PLOTTING_SCRIPT = "plot/plotMaze.R";
-	private static final String EXPERIMENT_XML = "experimentos/morrisMultiscaleOneSubject.xml";
+	private static final String EXPERIMENT_XML = "experimentos/morrisMultiscaleOneSubjectTest.xml";
+	private static final String PLOT_COPIER = "plot/copyPathPlots.sh";
 
 	public MSMExperiment(String filename) {
 		super(filename);
@@ -69,21 +70,21 @@ public class MSMExperiment extends Experiment {
 		// Execute the plotting script
 		try {
 			System.out.println("Executing plotting scripts");
-			Process plot = Runtime.getRuntime().exec("Rscript plot.r",
-					null, new File(getLogPath()));
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					plot.getInputStream()));
-			String line = null;
-			while ((line = in.readLine()) != null) {
-				System.out.println(line);
-			}
-			
-			BufferedReader err = new BufferedReader(new InputStreamReader(
-					plot.getErrorStream()));
-			line = null;
-			while ((line = err.readLine()) != null) {
-				System.out.println(line);
-			}
+			Process plot = Runtime.getRuntime().exec("Rscript plot.r", null,
+					new File(getLogPath()));
+//			BufferedReader in = new BufferedReader(new InputStreamReader(
+//					plot.getInputStream()));
+//			String line = null;
+//			while ((line = in.readLine()) != null) {
+//				System.out.println(line);
+//			}
+//
+//			BufferedReader err = new BufferedReader(new InputStreamReader(
+//					plot.getErrorStream()));
+//			line = null;
+//			while ((line = err.readLine()) != null) {
+//				System.out.println(line);
+//			}
 			plot.waitFor();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -92,6 +93,23 @@ public class MSMExperiment extends Experiment {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		// Copy the plotting script to the experiment's folder
+		try {
+			FileUtils.copyFile(new File(PLOT_COPIER), new File(getLogPath()
+					+ "/copyPathPlots.sh"));
+			Process plot = Runtime.getRuntime().exec("sh copyPathPlots.sh", null,
+					new File(getLogPath()));
+			plot.waitFor();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+
 	}
 
 	@Override
