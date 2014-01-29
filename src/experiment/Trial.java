@@ -31,6 +31,10 @@ import support.Configuration;
  * 
  */
 public abstract class Trial implements Runnable {
+	public ExpSubject getSubject() {
+		return subject;
+	}
+
 	public static final int HABITUATION = 0;
 	public static final int TRAINING = 1;
 	public static final int TESTING = 2;

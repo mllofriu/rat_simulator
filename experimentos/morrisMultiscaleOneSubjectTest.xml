@@ -28,8 +28,8 @@
         <type>training</type>
         <name>tr</name>
         <start>S</start>
-        <time>20</time>
-        <reps>1</reps>
+        <time>2000</time>
+        <reps>4</reps>
         <maze>mazes/morrisCircular.xml</maze>
         <subjectGroup>g1</subjectGroup>
     </trial>

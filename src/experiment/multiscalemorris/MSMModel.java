@@ -1,5 +1,10 @@
 package experiment.multiscalemorris;
 
+import java.util.LinkedList;
+import java.util.List;
+
+import com.sun.tools.javac.util.Pair;
+
 import nsl.modules.ActionPerformerVote;
 import nsl.modules.ArtificialPlaceCellLayer;
 import nsl.modules.Explorer;
@@ -17,6 +22,7 @@ public class MSMModel extends NslModel {
 	private HeadingAngle headingAngle;
 	private QLearning[] qLearnings;
 	private ActionPerformerVote actionPerformerVote;
+	private List<Pair<QLearning, ArtificialPlaceCellLayer>> PCLQLPairs;
 
 	public MSMModel(String nslName, NslModule nslParent, IRobot robot,
 			ExperimentUniverse univ) {
@@ -45,6 +51,7 @@ public class MSMModel extends NslModel {
 		float radius = minRadius;
 		pcls = new ArtificialPlaceCellLayer[numLayers];
 		qLearnings = new QLearning[numLayers];
+		PCLQLPairs = new LinkedList<Pair<QLearning, ArtificialPlaceCellLayer>>();
 		// For each layer
 		for (int i = 0; i < numLayers; i++) {
 
@@ -53,6 +60,7 @@ public class MSMModel extends NslModel {
 			qLearnings[i] = new QLearning("QLearning", this, pcls[i].getSize(),
 					robot, univ);
 
+			PCLQLPairs.add(new Pair<QLearning, ArtificialPlaceCellLayer>(qLearnings[i], pcls[i]));
 			// Update radius
 			radius += (maxRadius - minRadius) / (numLayers - 1);
 		}
@@ -69,6 +77,10 @@ public class MSMModel extends NslModel {
 			nslConnect(pcls[i], "activation", qLearnings[i], "states");
 			nslConnect(qLearnings[i].actionVote, actionPerformerVote.votes[i]);
 		}
+	}
+
+	public List<Pair<QLearning, ArtificialPlaceCellLayer>> getPCLQLPairs() {
+		return PCLQLPairs;
 	}
 
 }
