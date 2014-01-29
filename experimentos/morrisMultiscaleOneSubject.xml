@@ -29,7 +29,7 @@
         <name>tr</name>
         <start>S</start>
         <time>2000</time>
-        <reps>32</reps>
+        <reps>8</reps>
         <maze>mazes/morrisCircular.xml</maze>
         <subjectGroup>g1</subjectGroup>
     </trial>
