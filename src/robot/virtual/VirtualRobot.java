@@ -27,7 +27,8 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 			.getInt("RobotVirtual.MAX_PIXEL_DIAGONAL");
 	private final int MAX_PIXEL_FRENTE = Configuration
 			.getInt("RobotVirtual.MAX_PIXEL_FRENTE");
-	private static final float STEP = 0.01f;
+	private static final float STEP = Configuration
+			.getFloat("RobotVirtual.Step");
 
 	public VirtualExpUniverse universe;
 

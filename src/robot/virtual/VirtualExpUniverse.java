@@ -17,6 +17,7 @@ import javax.vecmath.Vector3f;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import support.Configuration;
 import support.XMLDocReader;
 import experiment.ExperimentUniverse;
 
@@ -30,7 +31,7 @@ import experiment.ExperimentUniverse;
 public class VirtualExpUniverse extends VirtualUniverse implements
 		ExperimentUniverse {
 
-	private static final double CLOSE_TO_FOOD_THRS = 0.03;
+	private static final float CLOSE_TO_FOOD_THRS = Configuration.getFloat("VirtualUniverse.closeToFood");
 
 	private View topView;
 	private RobotNode robot;

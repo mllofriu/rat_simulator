@@ -18,7 +18,6 @@ public class MSMExperiment extends Experiment {
 
 	private static final String PLOTTING_SCRIPT = "plot/plotMaze.R";
 	private static final String EXPERIMENT_XML = "experimentos/morrisMultiscaleOneSubject.xml";
-	
 
 	public MSMExperiment(String filename) {
 		super(filename);
@@ -31,19 +30,22 @@ public class MSMExperiment extends Experiment {
 
 	@Override
 	public Trial createTrainingTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points, ExpSubject subject, String trialLogPath) {
-		return new MSMTrial(params, points,subject, trialLogPath);
+			Hashtable<String, Point4f> points, ExpSubject subject,
+			String trialLogPath) {
+		return new MSMTrial(params, points, subject, trialLogPath);
 	}
 
 	@Override
 	public Trial createTestingTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points,ExpSubject subject,  String trialLogPath) {
-		return new MSMTrial(params, points,subject, trialLogPath);
+			Hashtable<String, Point4f> points, ExpSubject subject,
+			String trialLogPath) {
+		return new MSMTrial(params, points, subject, trialLogPath);
 	}
 
 	@Override
 	public Trial createHabituationTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points,ExpSubject subject,  String trialLogPath) {
+			Hashtable<String, Point4f> points, ExpSubject subject,
+			String trialLogPath) {
 		throw new RuntimeException("Habituation trial not implemented");
 	}
 
@@ -51,20 +53,26 @@ public class MSMExperiment extends Experiment {
 	public void execPlottingScripts() {
 		try {
 			// Copy the maze to the experiment's folder
-			FileUtils.copyFile(new File(Configuration.getString("Experiment.MAZE_FILE")),
+			FileUtils.copyFile(
+					new File(Configuration.getString("Experiment.MAZE_FILE")),
 					new File(getLogPath() + "/maze.xml"));
 			// Copy the plotting script to the experiment's folder
-			FileUtils.copyFile(new File(PLOTTING_SCRIPT),
-					new File(getLogPath() + "/plot.r"));
+			FileUtils.copyFile(new File(PLOTTING_SCRIPT), new File(getLogPath()
+					+ "/plot.r"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		// Execute the plotting script
 		try {
-			Runtime.getRuntime().exec("r --no-save < plot.r", null, new File(getLogPath()));
+			Process plot = Runtime.getRuntime().exec("r --no-save < plot.r",
+					null, new File(getLogPath()));
+			plot.waitFor();
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
