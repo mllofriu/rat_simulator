@@ -134,11 +134,11 @@ public abstract class Trial implements Runnable {
 			// One cycle to the trial
 			subject.stepCycle();
 
-			try {
-				Thread.sleep(SLEEP_BETWEEN_CYCLES);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				Thread.sleep(SLEEP_BETWEEN_CYCLES);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
 			// Run the loggers
 			for (ExperimentLogger logger : loggers)
 				logger.log(getUniverse());
