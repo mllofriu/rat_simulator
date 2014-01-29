@@ -17,7 +17,7 @@ import experiment.Trial;
 public class MSMExperiment extends Experiment {
 
 	private static final String PLOTTING_SCRIPT = "plot/plotMaze.R";
-	private static final String EXPERIMENT_XML = "experimentos/morrisMultiscale.xml";
+	private static final String EXPERIMENT_XML = "experimentos/morrisMultiscaleOneSubject.xml";
 	
 
 	public MSMExperiment(String filename) {
@@ -44,8 +44,7 @@ public class MSMExperiment extends Experiment {
 	@Override
 	public Trial createHabituationTrial(Map<String, String> params,
 			Hashtable<String, Point4f> points,ExpSubject subject,  String trialLogPath) {
-		throw new RuntimeException(
-				"There are no habituation trials in multiscale morris experiment.");
+		throw new RuntimeException("Habituation trial not implemented");
 	}
 
 	@Override

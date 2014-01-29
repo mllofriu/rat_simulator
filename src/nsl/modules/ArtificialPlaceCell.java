@@ -15,5 +15,9 @@ public class ArtificialPlaceCell {
 	public boolean isActive(Point3f currLocation){
 		return center.distance(currLocation) < radius;
 	}
+	
+	public float getActivation(Point3f currLocation){
+		return 1/center.distance(currLocation);
+	}
 }
 

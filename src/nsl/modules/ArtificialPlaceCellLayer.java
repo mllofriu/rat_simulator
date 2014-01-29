@@ -5,14 +5,14 @@ import java.util.LinkedList;
 import javax.vecmath.Point3f;
 
 import nslj.src.lang.NslDoutBoolean1;
+import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import support.Configuration;
-import experiment.ExpUniverseFactory;
 import experiment.ExperimentUniverse;
 
 public class ArtificialPlaceCellLayer extends NslModule {
 
-	public NslDoutBoolean1 activation;
+	public NslDoutFloat1 activation;
 
 	private LinkedList<ArtificialPlaceCell> cells;
 
@@ -33,10 +33,13 @@ public class ArtificialPlaceCellLayer extends NslModule {
 				// Add a cell with center x,y
 				cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y),
 						radius));
+				// phased out layer
+				cells.add(new ArtificialPlaceCell(new Point3f(x + radius, 0, y + radius),
+						radius));
 			}
 		}
 
-		activation = new NslDoutBoolean1(this, "activation", cells.size());
+		activation = new NslDoutFloat1(this, "activation", cells.size());
 
 		// Save the universe for later
 		this.universe = universe;
@@ -46,11 +49,9 @@ public class ArtificialPlaceCellLayer extends NslModule {
 	public void simRun() {
 		int i = 0;
 		for (ArtificialPlaceCell pCell : cells) {
-			activation.set(i, pCell.isActive(universe.getRobotPosition()));
-//			System.out.print(pCell.isActive(universe.getRobotPosition()) + " ");
+			activation.set(i, pCell.getActivation(universe.getRobotPosition()));
 			i++;
 		}
-//		System.out.println();
 	}
 
 	public int getSize() {

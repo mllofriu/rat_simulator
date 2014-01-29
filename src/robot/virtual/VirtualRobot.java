@@ -31,6 +31,10 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 
 	public VirtualExpUniverse universe;
 
+	private boolean[] affordances;
+
+	private boolean validCachedAffordances;
+
 	public VirtualRobot() {
 		ExperimentUniverse univ = ExpUniverseFactory.getUniverse();
 		if (!(univ instanceof VirtualExpUniverse))
@@ -42,6 +46,8 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 			UniverseFrame worldFrame = new UniverseFrame(universe);
 			worldFrame.setVisible(true);
 		}
+		
+		validCachedAffordances = false;
 	}
 
 	public VirtualRobot(VirtualExpUniverse world) {
@@ -51,29 +57,36 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 			UniverseFrame worldFrame = new UniverseFrame(world);
 			worldFrame.setVisible(true);
 		}
+		
+		validCachedAffordances = false;
 	}
 
 	@Override
 	public boolean[] affordances() {
-		BufferedImage[] pan = getPanoramica();
-
-		boolean[] affordances = new boolean[IRobot.NUM_POSSIBLE_ACTIONS];
-
-		affordances[Utiles.discretizeAction(-90)] = Utiles.contador(
-				pan[0], Color.red) < MAX_PIXEL_LATERAL;
-		affordances[Utiles.discretizeAction(90)] = Utiles.contador(
-				pan[4], Color.red) < MAX_PIXEL_LATERAL;
-		affordances[Utiles.discretizeAction(0)] = Utiles.contador(pan[2],
-				Color.red) < MAX_PIXEL_FRENTE;
-		affordances[Utiles.discretizeAction(-45)] = Utiles.contador(
-				pan[1], Color.red) < MAX_PIXEL_DIAGONAL;
-		affordances[Utiles.discretizeAction(45)] = Utiles.contador(
-				pan[3], Color.red) < MAX_PIXEL_DIAGONAL;
-
-		affordances[Utiles.discretizeAction(-180)] = true;
-		affordances[Utiles.discretizeAction(180)] = true;
-		affordances[Utiles.discretizeAction(-135)] = true;
-		affordances[Utiles.discretizeAction(135)] = true;
+		// Use cache if robot has not moved
+		if (!validCachedAffordances){
+			BufferedImage[] pan = getPanoramica();
+	
+			affordances = new boolean[IRobot.NUM_POSSIBLE_ACTIONS];
+	
+			affordances[Utiles.discretizeAction(-90)] = Utiles.contador(
+					pan[0], Color.red) < MAX_PIXEL_LATERAL;
+			affordances[Utiles.discretizeAction(90)] = Utiles.contador(
+					pan[4], Color.red) < MAX_PIXEL_LATERAL;
+			affordances[Utiles.discretizeAction(0)] = Utiles.contador(pan[2],
+					Color.red) < MAX_PIXEL_FRENTE;
+			affordances[Utiles.discretizeAction(-45)] = Utiles.contador(
+					pan[1], Color.red) < MAX_PIXEL_DIAGONAL;
+			affordances[Utiles.discretizeAction(45)] = Utiles.contador(
+					pan[3], Color.red) < MAX_PIXEL_DIAGONAL;
+	
+			affordances[Utiles.discretizeAction(-180)] = true;
+			affordances[Utiles.discretizeAction(180)] = true;
+			affordances[Utiles.discretizeAction(-135)] = true;
+			affordances[Utiles.discretizeAction(135)] = true;
+			
+			validCachedAffordances = true;
+		}
 
 		return affordances;
 	}
@@ -97,6 +110,7 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 	@Override
 	public void rotate(float grados) {
 		universe.rotateRobot(grados);
+		validCachedAffordances = false;
 	}
 
 	@Override
@@ -111,6 +125,7 @@ public class VirtualRobot extends java.awt.Frame implements IRobot {
 	@Override
 	public void forward() {
 		universe.moveRobot(new Vector3f(STEP, 0f, 0f));		
+		validCachedAffordances = false;
 	}
 
 }

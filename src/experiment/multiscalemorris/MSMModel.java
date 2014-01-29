@@ -1,5 +1,6 @@
 package experiment.multiscalemorris;
 
+import nsl.modules.ActionPerformerVote;
 import nsl.modules.ArtificialPlaceCellLayer;
 import nsl.modules.Explorer;
 import nsl.modules.HeadingAngle;
@@ -15,14 +16,16 @@ public class MSMModel extends NslModel {
 	private ArtificialPlaceCellLayer[] pcls;
 	private HeadingAngle headingAngle;
 	private QLearning[] qLearnings;
+	private ActionPerformerVote actionPerformerVote;
 
 	public MSMModel(String nslName, NslModule nslParent, IRobot robot,
 			ExperimentUniverse univ) {
 		super(nslName, nslParent);
 
-		Explorer actionSel = new Explorer("ActionSelector", this, robot, univ);
-		// TaxicFoodFinderSchema actionPerf = new TaxicFoodFinderSchema(
-		// "ActionPerformer", this, robot, univ);
+		// Explorer actionSel = new Explorer("ActionSelector", this, robot,
+		// univ);
+//		TaxicFoodFinderSchema actionPerf = new TaxicFoodFinderSchema(
+//		 "ActionPerformer", this, robot, univ);
 		headingAngle = new HeadingAngle("HeadingPublisher", this, univ);
 
 		// Get some configuration values for place cells + qlearning
@@ -33,22 +36,22 @@ public class MSMModel extends NslModel {
 				.getFloat("ArtificialPlaceCells.maxRadius");
 		float minX = Configuration.getFloat("ArtificialPlaceCells.minX");
 		float minY = Configuration.getFloat("ArtificialPlaceCells.minY");
-
+		
+		// Created first to let Qlearning execute once when there is food
+		actionPerformerVote = new ActionPerformerVote("ActionPerformer", this,
+				numLayers, robot);
+		
 		// Create the layers
 		float radius = minRadius;
-		pcls = new ArtificialPlaceCellLayer[numLayers * 2];
-		qLearnings = new QLearning[numLayers * 2];
+		pcls = new ArtificialPlaceCellLayer[numLayers];
+		qLearnings = new QLearning[numLayers];
 		// For each layer
-		int i = 0;
-		while (i < numLayers * 2) {
-			// Create the normal and phased out layer
-			for (float phase = 0; phase <= radius; phase += radius) {
-				pcls[i] = new ArtificialPlaceCellLayer("PlaceCellLayer", this,
-						univ, radius, minX + phase, minY + phase);
-				qLearnings[i] = new QLearning("QLearning", this,
-						pcls[i].getSize(), univ);
-				i++;
-			}
+		for (int i = 0; i < numLayers; i++) {
+
+			pcls[i] = new ArtificialPlaceCellLayer("PlaceCellLayer", this,
+					univ, radius, minX, minY);
+			qLearnings[i] = new QLearning("QLearning", this, pcls[i].getSize(),
+					robot, univ);
 
 			// Update radius
 			radius += (maxRadius - minRadius) / (numLayers - 1);
@@ -64,7 +67,7 @@ public class MSMModel extends NslModel {
 	public void makeConn() {
 		for (int i = 0; i < pcls.length; i++) {
 			nslConnect(pcls[i], "activation", qLearnings[i], "states");
-			nslConnect(headingAngle.headingAngle, qLearnings[i].directionTaken);
+			nslConnect(qLearnings[i].actionVote, actionPerformerVote.votes[i]);
 		}
 	}
 

@@ -13,10 +13,13 @@ import javax.vecmath.Vector3f;
 
 public class Utiles {
 
-	public static final float[] actions = {  -(float) Math.PI, -(float) (3 * Math.PI / 4),
-			-(float) (Math.PI / 2), -(float) (Math.PI / 4), 0,
-			(float) (Math.PI / 4), (float) (Math.PI / 2),
-			(float) (3 * Math.PI / 4) };
+	// public static final float[] actions = { -(float) Math.PI, -(float) (3 *
+	// Math.PI / 4),
+	// -(float) (Math.PI / 2), -(float) (Math.PI / 4), 0,
+	// (float) (Math.PI / 4), (float) (Math.PI / 2),
+	// (float) (3 * Math.PI / 4) };
+	public static final float[] actions = { -(float) (Math.PI / 4), 0,
+			(float) (Math.PI / 4) };
 	public static final float[] discreteAngles = { 0, (float) (Math.PI / 4),
 			(float) (Math.PI / 2), (float) (3 * Math.PI / 4), (float) Math.PI,
 			(float) (5 * Math.PI / 4), (float) (6 * Math.PI / 4),
@@ -32,7 +35,7 @@ public class Utiles {
 					contador++;
 			}
 
-//		System.out.println("Contador " +contador);
+		// System.out.println("Contador " +contador);
 		return contador;
 	}
 
@@ -124,13 +127,16 @@ public class Utiles {
 	}
 
 	/**
-	 * Discretizes the allothetic angle giving the index to the closer discrete angle
-	 * @param allotAngle the allothetic angle in radians
+	 * Discretizes the allothetic angle giving the index to the closer discrete
+	 * angle
+	 * 
+	 * @param allotAngle
+	 *            the allothetic angle in radians
 	 * @return
 	 */
-	public static double discretizeAngle(float allotAngle) {
+	public static int discretizeAngle(float allotAngle) {
 		Quat4f allotRot = angleToRot(allotAngle);
-		
+
 		int angle = -1;
 		float angleDifference = (float) (Math.PI * 2);
 		for (int i = 0; i < discreteAngles.length; i++) {
@@ -153,13 +159,16 @@ public class Utiles {
 	}
 
 	/**
-	 * Discretizes the rotation returning the index of the closest discrete action
-	 * @param degrees the rotationg in degrees
+	 * Discretizes the rotation returning the index of the closest discrete
+	 * action
+	 * 
+	 * @param degrees
+	 *            the rotationg in degrees
 	 * @return
 	 */
 	public static int discretizeAction(int degrees) {
 		Quat4f allotRot = angleToRot((float) Math.toRadians(degrees));
-		
+
 		int action = -1;
 		float angleDifference = (float) (Math.PI * 2);
 		for (int i = 0; i < actions.length; i++) {
@@ -170,7 +179,8 @@ public class Utiles {
 			// Compose rotToMake and inverse of action.
 			rotAction.mul(allotRot);
 			// Compare axis angle. The closer to 0, the more suitable
-			float resultingAbsAngle = (float) Math.abs(2 * Math.acos(rotAction.w));
+			float resultingAbsAngle = (float) Math.abs(2 * Math
+					.acos(rotAction.w));
 			if (resultingAbsAngle < angleDifference) {
 				angleDifference = resultingAbsAngle;
 				action = i;
@@ -179,10 +189,10 @@ public class Utiles {
 
 		return action;
 	}
-	
-//	public static void main(String[] args){
-//		System.out.println(discretizeAction(0));
-//		System.out.println(discretizeAction(-90));
-//	}
+
+	// public static void main(String[] args){
+	// System.out.println(discretizeAction(0));
+	// System.out.println(discretizeAction(-90));
+	// }
 
 }
