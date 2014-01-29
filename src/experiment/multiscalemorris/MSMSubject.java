@@ -1,6 +1,12 @@
 package experiment.multiscalemorris;
 
+import java.util.List;
+
+import com.sun.tools.javac.util.Pair;
+
 import robot.RobotFactory;
+import nsl.modules.ArtificialPlaceCellLayer;
+import nsl.modules.QLearning;
 import nslj.src.lang.NslHierarchy;
 import nslj.src.lang.NslModel;
 import nslj.src.system.NslInterpreter;
@@ -56,6 +62,10 @@ public class MSMSubject implements ExpSubject{
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	public List<Pair<QLearning, ArtificialPlaceCellLayer>> getPCLQlearningPairs() {
+		return model.getPCLQLPairs();
 	}
 
 }

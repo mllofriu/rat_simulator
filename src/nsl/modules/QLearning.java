@@ -1,11 +1,15 @@
 package nsl.modules;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
 import nslj.src.lang.NslDinFloat1;
@@ -21,6 +25,7 @@ public class QLearning extends NslModule {
 	private static final Float INITIAL_VALUE = 0f;
 	private static final float EXPLORE_THRESHOLD = 10;
 	private static final float FOOD_REWARD = Configuration.getFloat("QLearning.foodReward");
+	private static final String DUMP_FILENAME = "policy.txt";
 	public NslDinFloat1 states;
 	public NslDoutInt0 actionVote;
 
@@ -83,13 +88,12 @@ public class QLearning extends NslModule {
 	private int getNextStep(int s) {
 		// Store values in array
 		float[] vals = new float[Utiles.discreteAngles.length];
-		float totalVal = 0;
 		float maxVal = 0;
-		for (int a = 0; a < Utiles.discreteAngles.length; a++) {
-			vals[a] = value.get(new StateAction(s, a));
-			totalVal += vals[a];
-			if (vals[a] > maxVal)
-				maxVal = vals[a];
+		for (int angle = 0; angle < Utiles.discreteAngles.length; angle++) {
+			vals[angle] = value.get(new StateAction(s, angle));
+			if (vals[angle] > maxVal){
+				maxVal = vals[angle];
+			}
 		}
 		
 		int action;		
@@ -98,14 +102,15 @@ public class QLearning extends NslModule {
 			action = -1;
 		} else {
 			// Randomly assign an angle proportional to its expected reward
-			float r = random.nextFloat() * totalVal;
-			float acc = 0;
-			int nextAngle = -1;
-			do {
-				nextAngle++;
-				acc += vals[nextAngle];
-			} while (acc < r);
-			
+//			float r = random.nextFloat() * totalVal;
+//			float acc = 0;
+//			int nextAngle = -1;
+//			do {
+//				nextAngle++;
+//				acc += vals[nextAngle];
+//			} while (acc < r);
+			// Exploit best angle
+			int nextAngle = getMaxAngle(s);
 		
 			// Get angle to that maximal direction
 			Quat4f nextRot = Utiles.angleToRot(Utiles.discreteAngles[nextAngle]);
@@ -117,6 +122,20 @@ public class QLearning extends NslModule {
 		}
 
 		return action;
+	}
+
+	private int getMaxAngle(int s) {
+		float[] vals = new float[Utiles.discreteAngles.length];
+		int maxAngle = -1;
+		float maxVal = 0;
+		for (int angle = 0; angle < Utiles.discreteAngles.length; angle++) {
+			vals[angle] = value.get(new StateAction(s, angle));
+			if (vals[angle] > maxVal){
+				maxVal = vals[angle];
+				maxAngle = angle;
+			}
+		}
+		return maxAngle;
 	}
 
 	private int getActiveState() {
@@ -180,6 +199,46 @@ public class QLearning extends NslModule {
 			// Empty record of visited states and actions taken
 			visitedStates.clear();
 			actionsTaken.clear();
+		}
+	}
+	
+	public void dumpPolicy(String logDir, ArtificialPlaceCellLayer pcl){
+		File f = new File(logDir + DUMP_FILENAME);
+		PrintWriter writer;
+		try {
+			writer = new PrintWriter(f);
+			
+			writer.println("x\ty\tangle");
+			List<Point3f> points = pcl.getDumpPoints();
+			for(Point3f p : points){
+				float[] states = pcl.getActivationValues(p);
+				
+				// Get the active state
+				float maxVal = 0;
+				int activeState = -1;
+				for (int i = 0; i < states.length; i++)
+					if (states[i] > maxVal) {
+						activeState = i;
+						maxVal = states[i];
+					}
+				
+				// Get the policy angle for this state
+				int angle = getMaxAngle(activeState);
+				
+				// Write to file
+				String policyAngle;
+				if (angle == -1)
+					policyAngle = "NA";
+				else 
+					policyAngle = new Float(Utiles.discreteAngles[angle]).toString();
+				
+				writer.println(p.x + "\t" + (-p.z) + "\t" + policyAngle);
+			}
+			
+			writer.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

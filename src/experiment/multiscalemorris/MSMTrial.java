@@ -28,6 +28,8 @@ public class MSMTrial extends Trial {
 
 	@Override
 	public void loadAfterCycleTasks() {
+		MSMSubject subject = (MSMSubject) getSubject();
+		addAfterCycleTask(new PolicyDumper(subject,getLogPath()));
 	}
 
 	@Override
