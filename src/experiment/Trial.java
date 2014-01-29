@@ -151,6 +151,9 @@ public abstract class Trial implements Runnable {
 				stop = stop || sc.experimentFinished();
 		} while (!stop);
 
+		// Close file handlers
+		for (ExperimentLogger logger : loggers)
+			logger.closeLog();
 	}
 
 	public ExperimentUniverse getUniverse() {

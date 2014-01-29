@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 public abstract class ExperimentLogger {
 
 	private Logger logger;
+	private FileHandler filetxt;
 
 	public ExperimentLogger(String logDir){
 		logger = Logger.getLogger(this.getClass().getName());
@@ -26,7 +27,7 @@ public abstract class ExperimentLogger {
 			File file = new File(filePath);
 			file.getParentFile().mkdirs();
 			file.createNewFile();
-			FileHandler filetxt = new FileHandler(filePath);
+			filetxt = new FileHandler(filePath);
 			filetxt.setFormatter(getFormatter());
 			logger.addHandler(filetxt);
 		} catch (SecurityException e) {
@@ -41,6 +42,10 @@ public abstract class ExperimentLogger {
 	public abstract Formatter getFormatter();
 
 	public abstract void log(ExperimentUniverse universe);
+	
+	public void closeLog(){
+		filetxt.close();
+	}
 
 	public Logger getLogger() {
 		return logger;
