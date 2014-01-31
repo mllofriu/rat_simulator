@@ -55,7 +55,12 @@ public class ActionPerformerVote extends NslModule {
 		Collections.sort(voteList);
 
 		do {
-			int action = voteList.get(voteList.size() - 1).getAction();
+			int action;
+			if (!voteList.isEmpty())
+				action = voteList.get(voteList.size() - 1).getAction();
+			else 
+				action = -1;
+			
 			// Action -1 means exploration - execute explorer algorithm
 			if (action == -1) {
 				lastActionRandom = true;
@@ -83,7 +88,7 @@ public class ActionPerformerVote extends NslModule {
 					voteList.remove(voteList.size() - 1);
 				}
 			}
-		} while (!aff[Utiles.discretizeAction(0)] && !voteList.isEmpty());
+		} while (!aff[Utiles.discretizeAction(0)]);
 
 		// If there is no actual actiona that can be performed, execute explorer
 		// algorithm
