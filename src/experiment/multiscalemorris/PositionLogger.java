@@ -6,21 +6,26 @@ import java.util.logging.LogRecord;
 
 import javax.vecmath.Point3f;
 
+import nsl.modules.ActionPerformerVote;
 import experiment.ExperimentLogger;
 import experiment.ExperimentUniverse;
 
 public class PositionLogger extends ExperimentLogger {
 
-	public PositionLogger(String logDir) {
+	private ActionPerformerVote actionPerformer;
+
+	public PositionLogger(String logDir, ActionPerformerVote actionPerformer) {
 		super(logDir);
-		getLogger().log(Level.INFO, "x\ty");
+		getLogger().log(Level.INFO, "x\ty\trandom");
+		
+		this.actionPerformer = actionPerformer;
 	}
 
 	@Override
 	public void log(ExperimentUniverse universe) {
 		Point3f pos = universe.getRobotPosition();
 		// -Z coordinate corresponds to y
-		getLogger().log(Level.INFO, pos.x + "\t" + -pos.z);
+		getLogger().log(Level.INFO, pos.x + "\t" + -pos.z + "\t" + actionPerformer.wasLastActionRandom());
 	}
 
 	@Override

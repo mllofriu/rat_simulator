@@ -28,8 +28,6 @@ public class MSMTrial extends Trial {
 
 	@Override
 	public void loadAfterCycleTasks() {
-		MSMSubject subject = (MSMSubject) getSubject();
-		addAfterCycleTask(new PolicyDumper(subject,getLogPath()));
 	}
 
 	@Override
@@ -39,7 +37,14 @@ public class MSMTrial extends Trial {
 
 	@Override
 	public void loadLoggers() {
-		addLogger(new PositionLogger(getLogPath()));
+		MSMSubject subject = (MSMSubject) getSubject();
+		addLogger(new PositionLogger(getLogPath(), subject.getActionPerformer()));
+	}
+
+	@Override
+	public void loadAfterTrialTasks() {
+		MSMSubject subject = (MSMSubject) getSubject();
+		addAfterTrialTask(new PolicyDumper(subject,getLogPath()));
 	}
 
 }

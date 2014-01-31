@@ -48,12 +48,13 @@ public abstract class Trial implements Runnable {
 	public static final String STR_STARTS = "start";
 	private static final String STR_MAZE = "maze";
 	
-	private static final long SLEEP_BETWEEN_CYCLES = 000;
+	private static final long SLEEP_BETWEEN_CYCLES = 5000;
 
 	private String name;
 	private Collection<StopCondition> stopConds;
 	private Collection<ExperimentTask> initialTasks;
 	private Collection<ExperimentTask> afterCycleTasks;
+	private Collection<ExperimentTask> afterTrialTasks;
 	private Map<String, String> params;
 	private ExperimentUniverse universe;
 	private LinkedList<ExperimentLogger> loggers;
@@ -81,6 +82,7 @@ public abstract class Trial implements Runnable {
 
 		initialTasks = new LinkedList<ExperimentTask>();
 		afterCycleTasks = new LinkedList<ExperimentTask>();
+		afterTrialTasks = new LinkedList<ExperimentTask>();
 		
 		loggers = new LinkedList<ExperimentLogger>();
 
@@ -124,6 +126,7 @@ public abstract class Trial implements Runnable {
 		// Load the trial tasks
 		loadInitialTasks();
 		loadAfterCycleTasks();
+		loadAfterTrialTasks();
 		// Load the stop conditions
 		loadConditions();
 		// Load loggers
@@ -155,9 +158,15 @@ public abstract class Trial implements Runnable {
 				stop = stop || sc.experimentFinished();
 		} while (!stop);
 
+		// After trial tasks
+		for (ExperimentTask task : afterTrialTasks)
+			task.perform(universe);
+		
 		// Close file handlers
 		for (ExperimentLogger logger : loggers)
 			logger.closeLog();
+		
+		System.out.println("Trial " + name + " finished.");
 	}
 
 	public ExperimentUniverse getUniverse() {
@@ -167,6 +176,8 @@ public abstract class Trial implements Runnable {
 	public abstract void loadConditions();
 
 	public abstract void loadAfterCycleTasks();
+	
+	public abstract void loadAfterTrialTasks();
 
 	public abstract void loadInitialTasks();
 	
@@ -185,6 +196,10 @@ public abstract class Trial implements Runnable {
 		afterCycleTasks.add(t);
 	}
 
+	public void addAfterTrialTask(ExperimentTask t){
+		afterTrialTasks.add(t);
+	}
+	
 	public void addStopCond(StopCondition sc) {
 		stopConds.add(sc);
 	}

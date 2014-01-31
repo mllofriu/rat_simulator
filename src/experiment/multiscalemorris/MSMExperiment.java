@@ -19,7 +19,7 @@ import experiment.Trial;
 public class MSMExperiment extends Experiment {
 
 	private static final String PLOTTING_SCRIPT = "plot/plotting.r";
-	private static final String EXPERIMENT_XML = "experimentos/morrisMultiscaleOneSubject.xml";
+	private static final String EXPERIMENT_XML = "experimentos/morrisMultiscaleOneSubjectTest.xml";
 	private static final String PLOT_COPIER = "plot/copyPlots.sh";
 
 	public MSMExperiment(String filename) {

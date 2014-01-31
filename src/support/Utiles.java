@@ -13,13 +13,13 @@ import javax.vecmath.Vector3f;
 
 public class Utiles {
 
-	// public static final float[] actions = { -(float) Math.PI, -(float) (3 *
-	// Math.PI / 4),
-	// -(float) (Math.PI / 2), -(float) (Math.PI / 4), 0,
-	// (float) (Math.PI / 4), (float) (Math.PI / 2),
-	// (float) (3 * Math.PI / 4) };
-	public static final float[] actions = { -(float) (Math.PI / 4), 0,
-			(float) (Math.PI / 4) };
+	 public static final float[] actions = { -(float) Math.PI, -(float) (3 *
+	 Math.PI / 4),
+	 -(float) (Math.PI / 2), -(float) (Math.PI / 4), 0,
+	 (float) (Math.PI / 4), (float) (Math.PI / 2),
+	 (float) (3 * Math.PI / 4) };
+//	public static final float[] actions = { -(float) (Math.PI / 4), 0,
+//			(float) (Math.PI / 4) };
 	public static final float[] discreteAngles = { 0, (float) (Math.PI / 4),
 			(float) (Math.PI / 2), (float) (3 * Math.PI / 4), (float) Math.PI,
 			(float) (5 * Math.PI / 4), (float) (6 * Math.PI / 4),
@@ -141,8 +141,7 @@ public class Utiles {
 		float angleDifference = (float) (Math.PI * 2);
 		for (int i = 0; i < discreteAngles.length; i++) {
 			// Make rotation for this action
-			Quat4f rotAction = new Quat4f(0, 1, 0,
-					(float) Math.cos(discreteAngles[i] / 2));
+			Quat4f rotAction = angleToRot(discreteAngles[i]);
 			// Invert
 			rotAction.inverse();
 			// Compose rotToMake and inverse of action.
@@ -190,9 +189,8 @@ public class Utiles {
 		return action;
 	}
 
-	// public static void main(String[] args){
-	// System.out.println(discretizeAction(0));
-	// System.out.println(discretizeAction(-90));
-	// }
+	 public static void main(String[] args){
+		 System.out.println(new Float(Utiles.discreteAngles[6]).toString());
+	 }
 
 }

@@ -224,11 +224,24 @@ public abstract class Experiment implements Runnable {
 
 	@Override
 	public void run() {
-
+//		Thread[] ts = new Thread[trials.size()];
+		
+//		int i = 0;
 		for (Trial t : trials) {
 			t.run();
-			System.out.println("Trial " + t + " finished.");
+//			ts[i] = new Thread(t);
+//			ts[i].start();
+//			i++;
 		}
+		
+//		for (Thread thread : ts){
+//			try {
+//				thread.join();
+//			} catch (InterruptedException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 		
 		execPlottingScripts();
 

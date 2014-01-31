@@ -5,8 +5,10 @@ import java.util.List;
 import com.sun.tools.javac.util.Pair;
 
 import robot.RobotFactory;
+import nsl.modules.ActionPerformerVote;
 import nsl.modules.ArtificialPlaceCellLayer;
-import nsl.modules.QLearning;
+import nsl.modules.qlearning.QLSupport;
+import nsl.modules.qlearning.QLUpdateValue;
 import nslj.src.lang.NslHierarchy;
 import nslj.src.lang.NslModel;
 import nslj.src.system.NslInterpreter;
@@ -64,8 +66,12 @@ public class MSMSubject implements ExpSubject{
 		return name;
 	}
 
-	public List<Pair<QLearning, ArtificialPlaceCellLayer>> getPCLQlearningPairs() {
+	public List<Pair<QLSupport, ArtificialPlaceCellLayer>> getPCLQlearningPairs() {
 		return model.getPCLQLPairs();
+	}
+
+	public ActionPerformerVote getActionPerformer() {
+		return model.getActionPerformer();
 	}
 
 }

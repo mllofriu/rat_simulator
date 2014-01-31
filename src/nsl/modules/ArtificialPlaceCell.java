@@ -19,5 +19,9 @@ public class ArtificialPlaceCell {
 	public float getActivation(Point3f currLocation){
 		return 1/center.distance(currLocation);
 	}
+
+	public Point3f getCenter() {
+		return center;
+	}
 }
 
