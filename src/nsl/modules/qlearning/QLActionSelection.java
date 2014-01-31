@@ -5,6 +5,7 @@ import java.util.Random;
 import javax.vecmath.Quat4f;
 
 import robot.IRobot;
+import support.Configuration;
 import support.Utiles;
 import experiment.ExperimentUniverse;
 import nslj.src.lang.NslDinFloat1;
@@ -13,6 +14,8 @@ import nslj.src.lang.NslModule;
 
 public class QLActionSelection extends NslModule {
 
+	private static final float FOOD_REWARD = Configuration
+			.getFloat("QLearning.foodReward");;
 	public NslDoutInt0 actionVote;
 	public NslDinFloat1 states;
 	private IRobot robot;
@@ -57,18 +60,10 @@ public class QLActionSelection extends NslModule {
 
 		int action;
 		// Explore with probability 1 - maxExpectedVal / maxPossibleVal
-		// if (random.nextFloat() > maxVal / FOOD_REWARD ){
-		if (maxVal == 0) {
+//		if (random.nextFloat() > maxVal / FOOD_REWARD ){
+		if (maxVal <= 0) {
 			action = -1;
 		} else {
-			// Randomly assign an angle proportional to its expected reward
-			// float r = random.nextFloat() * totalVal;
-			// float acc = 0;
-			// int nextAngle = -1;
-			// do {
-			// nextAngle++;
-			// acc += vals[nextAngle];
-			// } while (acc < r);
 			// Exploit best angle
 			int nextAngle = value.getMaxAngle(s);
 
