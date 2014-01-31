@@ -48,7 +48,10 @@ platformPlot <- function(mazeFile){
 }
 
 ratPathPlot <- function(pathData){
-  path <- geom_path(data=pathData, aes(x,y))
+  pathSegs <- pathData[1:nrow(pathData)-1,]
+  # Add two new columns with shifted data
+  pathSegs[c('nX', 'nY')] <- pathData[-1,c('x','y')]
+  path <- geom_segment(data=pathSegs, aes(x,y,xend=nX,yend=nY,color = random))
 }
 
 ratStartPointPlot <- function (pathData){
@@ -89,7 +92,7 @@ policyArrowsPlot <- function(policyData){
     policyData[, 'deltax'] <- cos(policyData['angle']) * segLen
     policyData[, 'deltay'] <- sin(policyData['angle']) * segLen
     
-    arrows = geom_segment(data=policyData, aes(x = x, y = y, xend = x + deltax, yend = y + deltay), arrow = arrow(length = unit(0.3,"cm")))
+    arrows = geom_segment(data=policyData, aes(x = x, y = y, xend = x + deltax, yend = y + deltay), arrow = arrow(length = unit(0.1,"cm")))
   }
 }
 
@@ -101,7 +104,7 @@ policyDotsPlot <- function(policyData){
 }
 
 plotPolicyOnMaze <- function(policyFile, mazeFile, pathFile){
-  policyData = read.csv(policyFile, sep='\t')
+  policyData <- read.csv(policyFile, sep='\t')
   #  Take out points outside the circle
   eps = .01
   policyData <- policyData[(policyData['x']^2 + policyData['y']^2 < .5^2 - eps),] 
@@ -110,7 +113,7 @@ plotPolicyOnMaze <- function(policyFile, mazeFile, pathFile){
   dots <- policyDotsPlot(policyData)
   maze <- mazePlot(mazeFile)
   platform <- platformPlot(mazeFile)
-  pathData = read.csv(pathFile, sep='\t')
+  pathData <- read.csv(pathFile, sep='\t')
   path <- ratPathPlot(pathData)
   start <- ratStartPointPlot(pathData)
   end <- ratEndPointPlot(pathData)

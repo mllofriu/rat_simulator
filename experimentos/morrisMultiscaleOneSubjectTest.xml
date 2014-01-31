@@ -23,13 +23,12 @@
     </group>
 
     <!--Experiment Trials-->
-    <!-- 8 training trials-->
     <trial>
         <type>training</type>
         <name>tr</name>
         <start>S</start>
         <time>2000</time>
-        <reps>4</reps>
+        <reps>2</reps>
         <maze>mazes/morrisCircular.xml</maze>
         <subjectGroup>g1</subjectGroup>
     </trial>

@@ -76,12 +76,9 @@ public class ArtificialPlaceCellLayer extends NslModule {
 	}
 
 	public List<Point3f> getDumpPoints() {
-		float step = Configuration.getFloat("ArtificialPlaceCells.dumpPointsStep");
-		
 		List<Point3f> points = new LinkedList<Point3f>();
-		for (float x = minX; x < maxX; x += step)
-			for(float y = minY; y < maxY; y += step)
-				points.add(new Point3f(x,0,y));
+		for (ArtificialPlaceCell cell : cells)
+				points.add(cell.getCenter());
 				
 		return points;
 	}

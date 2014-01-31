@@ -242,6 +242,6 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 		Quat4f rot = new Quat4f();
 		t.get(rot);
-		return (float) (2 * Math.acos(rot.w));
+		return (float) (2 * Math.acos(rot.w) * Math.signum(rot.y));
 	}
 }

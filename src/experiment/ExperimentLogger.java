@@ -14,7 +14,7 @@ public abstract class ExperimentLogger {
 	private FileHandler filetxt;
 
 	public ExperimentLogger(String logDir){
-		logger = Logger.getLogger(this.getClass().getName());
+		logger = Logger.getLogger(this.getClass().getName() + logDir);
 		logger.setLevel(Level.INFO);
 		// Remove all previous handlers
 		for (Handler handler : logger.getHandlers())
