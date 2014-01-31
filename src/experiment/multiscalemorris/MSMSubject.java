@@ -74,4 +74,8 @@ public class MSMSubject implements ExpSubject{
 		return model.getActionPerformer();
 	}
 
+	public List<QLUpdateValue> getQLValUpdaters() {
+		return model.getQLValUpdaters();
+	}
+
 }

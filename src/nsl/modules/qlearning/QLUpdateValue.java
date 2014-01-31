@@ -1,9 +1,5 @@
 package nsl.modules.qlearning;
 
-import java.util.AbstractMap;
-import java.util.List;
-import java.util.Random;
-
 import nslj.src.lang.NslModule;
 import robot.IRobot;
 import support.Configuration;
@@ -14,6 +10,9 @@ public class QLUpdateValue extends NslModule {
 
 	private static final float FOOD_REWARD = Configuration
 			.getFloat("QLearning.foodReward");
+
+	private static final float NON_FOOD_REWARD = Configuration
+			.getFloat("QLearning.nonFoodReward");
 
 	private ExperimentUniverse universe;
 
@@ -28,55 +27,65 @@ public class QLUpdateValue extends NslModule {
 	}
 
 	public void simRun() {
-		updateQValue();
+		// Do not do anything in simrun, as it should be updated only at the end
+		// of the trial
+		// updateQValue();
 	}
 
-	private void updateQValue() {
-		if (universe.hasRobotFoundFood()) {
-			float reward = FOOD_REWARD;
-			float discountFactor = Configuration
-					.getFloat("QLearning.discountFactor");
-			float alpha = Configuration.getFloat("QLearning.learningRate");
-			
-			// The current heading referst to the last taken action
-			int currHeading = Utiles.discretizeAngle(universe.getRobotOrientationAngle());
-			// The state is never going to be used
-			StateAction nextSA = new StateAction(0,currHeading);
-			// Keep the max of the next state to pass on the next iter
-			float maxNextState = 0;
-			for (int i = 0; i < qlData.numVisitedSA(); i++) {
-				StateAction previusSA = qlData.getVisitedSA(i);
-				
-				StateAction prevStateNextAction = new StateAction(previusSA.getState(), nextSA.getAction());
-				// The value to update corresponds to the state recorded in previous iteration and the action recorded in the following
-				float value = qlData.getValue(prevStateNextAction);
-				
-				// Compute new value
-				float newValue = value
-						+ alpha
-						* (reward + discountFactor * maxNextState - value);
+	public void updateQValue() {
+		float reward;
+		// If has found food, start with food reward
+		if (universe.hasRobotFoundFood())
+			reward = FOOD_REWARD;
+		else
+			reward = NON_FOOD_REWARD;
+		float discountFactor = Configuration
+				.getFloat("QLearning.discountFactor");
+		float alpha = Configuration.getFloat("QLearning.learningRate");
 
-//				System.out.println(newValue);
-				qlData.setValue(prevStateNextAction, newValue);
+		// The current heading referst to the last taken action
+		int currHeading = Utiles.discretizeAngle(universe
+				.getRobotOrientationAngle());
+		// The state is never going to be used
+		StateAction nextSA = new StateAction(0, currHeading);
+		// Keep the max of the next state to pass on the next iter
+		float maxNextState = 0;
+		for (int i = 0; i < qlData.numVisitedSA(); i++) {
+			StateAction previusSA = qlData.getVisitedSA(i);
 
-				maxNextState = 0;
-				// Maximize posible outcome of this state and save it for next iter
-				for (int a = 0; a < Utiles.discreteAngles.length; a++) {
-					float aVal = qlData.getValue(new StateAction(prevStateNextAction.getState(), a));
-					if (aVal > maxNextState) {
-						maxNextState = aVal;
-					}
+			StateAction prevStateNextAction = new StateAction(
+					previusSA.getState(), nextSA.getAction());
+			// The value to update corresponds to the state recorded in
+			// previous iteration and the action recorded in the following
+			float value = qlData.getValue(prevStateNextAction);
+
+			// Compute new value
+			float newValue = value + alpha
+					* (reward + discountFactor * maxNextState - value);
+
+			// System.out.println(newValue);
+			qlData.setValue(prevStateNextAction, newValue);
+
+			maxNextState = 0;
+			// Maximize posible outcome of this state and save it for next
+			// iter
+			for (int a = 0; a < Utiles.discreteAngles.length; a++) {
+				float aVal = qlData.getValue(new StateAction(
+						prevStateNextAction.getState(), a));
+				if (aVal > maxNextState) {
+					maxNextState = aVal;
 				}
-				
-				// This state is the state the next one arrived to (reverse
-				// order)
-				nextSA = previusSA;
-				
-				// Following state-action have no reward
-				reward = 0;
 			}
 
-			qlData.clearRecord();
+			// This state is the state the next one arrived to (reverse
+			// order)
+			nextSA = previusSA;
+
+			// Following state-actions have non-food rewards (only one has found food state)
+			reward = NON_FOOD_REWARD;
 		}
+
+		qlData.clearRecord();
 	}
+
 }

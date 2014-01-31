@@ -44,6 +44,7 @@ public class MSMTrial extends Trial {
 	@Override
 	public void loadAfterTrialTasks() {
 		MSMSubject subject = (MSMSubject) getSubject();
+		addAfterTrialTask(new PolicyValueUpdater(subject.getQLValUpdaters()));
 		addAfterTrialTask(new PolicyDumper(subject,getLogPath()));
 	}
 
