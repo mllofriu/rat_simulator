@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.vecmath.Point3f;
+import javax.vecmath.Tuple3f;
 
 import nsl.modules.ArtificialPlaceCellLayer;
 import support.Utiles;

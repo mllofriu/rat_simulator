@@ -22,11 +22,11 @@ import experiment.ExperimentUniverse;
 public class MSMModel extends NslModel {
 	private ArtificialPlaceCellLayer[] pcls;
 	private HeadingAngle headingAngle;
-	private QLUpdateValue[] qLUpdVal;
+	private List<QLUpdateValue> qLUpdVal;
 	private ActionPerformerVote actionPerformerVote;
 	private List<Pair<QLSupport, ArtificialPlaceCellLayer>> PCLQLPairs;
-	private QLActionSelection[] qLActionSel;
-	private QLSupport[] qlData;
+	private List<QLActionSelection> qLActionSel;
+	private List<QLSupport> qlData;
 
 	public MSMModel(String nslName, NslModule nslParent, IRobot robot,
 			ExperimentUniverse univ) {
@@ -48,9 +48,9 @@ public class MSMModel extends NslModel {
 		float minY = Configuration.getFloat("ArtificialPlaceCells.minY");
 
 		pcls = new ArtificialPlaceCellLayer[numLayers];
-		qLUpdVal = new QLUpdateValue[numLayers];
-		qLActionSel = new QLActionSelection[numLayers];
-		qlData = new QLSupport[numLayers];
+		qLUpdVal = new LinkedList<QLUpdateValue>();
+		qLActionSel = new LinkedList<QLActionSelection>();
+		qlData = new LinkedList<QLSupport>();
 		PCLQLPairs = new LinkedList<Pair<QLSupport, ArtificialPlaceCellLayer>>();
 		
 		// Create the layers
@@ -59,12 +59,12 @@ public class MSMModel extends NslModel {
 		for (int i = 0; i < numLayers; i++) {
 			pcls[i] = new ArtificialPlaceCellLayer("PlaceCellLayer", this,
 					univ, radius, minX, minY);
-			qlData[i] = new QLSupport(Utiles.discreteAngles.length
-					* pcls[i].getSize());
-			qLActionSel[i] = new QLActionSelection("QLActionSel", this,
-					qlData[i], pcls[i].getSize(), robot, univ);
+			qlData.add(new QLSupport(Utiles.discreteAngles.length
+					* pcls[i].getSize()));
+			qLActionSel.add(new QLActionSelection("QLActionSel", this,
+					qlData.get(i), pcls[i].getSize(), robot, univ));
 			PCLQLPairs.add(new Pair<QLSupport, ArtificialPlaceCellLayer>(
-					qlData[i], pcls[i]));
+					qlData.get(i), pcls[i]));
 			// Update radius
 			radius += (maxRadius - minRadius) / (numLayers - 1);
 		}
@@ -73,8 +73,8 @@ public class MSMModel extends NslModel {
 				numLayers, robot);
 
 		for (int i = 0; i < numLayers; i++) {
-			qLUpdVal[i] = new QLUpdateValue("QLUpdVal", this,
-					pcls[i].getSize(),qlData[i], robot, univ);
+			qLUpdVal.add(new QLUpdateValue("QLUpdVal", this,
+					pcls[i].getSize(),qlData.get(i), robot, univ));
 		}
 	}
 
@@ -86,8 +86,8 @@ public class MSMModel extends NslModel {
 
 	public void makeConn() {
 		for (int i = 0; i < pcls.length; i++) {
-			nslConnect(pcls[i], "activation", qLActionSel[i], "states");
-			nslConnect(qLActionSel[i].actionVote, actionPerformerVote.votes[i]);
+			nslConnect(pcls[i], "activation", qLActionSel.get(i), "states");
+			nslConnect(qLActionSel.get(i).actionVote, actionPerformerVote.votes[i]);
 		}
 	}
 
@@ -97,6 +97,10 @@ public class MSMModel extends NslModel {
 
 	public ActionPerformerVote getActionPerformer() {
 		return actionPerformerVote;
+	}
+
+	public List<QLUpdateValue> getQLValUpdaters() {
+		return qLUpdVal;
 	}
 
 }
