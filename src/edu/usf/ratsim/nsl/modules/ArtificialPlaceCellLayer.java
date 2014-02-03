@@ -75,12 +75,8 @@ public class ArtificialPlaceCellLayer extends NslModule {
 		return cells.size();
 	}
 
-	public List<Point3f> getDumpPoints() {
-		List<Point3f> points = new LinkedList<Point3f>();
-		for (ArtificialPlaceCell cell : cells)
-				points.add(cell.getCenter());
-				
-		return points;
+	public List<ArtificialPlaceCell> getCells() {
+		return cells;
 	}
 
 }

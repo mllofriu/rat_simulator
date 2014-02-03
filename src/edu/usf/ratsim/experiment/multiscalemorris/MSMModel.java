@@ -52,12 +52,13 @@ public class MSMModel extends NslModel {
 		float radius = minRadius;
 		// For each layer
 		for (int i = 0; i < numLayers; i++) {
-			pcls.add(i, new ArtificialPlaceCellLayer("PlaceCellLayer", this,
-					univ, radius, minX, minY));
-			qlData.add(new QLSupport(Utiles.discreteAngles.length
-					* pcls.get(i).getSize()));
+			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer("PlaceCellLayer", this,
+					univ, radius, minX, minY);
+			QLSupport qlSupport = new QLSupport(pcl.getSize());
+			pcls.add(pcl);
+			qlData.add(qlSupport);
 			qLActionSel.add(new QLActionSelection("QLActionSel", this,
-					qlData.get(i), pcls.get(i).getSize(), robot, univ));
+					qlSupport, pcl.getSize(), robot, univ));
 			// Update radius
 			radius += (maxRadius - minRadius) / (numLayers - 1);
 		}
