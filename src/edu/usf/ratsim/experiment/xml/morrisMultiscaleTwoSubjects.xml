@@ -30,7 +30,7 @@
         <type>training</type>
         <name>train</name>
         <start>S</start>
-        <time>200</time>
+        <time>2000</time>
         <reps>4</reps>
         <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
         <subjectGroup>g1</subjectGroup>

@@ -55,6 +55,7 @@ public class QLUpdateValue extends NslModule {
 
 			StateAction prevStateNextAction = new StateAction(
 					previusSA.getState(), nextSA.getAction());
+			
 			// The value to update corresponds to the state recorded in
 			// previous iteration and the action recorded in the following
 			float value = qlData.getValue(prevStateNextAction);

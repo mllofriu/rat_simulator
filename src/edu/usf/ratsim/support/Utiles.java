@@ -108,7 +108,7 @@ public class Utiles {
 			Quat4f tmpRot = new Quat4f(rotToMake);
 			tmpRot.mul(rotAction);
 			// Compare axis angle. The closer to 0, the more suitable
-			float resultingAngle = (float) Math.abs(2 * Math.acos(tmpRot.w));
+			float resultingAngle = (float) Math.abs(rotToAngle(tmpRot));
 			if (resultingAngle < angleDifference) {
 				angleDifference = resultingAngle;
 				action = i;
@@ -136,7 +136,6 @@ public class Utiles {
 	 */
 	public static int discretizeAngle(float allotAngle) {
 		Quat4f allotRot = angleToRot(allotAngle);
-
 		int angle = -1;
 		float angleDifference = (float) (Math.PI * 2);
 		for (int i = 0; i < discreteAngles.length; i++) {
@@ -147,7 +146,7 @@ public class Utiles {
 			// Compose rotToMake and inverse of action.
 			rotAction.mul(allotRot);
 			// Compare axis angle. The closer to 0, the more suitable
-			float resultingAngle = (float) Math.abs(2 * Math.acos(rotAction.w));
+			float resultingAngle = (float) Math.abs(rotToAngle(rotAction));
 			if (resultingAngle < angleDifference) {
 				angleDifference = resultingAngle;
 				angle = i;
@@ -155,6 +154,11 @@ public class Utiles {
 		}
 
 		return angle;
+	}
+
+	private static float rotToAngle(Quat4f rot) {
+		rot.normalize();
+		return (float) (2 * Math.acos(rot.w));
 	}
 
 	/**
@@ -167,7 +171,7 @@ public class Utiles {
 	 */
 	public static int discretizeAction(int degrees) {
 		Quat4f allotRot = angleToRot((float) Math.toRadians(degrees));
-
+		
 		int action = -1;
 		float angleDifference = (float) (Math.PI * 2);
 		for (int i = 0; i < actions.length; i++) {
@@ -178,8 +182,7 @@ public class Utiles {
 			// Compose rotToMake and inverse of action.
 			rotAction.mul(allotRot);
 			// Compare axis angle. The closer to 0, the more suitable
-			float resultingAbsAngle = (float) Math.abs(2 * Math
-					.acos(rotAction.w));
+			float resultingAbsAngle = (float) Math.abs(rotToAngle(rotAction));
 			if (resultingAbsAngle < angleDifference) {
 				angleDifference = resultingAbsAngle;
 				action = i;
@@ -190,7 +193,8 @@ public class Utiles {
 	}
 
 	 public static void main(String[] args){
-		 System.out.println(new Float(Utiles.discreteAngles[6]).toString());
+		 System.out.println(discretizeAngle((float) (-135 * Math.PI / 180)));
+		 System.out.println(discretizeAngle((float) (-90 * Math.PI / 180)));
 	 }
 
 }
