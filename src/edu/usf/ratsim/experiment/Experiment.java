@@ -10,17 +10,17 @@ package edu.usf.ratsim.experiment;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.KeyPair;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Vector;
+import java.util.Map.Entry;
 
 import javax.vecmath.Point4f;
 
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -40,7 +40,8 @@ public abstract class Experiment implements Runnable {
 
 	private final String STR_TRIAL = "trial";
 
-	private final String STR_TRIAL_TYPE = "type";
+	public final static String STR_TRIAL_TYPE = "type";
+	private static final Object XML_ROOT_STR = "simulation";
 	private final String STR_HABITUATION = "habituation";
 	private final String STR_TRAINING = "training";
 	private final String STR_TESTING = "testing";
@@ -49,8 +50,9 @@ public abstract class Experiment implements Runnable {
 	private final String STR_Z_POSITION = "zp";
 	private final String STR_ANGLE = "rot";
 
-	private Vector<Trial> trials = new Vector<Trial>();
+	private Map<ExpSubject,List<Trial>> trials;
 	private String logPath;
+	private Hashtable<String, ExpSubject> subjects;
 
 	public Experiment(String filename) {
 		logPath = computeLogPath();
@@ -79,10 +81,11 @@ public abstract class Experiment implements Runnable {
 		Hashtable<String, Point4f> points = loadPoints(doc
 				.getElementsByTagName(STR_POINT));
 
-		Hashtable<String, ExpSubject> subjects = loadSubjects(doc);
+		subjects = loadSubjects(doc);
 		Hashtable<String, Hashtable<String, ExpSubject>> groups = loadGroups(
 				doc, subjects);
 
+		trials = new HashMap<ExpSubject, List<Trial>>();
 		loadTrials(doc.getElementsByTagName(STR_TRIAL), points, groups, logPath);
 	}
 
@@ -112,7 +115,8 @@ public abstract class Experiment implements Runnable {
 		for (int i = 0; i < elems.getLength(); i++) {
 			String name = elems.item(i).getAttributes().getNamedItem("name")
 					.getNodeValue();
-			subs.put(name, createSubject(name));
+			if (elems.item(i).getParentNode().getNodeName().equals(XML_ROOT_STR))
+				subs.put(name, createSubject(name));
 		}
 
 		return subs;
@@ -142,7 +146,7 @@ public abstract class Experiment implements Runnable {
 
 	private void loadTrials(NodeList list, Hashtable<String, Point4f> points,
 			Hashtable<String, Hashtable<String, ExpSubject>> groups,
-			String experimetnLogPath) {
+			String experimentLogPath) {
 
 		// For each trial
 		for (int i = 0; i < list.getLength(); i++) {
@@ -154,7 +158,7 @@ public abstract class Experiment implements Runnable {
 				params.put(paramNodes.item(j).getNodeName(), paramNodes.item(j)
 						.getTextContent());
 			}
-			String trialLogPath = experimetnLogPath + File.separator
+			String trialLogPath = experimentLogPath + File.separator
 					+ params.get(STR_NAME);
 			// For each subject in the group
 			String gName = params.get(STR_TRIALGROUP);
@@ -168,7 +172,9 @@ public abstract class Experiment implements Runnable {
 					String repLogPath = subLogPath + File.separator + "rep" + j
 							+ File.separator;
 					Trial t = createTrial(params, points, subject, repLogPath);
-					trials.add(t);
+					if (!trials.containsKey(subject))
+						trials.put(subject, new LinkedList<Trial>());
+					trials.get(subject).add(t);
 				}
 			}
 			
@@ -231,24 +237,30 @@ public abstract class Experiment implements Runnable {
 
 	@Override
 	public void run() {
-//		Thread[] ts = new Thread[trials.size()];
+		Thread[] ts = new Thread[trials.size()];
 		
-//		int i = 0;
-		for (Trial t : trials) {
-			t.run();
-//			ts[i] = new Thread(t);
-//			ts[i].start();
-//			i++;
+		int i = 0;
+		for (final Entry<String, ExpSubject> entry : subjects.entrySet()) {
+			// Create a thread for each subject, executing all its experiments in order
+			ts[i] = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					for (Trial trial : trials.get(entry.getValue()))
+						trial.run();
+				}
+			});
+			ts[i].start();
+			i++;
 		}
 		
-//		for (Thread thread : ts){
-//			try {
-//				thread.join();
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
+		for (Thread thread : ts){
+			try {
+				thread.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		execPlottingScripts();
 

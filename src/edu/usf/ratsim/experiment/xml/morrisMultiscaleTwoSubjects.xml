@@ -17,32 +17,21 @@
     <!--Subjects-->
     <subject name='rat1'/>
     <subject name='rat2'/>
-    <subject name='rat3'/>
-    <subject name='rat4'/>
-    <subject name='rat5'/>
-    <subject name='rat6'/>
-    <subject name='rat7'/>
-    <subject name='rat8'/>
     
     <!--Subject groups-->
     <group name='g1'>
-        <member name='rat1'/>
-        <member name='rat2'/>
-        <member name='rat3'/>
-        <member name='rat4'/>
-        <member name='rat5'/>
-        <member name='rat6'/>
-        <member name='rat7'/>
-        <member name='rat8'/>
+        <subject name='rat1'/>
+        <subject name='rat2'/>
     </group>
 
     <!--Experiment Trials-->
+    <!-- 8 training trials-->
     <trial>
         <type>training</type>
         <name>train</name>
         <start>S</start>
-        <time>2000</time>
-        <reps>16</reps>
+        <time>200</time>
+        <reps>4</reps>
         <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
         <subjectGroup>g1</subjectGroup>
     </trial>
@@ -52,7 +41,7 @@
         <name>test</name>
         <start>S</start>
         <time>500</time>
-        <reps>4</reps>
+        <reps>8</reps>
         <subjectGroup>g1</subjectGroup>
         <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
     </trial>
