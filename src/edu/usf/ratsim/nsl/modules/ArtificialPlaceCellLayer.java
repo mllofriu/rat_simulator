@@ -52,7 +52,7 @@ public class ArtificialPlaceCellLayer extends NslModule {
 		this.universe = universe;
 	}
 
-	@Override
+	
 	public void simRun() {
 		int i = 0;
 		for (ArtificialPlaceCell pCell : cells) {

@@ -8,7 +8,7 @@ public class TimeStop implements StopCondition {
 		this.time = time;
 	}
 
-	@Override
+	
 	public boolean experimentFinished() {
 		if (time-- <= 0)
 			System.out.println("Finished by time");

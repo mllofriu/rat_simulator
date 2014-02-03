@@ -58,7 +58,7 @@ public class VirtualRobot implements IRobot {
 		validCachedAffordances = false;
 	}
 
-	@Override
+	
 	public boolean[] affordances() {
 		// Use cache if robot has not moved
 		if (!validCachedAffordances){
@@ -88,7 +88,7 @@ public class VirtualRobot implements IRobot {
 		return affordances;
 	}
 
-	@Override
+	
 	synchronized public BufferedImage[] getPanoramica() {
 		BufferedImage[] panoramica = new BufferedImage[RobotNode.NUM_ROBOT_VIEWS];
 
@@ -104,22 +104,22 @@ public class VirtualRobot implements IRobot {
 		return panoramica;
 	}
 
-	@Override
+	
 	public void rotate(float grados) {
 		universe.rotateRobot(grados);
 		validCachedAffordances = false;
 	}
 
-	@Override
+	
 	public void startRobot() {
 	}
 
-	@Override
+	
 	public boolean hasFoundFood() {
 		return universe.hasRobotFoundFood();
 	}
 
-	@Override
+	
 	public void forward() {
 		universe.moveRobot(new Vector3f(STEP, 0f, 0f));		
 		validCachedAffordances = false;

@@ -21,14 +21,14 @@ public class PositionLogger extends ExperimentLogger {
 		this.actionPerformer = actionPerformer;
 	}
 
-	@Override
+	
 	public void log(ExperimentUniverse universe) {
 		Point3f pos = universe.getRobotPosition();
 		// -Z coordinate corresponds to y
 		getLogger().log(Level.INFO, pos.x + "\t" + -pos.z + "\t" + actionPerformer.wasLastActionRandom());
 	}
 
-	@Override
+	
 	public Formatter getFormatter() {
 		return new PositionFormatter();
 	}
@@ -37,7 +37,7 @@ public class PositionLogger extends ExperimentLogger {
 
 class PositionFormatter extends Formatter {
 
-	@Override
+	
 	public String format(LogRecord record) {
 		return record.getMessage() + System.getProperty("line.separator");
 	}
