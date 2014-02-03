@@ -167,7 +167,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	 * @param vector
 	 *            Robots position
 	 */
-	@Override
+	
 	public void setRobotPosition(Point2D.Float pos) {
 		Transform3D translate = new Transform3D();
 		translate.setTranslation(new Vector3f(pos.x, 0, pos.y));
@@ -217,21 +217,21 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		return new Point3f(foodPos);
 	}
 
-	@Override
+	
 	public void setFoodPosition(Point2D.Float pos) {
 		bg.removeChild(food);
 		food = new FoodNode(pos.x, 0, pos.y);
 		bg.addChild(food);
 	}
 
-	@Override
+	
 	public boolean hasRobotFoundFood() {
 		Point3f food = getFoodPosition();
 		Point3f robot = getRobotPosition();
 		return robot.distance(food) < CLOSE_TO_FOOD_THRS;
 	}
 
-	@Override
+	
 	public Quat4f getRobotOrientation() {
 		Transform3D t = new Transform3D();
 		robot.getTransformGroup().getTransform(t);
@@ -243,7 +243,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		return rot;
 	}
 
-	@Override
+	
 	public float getRobotOrientationAngle() {
 		Transform3D t = new Transform3D();
 		robot.getTransformGroup().getTransform(t);
@@ -253,4 +253,9 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		t.get(rot);
 		return (float) (2 * Math.acos(rot.w) * Math.signum(rot.y));
 	}
+
+	public static void main(String[] args){
+		new VirtualExpUniverse();
+	}
+
 }

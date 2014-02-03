@@ -123,7 +123,7 @@ class Votes implements Comparable<Votes> {
 		votes++;
 	}
 
-	@Override
+	
 	public int compareTo(Votes o) {
 		if (votes < o.votes)
 			return -1;
