@@ -2,3 +2,5 @@ logs/MSM*
 logs/*.png
 /target
 *.Rhistory
+bin/
+*.swp

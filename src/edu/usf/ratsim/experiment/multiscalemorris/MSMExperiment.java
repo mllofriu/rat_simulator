@@ -31,28 +31,28 @@ public class MSMExperiment extends Experiment {
 		System.exit(0);
 	}
 
-	@Override
+	
 	public Trial createTrainingTrial(Map<String, String> params,
 			Hashtable<String, Point4f> points, ExpSubject subject,
 			String trialLogPath) {
 		return new MSMTrial(params, points, subject, trialLogPath);
 	}
 
-	@Override
+	
 	public Trial createTestingTrial(Map<String, String> params,
 			Hashtable<String, Point4f> points, ExpSubject subject,
 			String trialLogPath) {
 		return new MSMTrial(params, points, subject, trialLogPath);
 	}
 
-	@Override
+	
 	public Trial createHabituationTrial(Map<String, String> params,
 			Hashtable<String, Point4f> points, ExpSubject subject,
 			String trialLogPath) {
 		throw new RuntimeException("Habituation trial not implemented");
 	}
 
-	@Override
+	
 	public void execPlottingScripts() {
 		try {
 			// Copy the maze to the experiment's folder
@@ -111,7 +111,7 @@ public class MSMExperiment extends Experiment {
 
 	}
 
-	@Override
+	
 	public ExpSubject createSubject(String name) {
 		return new MSMSubject(name);
 	}

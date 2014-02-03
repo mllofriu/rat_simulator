@@ -235,7 +235,7 @@ public abstract class Experiment implements Runnable {
 	public abstract Trial createHabituationTrial(Map<String, String> params,
 			Hashtable<String, Point4f> points2, ExpSubject subject, String trialLogPath);
 
-	@Override
+	
 	public void run() {
 		Thread[] ts = new Thread[trials.size()];
 		
@@ -243,7 +243,7 @@ public abstract class Experiment implements Runnable {
 		for (final Entry<String, ExpSubject> entry : subjects.entrySet()) {
 			// Create a thread for each subject, executing all its experiments in order
 			ts[i] = new Thread(new Runnable() {
-				@Override
+				
 				public void run() {
 					for (Trial trial : trials.get(entry.getValue()))
 						trial.run();

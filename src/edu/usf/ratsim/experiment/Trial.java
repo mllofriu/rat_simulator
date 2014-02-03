@@ -111,7 +111,7 @@ public abstract class Trial implements Runnable {
 		
 	}
 
-	@Override
+	
 	public void run() {
 		// Lock on the subject to ensure mutual exclusion for the same rat
 		// Assumes is fifo
@@ -178,7 +178,7 @@ public abstract class Trial implements Runnable {
 	
 	public abstract void loadLoggers();
 
-	@Override
+	
 	public String toString() {
 		return name;
 	}
