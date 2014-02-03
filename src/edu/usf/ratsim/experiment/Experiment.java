@@ -40,7 +40,7 @@ public abstract class Experiment implements Runnable {
 
 	private final String STR_TRIAL = "trial";
 
-	private final String STR_TRIAL_TYPE = "type";
+	public final static String STR_TRIAL_TYPE = "type";
 	private final String STR_HABITUATION = "habituation";
 	private final String STR_TRAINING = "training";
 	private final String STR_TESTING = "testing";
@@ -231,24 +231,24 @@ public abstract class Experiment implements Runnable {
 
 	@Override
 	public void run() {
-//		Thread[] ts = new Thread[trials.size()];
+		Thread[] ts = new Thread[trials.size()];
 		
-//		int i = 0;
+		int i = 0;
 		for (Trial t : trials) {
-			t.run();
-//			ts[i] = new Thread(t);
-//			ts[i].start();
-//			i++;
+//			t.run();
+			ts[i] = new Thread(t);
+			ts[i].start();
+			i++;
 		}
 		
-//		for (Thread thread : ts){
-//			try {
-//				thread.join();
-//			} catch (InterruptedException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
+		for (Thread thread : ts){
+			try {
+				thread.join();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 		execPlottingScripts();
 

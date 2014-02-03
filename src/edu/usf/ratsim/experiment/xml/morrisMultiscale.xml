@@ -43,7 +43,7 @@
         <start>S</start>
         <time>2000</time>
         <reps>16</reps>
-        <maze>/mazes/morrisCircular.xml</maze>
+        <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
         <subjectGroup>g1</subjectGroup>
     </trial>
     <!-- 4 testing trials-->
@@ -54,7 +54,7 @@
         <time>500</time>
         <reps>4</reps>
         <subjectGroup>g1</subjectGroup>
-        <maze>/mazes/morrisCircular.xml</maze>
+        <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
     </trial>
     
 

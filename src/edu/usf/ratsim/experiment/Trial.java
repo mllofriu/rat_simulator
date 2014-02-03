@@ -113,50 +113,55 @@ public abstract class Trial implements Runnable {
 
 	@Override
 	public void run() {
-		// Load the trial tasks
-		loadInitialTasks();
-		loadAfterCycleTasks();
-		loadAfterTrialTasks();
-		// Load the stop conditions
-		loadConditions();
-		// Load loggers
-		loadLoggers();
-		
-		// Do all after-cycle tasks
-		for (ExperimentTask task : initialTasks)
-			task.perform(getUniverse());
-
-		boolean stop;
-		do {
-			// One cycle to the trial
-			subject.stepCycle();
-
-//			try {
-//				Thread.sleep(SLEEP_BETWEEN_CYCLES);
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-			// Run the loggers
-			for (ExperimentLogger logger : loggers)
-				logger.log(getUniverse());
+		// Lock on the subject to ensure mutual exclusion for the same rat
+		// Assumes is fifo
+		synchronized (getSubject()) {
+			// Load the trial tasks
+			loadInitialTasks();
+			loadAfterCycleTasks();
+			loadAfterTrialTasks();
+			// Load the stop conditions
+			loadConditions();
+			// Load loggers
+			loadLoggers();
+			
 			// Do all after-cycle tasks
-			for (ExperimentTask task : afterCycleTasks)
+			for (ExperimentTask task : initialTasks)
 				task.perform(getUniverse());
-			// // Check all stop conds
-			stop = false;
-			for (StopCondition sc : stopConds)
-				stop = stop || sc.experimentFinished();
-		} while (!stop);
 
-		// After trial tasks
-		for (ExperimentTask task : afterTrialTasks)
-			task.perform(universe);
+			boolean stop;
+			do {
+				// One cycle to the trial
+				subject.stepCycle();
+
+//				try {
+//					Thread.sleep(SLEEP_BETWEEN_CYCLES);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
+				// Run the loggers
+				for (ExperimentLogger logger : loggers)
+					logger.log(getUniverse());
+				// Do all after-cycle tasks
+				for (ExperimentTask task : afterCycleTasks)
+					task.perform(getUniverse());
+				// // Check all stop conds
+				stop = false;
+				for (StopCondition sc : stopConds)
+					stop = stop || sc.experimentFinished();
+			} while (!stop);
+
+			// After trial tasks
+			for (ExperimentTask task : afterTrialTasks)
+				task.perform(universe);
+			
+			// Close file handlers
+			for (ExperimentLogger logger : loggers)
+				logger.closeLog();
+			
+			System.out.println("Trial " + name + " finished.");
+		}
 		
-		// Close file handlers
-		for (ExperimentLogger logger : loggers)
-			logger.closeLog();
-		
-		System.out.println("Trial " + name + " finished.");
 	}
 
 	public ExperimentUniverse getUniverse() {

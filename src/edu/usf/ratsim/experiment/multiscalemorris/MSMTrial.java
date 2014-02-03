@@ -7,11 +7,13 @@ import javax.vecmath.Point4f;
 
 import nslj.src.lang.NslModel;
 import edu.usf.ratsim.experiment.ExpSubject;
+import edu.usf.ratsim.experiment.Experiment;
 import edu.usf.ratsim.experiment.Trial;
 
 public class MSMTrial extends Trial {
 
 	private Point4f initPos;
+	private Object type;
 
 	public MSMTrial(Map<String, String> params,
 			Hashtable<String, Point4f> points, ExpSubject subject, String trialLogPath) {
@@ -19,6 +21,8 @@ public class MSMTrial extends Trial {
 
 		// Get the initial position
 		initPos = points.get(params.get(Trial.STR_STARTS));
+		
+		type = params.get(Experiment.STR_TRIAL_TYPE);
 	}
 
 	@Override
@@ -45,6 +49,7 @@ public class MSMTrial extends Trial {
 	public void loadAfterTrialTasks() {
 		MSMSubject subject = (MSMSubject) getSubject();
 		addAfterTrialTask(new PolicyValueUpdater(subject.getQLValUpdaters()));
+//		if (type.equals("testing"))
 		addAfterTrialTask(new PolicyDumper(subject,getLogPath()));
 	}
 
