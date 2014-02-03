@@ -1,5 +1,5 @@
 logs/MSM*
-logs/*.png
+*.png
 /target
 *.Rhistory
 bin/
