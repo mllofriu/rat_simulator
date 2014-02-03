@@ -25,27 +25,27 @@ public class MSMTrial extends Trial {
 		type = params.get(Experiment.STR_TRIAL_TYPE);
 	}
 
-	@Override
+	
 	public void loadConditions() {
 		addStopCond(new FoundFoodStopCond(getUniverse()));
 	}
 
-	@Override
+	
 	public void loadAfterCycleTasks() {
 	}
 
-	@Override
+	
 	public void loadInitialTasks() {
 		addInitialTask(new PlaceRobotInitallyTask(initPos));
 	}
 
-	@Override
+	
 	public void loadLoggers() {
 		MSMSubject subject = (MSMSubject) getSubject();
 		addLogger(new PositionLogger(getLogPath(), subject.getActionPerformer()));
 	}
 
-	@Override
+	
 	public void loadAfterTrialTasks() {
 		MSMSubject subject = (MSMSubject) getSubject();
 		addAfterTrialTask(new PolicyValueUpdater(subject.getQLValUpdaters()));

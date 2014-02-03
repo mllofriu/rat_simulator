@@ -19,7 +19,7 @@ final class StateAction {
 		this.action = action;
 	}
 
-	@Override
+	
 	public boolean equals(Object o) {
 		if (o == null || !(o instanceof StateAction))
 			return false;
@@ -29,7 +29,7 @@ final class StateAction {
 		return stateAction.state == state && stateAction.action == action;
 	}
 
-	@Override
+	
 	public int hashCode() {
 		return state * Utiles.discreteAngles.length + action;
 	}
