@@ -65,7 +65,7 @@ public class QLActionSelection extends NslModule {
 					.angleToRot(Utiles.discreteAngles[nextAngle]);
 
 			// Get the action that better approximates that angle
-			boolean[] affordances = robot.affordances();
+			boolean[] affordances = robot.getAffordances();
 			action = Utiles.bestActionToRot(nextRot,
 					universe.getRobotOrientation(), affordances);
 		}

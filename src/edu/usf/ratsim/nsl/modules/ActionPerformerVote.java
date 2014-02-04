@@ -76,12 +76,12 @@ public class ActionPerformerVote extends NslModule {
 					// Rotate the robot to the desired action
 					robot.rotate(Utiles.actions[action]);
 					// Re-calculate affordances
-					aff = robot.affordances();
+					aff = robot.getAffordances();
 				} while (!aff[Utiles.discretizeAction(0)]);
 			} else {
 				lastActionRandom = false;
 				robot.rotate(Utiles.actions[action]);
-				aff = robot.affordances();
+				aff = robot.getAffordances();
 				// If cannot go forward that direction
 				if (!aff[Utiles.discretizeAction(0)]) {
 					// Undo rotation
@@ -90,7 +90,7 @@ public class ActionPerformerVote extends NslModule {
 					voteList.remove(voteList.size() - 1);
 				}
 			}
-			aff = robot.affordances();
+			aff = robot.getAffordances();
 		} while (!aff[Utiles.discretizeAction(0)]);
 
 		// If there is no actual actiona that can be performed, execute explorer

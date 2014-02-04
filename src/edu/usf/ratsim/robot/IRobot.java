@@ -32,7 +32,7 @@ public interface IRobot {
 	 * 
 	 * @return An array with true in the directions the robot can navigate
 	 */
-	public abstract boolean[] affordances();
+	public abstract boolean[] getAffordances();
 
 	/**
 	 * Return whether the robot has found food in the environment

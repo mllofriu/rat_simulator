@@ -8,7 +8,9 @@ import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.ImageComponent2D;
 import javax.media.j3d.Locale;
+import javax.media.j3d.Node;
 import javax.media.j3d.Transform3D;
+import javax.media.j3d.TransformGroup;
 import javax.media.j3d.View;
 import javax.media.j3d.VirtualUniverse;
 import javax.vecmath.Color3f;
@@ -22,6 +24,7 @@ import org.w3c.dom.NodeList;
 
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.support.Configuration;
+import edu.usf.ratsim.support.Utiles;
 import edu.usf.ratsim.support.XMLDocReader;
 
 /**
@@ -41,6 +44,8 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	private FoodNode food;
 
 	private BranchGroup bg;
+
+	private PoolNode pool;
 
 	public VirtualExpUniverse() {
 		super();
@@ -72,9 +77,8 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 		// Morris tanks
 		list = doc.getElementsByTagName("pool");
-		for (int i = 0; i < list.getLength(); i++) {
-			bg.addChild(new PoolNode(list.item(i)));
-		}
+		pool = new PoolNode(list.item(0));
+		bg.addChild(pool);
 
 		// Cylinders
 		list = doc.getElementsByTagName("cylinder");
@@ -258,6 +262,32 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	public static void main(String[] args){
 		new VirtualExpUniverse();
+	}
+
+	public boolean[] getRobotAffordances() {
+		
+		boolean[] affordances = new boolean[Utiles.actions.length];
+		for (int action = 0; action < Utiles.actions.length; action++){
+			// The current position with rotation
+			Transform3D rPos = new Transform3D();
+			robot.getTransformGroup().getTransform(rPos);
+			// A translation vector to calc affordances
+			Transform3D trans = new Transform3D();
+			trans.setTranslation(new Vector3f(VirtualRobot.STEP * 5, 0f, 0f));
+			// The rotatio of the action
+			Transform3D rot = new Transform3D();
+			rot.rotY(Utiles.actions[action]);
+			// Apply hipotetical transformations
+			rPos.mul(rot);
+			rPos.mul(trans);
+			// Get the new position
+			Vector3f finalPos = new Vector3f();
+			rPos.get(finalPos);
+			// Check it's in the maze
+			affordances[action] = pool.isInside(new Point3f(finalPos));
+		}
+		
+		return affordances;
 	}
 
 }

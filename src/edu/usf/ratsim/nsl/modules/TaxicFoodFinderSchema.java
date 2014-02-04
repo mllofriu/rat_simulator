@@ -35,7 +35,7 @@ public class TaxicFoodFinderSchema extends NslModule {
 		Quat4f rotToFood = Utiles.rotToPoint(new Vector3f(1, 0, 0), vToFood);
 
 		// Get affordances
-		boolean[] affordances = robot.affordances();
+		boolean[] affordances = robot.getAffordances();
 
 		// Get best action to food
 		int action = Utiles.bestActionToRot(rotToFood, rRot, affordances);
@@ -44,7 +44,7 @@ public class TaxicFoodFinderSchema extends NslModule {
 			System.out.println("No affordances available");
 		else {
 			robot.rotate(Utiles.actions[action]);
-			affordances = robot.affordances();
+			affordances = robot.getAffordances();
 			if (affordances[Utiles.discretizeAction(0)])
 				robot.forward();
 		}
