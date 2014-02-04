@@ -1,6 +1,8 @@
 #$ -cwd
 #$ -N rat_sim
 #$ -l h_rt=08:00:00,pcpus=8,location=tpa
+#$ -m e
+#$ -M mllofriualon@mail.usf.edu
 
 sh compile.sh
 
