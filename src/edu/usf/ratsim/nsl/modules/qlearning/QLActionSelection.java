@@ -1,26 +1,20 @@
 package edu.usf.ratsim.nsl.modules.qlearning;
 
-import java.util.Random;
-
 import javax.vecmath.Quat4f;
 
-import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.robot.IRobot;
-import edu.usf.ratsim.support.Configuration;
-import edu.usf.ratsim.support.Utiles;
 import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
+import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.support.Utiles;
 
 public class QLActionSelection extends NslModule {
 
-	private static final float FOOD_REWARD = Configuration
-			.getFloat("QLearning.foodReward");;
 	public NslDoutInt0 actionVote;
 	public NslDinFloat1 states;
 	private IRobot robot;
 	private ExperimentUniverse universe;
-	private Random random;
 	private QLSupport value;
 
 	public QLActionSelection(String nslName, NslModule nslParent,
@@ -35,7 +29,6 @@ public class QLActionSelection extends NslModule {
 		actionVote = new NslDoutInt0(this, "vote");
 		states = new NslDinFloat1(this, "states", stateSize);
 
-		random = new Random();
 	}
 
 	public void simRun() {

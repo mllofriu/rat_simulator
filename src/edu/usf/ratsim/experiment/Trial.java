@@ -8,14 +8,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
-import edu.usf.ratsim.robot.IRobot;
-import edu.usf.ratsim.robot.RobotFactory;
 import edu.usf.ratsim.support.Configuration;
-import nslj.src.lang.NslHierarchy;
-import nslj.src.lang.NslModel;
-import nslj.src.system.NslInterpreter;
-import nslj.src.system.NslScheduler;
-import nslj.src.system.NslSystem;
 
 /*
  * SimulationItem.java
@@ -48,7 +41,7 @@ public abstract class Trial implements Runnable {
 	public static final String STR_STARTS = "start";
 	private static final String STR_MAZE = "maze";
 	
-	private static final long SLEEP_BETWEEN_CYCLES = 5000;
+//	private static final long SLEEP_BETWEEN_CYCLES = 5000;
 
 	private String name;
 	private Collection<StopCondition> stopConds;
@@ -73,7 +66,7 @@ public abstract class Trial implements Runnable {
 
 		setupLogDir(trialLogPath);
 		
-		setUniverse(ExpUniverseFactory.getUniverse());
+		setUniverse(subject.getUniverse());
 		
 		stopConds = new LinkedList<StopCondition>();
 		// Add default stop condition - time constraints
