@@ -4,7 +4,6 @@ import java.awt.geom.Point2D;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
 
 public interface ExperimentUniverse {
 

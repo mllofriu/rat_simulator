@@ -3,8 +3,6 @@ package edu.usf.ratsim.experiment;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Formatter;
-import java.util.logging.Logger;
 
 public abstract class ExperimentLogger {
 
