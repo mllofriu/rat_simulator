@@ -20,7 +20,6 @@ import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import edu.usf.ratsim.experiment.Experiment;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.XMLDocReader;

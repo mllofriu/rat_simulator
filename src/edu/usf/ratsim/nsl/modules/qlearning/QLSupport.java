@@ -7,9 +7,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.vecmath.Point3f;
-import javax.vecmath.Tuple3f;
-
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.support.Utiles;

@@ -1,5 +1,7 @@
 package edu.usf.ratsim.experiment;
 
+import edu.usf.ratsim.robot.IRobot;
+
 public interface ExpSubject {
 
 	/**
@@ -12,4 +14,8 @@ public interface ExpSubject {
 	 * @return
 	 */
 	public String getName();
+	
+	public ExperimentUniverse getUniverse();
+	
+	public IRobot getRobot();
 }

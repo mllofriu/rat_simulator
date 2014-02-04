@@ -9,8 +9,6 @@ import javax.media.j3d.Canvas3D;
 import javax.media.j3d.ImageComponent2D;
 import javax.vecmath.Vector3f;
 
-import edu.usf.ratsim.experiment.ExpUniverseFactory;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Utiles;
@@ -31,21 +29,6 @@ public class VirtualRobot implements IRobot {
 	private boolean[] affordances;
 
 	private boolean validCachedAffordances;
-
-	public VirtualRobot() {
-		ExperimentUniverse univ = ExpUniverseFactory.getUniverse();
-		if (!(univ instanceof VirtualExpUniverse))
-			throw new RuntimeException(
-					"Virtual robot can only be run with a virtual universe");
-
-		this.universe = (VirtualExpUniverse) univ;
-		if (Configuration.getBoolean("UniverseFrame.display")){
-			UniverseFrame worldFrame = new UniverseFrame(universe);
-			worldFrame.setVisible(true);
-		}
-		
-		validCachedAffordances = false;
-	}
 
 	public VirtualRobot(VirtualExpUniverse world) {
 		this.universe = world;

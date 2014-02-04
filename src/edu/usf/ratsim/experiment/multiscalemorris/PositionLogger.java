@@ -1,14 +1,14 @@
 package edu.usf.ratsim.experiment.multiscalemorris;
 
+import java.io.PrintWriter;
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.vecmath.Point3f;
 
 import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.nsl.modules.ActionPerformerVote;
-
-import java.io.PrintWriter;
-import java.util.LinkedList;
-import java.util.List;
 
 public class PositionLogger extends ExperimentLogger {
 
