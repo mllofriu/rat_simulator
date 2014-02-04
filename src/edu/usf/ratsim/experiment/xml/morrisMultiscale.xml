@@ -42,7 +42,7 @@
         <name>train</name>
         <start>S</start>
         <time>2000</time>
-        <reps>16</reps>
+        <reps>32</reps>
         <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
         <subjectGroup>g1</subjectGroup>
     </trial>
@@ -52,7 +52,7 @@
         <name>test</name>
         <start>S</start>
         <time>500</time>
-        <reps>4</reps>
+        <reps>8</reps>
         <subjectGroup>g1</subjectGroup>
         <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
     </trial>
