@@ -1,45 +1,52 @@
 package edu.usf.ratsim.experiment.multiscalemorris;
 
-import java.util.logging.Formatter;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-
 import javax.vecmath.Point3f;
 
 import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.nsl.modules.ActionPerformerVote;
 
+import java.io.PrintWriter;
+import java.util.LinkedList;
+import java.util.List;
+
 public class PositionLogger extends ExperimentLogger {
 
 	private ActionPerformerVote actionPerformer;
+	private List<Pose> poses;
 
 	public PositionLogger(String logDir, ActionPerformerVote actionPerformer) {
 		super(logDir);
-		getLogger().log(Level.INFO, "x\ty\trandom");
-		
+
 		this.actionPerformer = actionPerformer;
+
+		poses = new LinkedList<Pose>();
 	}
 
-	
 	public void log(ExperimentUniverse universe) {
 		Point3f pos = universe.getRobotPosition();
 		// -Z coordinate corresponds to y
-		getLogger().log(Level.INFO, pos.x + "\t" + -pos.z + "\t" + actionPerformer.wasLastActionRandom());
+		poses.add(new Pose(pos.x, -pos.z, actionPerformer.wasLastActionRandom()));
 	}
 
-	
-	public Formatter getFormatter() {
-		return new PositionFormatter();
+	public void finalizeLog() {
+		PrintWriter writer = getWriter();
+		writer.write("x\ty\trandom\n");
+		for (Pose pose : poses)
+			writer.write(pose.x + "\t" + pose.y + "\t" + pose.randomAction
+					+ "\n");
+		poses.clear();
 	}
-
 }
 
-class PositionFormatter extends Formatter {
+class Pose {
+	public float x, y;
+	public boolean randomAction;
 
-	
-	public String format(LogRecord record) {
-		return record.getMessage() + System.getProperty("line.separator");
+	public Pose(float x, float y, boolean randomAction) {
+		super();
+		this.x = x;
+		this.y = y;
+		this.randomAction = randomAction;
 	}
-	
 }

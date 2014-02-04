@@ -168,9 +168,12 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	 *            Robots position
 	 */
 	
-	public void setRobotPosition(Point2D.Float pos) {
+	public void setRobotPosition(Point2D.Float pos, float angle) {
 		Transform3D translate = new Transform3D();
 		translate.setTranslation(new Vector3f(pos.x, 0, pos.y));
+		Transform3D rot = new Transform3D();
+		rot.rotY(angle);
+		translate.mul(rot);
 		robot.getTransformGroup().setTransform(translate);
 	}
 

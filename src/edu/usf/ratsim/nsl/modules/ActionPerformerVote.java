@@ -41,18 +41,20 @@ public class ActionPerformerVote extends NslModule {
 		// Count the votes
 		AbstractMap<Integer, Votes> voteBox = new HashMap<Integer, Votes>();
 		for (int i = 0; i < votes.length; i++) {
-			int vote = votes[i].get();
+			int votedAction = votes[i].get();
 //			System.out.println(vote);
-			if (voteBox.containsKey(vote))
-				voteBox.get(vote).incrementVotes();
+			if (voteBox.containsKey(votedAction))
+				voteBox.get(votedAction).incrementVotes();
 			else
-				voteBox.put(vote, new Votes(vote, 1));
+				voteBox.put(votedAction, new Votes(votedAction, 1));
 		}
 		
 		List<Votes> voteList = new LinkedList<Votes>(voteBox.values());
 
 		// Sort them according to number of votes
 		Collections.sort(voteList);
+//		for (Votes v : voteList)
+//			System.out.println(v);
 
 		do {
 			int action;
@@ -88,6 +90,7 @@ public class ActionPerformerVote extends NslModule {
 					voteList.remove(voteList.size() - 1);
 				}
 			}
+			aff = robot.affordances();
 		} while (!aff[Utiles.discretizeAction(0)]);
 
 		// If there is no actual actiona that can be performed, execute explorer
@@ -131,6 +134,10 @@ class Votes implements Comparable<Votes> {
 			return 0;
 		else
 			return 1;
+	}
+	
+	public String toString(){
+		return action + " voted " + votes + " times";
 	}
 
 }

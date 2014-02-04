@@ -12,7 +12,7 @@ public interface ExperimentUniverse {
 
 	public Point3f getRobotPosition();
 
-	public void setRobotPosition(Point2D.Float pos);
+	public void setRobotPosition(Point2D.Float pos, float angle);
 
 	public void setFoodPosition(Point2D.Float pos);
 
@@ -29,4 +29,5 @@ public interface ExperimentUniverse {
 	 * @return
 	 */
 	public float getRobotOrientationAngle();
+
 }
