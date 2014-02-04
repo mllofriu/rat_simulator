@@ -60,7 +60,8 @@ ratPathPlot <- function(pathData, p){
   pathSegs <- pathData[1:nrow(pathData)-1,]
   # Add two new columns with shifted data
   pathSegs[c('nX', 'nY')] <- pathData[-1,c('x','y')]
-  p + geom_segment(data=pathSegs, aes(x,y,xend=nX,yend=nY,color = random)) + scale_color_manual(values=c(true="red", false="blue"))
+  p + geom_segment(data=pathSegs, aes(x,y,xend=nX,yend=nY,color = random)) + scale_color_manual(values=c(true="red", false="blue")) +
+    geom_point(data=pathData, aes(x,y),  col="green", bg="red",cex=1)
 }
 
 ratStartPointPlot <- function (pathData, p){
