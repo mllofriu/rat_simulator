@@ -1,8 +1,9 @@
-require(XML)
-require(shape)
-require(ggplot2)
-require(grid)
-require(plyr)
+require(XML, quietly = TRUE)
+require(shape, quietly = TRUE)
+require(ggplot2, quietly = TRUE)
+require(grid, quietly = TRUE)
+require(plyr, quietly = TRUE)
+require(parallel, quietly = TRUE)
 
 mazePlotTheme <- function(p){
   p + theme(axis.line=element_blank(),axis.text.x=element_blank(),
@@ -107,7 +108,7 @@ plotPathOnMaze <- function (mazeFile, pathFile){
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
   # Save the plot to an image
-  ggsave(paste(dirname(pathFile),"/maze.png", sep=''), width=10, height=10)
+  ggsave(paste(dirname(pathFile),"/path.png", sep=''), width=10, height=10)
 }
 
 plotPolicyOnMaze <- function(policyFile, mazeFile, pathFile){
@@ -136,10 +137,18 @@ mazeFile <- "maze.xml"
 
 # Go over all logs and plot paths
 #  Get the file list
-logFiles <- list.files(pattern="position.txt$", full.names=TRUE, recursive=TRUE)
-logFiles
+# logFiles <- list.files(pattern="position.txt$", full.names=TRUE, recursive=TRUE)
+# logFiles
 #  Plot for each file
-sapply(logFiles, function(x) plotPathOnMaze(mazeFile, x))
+# mclapply(logFiles, function(x) plotPathOnMaze(mazeFile, x), mc.preschedule=FALSE)
+# 
+# logFiles <- list.files(pattern="policy.txt$", full.names=TRUE, recursive=TRUE)
+# mclapply(logFiles, function(x) plotPolicyOnMaze(x, mazeFile, paste(dirname(x), '/', 'position.txt', sep='')), mc.preschedule=FALSE)
 
-logFiles <- list.files(pattern="policy.txt$", full.names=TRUE, recursive=TRUE)
-sapply(logFiles, function(x) plotPolicyOnMaze(x, mazeFile, paste(dirname(x), '/', 'position.txt', sep='')))
+args = commandArgs(trailingOnly=TRUE)
+
+positionFile = paste(args[1], '/', 'position.txt', sep='')
+policyFile = paste(args[1], '/', 'policy.txt', sep='')
+
+plotPathOnMaze(mazeFile, positionFile)
+plotPolicyOnMaze(policyFile, mazeFile, positionFile)
