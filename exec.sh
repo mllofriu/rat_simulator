@@ -2,6 +2,7 @@
 #$ -N rat_sim
 #$ -l h_rt=08:00:00
 
+
 export PATH="/usr/lib64/qt-3.3/bin:/opt/sge/bin:/opt/sge/bin/lx-amd64:/bin:/usr/bin:/apps/bin:/usr/lib64/alliance/bin:/home/m/mllofriualon/bin"
 export LD_LIBRARY_PATH="/usr/lib64/"
 Xvfb :1 -screen 2 1600x1200x16 &
