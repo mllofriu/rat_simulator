@@ -3,6 +3,7 @@ package edu.usf.ratsim.robot.virtual;
 import java.util.Map;
 
 import javax.vecmath.Color3f;
+import javax.vecmath.Point3f;
 
 import org.w3c.dom.Node;
 
@@ -10,16 +11,20 @@ public class PoolNode extends ExpUniverseNode {
 
 	final float RADIO = 0.005f;
 	final int CANTIDAD_CILINDROS = 2000;
+	private Float xp;
+	private Float zp;
+	private Float r;
+	private Float yp;
 
 	public PoolNode(Node node) {
 		Map<String, Float> values = readValues(node);
 
 		Color3f color = new Color3f(values.get("cr"), values.get("cg"),
 				values.get("cb"));
-		float xp = values.get("xp");
-		float yp = values.get("yp");
-		float zp = values.get("yp");
-		float r = values.get("r");
+		xp = values.get("xp");
+		yp = values.get("yp");
+		zp = values.get("yp");
+		r = values.get("r");
 		float h = values.get("h");
 
 		int iterCantCilindros;
@@ -32,5 +37,9 @@ public class PoolNode extends ExpUniverseNode {
 			currentAngle = currentAngle + 360.0 / CANTIDAD_CILINDROS;
 		}
 
+	}
+	
+	public boolean isInside(Point3f point){
+		return point.distance(new Point3f(xp, yp, zp)) < r;
 	}
 }
