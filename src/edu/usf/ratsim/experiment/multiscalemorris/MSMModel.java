@@ -8,17 +8,14 @@ import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.nsl.modules.ActionPerformerVote;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
-import edu.usf.ratsim.nsl.modules.HeadingAngle;
 import edu.usf.ratsim.nsl.modules.qlearning.QLActionSelection;
 import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
 import edu.usf.ratsim.nsl.modules.qlearning.QLUpdateValue;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.Configuration;
-import edu.usf.ratsim.support.Utiles;
 
 public class MSMModel extends NslModel {
 	private List<ArtificialPlaceCellLayer> pcls;
-	private HeadingAngle headingAngle;
 	private List<QLUpdateValue> qLUpdVal;
 	private ActionPerformerVote actionPerformerVote;
 	private List<QLActionSelection> qLActionSel;
@@ -32,7 +29,6 @@ public class MSMModel extends NslModel {
 		// univ);
 		// TaxicFoodFinderSchema actionPerf = new TaxicFoodFinderSchema(
 		// "ActionPerformer", this, robot, univ);
-		headingAngle = new HeadingAngle("HeadingPublisher", this, univ);
 
 		// Get some configuration values for place cells + qlearning
 		int numLayers = Configuration.getInt("ArtificialPlaceCells.numLayers");

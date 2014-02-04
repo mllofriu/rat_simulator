@@ -18,8 +18,6 @@ public class ArtificialPlaceCellLayer extends NslModule {
 
 	private ExperimentUniverse universe;
 
-	private float minY;
-	private float minX;
 	private float maxY;
 	private float maxX;
 
@@ -28,8 +26,6 @@ public class ArtificialPlaceCellLayer extends NslModule {
 		super(nslName, nslParent);
 		// Get some parameters from configuration
 		
-		this.minX = minX;
-		this.minY = minY;
 		maxX = Configuration.getFloat("ArtificialPlaceCells.maxX");
 		maxY = Configuration.getFloat("ArtificialPlaceCells.maxY");
 
