@@ -36,7 +36,6 @@ public abstract class Experiment implements Runnable {
 	private static final String STR_SUBJECT = "subject";
 	private static final String STR_GROUP = "group";
 	private static final Object STR_TRIALGROUP = "subjectGroup";
-	private static final Object MEMBER_STR = "member";
 
 	private final String STR_TRIAL = "trial";
 
