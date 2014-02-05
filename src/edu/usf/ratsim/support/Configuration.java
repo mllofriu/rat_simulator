@@ -20,7 +20,7 @@ public class Configuration {
 			in.close();
 		} catch (IOException e) {
 			System.err
-					.println("Configuration::Error al cargar el archivo de configuraci�n.");
+					.println("Configuration::Error al cargar el archivo de configuracion.");
 		}
 	}
 

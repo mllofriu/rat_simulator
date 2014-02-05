@@ -65,9 +65,9 @@ public class QLActionSelection extends NslModule {
 					.angleToRot(Utiles.discreteAngles[nextAngle]);
 
 			// Get the action that better approximates that angle
-			boolean[] affordances = robot.getAffordances();
+//			boolean[] affordances = robot.getAffordances();
 			action = Utiles.bestActionToRot(nextRot,
-					universe.getRobotOrientation(), affordances);
+					universe.getRobotOrientation());
 		}
 
 		return action;
@@ -90,5 +90,13 @@ public class QLActionSelection extends NslModule {
 		// Save the current state and the past action
 		value.recordStateAction(new StateAction(s, Utiles
 				.discretizeAngle(universe.getRobotOrientationAngle())));
+//		System.out.println(Math.toDegrees(Utiles.discreteAngles[Utiles
+//				.discretizeAngle(universe.getRobotOrientationAngle())]));
+//		try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 }
