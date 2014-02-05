@@ -108,7 +108,7 @@ plotPathOnMaze <- function (mazeFile, pathFile){
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
   # Save the plot to an image
-  ggsave(paste(dirname(pathFile),"/path.png", sep=''), width=10, height=10)
+  ggsave(plot=p,filename=paste(dirname(pathFile),"/path.png", sep=''), width=10, height=10)
 }
 
 plotPolicyOnMaze <- function(policyFile, mazeFile, pathFile){
@@ -130,7 +130,7 @@ plotPolicyOnMaze <- function(policyFile, mazeFile, pathFile){
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
   # Save the plot to an image
-  ggsave(paste(dirname(policyFile),"/policy.png", sep=''), width=10, height=10)
+  ggsave(plot=p,filename=paste(dirname(policyFile),"/policy.png", sep=''), width=10, height=10)
 }
 
 mazeFile <- "maze.xml"
