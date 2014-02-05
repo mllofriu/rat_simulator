@@ -61,8 +61,11 @@ ratPathPlot <- function(pathData, p){
   pathSegs <- pathData[1:nrow(pathData)-1,]
   # Add two new columns with shifted data
   pathSegs[c('nX', 'nY')] <- pathData[-1,c('x','y')]
-  p + geom_segment(data=pathSegs, aes(x,y,xend=nX,yend=nY,color = random)) + scale_color_manual(values=c(true="red", false="blue")) +
-    geom_point(data=pathData, aes(x,y),  col="green", bg="red",cex=1)
+  p + geom_segment(data=pathSegs[c('x','y','nX','nY','random')], aes(x,y,xend=nX,yend=nY,color = random)) + scale_color_manual(values=c(true="red", false="blue")) 
+}
+
+ratPathPointsPlot <- function(pathData, p){
+  p + geom_point(data=pathData, aes(x,y),  col="green", bg="red",cex=1)
 }
 
 ratStartPointPlot <- function (pathData, p){
@@ -79,9 +82,9 @@ policyArrowsPlot <- function(policyData, p){
   
   if (nrow(policyDataNonNA) > 0){
     segLen = .0001
-    policyData[, 'deltax'] <- cos(policyData['angle']) * segLen
-    policyData[, 'deltay'] <- sin(policyData['angle']) * segLen
-    p + geom_segment(data=policyData, aes(x = x, y = y, xend = x + deltax, yend = y + deltay), arrow = arrow(length = unit(0.1,"cm")))
+    policyDataNonNA[, 'deltax'] <- cos(policyDataNonNA['angle']) * segLen
+    policyDataNonNA[, 'deltay'] <- sin(policyDataNonNA['angle']) * segLen
+    p + geom_segment(data=policyDataNonNA, aes(x = x, y = y, xend = x + deltax, yend = y + deltay), arrow = arrow(length = unit(0.1,"cm")))
   } else {
     p
   }
@@ -103,6 +106,7 @@ plotPathOnMaze <- function (mazeFile, pathFile){
   p <- mazePlot(mazeFile,p)
   p <- platformPlot(mazeFile,p)
   p <- ratPathPlot(pathData, p)
+#  p <- ratPathPointsPlot(pathData, p)
   p <- ratStartPointPlot(pathData, p)
   p <- ratEndPointPlot(pathData, p)
   # Some aesthetic stuff
@@ -121,11 +125,12 @@ plotPolicyOnMaze <- function(policyFile, mazeFile, pathFile){
   p <- ggplot()
   p <- mazePlot(mazeFile, p)
   p <- platformPlot(mazeFile, p)
-  p <- policyArrowsPlot(policyData, p)
-  p <- policyDotsPlot(policyData, p)
   p <- ratPathPlot(pathData, p)
+  #  p <- ratPathPointsPlot(pathData, p)
   p <- ratStartPointPlot(pathData, p)
   p <- ratEndPointPlot(pathData, p)
+  p <- policyArrowsPlot(policyData, p)
+  p <- policyDotsPlot(policyData, p)
   
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
