@@ -1,6 +1,6 @@
 #$ -cwd
 #$ -N rat_sim
-#$ -l h_rt=00:10:00,pcpus=8,mpj=30G
+#$ -l h_rt=00:20:00,pcpus=8,mpj=30G
 #$ -m e
 #$ -M mllofriualon@mail.usf.edu
 
