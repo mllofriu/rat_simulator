@@ -140,7 +140,10 @@ plotPolicyOnMaze <- function(name, pathData, policyData, mazeFile){
 plotArrivalTime <- function(pathData){
   runTimes <- ddply(pathData, .(subject, repetition), summarise, runTime = length(x))
   summarizedRunTimes <- ddply(runTimes, .(repetition), summarise, sdRT = sd(runTime)/sqrt(length(runTime)), mRT = mean(runTime))
-  p <- ggplot(summarizedRunTimes, aes(x=repetition, y=mRT)) + geom_errorbar(aes(ymin=mRT-sdRT, ymax=mRT+sdRT), width=.3) + geom_point())
+  p <- ggplot(summarizedRunTimes, aes(x=repetition, y=mRT)) + geom_errorbar(aes(ymin=mRT-sdRT, ymax=mRT+sdRT), width=.3) + geom_point()
+  print(p)
+  ggsave(plot=p,filename=paste("plots/runtime",pathData[[1,'trial']],
+                             ".png", sep=''), width=10, height=10)
 }
 
 mazeFile <- "maze.xml"
@@ -148,16 +151,16 @@ mazeFile <- "maze.xml"
 pathFile = 'position.txt'
 policyFile = 'policy.txt'
 
-# policyData <- read.csv(policyFile, sep='\t')
+policyData <- read.csv(policyFile, sep='\t')
 pathData <- read.csv(pathFile, sep='\t')
 
 splitPath <- split(pathData, pathData[c('trial', 'subject', 'repetition')], drop=TRUE)
 splitPol <- split(policyData, policyData[c('trial', 'subject', 'repetition')], drop=TRUE)
 
-mclapply(names(splitPath), function(x) plotPathOnMaze(x,
-        splitPath[[x]], mazeFile), mc.cores=8);
-mclapply(names(splitPol), function(x) plotPolicyOnMaze(x,
-        splitPath[[x]], splitPol[[x]], mazeFile), mc.cores=8);
+lapply(names(splitPath), function(x) plotPathOnMaze(x,
+        splitPath[[x]], mazeFile));
+lapply(names(splitPol), function(x) plotPolicyOnMaze(x,
+        splitPath[[x]], splitPol[[x]], mazeFile));
 
 # Plot arrival times as a function of repetition number
 ddply(pathData, .(trial), plotArrivalTime)

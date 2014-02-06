@@ -2,6 +2,8 @@ package edu.usf.ratsim.nsl.modules.qlearning;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -65,41 +67,38 @@ public class QLSupport {
 	 */
 	public void dumpPolicy(String trial, String subName, String rep,
 			ArtificialPlaceCellLayer pcl) {
-		PrintWriter writer = QLSupport.getWriter();
+		synchronized (QLSupport.class) {
+			PrintWriter writer = QLSupport.getWriter();
 
-		List<ArtificialPlaceCell> cells = pcl.getCells();
-		for (int activeState = 0; activeState < numStates; activeState++) {
-			// Get the policy angle for this state
-			int angle = getMaxAngle(activeState);
+			List<ArtificialPlaceCell> cells = pcl.getCells();
+			for (int activeState = 0; activeState < numStates; activeState++) {
+				// Get the policy angle for this state
+				int angle = getMaxAngle(activeState);
 
-			// Write to file
-			String policyAngle;
-			if (angle == -1)
-				policyAngle = "NA";
-			else
-				policyAngle = new Float(Utiles.discreteAngles[angle])
-						.toString();
+				// Write to file
+				String policyAngle;
+				if (angle == -1)
+					policyAngle = "NA";
+				else
+					policyAngle = new Float(Utiles.discreteAngles[angle])
+							.toString();
 
-			synchronized (writer) {
-				writer.println(trial + '\t' + subName + '\t' + rep + '\t'
-						+ cells.get(activeState).getCenter().x + "\t"
-						+ (-cells.get(activeState).getCenter().z) + "\t"
-						+ policyAngle);
+					writer.println(trial + '\t' + subName + '\t' + rep + '\t'
+							+ cells.get(activeState).getCenter().x + "\t"
+							+ (-cells.get(activeState).getCenter().z) + "\t"
+							+ policyAngle);
 			}
-
 		}
-		synchronized (writer) {
-			writer.flush();
-		}
+		
 	}
 
-	private static synchronized PrintWriter getWriter() {
+	private static PrintWriter getWriter() {
 		if (writer == null) {
 			try {
-				writer = new PrintWriter(new File(
-						Configuration.getString("Log.DIRECTORY")
-								+ DUMP_FILENAME));
-				writer.write("trial\tsubject\trepetition\tx\ty\tangle\n");
+				writer = new PrintWriter(new OutputStreamWriter(
+						new FileOutputStream(new File(Configuration
+								.getString("Log.DIRECTORY") + DUMP_FILENAME))), true);
+				writer.println("trial\tsubject\trepetition\tx\ty\tangle");
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -2,6 +2,8 @@ package edu.usf.ratsim.experiment.multiscalemorris;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,7 +25,8 @@ public class PositionLogger implements ExperimentLogger {
 	private String trialName;
 	private static PrintWriter writer = null;
 
-	public PositionLogger(String trialName, String subName, String repNum, ActionPerformerVote actionPerformer) {
+	public PositionLogger(String trialName, String subName, String repNum,
+			ActionPerformerVote actionPerformer) {
 		super();
 
 		this.trialName = trialName;
@@ -41,28 +44,34 @@ public class PositionLogger implements ExperimentLogger {
 	}
 
 	public void finalizeLog() {
-		PrintWriter writer = getWriter();
-		synchronized (writer) {
+		synchronized (PositionLogger.class) {
+			PrintWriter writer = getWriter();
 			for (Pose pose : poses)
-				writer.write(trialName + '\t' + subName + '\t' + repNum +
-						'\t' + pose.x + "\t" + pose.y + "\t" + pose.randomAction + "\n");
+				writer.println(trialName + '\t' + subName + '\t' + repNum
+						+ '\t' + pose.x + "\t" + pose.y + "\t"
+						+ pose.randomAction);
 			poses.clear();
 		}
 	}
 
-	public static synchronized PrintWriter getWriter() {
-		if (writer  == null){
+	private static PrintWriter getWriter() {
+		if (writer == null) {
 			try {
-				writer = new PrintWriter(Configuration.getString("Log.DIRECTORY") +
-						new File(DUMP_FILENAME));
-				writer.write("trial\tsubject\trepetition\tx\ty\trandom\n");
+				// Writer with auto flush
+				writer = new PrintWriter(new OutputStreamWriter(
+						new FileOutputStream(new File(Configuration
+								.getString("Log.DIRECTORY") + DUMP_FILENAME))), true);
+				writer.println("trial\tsubject\trepetition\tx\ty\trandom");
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 		}
+
 		return writer;
 	}
+
 }
 
 class Pose {
