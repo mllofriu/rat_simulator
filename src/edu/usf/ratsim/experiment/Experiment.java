@@ -25,8 +25,6 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.sun.tools.javac.util.Position;
-
 import edu.usf.ratsim.experiment.multiscalemorris.PositionLogger;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.XMLDocReader;
