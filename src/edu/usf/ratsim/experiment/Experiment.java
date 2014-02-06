@@ -25,6 +25,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.sun.tools.javac.util.Position;
+
+import edu.usf.ratsim.experiment.multiscalemorris.PositionLogger;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.XMLDocReader;
 
@@ -57,6 +60,11 @@ public abstract class Experiment implements Runnable {
 		logPath = computeLogPath();
 		File file = new File(logPath);
 		file.mkdirs();
+		
+		System.out.println("Starting " + logPath);
+		
+		// Set the log path in the global configuration class for the rest to know
+		Configuration.setProperty("Log.DIRECTORY", logPath);
 		
 		// Read experiments from xml file
 		try {
@@ -157,20 +165,19 @@ public abstract class Experiment implements Runnable {
 				params.put(paramNodes.item(j).getNodeName(), paramNodes.item(j)
 						.getTextContent());
 			}
-			String trialLogPath = experimentLogPath + File.separator
-					+ params.get(STR_NAME);
+
 			// For each subject in the group
 			String gName = params.get(STR_TRIALGROUP);
 			for (String subName : groups.get(gName).keySet()){
 				ExpSubject subject = groups.get(gName).get(subName);
-				String subLogPath = trialLogPath + File.separator + subject.getName();
+//				String subLogPath = trialLogPath + File.separator + subject.getName();
 				// Create <reps> copies of the trial
 				int reps = Integer.parseInt(params.get(STR_REPETITIONS));
 				for (int j = 0; j < reps; j++) {
 					// Compose trial logPath with expLogPath + trialName + trial rep
-					String repLogPath = subLogPath + File.separator + "rep" + j
-							+ File.separator;
-					Trial t = createTrial(params, points, subject, repLogPath);
+//					String repLogPath = subLogPath + File.separator + "rep" + j
+//							+ File.separator;
+					Trial t = createTrial(params, points, subject, j);
 					if (!trials.containsKey(subject))
 						trials.put(subject, new LinkedList<Trial>());
 					trials.get(subject).add(t);
@@ -181,14 +188,14 @@ public abstract class Experiment implements Runnable {
 	}
 
 	private Trial createTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points, ExpSubject subject, String trialLogPath) {
+			Hashtable<String, Point4f> points, ExpSubject subject, int rep) {
 		switch (stringType2TrialType(params.get(STR_TRIAL_TYPE))) {
 		case HABITUATION:
-			return createHabituationTrial(params, points, subject, trialLogPath);
+			return createHabituationTrial(params, points, subject, rep);
 		case TESTING:
-			return createTestingTrial(params, points, subject, trialLogPath);
+			return createTestingTrial(params, points, subject, rep);
 		case TRAINING:
-			return createTrainingTrial(params, points, subject, trialLogPath);
+			return createTrainingTrial(params, points, subject, rep);
 		}
 
 		return null;
@@ -226,13 +233,13 @@ public abstract class Experiment implements Runnable {
 	}
 
 	public abstract Trial createTrainingTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points2, ExpSubject subject, String trialLogPath);
+			Hashtable<String, Point4f> points2, ExpSubject subject, int rep);
 
 	public abstract Trial createTestingTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points2, ExpSubject subject, String trialLogPath);
+			Hashtable<String, Point4f> points2, ExpSubject subject, int rep);
 
 	public abstract Trial createHabituationTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points2, ExpSubject subject, String trialLogPath);
+			Hashtable<String, Point4f> points2, ExpSubject subject, int rep);
 
 	
 	public void run() {
@@ -263,6 +270,7 @@ public abstract class Experiment implements Runnable {
 		
 		execPlottingScripts();
 
+		PositionLogger.getWriter().close();
 	}
 
 }

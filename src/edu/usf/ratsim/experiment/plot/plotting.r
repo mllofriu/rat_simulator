@@ -99,8 +99,7 @@ policyDotsPlot <- function(policyData, p){
   }
 }
 
-plotPathOnMaze <- function (mazeFile, pathFile){
-  pathData = read.csv(pathFile, sep='\t')
+plotPathOnMaze <- function (pathData, mazeFile){
   # Get the individual components of the plot
   p <- ggplot()
   p <- mazePlot(mazeFile,p)
@@ -112,12 +111,12 @@ plotPathOnMaze <- function (mazeFile, pathFile){
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
   # Save the plot to an image
-  ggsave(plot=p,filename=paste(dirname(pathFile),"/path.png", sep=''), width=10, height=10)
+  ggsave(plot=p,filename=paste("plots/path",pathData[1,'trial'],
+                               pathData[1,'subject'],"rep",pathData[1,'repetition'],
+                               ".png", sep=''), width=10, height=10)
 }
 
-plotPolicyOnMaze <- function(policyFile, mazeFile, pathFile){
-  policyData <- read.csv(policyFile, sep='\t')
-  pathData = read.csv(pathFile, sep='\t')
+plotPolicyOnMaze <- function(pathData, policyData, mazeFile){
   #  Take out points outside the circle
   eps = .01
   policyData <- policyData[(policyData['x']^2 + policyData['y']^2 < .5^2 - eps),] 
@@ -135,25 +134,26 @@ plotPolicyOnMaze <- function(policyFile, mazeFile, pathFile){
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
   # Save the plot to an image
-  ggsave(plot=p,filename=paste(dirname(policyFile),"/policy.png", sep=''), width=10, height=10)
+  ggsave(plot=p,filename=paste("plots/policy",policyData[1,'trial'],
+                               policyData[1,'subject'],policyData[1,'repetition'],
+                               ".png", sep=''), width=10, height=10)
 }
 
 mazeFile <- "maze.xml"
 
-# Go over all logs and plot paths
-#  Get the file list
-# logFiles <- list.files(pattern="position.txt$", full.names=TRUE, recursive=TRUE)
-# logFiles
-#  Plot for each file
-# mclapply(logFiles, function(x) plotPathOnMaze(mazeFile, x), mc.preschedule=FALSE)
-# 
-# logFiles <- list.files(pattern="policy.txt$", full.names=TRUE, recursive=TRUE)
-# mclapply(logFiles, function(x) plotPolicyOnMaze(x, mazeFile, paste(dirname(x), '/', 'position.txt', sep='')), mc.preschedule=FALSE)
+pathFile = 'position.txt'
+policyFile = 'policy.txt'
 
-args = commandArgs(trailingOnly=TRUE)
+policyData <- read.csv(policyFile, sep='\t')
+pathData <- read.csv(pathFile, sep='\t')
 
-positionFile = paste(args[1], '/', 'position.txt', sep='')
-policyFile = paste(args[1], '/', 'policy.txt', sep='')
+splitPath <- split(pathData, pathData[c('trial', 'subject', 'repetition')], drop=TRUE)
+splitPol <- split(policyData, policyData[c('trial', 'subject', 'repetition')], drop=TRUE)
 
-plotPathOnMaze(mazeFile, positionFile)
-plotPolicyOnMaze(policyFile, mazeFile, positionFile)
+lapply(names(splitPath), function(x) plotPathOnMaze(
+  splitPath[[x]], mazeFile));
+lapply(names(splitPol), function(x) plotPolicyOnMaze(
+  splitPath[[x]], splitPol[[x]], mazeFile));
+
+
+
