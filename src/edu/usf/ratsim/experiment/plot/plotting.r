@@ -99,24 +99,23 @@ policyDotsPlot <- function(policyData, p){
   }
 }
 
-plotPathOnMaze <- function (pathData, mazeFile){
+plotPathOnMaze <- function (name, pathData, mazeFile){
   # Get the individual components of the plot
   p <- ggplot()
   p <- mazePlot(mazeFile,p)
   p <- platformPlot(mazeFile,p)
   p <- ratPathPlot(pathData, p)
-#  p <- ratPathPointsPlot(pathData, p)
+  #  p <- ratPathPointsPlot(pathData, p)
   p <- ratStartPointPlot(pathData, p)
   p <- ratEndPointPlot(pathData, p)
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
   # Save the plot to an image
-  ggsave(plot=p,filename=paste("plots/path",pathData[1,'trial'],
-                               pathData[1,'subject'],"rep",pathData[1,'repetition'],
+  ggsave(plot=p,filename=paste("plots/path",name,
                                ".png", sep=''), width=10, height=10)
 }
 
-plotPolicyOnMaze <- function(pathData, policyData, mazeFile){
+plotPolicyOnMaze <- function(name, pathData, policyData, mazeFile){
   #  Take out points outside the circle
   eps = .01
   policyData <- policyData[(policyData['x']^2 + policyData['y']^2 < .5^2 - eps),] 
@@ -134,9 +133,8 @@ plotPolicyOnMaze <- function(pathData, policyData, mazeFile){
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
   # Save the plot to an image
-  ggsave(plot=p,filename=paste("plots/policy",policyData[1,'trial'],
-                               policyData[1,'subject'],policyData[1,'repetition'],
-                               ".png", sep=''), width=10, height=10)
+  print(ggsave(plot=p,filename=paste("plots/policy",name,
+                               ".png", sep=''), width=10, height=10))
 }
 
 mazeFile <- "maze.xml"
@@ -150,10 +148,10 @@ pathData <- read.csv(pathFile, sep='\t')
 splitPath <- split(pathData, pathData[c('trial', 'subject', 'repetition')], drop=TRUE)
 splitPol <- split(policyData, policyData[c('trial', 'subject', 'repetition')], drop=TRUE)
 
-lapply(names(splitPath), function(x) plotPathOnMaze(
-  splitPath[[x]], mazeFile));
-lapply(names(splitPol), function(x) plotPolicyOnMaze(
-  splitPath[[x]], splitPol[[x]], mazeFile));
+mclapply(names(splitPath), function(x) plotPathOnMaze(x,
+        splitPath[[x]], mazeFile), mc.cores=8);
+mclapply(names(splitPol), function(x) plotPolicyOnMaze(x,
+        splitPath[[x]], splitPol[[x]], mazeFile), mc.cores=8);
 
 
 
