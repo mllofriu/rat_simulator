@@ -8,8 +8,6 @@ import java.util.List;
 
 import javax.vecmath.Point3f;
 
-import com.sun.swing.internal.plaf.synth.resources.synth;
-
 import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.nsl.modules.ActionPerformerVote;
