@@ -12,13 +12,12 @@ import javax.vecmath.Vector3f;
 
 public class Utiles {
 
-	 public static final float[] actions = { -(float) Math.PI, -(float) (3 *
-	 Math.PI / 4),
-	 -(float) (Math.PI / 2), -(float) (Math.PI / 4), 0,
-	 (float) (Math.PI / 4), (float) (Math.PI / 2),
-	 (float) (3 * Math.PI / 4) };
-//	public static final float[] actions = { -(float) (Math.PI / 4), 0,
-//			(float) (Math.PI / 4) };
+	public static final float[] actions = { -(float) Math.PI,
+			-(float) (3 * Math.PI / 4), -(float) (Math.PI / 2),
+			-(float) (Math.PI / 4), 0, (float) (Math.PI / 4),
+			(float) (Math.PI / 2), (float) (3 * Math.PI / 4) };
+	// public static final float[] actions = { -(float) (Math.PI / 4), 0,
+	// (float) (Math.PI / 4) };
 	public static final float[] discreteAngles = { 0, (float) (Math.PI / 4),
 			(float) (Math.PI / 2), (float) (3 * Math.PI / 4), (float) Math.PI,
 			(float) (5 * Math.PI / 4), (float) (6 * Math.PI / 4),
@@ -94,7 +93,7 @@ public class Utiles {
 		Quat4f rotToMake = new Quat4f();
 		rotToMake.inverse(currentRot);
 		rotToMake.mul(rotToGoal);
-		
+
 		int action = -1;
 		float angleDifference = (float) (Math.PI * 2);
 		for (int i = 0; i < actions.length; i++) {
@@ -108,9 +107,11 @@ public class Utiles {
 			// Compare axis angle. The closer to 0, the more suitable
 			// Take the min of normal and inverse
 			float resultingAnglePos = (float) Math.abs(rotToAngle(tmpRot));
-			float resultingAngleInv = (float) Math.abs(Math.PI * 2 - resultingAnglePos);
+			float resultingAngleInv = (float) Math.abs(Math.PI * 2
+					- resultingAnglePos);
 			if (Math.min(resultingAnglePos, resultingAngleInv) < angleDifference) {
-				angleDifference = Math.min(resultingAnglePos, resultingAngleInv);
+				angleDifference = Math
+						.min(resultingAnglePos, resultingAngleInv);
 				action = i;
 			}
 		}
@@ -147,8 +148,10 @@ public class Utiles {
 			rotAction.mul(allotRot);
 			// Compare axis angle. The closer to 0, the more suitable
 			float resultingAngle = (float) Math.abs(rotToAngle(rotAction));
-			if (resultingAngle < angleDifference) {
-				angleDifference = resultingAngle;
+			float resultingAngleInv = (float) Math.abs(Math.PI * 2
+					- resultingAngle);
+			if (Math.min(resultingAngle, resultingAngleInv) < angleDifference) {
+				angleDifference = Math.min(resultingAngle, resultingAngleInv);
 				angle = i;
 			}
 		}
@@ -171,7 +174,7 @@ public class Utiles {
 	 */
 	public static int discretizeAction(int degrees) {
 		Quat4f allotRot = angleToRot((float) Math.toRadians(degrees));
-		
+
 		int action = -1;
 		float angleDifference = (float) (Math.PI * 2);
 		for (int i = 0; i < actions.length; i++) {
@@ -183,8 +186,11 @@ public class Utiles {
 			rotAction.mul(allotRot);
 			// Compare axis angle. The closer to 0, the more suitable
 			float resultingAbsAngle = (float) Math.abs(rotToAngle(rotAction));
-			if (resultingAbsAngle < angleDifference) {
-				angleDifference = resultingAbsAngle;
+			float resultingAngleInv = (float) Math.abs(Math.PI * 2
+					- resultingAbsAngle);
+			if (Math.min(resultingAbsAngle, resultingAngleInv) < angleDifference) {
+				angleDifference = Math
+						.min(resultingAbsAngle, resultingAngleInv);
 				action = i;
 			}
 		}
@@ -192,17 +198,12 @@ public class Utiles {
 		return action;
 	}
 
-	 public static void main(String[] args){
-//		 System.out.println(discretizeAngle((float) (-135 * Math.PI / 180)));
-//		 System.out.println(discretizeAngle((float) (-90 * Math.PI / 180)));
-		 System.out.println(
-				 Math.toDegrees(
-						 actions[
-						         bestActionToRot(
-						        		 angleToRot((float) Math.toRadians(135)),
-						        		 angleToRot((float) Math.toRadians(90)))]
-						        )
-						    );
-	 }
+	public static void main(String[] args) {
+		// System.out.println(discretizeAngle((float) (-135 * Math.PI / 180)));
+		// System.out.println(discretizeAngle((float) (-90 * Math.PI / 180)));
+		System.out.println(Math.toDegrees(actions[bestActionToRot(
+				angleToRot((float) Math.toRadians(135)),
+				angleToRot((float) Math.toRadians(90)))]));
+	}
 
 }
