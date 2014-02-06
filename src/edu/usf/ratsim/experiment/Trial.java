@@ -1,12 +1,8 @@
 package edu.usf.ratsim.experiment;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
-
-import org.apache.commons.io.FileUtils;
 
 import edu.usf.ratsim.support.Configuration;
 
@@ -51,20 +47,16 @@ public abstract class Trial implements Runnable {
 	private Map<String, String> params;
 	private ExperimentUniverse universe;
 	private LinkedList<ExperimentLogger> loggers;
-	private String logPath;
 	private ExpSubject subject;
+	private String rep;
 
-	public Trial(Map<String, String> params, ExpSubject subject, String trialLogPath) {
+	public Trial(Map<String, String> params, ExpSubject subject, int rep) {
 		super();
 		this.setParams(params);
 		// Trial is identified by its logpath
-		this.name = trialLogPath;
+		this.name = params.get(STR_NAME);
+		this.rep = new Integer(rep).toString();
 		this.subject = subject;
-		
-		// Set the log path adding the individual name
-		setLogPath(trialLogPath);
-
-		setupLogDir(trialLogPath);
 		
 		setUniverse(subject.getUniverse());
 		
@@ -87,23 +79,6 @@ public abstract class Trial implements Runnable {
 	private void setUniverse(ExperimentUniverse universe) {
 		this.universe = universe;
 	}
-
-	private void setupLogDir(String trialLogPath) {
-		// Create directories
-		File dir = new File(trialLogPath + File.separator);
-		dir.mkdirs();
-		
-		// Copy maze file to log directory for plot purposes
-		File mazeCopy = new File(trialLogPath + File.separator + "maze.xml");
-		try {
-			FileUtils.copyURLToFile(getClass().getResource(params.get(STR_MAZE)), mazeCopy);
-		} catch (IOException e) {
-			System.out.println("Could not copy maze file");
-			e.printStackTrace();
-		}
-		
-	}
-
 	
 	public void run() {
 		// Lock on the subject to ensure mutual exclusion for the same rat
@@ -150,9 +125,10 @@ public abstract class Trial implements Runnable {
 			
 			// Close file handlers
 			for (ExperimentLogger logger : loggers)
-				logger.closeLog();
+				logger.finalizeLog();
 			
-			System.out.println("Trial " + name + " finished.");
+			System.out.println("Trial " + getName() + " " + getSubjectName() +
+					" " + getRep() + " finished.");
 		}
 		
 	}
@@ -204,12 +180,20 @@ public abstract class Trial implements Runnable {
 		this.params = params;
 	}
 
-	public String getLogPath() {
-		return logPath;
+	public String getRep() {
+		return rep;
 	}
 
-	public void setLogPath(String logPath) {
-		this.logPath = logPath;
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getSubjectName() {
+		return getSubject().getName();
 	}
 
 }

@@ -9,6 +9,7 @@ import java.util.List;
 
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
+import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Utiles;
 
 public class QLSupport {
@@ -20,6 +21,7 @@ public class QLSupport {
 
 	private LinkedList<StateAction> visitedStateActions;
 	private int numStates;
+	private static PrintWriter writer = null;
 
 	public QLSupport(int numStates) {
 		value = new HashMap<StateAction, Float>(numStates
@@ -54,41 +56,57 @@ public class QLSupport {
 	 * Dumps the qlearning policy to a file. The assumption of the alignment
 	 * between pcl cells and ql states is assumed for efficiency purposes.
 	 * 
-	 * @param logDir
+	 * @param rep
+	 * @param subName
+	 * @param trial
+	 * 
+	 * @param writer
 	 * @param pcl
 	 */
-	public void dumpPolicy(String logDir, ArtificialPlaceCellLayer pcl) {
-		File f = new File(logDir + DUMP_FILENAME);
-		PrintWriter writer;
-		try {
-			writer = new PrintWriter(f);
+	public void dumpPolicy(String trial, String subName, String rep,
+			ArtificialPlaceCellLayer pcl) {
+		PrintWriter writer = QLSupport.getWriter();
 
-			writer.println("x\ty\tangle");
-			List<ArtificialPlaceCell> cells = pcl.getCells();
+		List<ArtificialPlaceCell> cells = pcl.getCells();
+		for (int activeState = 0; activeState < numStates; activeState++) {
+			// Get the policy angle for this state
+			int angle = getMaxAngle(activeState);
 
-			for (int activeState = 0; activeState < numStates; activeState++) {
-				// Get the policy angle for this state
-				int angle = getMaxAngle(activeState);
+			// Write to file
+			String policyAngle;
+			if (angle == -1)
+				policyAngle = "NA";
+			else
+				policyAngle = new Float(Utiles.discreteAngles[angle])
+						.toString();
 
-				// Write to file
-				String policyAngle;
-				if (angle == -1)
-					policyAngle = "NA";
-				else
-					policyAngle = new Float(Utiles.discreteAngles[angle])
-							.toString();
-
-				writer.println(cells.get(activeState).getCenter().x + "\t"
+			synchronized (writer) {
+				writer.println(trial + '\t' + subName + '\t' + rep + '\t'
+						+ cells.get(activeState).getCenter().x + "\t"
 						+ (-cells.get(activeState).getCenter().z) + "\t"
 						+ policyAngle);
-
 			}
 
-			writer.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+		synchronized (writer) {
+			writer.flush();
+		}
+	}
+
+	private static synchronized PrintWriter getWriter() {
+		if (writer == null) {
+			try {
+				writer = new PrintWriter(new File(
+						Configuration.getString("Log.DIRECTORY")
+								+ DUMP_FILENAME));
+				writer.write("trial\tsubject\trepetition\tx\ty\tangle\n");
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+		return writer;
 	}
 
 	public int getMaxAngle(int s) {
@@ -112,4 +130,5 @@ public class QLSupport {
 	public void clearRecord() {
 		visitedStateActions.clear();
 	}
+	
 }

@@ -2,6 +2,7 @@ package edu.usf.ratsim.experiment.multiscalemorris;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -30,20 +31,17 @@ public class MSMExperiment extends Experiment {
 	}
 
 	public Trial createTrainingTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points, ExpSubject subject,
-			String trialLogPath) {
-		return new MSMTrial(params, points, subject, trialLogPath);
+			Hashtable<String, Point4f> points, ExpSubject subject, int rep) {
+		return new MSMTrial(params, points, subject, rep);
 	}
 
 	public Trial createTestingTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points, ExpSubject subject,
-			String trialLogPath) {
-		return new MSMTrial(params, points, subject, trialLogPath);
+			Hashtable<String, Point4f> points, ExpSubject subject, int rep) {
+		return new MSMTrial(params, points, subject, rep);
 	}
 
 	public Trial createHabituationTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points, ExpSubject subject,
-			String trialLogPath) {
+			Hashtable<String, Point4f> points, ExpSubject subject, int rep) {
 		throw new RuntimeException("Habituation trial not implemented");
 	}
 
