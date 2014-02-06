@@ -21,7 +21,7 @@ public class PositionLogger implements ExperimentLogger {
 	private String repNum;
 	private String subName;
 	private String trialName;
-	private static PrintWriter writer = null;
+	private static boolean logInitialized = false;
 
 	public PositionLogger(String trialName, String subName, String repNum, ActionPerformerVote actionPerformer) {
 		super();
@@ -32,6 +32,8 @@ public class PositionLogger implements ExperimentLogger {
 		this.actionPerformer = actionPerformer;
 
 		poses = new LinkedList<Pose>();
+		
+		initWriter();
 	}
 
 	public void log(ExperimentUniverse universe) {
@@ -41,27 +43,34 @@ public class PositionLogger implements ExperimentLogger {
 	}
 
 	public void finalizeLog() {
-		PrintWriter writer = getWriter();
-		synchronized (writer) {
+		synchronized (PositionLogger.class) {
+			PrintWriter writer = getWriter();
 			for (Pose pose : poses)
 				writer.write(trialName + '\t' + subName + '\t' + repNum +
 						'\t' + pose.x + "\t" + pose.y + "\t" + pose.randomAction + "\n");
 			poses.clear();
+			writer.close();
 		}
 	}
-
-	public static synchronized PrintWriter getWriter() {
-		if (writer  == null){
-			try {
-				writer = new PrintWriter(Configuration.getString("Log.DIRECTORY") +
-						new File(DUMP_FILENAME));
-				writer.write("trial\tsubject\trepetition\tx\ty\trandom\n");
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	
+	private static PrintWriter getWriter(){
+		try {
+			return new PrintWriter(Configuration.getString("Log.DIRECTORY") +
+					new File(DUMP_FILENAME));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		return writer;
+		return null;
+	}
+
+	public static synchronized void initWriter() {
+		if (!logInitialized){
+			PrintWriter writer = getWriter();
+			writer.write("trial\tsubject\trepetition\tx\ty\trandom\n");
+			writer.close();
+			logInitialized = true;
+		}
 	}
 }
 

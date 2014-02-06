@@ -18,7 +18,7 @@ import edu.usf.ratsim.support.Configuration;
 public class MSMExperiment extends Experiment {
 
 	private static final String PLOTTING_SCRIPT = "/edu/usf/ratsim/experiment/plot/plotting.r";
-	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/morrisMultiscale.xml";
+	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/morrisMultiscaleOneSubject.xml";
 	private static final String PLOT_EXECUTER = "/edu/usf/ratsim/experiment/plot/plot.sh";
 
 	public MSMExperiment(String filename) {
