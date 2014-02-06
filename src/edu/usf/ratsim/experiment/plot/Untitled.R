@@ -1,1 +1,0 @@
-f = system.file("exampleData", "mtcars.xml", package="XML")# Same as xmlParse()xmlParseDoc(f)

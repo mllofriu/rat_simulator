@@ -267,8 +267,6 @@ public abstract class Experiment implements Runnable {
 		}
 		
 		execPlottingScripts();
-
-		PositionLogger.getWriter().close();
 	}
 
 }
