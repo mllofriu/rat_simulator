@@ -3,7 +3,6 @@ require(shape, quietly = TRUE)
 require(ggplot2, quietly = TRUE)
 require(grid, quietly = TRUE)
 require(plyr, quietly = TRUE)
-require(parallel, quietly = TRUE)
 
 mazePlotTheme <- function(p){
   p + theme(axis.line=element_blank(),axis.text.x=element_blank(),
@@ -157,12 +156,14 @@ pathData <- read.csv(pathFile, sep='\t')
 splitPath <- split(pathData, pathData[c('trial', 'subject', 'repetition')], drop=TRUE)
 splitPol <- split(policyData, policyData[c('trial', 'subject', 'repetition')], drop=TRUE)
 
-lapply(names(splitPath), function(x) plotPathOnMaze(x,
-        splitPath[[x]], mazeFile));
-lapply(names(splitPol), function(x) plotPolicyOnMaze(x,
-        splitPath[[x]], splitPol[[x]], mazeFile));
-
 # Plot arrival times as a function of repetition number
 ddply(pathData, .(trial), plotArrivalTime)
+# Plot policy and path
+lapply(names(splitPol), function(x) plotPolicyOnMaze(x,
+        splitPath[[x]], splitPol[[x]], mazeFile));
+# Plot just path
+lapply(names(splitPath), function(x) plotPathOnMaze(x,
+        splitPath[[x]], mazeFile));
+
 
 
