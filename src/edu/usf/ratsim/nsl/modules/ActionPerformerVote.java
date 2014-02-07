@@ -59,8 +59,9 @@ public class ActionPerformerVote extends NslModule {
 					universe.getRobotOrientation());
 			// Add a small bias towards going forward and small rotations
 			// Radial function centered on the going forward angle
-			float val = (float) (overallValues[angle]
-					+ EXPLORATORY_COMPONENT * Math.exp(-Math.pow(action - Utiles.discretizeAction(0), 2) / 1));
+//			float val = (float) (overallValues[angle]
+//					+ EXPLORATORY_COMPONENT * Math.exp(-Math.pow(action - Utiles.discretizeAction(0), 2) / 1));
+			float val = (float) (overallValues[angle] + EXPLORATORY_COMPONENT);
 			actions.add(new ActionValue(action, val));
 		}
 //		Collections.sort(actions);

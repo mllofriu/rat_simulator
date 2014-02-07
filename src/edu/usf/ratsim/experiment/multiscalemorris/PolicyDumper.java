@@ -24,7 +24,7 @@ public class PolicyDumper implements ExperimentTask {
 
 	public void perform(ExperimentUniverse univ) {
 		for (int i = 0; i < pclLayers.size(); i++)
-			qlDatas.get(i).dumpPolicy(trial, subName, rep, pclLayers.get(i));
+			qlDatas.get(i).dumpPolicy(trial, subName, rep, pclLayers.get(i), i);
 	}
 
 }
