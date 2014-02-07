@@ -58,9 +58,9 @@ public class PositionLogger implements ExperimentLogger {
 		if (writer == null) {
 			try {
 				// Writer with auto flush
-				writer = new PrintWriter(new OutputStreamWriter(
-						new FileOutputStream(new File(Configuration
-								.getString("Log.DIRECTORY") + DUMP_FILENAME))), true);
+					writer = new PrintWriter(new OutputStreamWriter(
+							new FileOutputStream(new File(Configuration
+									.getString("Log.DIRECTORY") + DUMP_FILENAME))), true);
 				writer.println("trial\tsubject\trepetition\tx\ty\trandom");
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block

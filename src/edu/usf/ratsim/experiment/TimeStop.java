@@ -10,9 +10,11 @@ public class TimeStop implements StopCondition {
 
 	
 	public boolean experimentFinished() {
-		if (time-- <= 0)
+		time--;
+		if (time <= 0)
 			System.out.println("Finished by time");
-		return time-- <= 0;
+		
+		return time <= 0;
 	}
 
 }
