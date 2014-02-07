@@ -46,6 +46,7 @@ public class MSMSubject implements ExpSubject {
 
 		NslHierarchy.nslSetSystem(system);
 
+		System.out.println("Creating universe");
 		universe = new VirtualExpUniverse();
 		robot = new VirtualRobot(universe);
 		System.out.println("Init model");
