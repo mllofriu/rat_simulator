@@ -60,7 +60,7 @@ public class MSMModel extends NslModel {
 		}
 		// Created first to let Qlearning execute once when there is food
 		actionPerformerVote = new ActionPerformerVote("ActionPerformer", this,
-				numLayers, robot);
+				numLayers, robot,univ);
 
 		for (int i = 0; i < numLayers; i++) {
 			qLUpdVal.add(new QLUpdateValue("QLUpdVal", this,
