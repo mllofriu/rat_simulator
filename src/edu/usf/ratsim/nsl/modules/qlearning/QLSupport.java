@@ -66,7 +66,7 @@ public class QLSupport {
 	 * @param pcl
 	 */
 	public void dumpPolicy(String trial, String subName, String rep,
-			ArtificialPlaceCellLayer pcl) {
+			ArtificialPlaceCellLayer pcl, int layer) {
 		synchronized (QLSupport.class) {
 			PrintWriter writer = QLSupport.getWriter();
 
@@ -86,7 +86,8 @@ public class QLSupport {
 					writer.println(trial + '\t' + subName + '\t' + rep + '\t'
 							+ cells.get(activeState).getCenter().x + "\t"
 							+ (-cells.get(activeState).getCenter().z) + "\t"
-							+ policyAngle);
+							+ policyAngle + "\t"
+							+ layer);
 			}
 		}
 		
@@ -98,7 +99,7 @@ public class QLSupport {
 				writer = new PrintWriter(new OutputStreamWriter(
 						new FileOutputStream(new File(Configuration
 								.getString("Log.DIRECTORY") + DUMP_FILENAME))), true);
-				writer.println("trial\tsubject\trepetition\tx\ty\tangle");
+				writer.println("trial\tsubject\trepetition\tx\ty\tangle\tlayer");
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

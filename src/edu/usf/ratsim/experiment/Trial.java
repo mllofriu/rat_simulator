@@ -37,7 +37,7 @@ public abstract class Trial implements Runnable {
 	public static final String STR_STARTS = "start";
 	private static final String STR_MAZE = "maze";
 	
-//	private static final long SLEEP_BETWEEN_CYCLES = 5000;
+	private static final long SLEEP_BETWEEN_CYCLES = 100;
 
 	private String name;
 	private Collection<StopCondition> stopConds;
@@ -98,15 +98,18 @@ public abstract class Trial implements Runnable {
 				task.perform(getUniverse());
 
 			boolean stop;
+			boolean sleep = Configuration.getBoolean("UniverseFrame.display");
 			do {
 				// One cycle to the trial
 				subject.stepCycle();
 
-//				try {
-//					Thread.sleep(SLEEP_BETWEEN_CYCLES);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
+				if (sleep){
+					try {
+						Thread.sleep(SLEEP_BETWEEN_CYCLES);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 				// Run the loggers
 				for (ExperimentLogger logger : loggers)
 					logger.log(getUniverse());
