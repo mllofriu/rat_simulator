@@ -37,7 +37,7 @@ public abstract class Trial implements Runnable {
 	public static final String STR_STARTS = "start";
 	private static final String STR_MAZE = "maze";
 	
-	private static final long SLEEP_BETWEEN_CYCLES = 300;
+	private static final long SLEEP_BETWEEN_CYCLES = 100;
 
 	private String name;
 	private Collection<StopCondition> stopConds;
