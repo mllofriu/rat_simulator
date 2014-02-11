@@ -21,6 +21,7 @@ public class MSMExperiment extends Experiment {
 	private static final String PLOTTING_SCRIPT = "/edu/usf/ratsim/experiment/plot/plotting.r";
 	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/morrisMultiscale.xml";
 	private static final String PLOT_EXECUTER = "/edu/usf/ratsim/experiment/plot/plot.sh";
+	private static final String OBJ2PNG_SCRIPT = "/edu/usf/ratsim/experiment/plot/obj2png.r";;
 
 	public MSMExperiment(String filename) {
 		super(filename);
@@ -56,6 +57,8 @@ public class MSMExperiment extends Experiment {
 			// Copy the plotting script to the experiment's folder
 			FileUtils.copyURLToFile(getClass().getResource(PLOTTING_SCRIPT),
 					new File(getLogPath() + "/plotting.r"));
+			FileUtils.copyURLToFile(getClass().getResource(OBJ2PNG_SCRIPT),
+					new File(getLogPath() + "/obj2png.r"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
