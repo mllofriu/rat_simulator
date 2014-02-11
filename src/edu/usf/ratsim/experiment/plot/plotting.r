@@ -120,16 +120,16 @@ plotPathOnMaze <- function (name, pathData, mazeFile){
 plotPolicyOnMaze <- function(name, pathData, policyData, maze){  
   #  Take out points outside the circle
   eps = .01
-#   policyData <- policyData[(policyData['x']^2 + policyData['y']^2 < .5^2 - eps),] 
+  policyData <- policyData[(policyData['x']^2 + policyData['y']^2 < .5^2 - eps),] 
   
   p <- ggplot()
   p <- p + maze
   p <- ratPathPlot(pathData, p)
   #  p <- ratPathPointsPlot(pathData, p)
-p <- ratStartPointPlot(pathData, p)
-p <- ratEndPointPlot(pathData, p)
-p <- policyArrowsPlot(policyData, p)
-p <- policyDotsPlot(policyData, p)
+  p <- ratStartPointPlot(pathData, p)
+  p <- ratEndPointPlot(pathData, p)
+  p <- policyArrowsPlot(policyData, p)
+  p <- policyDotsPlot(policyData, p)
 
   # Some aesthetic stuff
 p <- mazePlotTheme(p)
