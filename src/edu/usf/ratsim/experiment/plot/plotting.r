@@ -112,29 +112,31 @@ plotPathOnMaze <- function (name, pathData, mazeFile){
 #   print(p)
 #   dev.off()
   # Save the plot to an image
-  ggsave(plot=p,filename=paste("plots/path/",name,
-                               ".pdf", sep=''), width=10, height=10)
+#   ggsave(plot=p,filename=paste("plots/path/",name,
+#                                ".pdf", sep=''), width=10, height=10)
+  saveRDS(p, paste("plots/path/",name,".obj", sep=''))
 }
 
 plotPolicyOnMaze <- function(name, pathData, policyData, maze){  
   #  Take out points outside the circle
   eps = .01
-  policyData <- policyData[(policyData['x']^2 + policyData['y']^2 < .5^2 - eps),] 
+#   policyData <- policyData[(policyData['x']^2 + policyData['y']^2 < .5^2 - eps),] 
   
   p <- ggplot()
   p <- p + maze
   p <- ratPathPlot(pathData, p)
   #  p <- ratPathPointsPlot(pathData, p)
-  p <- ratStartPointPlot(pathData, p)
-  p <- ratEndPointPlot(pathData, p)
-  p <- policyArrowsPlot(policyData, p)
-  p <- policyDotsPlot(policyData, p)
-  
+p <- ratStartPointPlot(pathData, p)
+p <- ratEndPointPlot(pathData, p)
+p <- policyArrowsPlot(policyData, p)
+p <- policyDotsPlot(policyData, p)
+
   # Some aesthetic stuff
-  p <- mazePlotTheme(p)
+p <- mazePlotTheme(p)
   # Save the plot to an image
-  ggsave(plot=p,filename=paste("plots/policy/",name,
-                               ".pdf", sep=''), width=10, height=10)
+# print(system.time(ggsave(plot=p,filename=paste("plots/policy/",name,
+#                                ".pdf", sep=''), width=10, height=10)))
+saveRDS(p, paste("plots/policy/",name,".obj", sep=''))
 }
 
 plotArrivalTime <- function(pathData){
@@ -162,9 +164,21 @@ splitPol <- split(policyData, policyData[c('trial', 'subject', 'repetition')], d
 registerDoParallel()
 
 # Plot arrival times as a function of repetition number
-ddply(pathData, .(trial), plotArrivalTime)
+# ddply(pathData, .(trial), plotArrivalTime)
 
-llply(names(splitPol), function(x){
+# Saving image non-parallel:
+#user  system elapsed
+#73.457   2.219  95.331
+# Saving image parallel:
+#   user  system elapsed
+# 62.713   1.106  95.903
+# Saving without circle constraint:
+# user  system elapsed
+# 77.764   1.355  82.097
+# Saving objs in parallel:
+# user  system elapsed
+# 17.039   0.323  20.475
+system.time(llply(names(splitPol), function(x){
   # Split data by layers
   splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('layer')], drop=TRUE)
   # Plot different layers with same path data
@@ -172,7 +186,7 @@ llply(names(splitPol), function(x){
                                                              splitPath[[x]], 
                                                            splitPolLayer[[y]],
                                                            maze))
-}, .parallel = TRUE)
+}, .parallel = TRUE))
 
 # Plot just path
 llply(names(splitPath), function(x) plotPathOnMaze(x,
