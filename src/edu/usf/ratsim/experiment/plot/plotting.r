@@ -162,7 +162,7 @@ splitPath <- split(pathData, pathData[c('trial', 'subject', 'repetition')], drop
 splitPol <- split(policyData, policyData[c('trial', 'subject', 'repetition')], drop=TRUE)
 
 # One worker per plot
-registerDoParallel(length(splitPol)*5)
+registerDoParallel()
 
 # Plot arrival times as a function of repetition number
 # ddply(pathData, .(trial), plotArrivalTime)
