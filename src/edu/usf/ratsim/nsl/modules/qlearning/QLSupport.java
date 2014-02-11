@@ -130,5 +130,6 @@ public class QLSupport {
 	public void clearRecord() {
 		visitedStateActions.clear();
 	}
+
 	
 }

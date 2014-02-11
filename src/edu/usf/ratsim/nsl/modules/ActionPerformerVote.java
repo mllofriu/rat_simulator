@@ -1,5 +1,6 @@
 package edu.usf.ratsim.nsl.modules;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -14,6 +15,10 @@ import edu.usf.ratsim.support.Utiles;
 
 public class ActionPerformerVote extends NslModule {
 	
+	private static final float LAPLACIAN = 0.00001f;
+
+	private static final float INITIAL_MAXVAL = 1;
+
 	public final float EXPLORATORY_COMPONENT = .01f; 
 
 	public NslDinFloat1[] votes;
@@ -48,7 +53,13 @@ public class ActionPerformerVote extends NslModule {
 		for (NslDinFloat1 layerVal : votes)
 			for (int angle = 0; angle < layerVal.getSize(); angle++)
 				overallValues[angle] += layerVal.get(angle);
-		// Make a sorted list of actions and values
+		// find total value with laplacian
+		float maxVal = INITIAL_MAXVAL;
+		for (int angle = 0; angle < overallValues.length; angle++)
+			if(maxVal <  overallValues[angle]) 
+				maxVal = overallValues[angle];
+//		System.out.println(maxVal);
+		// Make a list of actions and values
 		List<ActionValue> actions = new LinkedList<ActionValue>();
 		for (int angle = 0; angle < overallValues.length; angle++) {
 			// Get angle to that maximal direction
@@ -59,9 +70,10 @@ public class ActionPerformerVote extends NslModule {
 					universe.getRobotOrientation());
 			// Add a small bias towards going forward and small rotations
 			// Radial function centered on the going forward angle
-//			float val = (float) (overallValues[angle]
-//					+ EXPLORATORY_COMPONENT * Math.exp(-Math.pow(action - Utiles.discretizeAction(0), 2) / 1));
-			float val = (float) (overallValues[angle] + EXPLORATORY_COMPONENT);
+			float val = overallValues[angle];
+			if (maxVal == 1)
+				val += maxVal * Math.exp(-Math.pow(action - Utiles.discretizeAction(0), 2) / 1);
+//			float val = (float) (overallValues[angle] + EXPLORATORY_COMPONENT);
 			actions.add(new ActionValue(action, val));
 		}
 //		Collections.sort(actions);
@@ -70,20 +82,27 @@ public class ActionPerformerVote extends NslModule {
 
 		boolean[] aff;
 		do {
+			int action;
 			// Roulette algorithm
 			// Get total value
-			float totalVal = 0;
-			for (ActionValue aValue : actions)
-				totalVal += aValue.getValue();
-			// Calc a new random in [0, totalVal]
-			float nextRVal = r.nextFloat() * totalVal;
-			// Find the next action
-			int action = -1;
-			do {
-				action++;
-				nextRVal -= actions.get(action).getValue();
-			} while (nextRVal >= 0 && action < actions.size() - 1 );
-
+			if (maxVal == 1){
+				float totalVal = 0;
+				for (ActionValue aValue : actions)
+					totalVal += aValue.getValue();
+	//			 Calc a new random in [0, totalVal]
+				float nextRVal = r.nextFloat() * totalVal;
+				// Find the next action
+				action = -1;
+				do {
+					action++;
+					nextRVal -= actions.get(action).getValue();
+				} while (nextRVal >= 0 && action < actions.size() - 1 );
+			} else {
+				// Select best action
+				Collections.sort(actions);
+				action = actions.size()-1;
+			}
+			
 			// Try the selected action
 			robot.rotate(Utiles.actions[actions.get(action).getAction()]);
 			aff = robot.getAffordances();

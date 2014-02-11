@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 
+import com.sun.org.apache.xpath.internal.operations.And;
+
 import edu.usf.ratsim.support.Configuration;
 
 /*
@@ -103,7 +105,7 @@ public abstract class Trial implements Runnable {
 				// One cycle to the trial
 				subject.stepCycle();
 
-				if (sleep){
+				if (sleep && !rep.equals("0")){
 					try {
 						Thread.sleep(SLEEP_BETWEEN_CYCLES);
 					} catch (InterruptedException e) {
