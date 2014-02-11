@@ -165,7 +165,7 @@ splitPol <- split(policyData, policyData[c('trial', 'subject', 'repetition')], d
 registerDoParallel()
 
 # Plot arrival times as a function of repetition number
-# ddply(pathData, .(trial), plotArrivalTime)
+ddply(pathData, .(trial), plotArrivalTime)
 
 # Saving image non-parallel:
 #user  system elapsed
