@@ -27,8 +27,8 @@
         <type>training</type>
         <name>tr</name>
         <start>S</start>
-        <time>2000</time>
-        <reps>32</reps>
+        <time>200</time>
+        <reps>4</reps>
         <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
         <subjectGroup>g1</subjectGroup>
     </trial>
