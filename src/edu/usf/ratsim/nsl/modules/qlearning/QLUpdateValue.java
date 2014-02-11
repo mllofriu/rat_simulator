@@ -30,15 +30,29 @@ public class QLUpdateValue extends NslModule {
 		// Do not do anything in simrun, as it should be updated only at the end
 		// of the trial
 		// updateQValue();
+		updateLastAction();
 	}
 
-	public void updateQValue() {
+	private void updateLastAction() {
+		if (qlData.numVisitedSA() >= 2) {
+			// Pick the last state action, which is at position 0
+			StateAction last = qlData.getVisitedSA(0);
+			StateAction beforeLast = qlData.getVisitedSA(1);
+			float val = qlData.getValue(last);
+			qlData.setValue(
+					new StateAction(beforeLast.getState(), last.getAction()),
+					val - NON_FOOD_REWARD);
+		}
+	}
+
+	public void updateQValueFoo() {
 		float reward;
 		// If has found food, start with food reward
 		if (universe.hasRobotFoundFood())
 			reward = FOOD_REWARD;
 		else
-			reward = NON_FOOD_REWARD;
+			// reward = NON_FOOD_REWARD;
+			reward = 0; // TODO: if it stays like that, fix efficiency
 		float discountFactor = Configuration
 				.getFloat("QLearning.discountFactor");
 		float alpha = Configuration.getFloat("QLearning.learningRate");
@@ -55,7 +69,7 @@ public class QLUpdateValue extends NslModule {
 
 			StateAction prevStateNextAction = new StateAction(
 					previusSA.getState(), nextSA.getAction());
-			
+
 			// The value to update corresponds to the state recorded in
 			// previous iteration and the action recorded in the following
 			float value = qlData.getValue(prevStateNextAction);
@@ -82,8 +96,10 @@ public class QLUpdateValue extends NslModule {
 			// order)
 			nextSA = previusSA;
 
-			// Following state-actions have non-food rewards (only one has found food state)
-			reward = NON_FOOD_REWARD;
+			// Following state-actions have non-food rewards (only one has found
+			// food state)
+			// reward = NON_FOOD_REWARD;
+			reward = 0;
 		}
 
 		qlData.clearRecord();
