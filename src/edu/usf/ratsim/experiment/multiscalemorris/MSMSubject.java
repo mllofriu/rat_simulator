@@ -46,10 +46,13 @@ public class MSMSubject implements ExpSubject {
 
 		NslHierarchy.nslSetSystem(system);
 
-		System.out.println("Creating universe");
-		universe = new VirtualExpUniverse();
-		robot = new VirtualRobot(universe);
-		System.out.println("Init model");
+		// Try to workaround J3d 1.3.1 race condition
+		synchronized (MSMSubject.class){
+			System.out.println("Creating universe");
+			universe = new VirtualExpUniverse();
+			robot = new VirtualRobot(universe);
+			System.out.println("Init model");
+		}
 		model = new MSMModel("MSMHabituationModel", (NslModel) null, robot,
 				universe);
 
