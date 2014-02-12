@@ -13,8 +13,8 @@ public class MSMTrial extends Trial {
 	private Point4f initPos;
 
 	public MSMTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points, ExpSubject subject, int rep) {
-		super(params, subject, rep);
+			Hashtable<String, Point4f> points, String group, ExpSubject subject, int rep) {
+		super(params, group, subject, rep);
 
 		// Get the initial position
 		initPos = points.get(params.get(Trial.STR_STARTS));
@@ -37,16 +37,16 @@ public class MSMTrial extends Trial {
 	
 	public void loadLoggers() {
 		MSMSubject subject = (MSMSubject) getSubject();
-		addLogger(new PositionLogger(getName(), getSubject().getName(), getRep(),
+		addLogger(new PositionLogger(getName(), getGroup(), getSubject().getName(), getRep(),
 				subject.getActionPerformer()));
 	}
 
-	
+
 	public void loadAfterTrialTasks() {
 		MSMSubject subject = (MSMSubject) getSubject();
 		addAfterTrialTask(new PolicyValueUpdater(subject.getQLValUpdaters()));
 //		if (type.equals("testing"))
-		addAfterTrialTask(new PolicyDumper(subject, getName(), getSubjectName(), getRep()));
+		addAfterTrialTask(new PolicyDumper(subject, getName(), getGroup(), getSubjectName(), getRep()));
 	}
 
 }

@@ -18,8 +18,11 @@ import edu.usf.ratsim.support.Configuration;
 
 public class MSMExperiment extends Experiment {
 
+	private final String STR_HABITUATION = "habituation";
+	private final String STR_TRAINING = "training";
+	private final String STR_TESTING = "testing";
 	private static final String PLOTTING_SCRIPT = "/edu/usf/ratsim/experiment/plot/plotting.r";
-	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/morrisMultiscale.xml";
+	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/morrisMultiscaleTrialWithGroups.xml";
 	private static final String PLOT_EXECUTER = "/edu/usf/ratsim/experiment/plot/plot.sh";
 	private static final String OBJ2PNG_SCRIPT = "/edu/usf/ratsim/experiment/plot/obj2png.r";;
 
@@ -33,17 +36,17 @@ public class MSMExperiment extends Experiment {
 	}
 
 	public Trial createTrainingTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points, ExpSubject subject, int rep) {
-		return new MSMTrial(params, points, subject, rep);
+			Hashtable<String, Point4f> points, String group, ExpSubject subject, int rep) {
+		return new MSMTrial(params, points, group, subject, rep);
 	}
 
 	public Trial createTestingTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points, ExpSubject subject, int rep) {
-		return new MSMTrial(params, points, subject, rep);
+			Hashtable<String, Point4f> points, String group, ExpSubject subject, int rep) {
+		return new MSMTrial(params, points, group, subject, rep);
 	}
 
 	public Trial createHabituationTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points, ExpSubject subject, int rep) {
+			Hashtable<String, Point4f> points, String group, ExpSubject subject, int rep) {
 		throw new RuntimeException("Habituation trial not implemented");
 	}
 
@@ -104,5 +107,33 @@ public class MSMExperiment extends Experiment {
 
 	public ExpSubject createSubject(String name) {
 		return new MSMSubject(name);
+	}
+
+	public Trial createTrial(Map<String, String> params,
+			Hashtable<String, Point4f> points, String group,
+			ExpSubject subject, int rep) {
+		{
+			switch (stringType2TrialType(params.get(STR_TRIAL_TYPE))) {
+			case HABITUATION:
+				return createHabituationTrial(params, points,group, subject, rep);
+			case TESTING:
+				return createTestingTrial(params, points, group, subject, rep);
+			case TRAINING:
+				return createTrainingTrial(params, points, group, subject, rep);
+			}
+
+			return null;
+		}
+	}
+	
+	private Trial.Type stringType2TrialType(String strType) {
+		if (strType.equals(STR_HABITUATION))
+			return Trial.Type.HABITUATION;
+		else if (strType.equals(STR_TESTING))
+			return Trial.Type.TESTING;
+		else if (strType.equals(STR_TRAINING))
+			return Trial.Type.TRAINING;
+
+		throw new RuntimeException("Invalid argurment");
 	}
 }

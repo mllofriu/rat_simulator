@@ -61,12 +61,13 @@ public class QLSupport {
 	 * @param rep
 	 * @param subName
 	 * @param trial
+	 * @param rep
 	 * 
 	 * @param writer
 	 * @param pcl
 	 */
-	public void dumpPolicy(String trial, String subName, String rep,
-			ArtificialPlaceCellLayer pcl, int layer) {
+	public void dumpPolicy(String trial, String groupName, String subName,
+			String rep, ArtificialPlaceCellLayer pcl, int layer) {
 		synchronized (QLSupport.class) {
 			PrintWriter writer = QLSupport.getWriter();
 
@@ -83,14 +84,13 @@ public class QLSupport {
 					policyAngle = new Float(Utiles.discreteAngles[angle])
 							.toString();
 
-					writer.println(trial + '\t' + subName + '\t' + rep + '\t'
-							+ cells.get(activeState).getCenter().x + "\t"
-							+ (-cells.get(activeState).getCenter().z) + "\t"
-							+ policyAngle + "\t"
-							+ layer);
+				writer.println(trial + '\t' + groupName + '\t' + subName + '\t'
+						+ rep + '\t' + cells.get(activeState).getCenter().x
+						+ "\t" + (-cells.get(activeState).getCenter().z) + "\t"
+						+ policyAngle + "\t" + layer);
 			}
 		}
-		
+
 	}
 
 	private static PrintWriter getWriter() {
@@ -98,8 +98,9 @@ public class QLSupport {
 			try {
 				writer = new PrintWriter(new OutputStreamWriter(
 						new FileOutputStream(new File(Configuration
-								.getString("Log.DIRECTORY") + DUMP_FILENAME))), true);
-				writer.println("trial\tsubject\trepetition\tx\ty\tangle\tlayer");
+								.getString("Log.DIRECTORY") + DUMP_FILENAME))),
+						true);
+				writer.println("trial\tgroup\tsubject\trepetition\tx\ty\tangle\tlayer");
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -131,5 +132,4 @@ public class QLSupport {
 		visitedStateActions.clear();
 	}
 
-	
 }
