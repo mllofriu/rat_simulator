@@ -15,7 +15,9 @@
     <point name='NW' xp='-0.2' yp='0' zp='-0.2' rot='0'/>
     
     <!--Subjects-->
-    <subject name='r1'/>
+    <subject name='r1'>
+        <numLayers>5</numLayers>
+    </subject>
     
     <!--Subject groups-->
     <group name='g1'>
