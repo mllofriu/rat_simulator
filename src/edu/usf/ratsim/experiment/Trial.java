@@ -198,7 +198,7 @@ public abstract class Trial implements Runnable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+  
 	public String getSubjectName() {
 		return getSubject().getName();
 	}

@@ -10,6 +10,9 @@ import java.util.Map;
 import javax.vecmath.Point4f;
 
 import org.apache.commons.io.FileUtils;
+import org.w3c.dom.NodeList;
+
+import com.sun.corba.se.impl.orbutil.graph.Node;
 
 import edu.usf.ratsim.experiment.ExpSubject;
 import edu.usf.ratsim.experiment.Experiment;
@@ -105,8 +108,8 @@ public class MSMExperiment extends Experiment {
 
 	}
 
-	public ExpSubject createSubject(String name) {
-		return new MSMSubject(name);
+	public ExpSubject createSubject(String name, NodeList params) {
+		return new MSMSubject(name, params);
 	}
 
 	public Trial createTrial(Map<String, String> params,
