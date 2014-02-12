@@ -112,9 +112,9 @@ plotPathOnMaze <- function (name, pathData, mazeFile){
   #   print(p)
   #   dev.off()
   # Save the plot to an image
-  #   ggsave(plot=p,filename=paste("plots/path/",name,
-  #                                ".pdf", sep=''), width=10, height=10)
-  saveRDS(p, paste("plots/path/",name,".obj", sep=''))
+    ggsave(plot=p,filename=paste("plots/path/",name,
+                                 ".pdf", sep=''), width=10, height=10)
+#   saveRDS(p, paste("plots/path/",name,".obj", sep=''))
 }
 
 plotPolicyOnMaze <- function(name, pathData, policyData, maze){  
@@ -134,9 +134,9 @@ plotPolicyOnMaze <- function(name, pathData, policyData, maze){
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
   # Save the plot to an image
-  # print(system.time(ggsave(plot=p,filename=paste("plots/policy/",name,
-  #                                ".pdf", sep=''), width=10, height=10)))
-  saveRDS(p, paste("plots/policy/",name,".obj", sep=''))
+  print(system.time(ggsave(plot=p,filename=paste("plots/policy/",name,
+                                 ".pdf", sep=''), width=10, height=10)))
+#   saveRDS(p, paste("plots/policy/",name,".obj", sep=''))
 }
 
 plotArrivalTime <- function(pathData){
@@ -191,7 +191,7 @@ ddply(pathData, .(trial), plotArrivalTime)
 # }, .parallel = TRUE))
 # 
 # # Plot just path
-# llply(names(splitPath), function(x) plotPathOnMaze(x,
-#             splitPath[[x]], maze), .parallel = TRUE)
+invisible(llply(names(splitPath), function(x) plotPathOnMaze(x,
+            splitPath[[x]], maze), .parallel = TRUE))
 
 

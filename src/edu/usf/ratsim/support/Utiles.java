@@ -206,4 +206,8 @@ public class Utiles {
 				angleToRot((float) Math.toRadians(90)))]));
 	}
 
+	public static double actionDistance(int a1, int a2) {
+		return Math.min(Math.abs(a1 - a2), Math.abs(Utiles.actions.length - a2 + a1));
+	}
+
 }
