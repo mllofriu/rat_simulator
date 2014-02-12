@@ -35,6 +35,8 @@ public class ActionPerformerVote extends NslModule {
 
 	private float maxPossibleVal;
 
+	private float explorationMaxValMultiplier = Configuration.getFloat("ActionPerformer.maxValMultiplier");
+
 	public ActionPerformerVote(String nslName, NslModule nslParent,
 			int numLayers, IRobot robot, ExperimentUniverse universe) {
 		super(nslName, nslParent);
@@ -81,7 +83,7 @@ public class ActionPerformerVote extends NslModule {
 			// Radial function centered on the going forward angle
 			float val = overallValues[angle];
 			if (explore)
-				val += Math.max(4*maxVal, 1) * Math.exp(-Math.pow(
+				val += Math.max(explorationMaxValMultiplier *maxVal, 1) * Math.exp(-Math.pow(
 								Utiles.actionDistance(action,
 										Utiles.discretizeAction(0)), 2)
 								/ EXPLORATORY_VARIANCE);
