@@ -86,16 +86,23 @@ public class ActionPerformerVote extends NslModule {
 			// Roulette algorithm
 			// Get total value
 			if (maxVal == 1){
+				// Find min val
+				float minVal = 0;
+				for (ActionValue aValue : actions)
+					if (aValue.getValue() < minVal)
+						minVal = aValue.getValue();
+				// Get max value
 				float totalVal = 0;
 				for (ActionValue aValue : actions)
-					totalVal += aValue.getValue();
+					// Substract min val to raise everything above 0
+					totalVal += aValue.getValue() - minVal;
 	//			 Calc a new random in [0, totalVal]
 				float nextRVal = r.nextFloat() * totalVal;
 				// Find the next action
 				action = -1;
 				do {
 					action++;
-					nextRVal -= actions.get(action).getValue();
+					nextRVal -= (actions.get(action).getValue() - minVal);
 				} while (nextRVal >= 0 && action < actions.size() - 1 );
 			} else {
 				// Select best action

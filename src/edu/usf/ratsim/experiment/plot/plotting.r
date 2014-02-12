@@ -8,11 +8,11 @@ require(doParallel, quietly = TRUE)
 
 mazePlotTheme <- function(p){
   p + theme(axis.line=element_blank(),axis.text.x=element_blank(),
-        axis.text.y=element_blank(),axis.ticks=element_blank(),
-        axis.title.x=element_blank(),
-        axis.title.y=element_blank(),legend.position="none",
-        panel.background=element_blank(),panel.border=element_blank(),panel.grid.major=element_blank(),
-        panel.grid.minor=element_blank(),plot.background=element_blank())
+            axis.text.y=element_blank(),axis.ticks=element_blank(),
+            axis.title.x=element_blank(),
+            axis.title.y=element_blank(),legend.position="none",
+            panel.background=element_blank(),panel.border=element_blank(),panel.grid.major=element_blank(),
+            panel.grid.minor=element_blank(),plot.background=element_blank())
 }
 
 # Define the circle; add a point at the center if the 'pie slice' if the shape is to be filled
@@ -107,13 +107,13 @@ plotPathOnMaze <- function (name, pathData, mazeFile){
   p <- ratEndPointPlot(pathData, p)
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
-#   list(p, paste("plots/path",name,".jpg", sep=''))
-#   pdf(paste("plots/path",name,".pdf", sep=''))
-#   print(p)
-#   dev.off()
+  #   list(p, paste("plots/path",name,".jpg", sep=''))
+  #   pdf(paste("plots/path",name,".pdf", sep=''))
+  #   print(p)
+  #   dev.off()
   # Save the plot to an image
-#   ggsave(plot=p,filename=paste("plots/path/",name,
-#                                ".pdf", sep=''), width=10, height=10)
+  #   ggsave(plot=p,filename=paste("plots/path/",name,
+  #                                ".pdf", sep=''), width=10, height=10)
   saveRDS(p, paste("plots/path/",name,".obj", sep=''))
 }
 
@@ -130,22 +130,23 @@ plotPolicyOnMaze <- function(name, pathData, policyData, maze){
   p <- ratEndPointPlot(pathData, p)
   p <- policyArrowsPlot(policyData, p)
   p <- policyDotsPlot(policyData, p)
-
+  
   # Some aesthetic stuff
-p <- mazePlotTheme(p)
+  p <- mazePlotTheme(p)
   # Save the plot to an image
-# print(system.time(ggsave(plot=p,filename=paste("plots/policy/",name,
-#                                ".pdf", sep=''), width=10, height=10)))
-saveRDS(p, paste("plots/policy/",name,".obj", sep=''))
+  # print(system.time(ggsave(plot=p,filename=paste("plots/policy/",name,
+  #                                ".pdf", sep=''), width=10, height=10)))
+  saveRDS(p, paste("plots/policy/",name,".obj", sep=''))
 }
 
 plotArrivalTime <- function(pathData){
-  runTimes <- ddply(pathData, .(subject, repetition), summarise, runTime = length(x))
-  summarizedRunTimes <- ddply(runTimes, .(repetition), summarise, sdRT = sd(runTime)/sqrt(length(runTime)), mRT = mean(runTime))
+  runTimes <- ddply(pathData, .(group, subject, repetition), summarise, runTime = length(x))
+  summarizedRunTimes <- ddply(runTimes, .(group, repetition), summarise, sdRT = sd(runTime)/sqrt(length(runTime)), mRT = mean(runTime))
   print(summarizedRunTimes)
-  p <- ggplot(summarizedRunTimes, aes(x=repetition, y=mRT)) + geom_errorbar(aes(ymin=mRT-sdRT, ymax=mRT+sdRT), width=.3) + geom_point()
-  ggsave(plot=p,filename=paste("plots/runtime/",pathData[[1,'trial']],
-                             ".pdf", sep=''), width=10, height=10)
+  p <- ggplot(summarizedRunTimes, aes(x=repetition, y=mRT)) + geom_errorbar(aes(ymin=mRT-sdRT, ymax=mRT+sdRT, color=group), width=.3) + geom_point(aes(color=group))
+  print(p)
+  #   ggsave(plot=p,filename=paste("plots/runtime/",pathData[[1,'trial']],
+  #                              ".pdf", sep=''), width=10, height=10)
 }
 
 mazeFile <- "maze.xml"
@@ -179,18 +180,18 @@ ddply(pathData, .(trial), plotArrivalTime)
 # Saving objs in parallel:
 # user  system elapsed
 # 17.039   0.323  20.475
-system.time(llply(names(splitPol), function(x){
-  # Split data by layers
-  splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('layer')], drop=TRUE)
-  # Plot different layers with same path data
-  lapply(names(splitPolLayer), function (y) plotPolicyOnMaze(paste(x,y,sep='.'),
-                                                             splitPath[[x]], 
-                                                           splitPolLayer[[y]],
-                                                           maze))
-}, .parallel = TRUE))
-
-# Plot just path
-llply(names(splitPath), function(x) plotPathOnMaze(x,
-            splitPath[[x]], maze), .parallel = TRUE)
+# system.time(llply(names(splitPol), function(x){
+#   # Split data by layers
+#   splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('layer')], drop=TRUE)
+#   # Plot different layers with same path data
+#   lapply(names(splitPolLayer), function (y) plotPolicyOnMaze(paste(x,y,sep='.'),
+#                                                              splitPath[[x]], 
+#                                                            splitPolLayer[[y]],
+#                                                            maze))
+# }, .parallel = TRUE))
+# 
+# # Plot just path
+# llply(names(splitPath), function(x) plotPathOnMaze(x,
+#             splitPath[[x]], maze), .parallel = TRUE)
 
 

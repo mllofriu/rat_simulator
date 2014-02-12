@@ -38,7 +38,7 @@ public abstract class Trial implements Runnable {
 	public static final String STR_NAME = "name";
 	public static final String STR_STARTS = "start";
 	private static final String STR_MAZE = "maze";
-	
+
 	private static final long SLEEP_BETWEEN_CYCLES = 100;
 
 	private String name;
@@ -51,17 +51,20 @@ public abstract class Trial implements Runnable {
 	private LinkedList<ExperimentLogger> loggers;
 	private ExpSubject subject;
 	private String rep;
+	private String group;
 
-	public Trial(Map<String, String> params, ExpSubject subject, int rep) {
+	public Trial(Map<String, String> params, String group, ExpSubject subject,
+			int rep) {
 		super();
 		this.setParams(params);
 		// Trial is identified by its logpath
 		this.name = params.get(STR_NAME);
 		this.rep = new Integer(rep).toString();
 		this.subject = subject;
-		
+		this.group = group;
+
 		setUniverse(subject.getUniverse());
-		
+
 		stopConds = new LinkedList<StopCondition>();
 		// Add default stop condition - time constraints
 		int times = Integer.parseInt(params.get(STR_TIME));
@@ -70,18 +73,18 @@ public abstract class Trial implements Runnable {
 		initialTasks = new LinkedList<ExperimentTask>();
 		afterCycleTasks = new LinkedList<ExperimentTask>();
 		afterTrialTasks = new LinkedList<ExperimentTask>();
-		
+
 		loggers = new LinkedList<ExperimentLogger>();
 
 		// Set the maze to execute
 		Configuration.setProperty("Experiment.MAZE_FILE",
-				getParams().get(Trial.STR_MAZE));		
+				getParams().get(Trial.STR_MAZE));
 	}
 
 	private void setUniverse(ExperimentUniverse universe) {
 		this.universe = universe;
 	}
-	
+
 	public void run() {
 		// Lock on the subject to ensure mutual exclusion for the same rat
 		// Assumes is fifo
@@ -94,7 +97,7 @@ public abstract class Trial implements Runnable {
 			loadConditions();
 			// Load loggers
 			loadLoggers();
-			
+
 			// Do all after-cycle tasks
 			for (ExperimentTask task : initialTasks)
 				task.perform(getUniverse());
@@ -105,7 +108,7 @@ public abstract class Trial implements Runnable {
 				// One cycle to the trial
 				subject.stepCycle();
 
-				if (sleep && !rep.equals("0")){
+				if (sleep && !rep.equals("0")) {
 					try {
 						Thread.sleep(SLEEP_BETWEEN_CYCLES);
 					} catch (InterruptedException e) {
@@ -127,15 +130,15 @@ public abstract class Trial implements Runnable {
 			// After trial tasks
 			for (ExperimentTask task : afterTrialTasks)
 				task.perform(universe);
-			
+
 			// Close file handlers
 			for (ExperimentLogger logger : loggers)
 				logger.finalizeLog();
-			
-			System.out.println("Trial " + getName() + " " + getSubjectName() +
-					" " + getRep() + " finished.");
+
+			System.out.println("Trial " + getName() + " " + group + " "
+					+ getSubjectName() + " " + getRep() + " finished.");
 		}
-		
+
 	}
 
 	public ExperimentUniverse getUniverse() {
@@ -145,14 +148,13 @@ public abstract class Trial implements Runnable {
 	public abstract void loadConditions();
 
 	public abstract void loadAfterCycleTasks();
-	
+
 	public abstract void loadAfterTrialTasks();
 
 	public abstract void loadInitialTasks();
-	
+
 	public abstract void loadLoggers();
 
-	
 	public String toString() {
 		return name;
 	}
@@ -165,10 +167,10 @@ public abstract class Trial implements Runnable {
 		afterCycleTasks.add(t);
 	}
 
-	public void addAfterTrialTask(ExperimentTask t){
+	public void addAfterTrialTask(ExperimentTask t) {
 		afterTrialTasks.add(t);
 	}
-	
+
 	public void addStopCond(StopCondition sc) {
 		stopConds.add(sc);
 	}
@@ -176,7 +178,7 @@ public abstract class Trial implements Runnable {
 	public Map<String, String> getParams() {
 		return params;
 	}
-	
+
 	public void addLogger(ExperimentLogger logger) {
 		loggers.add(logger);
 	}
@@ -199,6 +201,14 @@ public abstract class Trial implements Runnable {
 
 	public String getSubjectName() {
 		return getSubject().getName();
+	}
+
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
 	}
 
 }

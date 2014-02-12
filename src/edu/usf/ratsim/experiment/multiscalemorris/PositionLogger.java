@@ -23,14 +23,16 @@ public class PositionLogger implements ExperimentLogger {
 	private String repNum;
 	private String subName;
 	private String trialName;
+	private String groupName;
 	private static PrintWriter writer = null;
 
-	public PositionLogger(String trialName, String subName, String repNum,
+	public PositionLogger(String trialName, String groupName, String subName, String repNum,
 			ActionPerformerVote actionPerformer) {
 		super();
 
 		this.trialName = trialName;
 		this.subName = subName;
+		this.groupName = groupName;
 		this.repNum = repNum;
 		this.actionPerformer = actionPerformer;
 
@@ -47,7 +49,7 @@ public class PositionLogger implements ExperimentLogger {
 		synchronized (PositionLogger.class) {
 			PrintWriter writer = getWriter();
 			for (Pose pose : poses)
-				writer.println(trialName + '\t' + subName + '\t' + repNum
+				writer.println(trialName + '\t' + groupName + '\t' + subName + '\t' + repNum
 						+ '\t' + pose.x + "\t" + pose.y + "\t"
 						+ pose.randomAction);
 			poses.clear();
@@ -61,7 +63,7 @@ public class PositionLogger implements ExperimentLogger {
 					writer = new PrintWriter(new OutputStreamWriter(
 							new FileOutputStream(new File(Configuration
 									.getString("Log.DIRECTORY") + DUMP_FILENAME))), true);
-				writer.println("trial\tsubject\trepetition\tx\ty\trandom");
+				writer.println("trial\tgroup\tsubject\trepetition\tx\ty\trandom");
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
