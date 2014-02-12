@@ -23,7 +23,16 @@
     <subject name='rat6'/>
     <subject name='rat7'/>
     <subject name='rat8'/>
+    <subject name='rat9'/>
+    <subject name='rat10'/>
+    <subject name='rat11'/>
+    <subject name='rat12'/>
+    <subject name='rat13'/>
+    <subject name='rat14'/>
+    <subject name='rat15'/>
+    <subject name='rat16'/>
     
+
     <!--Subject groups-->
     <group name='g1'>
         <member name='rat1'/>
@@ -35,7 +44,16 @@
         <member name='rat7'/>
         <member name='rat8'/>
     </group>
-
+    <group name='g2'>
+        <member name='rat9'/>
+        <member name='rat10'/>
+        <member name='rat11'/>
+        <member name='rat12'/>
+        <member name='rat13'/>
+        <member name='rat14'/>
+        <member name='rat15'/>
+        <member name='rat16'/>
+    </group>
     <!--Experiment Trials-->
     <trial>
         <type>training</type>
@@ -44,7 +62,11 @@
         <time>2000</time>
         <reps>32</reps>
         <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
-        <subjectGroup>g1</subjectGroup>
+	<groups>
+		<group>g1</group>
+		<group>g2</group>
+	</groups>
+
     </trial>
     <!-- 4 testing trials-->
     <trial>
@@ -53,7 +75,10 @@
         <start>S</start>
         <time>500</time>
         <reps>8</reps>
-        <subjectGroup>g1</subjectGroup>
+        <groups>
+		<group>g1</group>
+		<group>g2</group>
+	</groups>
         <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
     </trial>
     
