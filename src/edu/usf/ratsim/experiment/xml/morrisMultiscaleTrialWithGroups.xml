@@ -15,35 +15,47 @@
     <point name='NW' xp='-0.2' yp='0' zp='-0.2' rot='0'/>
     
     <!--Subjects-->
-    <subject name='r1'/>
+    <subject name='rat1'/>
+    <subject name='rat2'/>
+    <subject name='rat3'/>
+    <subject name='rat4'/>
     
     <!--Subject groups-->
     <group name='g1'>
-        <member name='r1'/>
+        <subject name='rat1'/>
+        <subject name='rat2'/>
     </group>
+    
+    <group name='g2'>
+        <subject name='rat3'/>
+        <subject name='rat4'/>
+    </group>
+    
 
     <!--Experiment Trials-->
     <!-- 8 training trials-->
     <trial>
         <type>training</type>
-        <name>tr</name>
+        <name>train</name>
         <start>S</start>
         <time>2000</time>
-        <reps>32</reps>
+        <reps>8</reps>
         <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
         <groups>
             <group>g1</group>
+            <gropu>g2</gropu>
         </groups>
     </trial>
     <!-- 4 testing trials-->
     <trial>
         <type>testing</type>
-        <name>te</name>
+        <name>test</name>
         <start>S</start>
         <time>500</time>
-        <reps>8</reps>
+        <reps>4</reps>
         <groups>
             <group>g1</group>
+            <group>g2</group>
         </groups>
         <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
     </trial>

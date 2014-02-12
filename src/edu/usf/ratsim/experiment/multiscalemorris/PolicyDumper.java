@@ -13,18 +13,20 @@ public class PolicyDumper implements ExperimentTask {
 	private String rep;
 	private String subName;
 	private String trial;
+	private String groupName;
 
-	public PolicyDumper(MSMSubject subject, String trial, String subName, String rep) {
+	public PolicyDumper(MSMSubject subject, String trial, String groupName, String subName, String rep) {
 		pclLayers = subject.getPCLLayers();
 		qlDatas = subject.getQLDatas();
 		this.trial = trial;
 		this.subName = subName;
+		this.groupName = groupName;
 		this.rep = rep;
 	}
 
 	public void perform(ExperimentUniverse univ) {
 		for (int i = 0; i < pclLayers.size(); i++)
-			qlDatas.get(i).dumpPolicy(trial, subName, rep, pclLayers.get(i), i);
+			qlDatas.get(i).dumpPolicy(trial, groupName, subName, rep, pclLayers.get(i), i);
 	}
 
 }
