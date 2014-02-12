@@ -159,8 +159,8 @@ policyFile = 'policy.txt'
 policyData <- read.csv(policyFile, sep='\t')
 pathData <- read.csv(pathFile, sep='\t')
 
-splitPath <- split(pathData, pathData[c('trial', 'subject', 'repetition')], drop=TRUE)
-splitPol <- split(policyData, policyData[c('trial', 'subject', 'repetition')], drop=TRUE)
+splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+splitPol <- split(policyData, policyData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 
 # One worker per plot
 registerDoParallel()
