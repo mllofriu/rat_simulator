@@ -15,22 +15,54 @@
     <point name='NW' xp='-0.2' yp='0' zp='-0.2' rot='0'/>
     
     <!--Subjects-->
-    <subject name='rat1'/>
-    <subject name='rat2'/>
-    <subject name='rat3'/>
-    <subject name='rat4'/>
-    <subject name='rat5'/>
-    <subject name='rat6'/>
-    <subject name='rat7'/>
-    <subject name='rat8'/>
-    <subject name='rat9'/>
-    <subject name='rat10'/>
-    <subject name='rat11'/>
-    <subject name='rat12'/>
-    <subject name='rat13'/>
-    <subject name='rat14'/>
-    <subject name='rat15'/>
-    <subject name='rat16'/>
+    <subject name='rat1'>
+        <numLayers>1</numLayers>
+     </subject>
+    <subject name='rat2'>
+        <numLayers>1</numLayers>
+     </subject>
+    <subject name='rat3'>
+        <numLayers>1</numLayers>
+     </subject>
+    <subject name='rat4'>
+        <numLayers>1</numLayers>
+     </subject>
+    <subject name='rat5'>
+        <numLayers>1</numLayers>
+     </subject>
+    <subject name='rat6'>
+        <numLayers>1</numLayers>
+     </subject>
+    <subject name='rat7'>
+        <numLayers>1</numLayers>
+     </subject>
+    <subject name='rat8'>
+        <numLayers>1</numLayers>
+     </subject>
+    <subject name='rat9'>
+        <numLayers>5</numLayers>
+     </subject>
+    <subject name='rat10'>
+        <numLayers>5</numLayers>
+     </subject>
+    <subject name='rat11'>
+        <numLayers>5</numLayers>
+     </subject>
+    <subject name='rat12'>
+        <numLayers>5</numLayers>
+     </subject>
+    <subject name='rat13'>
+        <numLayers>5</numLayers>
+     </subject>
+    <subject name='rat14'>
+        <numLayers>5</numLayers>
+     </subject>
+    <subject name='rat15'>
+        <numLayers>5</numLayers>
+     </subject>
+    <subject name='rat16'>
+        <numLayers>5</numLayers>
+     </subject>
     
 
     <!--Subject groups-->

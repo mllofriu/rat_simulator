@@ -2,6 +2,8 @@ package edu.usf.ratsim.experiment.multiscalemorris;
 
 import java.util.List;
 
+import org.w3c.dom.NodeList;
+
 import nslj.src.lang.NslHierarchy;
 import nslj.src.lang.NslModel;
 import nslj.src.system.NslInterpreter;
@@ -17,13 +19,14 @@ import edu.usf.ratsim.robot.virtual.VirtualRobot;
 
 public class MSMSubject implements ExpSubject {
 
+	private static final Object STR_NUMLAYERS = "numLayers";
 	private MSMModel model;
 	private NslSequentialScheduler scheduler;
 	private String name;
 	private VirtualExpUniverse universe;
 	private VirtualRobot robot;
 
-	public MSMSubject(String name) {
+	public MSMSubject(String name, NodeList params) {
 		this.name = name;
 
 		NslSystem system = new NslSystem(); // Create System
@@ -53,7 +56,14 @@ public class MSMSubject implements ExpSubject {
 			robot = new VirtualRobot(universe);
 			System.out.println("Init model");
 		}
-		model = new MSMModel("MSMHabituationModel", (NslModel) null, robot,
+		
+		// Search for number of layers param
+		int numLayers = 1;
+		for (int i = 0; i < params.getLength(); i++)
+			if(params.item(i).getNodeName().equals(STR_NUMLAYERS))
+				numLayers = Integer.parseInt(params.item(i).getTextContent());
+		System.out.println(numLayers);
+		model = new MSMModel("MSMHabituationModel", (NslModel) null, numLayers, robot,
 				universe);
 
 		// Load it into nsl

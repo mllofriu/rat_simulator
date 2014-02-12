@@ -21,7 +21,7 @@ public class MSMModel extends NslModel {
 	private List<QLActionSelection> qLActionSel;
 	private List<QLSupport> qlData;
 
-	public MSMModel(String nslName, NslModule nslParent, IRobot robot,
+	public MSMModel(String nslName, NslModule nslParent, int numLayers, IRobot robot,
 			ExperimentUniverse univ) {
 		super(nslName, nslParent);
 
@@ -31,7 +31,6 @@ public class MSMModel extends NslModel {
 		// "ActionPerformer", this, robot, univ);
 
 		// Get some configuration values for place cells + qlearning
-		int numLayers = Configuration.getInt("ArtificialPlaceCells.numLayers");
 		float minRadius = Configuration
 				.getFloat("ArtificialPlaceCells.minRadius");
 		float maxRadius = Configuration
