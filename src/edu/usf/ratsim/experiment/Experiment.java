@@ -128,13 +128,13 @@ public abstract class Experiment implements Runnable {
 					.getNodeValue();
 			if (elems.item(i).getParentNode().getNodeName()
 					.equals(XML_ROOT_STR))
-				subs.put(name, createSubject(name));
+				subs.put(name, createSubject(name, elems.item(i).getChildNodes()));
 		}
 
 		return subs;
 	}
 
-	public abstract ExpSubject createSubject(String name);
+	public abstract ExpSubject createSubject(String name, NodeList nodeList);
 
 	public String getLogPath() {
 		return logPath;
