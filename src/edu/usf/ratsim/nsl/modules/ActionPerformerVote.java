@@ -11,15 +11,17 @@ import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Utiles;
 
 public class ActionPerformerVote extends NslModule {
-	
+
 	private static final float LAPLACIAN = 0.00001f;
 
-	private static final float INITIAL_MAXVAL = 1;
+	private static final float INITIAL_MAXVAL = 0;
 
-	public final float EXPLORATORY_COMPONENT = .01f; 
+	public final float EXPLORATORY_VARIANCE = Configuration
+			.getFloat("ActionPerformer.ExploratoryVariance");
 
 	public NslDinFloat1[] votes;
 
@@ -27,9 +29,11 @@ public class ActionPerformerVote extends NslModule {
 
 	private Random r;
 
-	private boolean lastActionRandom;
+	private boolean explore;
 
 	private ExperimentUniverse universe;
+
+	private float maxPossibleVal;
 
 	public ActionPerformerVote(String nslName, NslModule nslParent,
 			int numLayers, IRobot robot, ExperimentUniverse universe) {
@@ -41,6 +45,8 @@ public class ActionPerformerVote extends NslModule {
 		votes = new NslDinFloat1[numLayers];
 		for (int i = 0; i < numLayers; i++)
 			votes[i] = new NslDinFloat1(this, "votes" + i);
+		
+		maxPossibleVal = Configuration.getFloat("QLearning.foodReward") / 2 * numLayers;
 
 		r = new Random();
 	}
@@ -56,9 +62,12 @@ public class ActionPerformerVote extends NslModule {
 		// find total value with laplacian
 		float maxVal = INITIAL_MAXVAL;
 		for (int angle = 0; angle < overallValues.length; angle++)
-			if(maxVal <  overallValues[angle]) 
+			if (maxVal < overallValues[angle])
 				maxVal = overallValues[angle];
-//		System.out.println(maxVal);
+		
+		explore = r.nextFloat() > (maxVal / maxPossibleVal);
+		
+		// System.out.println(maxVal);
 		// Make a list of actions and values
 		List<ActionValue> actions = new LinkedList<ActionValue>();
 		for (int angle = 0; angle < overallValues.length; angle++) {
@@ -71,21 +80,24 @@ public class ActionPerformerVote extends NslModule {
 			// Add a small bias towards going forward and small rotations
 			// Radial function centered on the going forward angle
 			float val = overallValues[angle];
-			if (maxVal == 1)
-				val += maxVal * Math.exp(-Math.pow(action - Utiles.discretizeAction(0), 2) / 1);
-//			float val = (float) (overallValues[angle] + EXPLORATORY_COMPONENT);
+			if (explore)
+				val += Math.max(4*maxVal, 1) * Math.exp(-Math.pow(
+								Utiles.actionDistance(action,
+										Utiles.discretizeAction(0)), 2)
+								/ EXPLORATORY_VARIANCE);
+			
+			// float val = (float) (overallValues[angle] +
+			// EXPLORATORY_COMPONENT);
 			actions.add(new ActionValue(action, val));
 		}
-//		Collections.sort(actions);
-		
-		
+		// Collections.sort(actions);
 
 		boolean[] aff;
 		do {
 			int action;
 			// Roulette algorithm
 			// Get total value
-			if (maxVal == 1){
+			if (explore) {
 				// Find min val
 				float minVal = 0;
 				for (ActionValue aValue : actions)
@@ -96,25 +108,26 @@ public class ActionPerformerVote extends NslModule {
 				for (ActionValue aValue : actions)
 					// Substract min val to raise everything above 0
 					totalVal += aValue.getValue() - minVal;
-	//			 Calc a new random in [0, totalVal]
+				// Calc a new random in [0, totalVal]
 				float nextRVal = r.nextFloat() * totalVal;
 				// Find the next action
 				action = -1;
 				do {
 					action++;
 					nextRVal -= (actions.get(action).getValue() - minVal);
-				} while (nextRVal >= 0 && action < actions.size() - 1 );
+				} while (nextRVal >= 0 && action < actions.size() - 1);
 			} else {
 				// Select best action
 				Collections.sort(actions);
-				action = actions.size()-1;
+				action = actions.size() - 1;
 			}
-			
+
 			// Try the selected action
 			robot.rotate(Utiles.actions[actions.get(action).getAction()]);
 			aff = robot.getAffordances();
 			// Random if there was no affordable positive value action
-			lastActionRandom = actions.get(action).getValue() <= EXPLORATORY_COMPONENT;
+			// lastActionRandom = actions.get(action).getValue() <=
+			// EXPLORATORY_VARIANCE;
 			actions.remove(action);
 		} while (!aff[Utiles.discretizeAction(0)]);
 
@@ -123,7 +136,7 @@ public class ActionPerformerVote extends NslModule {
 	}
 
 	public boolean wasLastActionRandom() {
-		return lastActionRandom;
+		return explore;
 	}
 }
 
