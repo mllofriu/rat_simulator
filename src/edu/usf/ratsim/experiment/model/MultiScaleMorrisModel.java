@@ -3,10 +3,11 @@ package edu.usf.ratsim.experiment.model;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.w3c.dom.Element;
-
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
+
+import org.w3c.dom.Element;
+
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.nsl.modules.ActionPerformerVote;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
@@ -23,7 +24,8 @@ public class MultiScaleMorrisModel extends NslModel {
 	private List<QLActionSelection> qLActionSel;
 	private List<QLSupport> qlData;
 
-	public MultiScaleMorrisModel(Element params, IRobot robot, ExperimentUniverse universe) {
+	public MultiScaleMorrisModel(Element params, IRobot robot,
+			ExperimentUniverse universe) {
 		super("MSMModel", (NslModule) null);
 
 		// Get some configuration values for place cells + qlearning

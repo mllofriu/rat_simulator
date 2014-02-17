@@ -37,7 +37,8 @@ public class ConditionFactory {
 			} else if (condName.equals("Time")) {
 				res.add(new TimeStop(condParams));
 			} else {
-				throw new RuntimeException("Condition name " + condName + " not implemented.");
+				throw new RuntimeException("Condition name " + condName
+						+ " not implemented.");
 			}
 
 		}

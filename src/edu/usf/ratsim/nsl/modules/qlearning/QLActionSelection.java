@@ -24,7 +24,8 @@ public class QLActionSelection extends NslModule {
 		this.robot = robot;
 		this.value = value;
 
-		actionVote = new NslDoutFloat1(this, "vote", Utiles.discreteAngles.length);
+		actionVote = new NslDoutFloat1(this, "vote",
+				Utiles.discreteAngles.length);
 		states = new NslDinFloat1(this, "states", stateSize);
 
 	}
@@ -34,50 +35,50 @@ public class QLActionSelection extends NslModule {
 
 		saveStateAction(s);
 
-//		int nextAction = getNextStep(s);
-//		actionVote.set(nextAction);
+		// int nextAction = getNextStep(s);
+		// actionVote.set(nextAction);
 		setVotes(s);
 	}
 
 	private void setVotes(int state) {
 		double[] values = new double[Utiles.discreteAngles.length];
-		for(int angle = 0; angle < Utiles.discreteAngles.length; angle++)
+		for (int angle = 0; angle < Utiles.discreteAngles.length; angle++)
 			values[angle] = value.getValue(new StateAction(state, angle));
 		actionVote.set(values);
 	}
 
-//	private int getNextStep(int s) {
-//		// Store values in array
-//		float[] vals = new float[Utiles.discreteAngles.length];
-//		float maxVal = 0;
-//		for (int angle = 0; angle < Utiles.discreteAngles.length; angle++) {
-//			vals[angle] = value.getValue(new StateAction(s, angle));
-//			if (vals[angle] > maxVal) {
-//				maxVal = vals[angle];
-//			}
-//		}
-//
-//		int action;
-//		// Explore with probability 1 - maxExpectedVal / maxPossibleVal
-////		if (random.nextFloat() > maxVal / FOOD_REWARD ){
-//		if (maxVal <= 0) {
-//			action = -1;
-//		} else {
-//			// Exploit best angle
-//			int nextAngle = value.getMaxAngle(s);
-//
-//			// Get angle to that maximal direction
-//			Quat4f nextRot = Utiles
-//					.angleToRot(Utiles.discreteAngles[nextAngle]);
-//
-//			// Get the action that better approximates that angle
-////			boolean[] affordances = robot.getAffordances();
-//			action = Utiles.bestActionToRot(nextRot,
-//					universe.getRobotOrientation());
-//		}
-//
-//		return action;
-//	}
+	// private int getNextStep(int s) {
+	// // Store values in array
+	// float[] vals = new float[Utiles.discreteAngles.length];
+	// float maxVal = 0;
+	// for (int angle = 0; angle < Utiles.discreteAngles.length; angle++) {
+	// vals[angle] = value.getValue(new StateAction(s, angle));
+	// if (vals[angle] > maxVal) {
+	// maxVal = vals[angle];
+	// }
+	// }
+	//
+	// int action;
+	// // Explore with probability 1 - maxExpectedVal / maxPossibleVal
+	// // if (random.nextFloat() > maxVal / FOOD_REWARD ){
+	// if (maxVal <= 0) {
+	// action = -1;
+	// } else {
+	// // Exploit best angle
+	// int nextAngle = value.getMaxAngle(s);
+	//
+	// // Get angle to that maximal direction
+	// Quat4f nextRot = Utiles
+	// .angleToRot(Utiles.discreteAngles[nextAngle]);
+	//
+	// // Get the action that better approximates that angle
+	// // boolean[] affordances = robot.getAffordances();
+	// action = Utiles.bestActionToRot(nextRot,
+	// universe.getRobotOrientation());
+	// }
+	//
+	// return action;
+	// }
 
 	private int getActiveState() {
 		// Winner take all within the layer
@@ -96,13 +97,13 @@ public class QLActionSelection extends NslModule {
 		// Save the current state and the past action
 		value.recordStateAction(new StateAction(s, Utiles
 				.discretizeAngle(universe.getRobotOrientationAngle())));
-//		System.out.println(Math.toDegrees(Utiles.discreteAngles[Utiles
-//				.discretizeAngle(universe.getRobotOrientationAngle())]));
-//		try {
-//			Thread.sleep(1000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		// System.out.println(Math.toDegrees(Utiles.discreteAngles[Utiles
+		// .discretizeAngle(universe.getRobotOrientationAngle())]));
+		// try {
+		// Thread.sleep(1000);
+		// } catch (InterruptedException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 	}
 }

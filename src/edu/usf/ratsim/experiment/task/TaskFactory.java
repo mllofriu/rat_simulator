@@ -12,7 +12,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import edu.usf.ratsim.experiment.ExperimentTask;
-import edu.usf.ratsim.experiment.loggers.PolicyDumper;
 
 public class TaskFactory {
 

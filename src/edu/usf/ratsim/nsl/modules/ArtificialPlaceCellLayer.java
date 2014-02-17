@@ -25,7 +25,7 @@ public class ArtificialPlaceCellLayer extends NslModule {
 			ExperimentUniverse universe, float radius, float minX, float minY) {
 		super(nslName, nslParent);
 		// Get some parameters from configuration
-		
+
 		maxX = Configuration.getFloat("ArtificialPlaceCells.maxX");
 		maxY = Configuration.getFloat("ArtificialPlaceCells.maxY");
 
@@ -34,11 +34,10 @@ public class ArtificialPlaceCellLayer extends NslModule {
 		for (float x = minX; x < maxX; x += 2 * radius) {
 			for (float y = minY; y < maxY; y += 2 * radius) {
 				// Add a cell with center x,y
-				cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y),
-						radius));
+				cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y), radius));
 				// phased out layer
-				cells.add(new ArtificialPlaceCell(new Point3f(x + radius, 0, y + radius),
-						radius));
+				cells.add(new ArtificialPlaceCell(new Point3f(x + radius, 0, y
+						+ radius), radius));
 			}
 		}
 
@@ -48,7 +47,6 @@ public class ArtificialPlaceCellLayer extends NslModule {
 		this.universe = universe;
 	}
 
-	
 	public void simRun() {
 		int i = 0;
 		for (ArtificialPlaceCell pCell : cells) {
@@ -56,14 +54,14 @@ public class ArtificialPlaceCellLayer extends NslModule {
 			i++;
 		}
 	}
-	
-	public float[] getActivationValues(Point3f pos){
+
+	public float[] getActivationValues(Point3f pos) {
 		float[] res = new float[cells.size()];
-		
+
 		for (int i = 0; i < cells.size(); i++) {
 			res[i] = cells.get(i).getActivation(pos);
 		}
-		
+
 		return res;
 	}
 

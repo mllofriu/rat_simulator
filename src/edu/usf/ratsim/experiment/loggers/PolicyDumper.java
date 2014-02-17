@@ -2,9 +2,7 @@ package edu.usf.ratsim.experiment.loggers;
 
 import java.util.List;
 
-import edu.usf.ratsim.experiment.ExpSubject;
 import edu.usf.ratsim.experiment.ExperimentLogger;
-import edu.usf.ratsim.experiment.ExperimentTask;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.model.MultiScaleMorrisModel;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
@@ -18,7 +16,8 @@ public class PolicyDumper implements ExperimentLogger {
 	private String trial;
 	private String groupName;
 
-	public PolicyDumper(MultiScaleMorrisModel model, String trial, String groupName, String subName, String rep) {
+	public PolicyDumper(MultiScaleMorrisModel model, String trial,
+			String groupName, String subName, String rep) {
 		pclLayers = model.getPCLLayers();
 		qlDatas = model.getQLDatas();
 		this.trial = trial;
@@ -29,11 +28,12 @@ public class PolicyDumper implements ExperimentLogger {
 
 	public void log(ExperimentUniverse universe) {
 		for (int i = 0; i < pclLayers.size(); i++)
-			qlDatas.get(i).dumpPolicy(trial, groupName, subName, rep, pclLayers.get(i), i);
+			qlDatas.get(i).dumpPolicy(trial, groupName, subName, rep,
+					pclLayers.get(i), i);
 	}
 
 	public void finalizeLog() {
-		
+
 	}
 
 }

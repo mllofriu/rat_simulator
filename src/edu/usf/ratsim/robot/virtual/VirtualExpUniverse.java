@@ -8,9 +8,7 @@ import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.ImageComponent2D;
 import javax.media.j3d.Locale;
-import javax.media.j3d.Node;
 import javax.media.j3d.Transform3D;
-import javax.media.j3d.TransformGroup;
 import javax.media.j3d.View;
 import javax.media.j3d.VirtualUniverse;
 import javax.vecmath.Color3f;
@@ -37,7 +35,8 @@ import edu.usf.ratsim.support.XMLDocReader;
 public class VirtualExpUniverse extends VirtualUniverse implements
 		ExperimentUniverse {
 
-	private static final float CLOSE_TO_FOOD_THRS = Configuration.getFloat("VirtualUniverse.closeToFood");
+	private static final float CLOSE_TO_FOOD_THRS = Configuration
+			.getFloat("VirtualUniverse.closeToFood");
 
 	private View topView;
 	private RobotNode robot;
@@ -56,9 +55,12 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		bg.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
 		bg.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
 		l.addBranchGraph(bg);
-		
+
 		try {
-			FileUtils.copyURLToFile(getClass().getResource(Configuration.getString("Experiment.MAZE_FILE")), new File("/tmp/maze.xml"));
+			FileUtils.copyURLToFile(
+					getClass().getResource(
+							Configuration.getString("Experiment.MAZE_FILE")),
+					new File("/tmp/maze.xml"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -170,7 +172,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	 * @param vector
 	 *            Robots position
 	 */
-	
+
 	public void setRobotPosition(Point2D.Float pos, float angle) {
 		Transform3D translate = new Transform3D();
 		translate.setTranslation(new Vector3f(pos.x, 0, pos.y));
@@ -223,21 +225,18 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		return new Point3f(foodPos);
 	}
 
-	
 	public void setFoodPosition(Point2D.Float pos) {
 		bg.removeChild(food);
 		food = new FoodNode(pos.x, 0, pos.y);
 		bg.addChild(food);
 	}
 
-	
 	public boolean hasRobotFoundFood() {
 		Point3f food = getFoodPosition();
 		Point3f robot = getRobotPosition();
 		return robot.distance(food) < CLOSE_TO_FOOD_THRS;
 	}
 
-	
 	public Quat4f getRobotOrientation() {
 		Transform3D t = new Transform3D();
 		robot.getTransformGroup().getTransform(t);
@@ -245,11 +244,10 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 		Quat4f rot = new Quat4f();
 		t.get(rot);
-		
+
 		return rot;
 	}
 
-	
 	public float getRobotOrientationAngle() {
 		Transform3D t = new Transform3D();
 		robot.getTransformGroup().getTransform(t);
@@ -260,14 +258,14 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		return (float) (2 * Math.acos(rot.w) * Math.signum(rot.y));
 	}
 
-	public static void main(String[] args){
+	public static void main(String[] args) {
 		new VirtualExpUniverse();
 	}
 
 	public boolean[] getRobotAffordances() {
-		
+
 		boolean[] affordances = new boolean[Utiles.actions.length];
-		for (int action = 0; action < Utiles.actions.length; action++){
+		for (int action = 0; action < Utiles.actions.length; action++) {
 			// The current position with rotation
 			Transform3D rPos = new Transform3D();
 			robot.getTransformGroup().getTransform(rPos);
@@ -286,7 +284,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			// Check it's in the maze
 			affordances[action] = pool.isInside(new Point3f(finalPos));
 		}
-		
+
 		return affordances;
 	}
 
