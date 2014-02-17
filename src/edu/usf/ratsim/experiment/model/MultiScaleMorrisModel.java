@@ -15,7 +15,6 @@ import edu.usf.ratsim.nsl.modules.qlearning.QLActionSelection;
 import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
 import edu.usf.ratsim.nsl.modules.qlearning.QLUpdateValue;
 import edu.usf.ratsim.robot.IRobot;
-import edu.usf.ratsim.support.Configuration;
 
 public class MultiScaleMorrisModel extends NslModel {
 	private List<ArtificialPlaceCellLayer> pcls;
@@ -35,8 +34,6 @@ public class MultiScaleMorrisModel extends NslModel {
 				.getElementsByTagName("maxRadius").item(0).getTextContent());
 		int numLayers = Integer.parseInt(params
 				.getElementsByTagName("numLayers").item(0).getTextContent());
-		float minX = Configuration.getFloat("ArtificialPlaceCells.minX");
-		float minY = Configuration.getFloat("ArtificialPlaceCells.minY");
 
 		pcls = new LinkedList<ArtificialPlaceCellLayer>();
 		qLUpdVal = new LinkedList<QLUpdateValue>();
@@ -48,7 +45,7 @@ public class MultiScaleMorrisModel extends NslModel {
 		// For each layer
 		for (int i = 0; i < numLayers; i++) {
 			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer(
-					"PlaceCellLayer", this, universe, radius, minX, minY);
+					"PlaceCellLayer", this, universe, radius);
 			QLSupport qlSupport = new QLSupport(pcl.getSize());
 			pcls.add(pcl);
 			qlData.add(qlSupport);
