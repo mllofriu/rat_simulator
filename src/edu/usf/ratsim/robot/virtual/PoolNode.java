@@ -38,8 +38,8 @@ public class PoolNode extends ExpUniverseNode {
 		}
 
 	}
-	
-	public boolean isInside(Point3f point){
+
+	public boolean isInside(Point3f point) {
 		return point.distance(new Point3f(xp, yp, zp)) < r;
 	}
 }

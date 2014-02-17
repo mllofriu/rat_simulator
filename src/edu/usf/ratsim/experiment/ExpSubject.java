@@ -1,7 +1,5 @@
 package edu.usf.ratsim.experiment;
 
-import java.util.List;
-
 import nslj.src.lang.NslHierarchy;
 import nslj.src.lang.NslModel;
 import nslj.src.system.NslInterpreter;
@@ -11,11 +9,6 @@ import org.w3c.dom.Element;
 
 import edu.usf.ratsim.experiment.model.ModelFactory;
 import edu.usf.ratsim.experiment.model.MultiScaleMorrisModel;
-import edu.usf.ratsim.nsl.modules.ActionPerformerVote;
-import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
-import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
-import edu.usf.ratsim.nsl.modules.qlearning.QLUpdateValue;
-import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 import edu.usf.ratsim.robot.virtual.VirtualRobot;
 
@@ -41,7 +34,8 @@ public class ExpSubject {
 			System.out.println("Init model");
 		}
 
-		model = (MultiScaleMorrisModel) ModelFactory.createModel(modelNode, robot, universe);
+		model = (MultiScaleMorrisModel) ModelFactory.createModel(modelNode,
+				robot, universe);
 
 		// Load it into nsl
 		system.addModel(model);

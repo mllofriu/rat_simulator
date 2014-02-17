@@ -17,29 +17,36 @@ public class LoggerFactory {
 	private static final String STR_LOGGER_NAME = "name";
 	private static final String STR_LOGGER_PARAMS = "params";
 
-	public static Collection<ExperimentLogger> createLoggers(Element loggers, Trial t) {
+	public static Collection<ExperimentLogger> createLoggers(Element loggers,
+			Trial t) {
 		Collection<ExperimentLogger> res = new LinkedList<ExperimentLogger>();
-		
+
 		NodeList loggerList = loggers.getElementsByTagName(STR_LOGGER);
 		for (int i = 0; i < loggerList.getLength(); i++) {
 			Element loggerNode = (Element) loggerList.item(i);
-			String loggerName = loggerNode.getElementsByTagName(STR_LOGGER_NAME)
-					.item(0).getTextContent();
-			
+			String loggerName = loggerNode
+					.getElementsByTagName(STR_LOGGER_NAME).item(0)
+					.getTextContent();
+
 			// Element loggerParams =
 			// (Element)loggerNode.getElementsByTagName(STR_LOGGER_PARAMS).item(0);
 			if (loggerName.equals("PositionLogger")) {
-				ActionPerformerVote p = ((MultiScaleMorrisModel)t.getSubject().getModel()).getActionPerformer();
-				res.add(new PositionLogger(t.getName(), t.getGroup(), t.getSubjectName(), t.getRep(), p));
-			} else if (loggerName.equals("PolicyDumper")){
-				res.add(new PolicyDumper(((MultiScaleMorrisModel)t.getSubject().getModel()), t.getName(), t.getGroup(), t.getSubjectName(), t.getRep()));
+				ActionPerformerVote p = ((MultiScaleMorrisModel) t.getSubject()
+						.getModel()).getActionPerformer();
+				res.add(new PositionLogger(t.getName(), t.getGroup(), t
+						.getSubjectName(), t.getRep(), p));
+			} else if (loggerName.equals("PolicyDumper")) {
+				res.add(new PolicyDumper(((MultiScaleMorrisModel) t
+						.getSubject().getModel()), t.getName(), t.getGroup(), t
+						.getSubjectName(), t.getRep()));
 			} else {
-				throw new RuntimeException("Logger " + loggerName + " not implemented.");
+				throw new RuntimeException("Logger " + loggerName
+						+ " not implemented.");
 			}
 		}
-		
+
 		return res;
-			
+
 	}
 
 }

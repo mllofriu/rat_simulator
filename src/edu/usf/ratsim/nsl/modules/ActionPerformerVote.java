@@ -35,7 +35,8 @@ public class ActionPerformerVote extends NslModule {
 
 	private float maxPossibleVal;
 
-	private float explorationMaxValMultiplier = Configuration.getFloat("ActionPerformer.maxValMultiplier");
+	private float explorationMaxValMultiplier = Configuration
+			.getFloat("ActionPerformer.maxValMultiplier");
 
 	public ActionPerformerVote(String nslName, NslModule nslParent,
 			int numLayers, IRobot robot, ExperimentUniverse universe) {
@@ -47,8 +48,9 @@ public class ActionPerformerVote extends NslModule {
 		votes = new NslDinFloat1[numLayers];
 		for (int i = 0; i < numLayers; i++)
 			votes[i] = new NslDinFloat1(this, "votes" + i);
-		
-		maxPossibleVal = Configuration.getFloat("QLearning.foodReward") / 2 * numLayers;
+
+		maxPossibleVal = Configuration.getFloat("QLearning.foodReward") / 2
+				* numLayers;
 
 		r = new Random();
 	}
@@ -66,9 +68,9 @@ public class ActionPerformerVote extends NslModule {
 		for (int angle = 0; angle < overallValues.length; angle++)
 			if (maxVal < overallValues[angle])
 				maxVal = overallValues[angle];
-		
+
 		explore = r.nextFloat() > (maxVal / maxPossibleVal);
-		
+
 		// System.out.println(maxVal);
 		// Make a list of actions and values
 		List<ActionValue> actions = new LinkedList<ActionValue>();
@@ -83,11 +85,12 @@ public class ActionPerformerVote extends NslModule {
 			// Radial function centered on the going forward angle
 			float val = overallValues[angle];
 			if (explore)
-				val += Math.max(explorationMaxValMultiplier *maxVal, 1) * Math.exp(-Math.pow(
+				val += Math.max(explorationMaxValMultiplier * maxVal, 1)
+						* Math.exp(-Math.pow(
 								Utiles.actionDistance(action,
 										Utiles.discretizeAction(0)), 2)
 								/ EXPLORATORY_VARIANCE);
-			
+
 			// float val = (float) (overallValues[angle] +
 			// EXPLORATORY_COMPONENT);
 			actions.add(new ActionValue(action, val));

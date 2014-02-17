@@ -10,7 +10,6 @@ import edu.usf.ratsim.nsl.modules.qlearning.QLUpdateValue;
 
 public class PolicyValueUpdater implements ExperimentTask {
 
-	
 	private List<QLUpdateValue> qlValUpdaters;
 
 	public PolicyValueUpdater(List<QLUpdateValue> qlValUpdaters) {
@@ -18,14 +17,15 @@ public class PolicyValueUpdater implements ExperimentTask {
 	}
 
 	public PolicyValueUpdater(NslModel model) {
-		if (! (model instanceof MultiScaleMorrisModel))
-			throw new RuntimeException("Policy value updater can only be used with MSM model");
-		
-		qlValUpdaters = ((MultiScaleMorrisModel)model).getQLValUpdaters();
+		if (!(model instanceof MultiScaleMorrisModel))
+			throw new RuntimeException(
+					"Policy value updater can only be used with MSM model");
+
+		qlValUpdaters = ((MultiScaleMorrisModel) model).getQLValUpdaters();
 	}
 
 	public void perform(ExperimentUniverse univ) {
-		for(QLUpdateValue qLUpdVal : qlValUpdaters)
+		for (QLUpdateValue qLUpdVal : qlValUpdaters)
 			qLUpdVal.updateQValueFoo();
 	}
 

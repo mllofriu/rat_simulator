@@ -19,12 +19,14 @@ public interface ExperimentUniverse {
 
 	/**
 	 * Returns the robot orientation as a 3d heading vector
+	 * 
 	 * @return
 	 */
 	public Quat4f getRobotOrientation();
 
 	/**
 	 * Returns the robot orientation angle to the x axis over the y axis
+	 * 
 	 * @return
 	 */
 	public float getRobotOrientationAngle();

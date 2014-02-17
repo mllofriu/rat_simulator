@@ -2,8 +2,6 @@ package edu.usf.ratsim.experiment;
 
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.Map;
 
 import javax.vecmath.Point4f;
 
@@ -11,12 +9,9 @@ import nslj.src.lang.NslModel;
 
 import org.w3c.dom.Element;
 
-import com.sun.org.apache.xpath.internal.operations.And;
-
 import edu.usf.ratsim.experiment.loggers.LoggerFactory;
 import edu.usf.ratsim.experiment.stopcondition.ConditionFactory;
 import edu.usf.ratsim.experiment.stopcondition.StopCondition;
-import edu.usf.ratsim.experiment.stopcondition.TimeStop;
 import edu.usf.ratsim.experiment.task.TaskFactory;
 import edu.usf.ratsim.support.Configuration;
 
@@ -150,9 +145,9 @@ public class Trial implements Runnable {
 			// Close file handlers
 			for (ExperimentLogger logger : afterCycleloggers)
 				logger.finalizeLog();
-			
+
 			// After trial loggers
-			for(ExperimentLogger logger : afterTrialloggers){
+			for (ExperimentLogger logger : afterTrialloggers) {
 				logger.log(universe);
 				logger.finalizeLog();
 			}

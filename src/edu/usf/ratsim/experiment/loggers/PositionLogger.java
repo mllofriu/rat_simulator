@@ -26,8 +26,8 @@ public class PositionLogger implements ExperimentLogger {
 	private String groupName;
 	private static PrintWriter writer = null;
 
-	public PositionLogger(String trialName, String groupName, String subName, String repNum,
-			ActionPerformerVote actionPerformer) {
+	public PositionLogger(String trialName, String groupName, String subName,
+			String repNum, ActionPerformerVote actionPerformer) {
 		super();
 
 		this.trialName = trialName;
@@ -49,8 +49,8 @@ public class PositionLogger implements ExperimentLogger {
 		synchronized (PositionLogger.class) {
 			PrintWriter writer = getWriter();
 			for (Pose pose : poses)
-				writer.println(trialName + '\t' + groupName + '\t' + subName + '\t' + repNum
-						+ '\t' + pose.x + "\t" + pose.y + "\t"
+				writer.println(trialName + '\t' + groupName + '\t' + subName
+						+ '\t' + repNum + '\t' + pose.x + "\t" + pose.y + "\t"
 						+ pose.randomAction);
 			poses.clear();
 		}
@@ -60,15 +60,16 @@ public class PositionLogger implements ExperimentLogger {
 		if (writer == null) {
 			try {
 				// Writer with auto flush
-					writer = new PrintWriter(new OutputStreamWriter(
-							new FileOutputStream(new File(Configuration
-									.getString("Log.DIRECTORY") + DUMP_FILENAME))), true);
+				writer = new PrintWriter(new OutputStreamWriter(
+						new FileOutputStream(new File(Configuration
+								.getString("Log.DIRECTORY") + DUMP_FILENAME))),
+						true);
 				writer.println("trial\tgroup\tsubject\trepetition\tx\ty\trandom");
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 		}
 
 		return writer;

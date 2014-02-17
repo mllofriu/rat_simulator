@@ -2,7 +2,6 @@ package edu.usf.ratsim.robot.virtual;
 
 //import Rat;
 
-import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import javax.media.j3d.Canvas3D;
@@ -11,74 +10,72 @@ import javax.vecmath.Vector3f;
 
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.Configuration;
-import edu.usf.ratsim.support.Utiles;
 
 public class VirtualRobot implements IRobot {
 
-//	private final int MAX_PIXEL_LATERAL = Configuration
-//			.getInt("RobotVirtual.MAX_PIXEL_LATERAL");
-//	private final int MAX_PIXEL_DIAGONAL = Configuration
-//			.getInt("RobotVirtual.MAX_PIXEL_DIAGONAL");
-//	private final int MAX_PIXEL_FRENTE = Configuration
-//			.getInt("RobotVirtual.MAX_PIXEL_FRENTE");
+	// private final int MAX_PIXEL_LATERAL = Configuration
+	// .getInt("RobotVirtual.MAX_PIXEL_LATERAL");
+	// private final int MAX_PIXEL_DIAGONAL = Configuration
+	// .getInt("RobotVirtual.MAX_PIXEL_DIAGONAL");
+	// private final int MAX_PIXEL_FRENTE = Configuration
+	// .getInt("RobotVirtual.MAX_PIXEL_FRENTE");
 	public static final float STEP = Configuration
 			.getFloat("RobotVirtual.Step");
 
 	public VirtualExpUniverse universe;
 
-//	private boolean[] affordances;
+	// private boolean[] affordances;
 
 	private boolean validCachedAffordances;
 
 	public VirtualRobot(VirtualExpUniverse world) {
 		this.universe = world;
 
-		if (Configuration.getBoolean("UniverseFrame.display")){
+		if (Configuration.getBoolean("UniverseFrame.display")) {
 			UniverseFrame worldFrame = new UniverseFrame(world);
 			worldFrame.setVisible(true);
 		}
-		
+
 		validCachedAffordances = false;
 	}
 
-	
 	public boolean[] getAffordances() {
 		// Use cache if robot has not moved
-//		if (!validCachedAffordances){
-//			BufferedImage[] pan = getPanoramica();
-//	
-//			affordances = new boolean[IRobot.NUM_POSSIBLE_ACTIONS];
-//	
-//			affordances[Utiles.discretizeAction(-90)] = Utiles.contador(
-//					pan[0], Color.red) < MAX_PIXEL_LATERAL;
-//			affordances[Utiles.discretizeAction(90)] = Utiles.contador(
-//					pan[4], Color.red) < MAX_PIXEL_LATERAL;
-//			affordances[Utiles.discretizeAction(0)] = Utiles.contador(
-//					pan[2],	Color.red) < MAX_PIXEL_FRENTE;
-//			affordances[Utiles.discretizeAction(-45)] = Utiles.contador(
-//					pan[1], Color.red) < MAX_PIXEL_DIAGONAL;
-//			affordances[Utiles.discretizeAction(45)] = Utiles.contador(
-//					pan[3], Color.red) < MAX_PIXEL_DIAGONAL;
-//	
-//			affordances[Utiles.discretizeAction(-180)] = true;
-//			affordances[Utiles.discretizeAction(180)] = true;
-//			affordances[Utiles.discretizeAction(-135)] = true;
-//			affordances[Utiles.discretizeAction(135)] = true;
-//			
-//			validCachedAffordances = true;
-//		}
-//
-//		return affordances;
-		
+		// if (!validCachedAffordances){
+		// BufferedImage[] pan = getPanoramica();
+		//
+		// affordances = new boolean[IRobot.NUM_POSSIBLE_ACTIONS];
+		//
+		// affordances[Utiles.discretizeAction(-90)] = Utiles.contador(
+		// pan[0], Color.red) < MAX_PIXEL_LATERAL;
+		// affordances[Utiles.discretizeAction(90)] = Utiles.contador(
+		// pan[4], Color.red) < MAX_PIXEL_LATERAL;
+		// affordances[Utiles.discretizeAction(0)] = Utiles.contador(
+		// pan[2], Color.red) < MAX_PIXEL_FRENTE;
+		// affordances[Utiles.discretizeAction(-45)] = Utiles.contador(
+		// pan[1], Color.red) < MAX_PIXEL_DIAGONAL;
+		// affordances[Utiles.discretizeAction(45)] = Utiles.contador(
+		// pan[3], Color.red) < MAX_PIXEL_DIAGONAL;
+		//
+		// affordances[Utiles.discretizeAction(-180)] = true;
+		// affordances[Utiles.discretizeAction(180)] = true;
+		// affordances[Utiles.discretizeAction(-135)] = true;
+		// affordances[Utiles.discretizeAction(135)] = true;
+		//
+		// validCachedAffordances = true;
+		// }
+		//
+		// return affordances;
+
 		// Lighter version of the affordance checking
-//		long time = System.currentTimeMillis();
-//		boolean[] ret = universe.getRobotAffordances();
-//		System.out.println("Affordances took " + (System.currentTimeMillis() - time));
-//		return ret;
+		// long time = System.currentTimeMillis();
+		// boolean[] ret = universe.getRobotAffordances();
+		// System.out.println("Affordances took " + (System.currentTimeMillis()
+		// - time));
+		// return ret;
 		return universe.getRobotAffordances();
 	}
 
-	
 	synchronized public BufferedImage[] getPanoramica() {
 		BufferedImage[] panoramica = new BufferedImage[RobotNode.NUM_ROBOT_VIEWS];
 
@@ -90,7 +87,7 @@ public class VirtualRobot implements IRobot {
 		for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++) {
 			offScreenCanvas[i].renderOffScreenBuffer();
 		}
-		
+
 		for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++) {
 			offScreenCanvas[i].waitForOffScreenRendering();
 			panoramica[i] = offScreenImages[i].getImage();
@@ -100,24 +97,20 @@ public class VirtualRobot implements IRobot {
 		return panoramica;
 	}
 
-	
 	public void rotate(float grados) {
 		universe.rotateRobot(grados);
 		validCachedAffordances = false;
 	}
 
-	
 	public void startRobot() {
 	}
 
-	
 	public boolean hasFoundFood() {
 		return universe.hasRobotFoundFood();
 	}
 
-	
 	public void forward() {
-		universe.moveRobot(new Vector3f(STEP, 0f, 0f));		
+		universe.moveRobot(new Vector3f(STEP, 0f, 0f));
 		validCachedAffordances = false;
 	}
 

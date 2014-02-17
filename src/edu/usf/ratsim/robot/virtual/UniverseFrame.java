@@ -14,7 +14,7 @@ public class UniverseFrame extends java.awt.Frame {
 
 	private Canvas3D topViewCanvas, robotViewCanvas;
 	private Canvas3D[] robotViewsCanvas;
-	
+
 	private java.awt.Button button1;
 	private java.awt.Button leftBtn;
 	private java.awt.Button button3;
@@ -99,7 +99,6 @@ public class UniverseFrame extends java.awt.Frame {
 		panel1.setLayout(new java.awt.GridBagLayout());
 
 		button1.setLabel("Publ. Space");
-
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 3;

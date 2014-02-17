@@ -19,7 +19,7 @@ public class ModelFactory {
 					.item(0);
 			return new MultiScaleMorrisModel(params, robot, universe);
 		}
-		
+
 		throw new RuntimeException("Especified model is not implemented");
 	}
 
