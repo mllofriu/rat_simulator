@@ -19,19 +19,17 @@ final class StateAction {
 		this.action = action;
 	}
 
-	
 	public boolean equals(Object o) {
 		if (o == null || !(o instanceof StateAction))
 			return false;
-		
-		StateAction stateAction = (StateAction)o;
-		
+
+		StateAction stateAction = (StateAction) o;
+
 		return stateAction.state == state && stateAction.action == action;
 	}
 
-	
 	public int hashCode() {
 		return state * Utiles.discreteAngles.length + action;
 	}
-	
+
 }
