@@ -1,6 +1,7 @@
 package edu.usf.ratsim.experiment;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
@@ -30,5 +31,7 @@ public interface ExperimentUniverse {
 	 * @return
 	 */
 	public float getRobotOrientationAngle();
+
+	public Rectangle2D.Float getBoundingRectangle();
 
 }

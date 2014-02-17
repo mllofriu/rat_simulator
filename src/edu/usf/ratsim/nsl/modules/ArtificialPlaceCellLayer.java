@@ -1,5 +1,6 @@
 package edu.usf.ratsim.nsl.modules;
 
+import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,7 +9,6 @@ import javax.vecmath.Point3f;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.support.Configuration;
 
 public class ArtificialPlaceCellLayer extends NslModule {
 
@@ -18,16 +18,15 @@ public class ArtificialPlaceCellLayer extends NslModule {
 
 	private ExperimentUniverse universe;
 
-	private float maxY;
-	private float maxX;
-
 	public ArtificialPlaceCellLayer(String nslName, NslModule nslParent,
-			ExperimentUniverse universe, float radius, float minX, float minY) {
+			ExperimentUniverse universe, float radius) {
 		super(nslName, nslParent);
 		// Get some parameters from configuration
-
-		maxX = Configuration.getFloat("ArtificialPlaceCells.maxX");
-		maxY = Configuration.getFloat("ArtificialPlaceCells.maxY");
+		Rectangle2D.Float rect = universe.getBoundingRectangle();
+		float maxX = (float) rect.getMaxX();
+		float maxY = (float) rect.getMaxY();
+		float minX = (float) rect.getMinX();
+		float minY = (float) rect.getMinY();
 
 		// Compute number of cells
 		cells = new LinkedList<ArtificialPlaceCell>();

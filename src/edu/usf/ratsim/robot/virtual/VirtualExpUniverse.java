@@ -1,6 +1,7 @@
 package edu.usf.ratsim.robot.virtual;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
 
@@ -46,6 +47,8 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	private PoolNode pool;
 
+	private BoundingRectNode boundingRect;
+
 	public VirtualExpUniverse() {
 		super();
 
@@ -70,7 +73,10 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		// Build the group
 		NodeList list;
 		org.w3c.dom.Node params;
-
+		
+		// Bounding rectangle
+		boundingRect = new BoundingRectNode(doc.getElementsByTagName("boundingRect").item(0));
+		
 		// Spheres
 		list = doc.getElementsByTagName("sphere");
 		for (int i = 0; i < list.getLength(); i++) {
@@ -286,6 +292,11 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		}
 
 		return affordances;
+	}
+
+	@Override
+	public Rectangle2D.Float getBoundingRectangle() {
+		return boundingRect.getRect();
 	}
 
 }
