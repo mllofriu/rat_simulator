@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="us-ascii"?>
 
 <world>
+        <boundingRect x='-.5' y='-.5' w='1' h='1'/>
+        
         <!--  Landmark superior CYAN --> 
         <cylinder r='0.045' h='0.3' cr='0' cg='1' cb='1' xp='0' yp='0.15' zp='-0.55'/>
 
