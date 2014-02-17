@@ -15,18 +15,18 @@ import edu.usf.ratsim.support.Utiles;
 
 public class VirtualRobot implements IRobot {
 
-	private final int MAX_PIXEL_LATERAL = Configuration
-			.getInt("RobotVirtual.MAX_PIXEL_LATERAL");
-	private final int MAX_PIXEL_DIAGONAL = Configuration
-			.getInt("RobotVirtual.MAX_PIXEL_DIAGONAL");
-	private final int MAX_PIXEL_FRENTE = Configuration
-			.getInt("RobotVirtual.MAX_PIXEL_FRENTE");
+//	private final int MAX_PIXEL_LATERAL = Configuration
+//			.getInt("RobotVirtual.MAX_PIXEL_LATERAL");
+//	private final int MAX_PIXEL_DIAGONAL = Configuration
+//			.getInt("RobotVirtual.MAX_PIXEL_DIAGONAL");
+//	private final int MAX_PIXEL_FRENTE = Configuration
+//			.getInt("RobotVirtual.MAX_PIXEL_FRENTE");
 	public static final float STEP = Configuration
 			.getFloat("RobotVirtual.Step");
 
 	public VirtualExpUniverse universe;
 
-	private boolean[] affordances;
+//	private boolean[] affordances;
 
 	private boolean validCachedAffordances;
 

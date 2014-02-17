@@ -9,7 +9,6 @@ import java.util.Properties;
 public class Configuration {
 	public final static String PROP_FILE = "/resources/config.properties";
 	private static Properties configuracion = new Properties();
-
 	private static Configuration singleton = new Configuration();
 
 	private Configuration() {

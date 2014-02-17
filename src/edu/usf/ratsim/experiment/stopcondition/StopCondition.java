@@ -1,4 +1,4 @@
-package edu.usf.ratsim.experiment;
+package edu.usf.ratsim.experiment.stopcondition;
 
 public interface StopCondition {
 
