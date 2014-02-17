@@ -8,8 +8,10 @@ package edu.usf.ratsim.experiment;
  * Fecha: 11 de agosto de 2010
  */
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -21,33 +23,39 @@ import javax.vecmath.Point4f;
 
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import edu.usf.ratsim.experiment.multiscalemorris.PositionLogger;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.XMLDocReader;
 
-public abstract class Experiment implements Runnable {
+public class Experiment implements Runnable {
 
 	public static final String STR_NAME = "name";
 	private final String STR_POINT = "point";
 	public static final String STR_REPETITIONS = "reps";
 	private static final String STR_SUBJECT = "subject";
 	private static final String STR_GROUP = "group";
-	private static final Object STR_TRIALGROUPS = "groups";
+	private static final String STR_TRIALGROUPS = "groups";
 
 	private final String STR_TRIAL = "trial";
 
 	public final static String STR_TRIAL_TYPE = "type";
-	private static final Object XML_ROOT_STR = "simulation";
+	private static final Object XML_ROOT_STR = "experiment";
 
 	private final String STR_X_POSITION = "xp";
 	private final String STR_Y_POSITION = "yp";
 	private final String STR_Z_POSITION = "zp";
 	private final String STR_ANGLE = "rot";
 
+	
+	private static final String PLOTTING_SCRIPT = "/edu/usf/ratsim/experiment/plot/plotting.r";
+	private static final String PLOT_EXECUTER = "/edu/usf/ratsim/experiment/plot/plot.sh";
+	private static final String OBJ2PNG_SCRIPT = "/edu/usf/ratsim/experiment/plot/obj2png.r";
+	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/morrisMultiscaleOneSubject.xml";
+	
 	private Map<ExpSubject, List<Trial>> trials;
 	private String logPath;
 	private Hashtable<String, ExpSubject> subjects;
@@ -93,7 +101,7 @@ public abstract class Experiment implements Runnable {
 				doc, subjects);
 
 		trials = new HashMap<ExpSubject, List<Trial>>();
-		loadTrials(doc.getElementsByTagName(STR_TRIAL), points, groups, logPath);
+		loadTrials(doc.getDocumentElement(), points, groups, logPath);
 	}
 
 	private Hashtable<String, Hashtable<String, ExpSubject>> loadGroups(
@@ -102,7 +110,8 @@ public abstract class Experiment implements Runnable {
 		NodeList elems = doc.getElementsByTagName(STR_GROUP);
 		for (int i = 0; i < elems.getLength(); i++) {
 			// Only group node that are direct children of <simulation>
-			if (elems.item(i).getParentNode().getNodeName().equals(XML_ROOT_STR)) {
+			if (elems.item(i).getParentNode().getNodeName()
+					.equals(XML_ROOT_STR)) {
 				NodeList subsNL = elems.item(i).getChildNodes();
 				Hashtable<String, ExpSubject> sGroup = new Hashtable<String, ExpSubject>();
 				for (int j = 0; j < subsNL.getLength(); j++) {
@@ -128,19 +137,70 @@ public abstract class Experiment implements Runnable {
 					.getNodeValue();
 			if (elems.item(i).getParentNode().getNodeName()
 					.equals(XML_ROOT_STR))
-				subs.put(name, createSubject(name, elems.item(i).getChildNodes()));
+				subs.put(name, new ExpSubject(name, (Element) elems.item(i)));
 		}
 
 		return subs;
 	}
 
-	public abstract ExpSubject createSubject(String name, NodeList nodeList);
-
 	public String getLogPath() {
 		return logPath;
 	}
 
-	public abstract void execPlottingScripts();
+	public void execPlottingScripts() {
+		try {
+			// Copy the maze to the experiment's folder
+			FileUtils.copyURLToFile(
+					getClass().getResource(
+							Configuration.getString("Experiment.MAZE_FILE")),
+					new File(getLogPath() + "/maze.xml"));
+			// Copy the plotting script to the experiment's folder
+			FileUtils.copyURLToFile(getClass().getResource(PLOTTING_SCRIPT),
+					new File(getLogPath() + "/plotting.r"));
+			FileUtils.copyURLToFile(getClass().getResource(OBJ2PNG_SCRIPT),
+					new File(getLogPath() + "/obj2png.r"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// Copy the plotting script to the experiment's folder
+		try {
+			FileUtils.copyURLToFile(getClass().getResource(PLOT_EXECUTER),
+					new File(getLogPath() + "/plot.sh"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// Execute the plotting script
+		try {
+			System.out.println("Executing plotting scripts");
+			Process plot = Runtime.getRuntime().exec("sh plot.sh", null,
+					new File(getLogPath()));
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					plot.getInputStream()));
+			String line = null;
+			while ((line = in.readLine()) != null) {
+				System.out.println(line);
+			}
+
+			BufferedReader err = new BufferedReader(new InputStreamReader(
+					plot.getErrorStream()));
+			line = null;
+			while ((line = err.readLine()) != null) {
+				System.out.println(line);
+			}
+			plot.waitFor();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 
 	private String computeLogPath() {
 		// Setup the logPath to be the log directory + name of the experiment
@@ -156,49 +216,32 @@ public abstract class Experiment implements Runnable {
 		return logPath + File.separator;
 	}
 
-	private void loadTrials(NodeList list, Hashtable<String, Point4f> points,
+	private void loadTrials(Element docRoot, Hashtable<String, Point4f> points,
 			Hashtable<String, Hashtable<String, ExpSubject>> groups,
 			String experimentLogPath) {
 
+		NodeList trialNodes = docRoot.getElementsByTagName(STR_TRIAL);
 		// For each trial
-		for (int i = 0; i < list.getLength(); i++) {
-			Map<String, String> params = new HashMap<String, String>();
-			NodeList paramNodes = list.item(i).getChildNodes();
+		for (int i = 0; i < trialNodes.getLength(); i++) {
+			Element trialNode = (Element) trialNodes.item(i);
+			Element trialGroupsNode = (Element) trialNode.getElementsByTagName(
+					STR_TRIALGROUPS).item(0);
 
-			// Load parameters and groups into hash
-			List<String> trialGroups = new LinkedList<String>();
-			for (int j = 0; j < paramNodes.getLength(); j++) {
-				if (paramNodes.item(j).getNodeName().equals(STR_TRIALGROUPS)) {
-					Node gIter = paramNodes.item(j).getFirstChild();
-					while (gIter != null) {
-						if (!gIter.getTextContent().trim().equals(""))
-							trialGroups.add(gIter.getTextContent());
-						gIter = gIter.getNextSibling();
-					}
-				} else {
-					params.put(paramNodes.item(j).getNodeName(), paramNodes
-							.item(j).getTextContent());
-				}
-
-			}
-
-			// For each subject in the group
-			// String gName = params.get(STR_TRIALGROUP);
-			for (String group : trialGroups) {
-				System.out.println(group);
-				for (String subName : groups.get(group).keySet()) {
-					ExpSubject subject = groups.get(group).get(subName);
-					// String subLogPath = trialLogPath + File.separator +
-					// subject.getName();
-					// Create <reps> copies of the trial
-					int reps = Integer.parseInt(params.get(STR_REPETITIONS));
-					for (int j = 0; j < reps; j++) {
-						// Compose trial logPath with expLogPath + trialName +
-						// trial rep
-						// String repLogPath = subLogPath + File.separator +
-						// "rep" + j
-						// + File.separator;
-						Trial t = createTrial(params, points, group, subject, j);
+			// For each group
+			NodeList trialGroups = trialGroupsNode
+					.getElementsByTagName(STR_GROUP);
+			for (int j = 0; j < trialGroups.getLength(); j++) {
+				String groupName = trialGroups.item(j).getTextContent();
+				// For each subject in the group
+				for (String subName : groups.get(groupName).keySet()) {
+					ExpSubject subject = groups.get(groupName).get(subName);
+					// For each repetition
+					int reps = Integer.parseInt(trialNode
+							.getElementsByTagName(STR_REPETITIONS).item(0)
+							.getTextContent());
+					for (int k = 0; k < reps; k++) {
+						Trial t = new Trial(trialNode, points, groupName,
+								subject, k);
 						if (!trials.containsKey(subject))
 							trials.put(subject, new LinkedList<Trial>());
 						trials.get(subject).add(t);
@@ -207,10 +250,6 @@ public abstract class Experiment implements Runnable {
 			}
 		}
 	}
-
-	public abstract Trial createTrial(Map<String, String> params,
-			Hashtable<String, Point4f> points, String group,
-			ExpSubject subject, int rep);
 
 	private Hashtable<String, Point4f> loadPoints(NodeList list) {
 		Hashtable<String, Point4f> points = new Hashtable<String, Point4f>();
@@ -260,6 +299,11 @@ public abstract class Experiment implements Runnable {
 		}
 
 		execPlottingScripts();
+	}
+	
+	public static void main(String[] args) {
+		new Experiment(EXPERIMENT_XML).run();
+		System.exit(0);
 	}
 
 }

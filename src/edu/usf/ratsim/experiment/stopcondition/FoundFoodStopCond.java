@@ -1,7 +1,6 @@
-package edu.usf.ratsim.experiment.multiscalemorris;
+package edu.usf.ratsim.experiment.stopcondition;
 
 import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.experiment.StopCondition;
 
 public class FoundFoodStopCond implements StopCondition {
 

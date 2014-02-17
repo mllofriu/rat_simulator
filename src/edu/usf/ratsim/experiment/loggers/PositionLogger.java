@@ -1,4 +1,4 @@
-package edu.usf.ratsim.experiment.multiscalemorris;
+package edu.usf.ratsim.experiment.loggers;
 
 import java.io.File;
 import java.io.FileNotFoundException;

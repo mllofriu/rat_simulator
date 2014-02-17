@@ -1,7 +1,9 @@
-package edu.usf.ratsim.experiment.multiscalemorris;
+package edu.usf.ratsim.experiment.model;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import org.w3c.dom.Element;
 
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
@@ -14,27 +16,23 @@ import edu.usf.ratsim.nsl.modules.qlearning.QLUpdateValue;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.Configuration;
 
-public class MSMModel extends NslModel {
+public class MultiScaleMorrisModel extends NslModel {
 	private List<ArtificialPlaceCellLayer> pcls;
 	private List<QLUpdateValue> qLUpdVal;
 	private ActionPerformerVote actionPerformerVote;
 	private List<QLActionSelection> qLActionSel;
 	private List<QLSupport> qlData;
 
-	public MSMModel(String nslName, NslModule nslParent, int numLayers, IRobot robot,
-			ExperimentUniverse univ) {
-		super(nslName, nslParent);
-
-		// Explorer actionSel = new Explorer("ActionSelector", this, robot,
-		// univ);
-		// TaxicFoodFinderSchema actionPerf = new TaxicFoodFinderSchema(
-		// "ActionPerformer", this, robot, univ);
+	public MultiScaleMorrisModel(Element params, IRobot robot, ExperimentUniverse universe) {
+		super("MSMModel", (NslModule) null);
 
 		// Get some configuration values for place cells + qlearning
-		float minRadius = Configuration
-				.getFloat("ArtificialPlaceCells.minRadius");
-		float maxRadius = Configuration
-				.getFloat("ArtificialPlaceCells.maxRadius");
+		float minRadius = Float.parseFloat(params
+				.getElementsByTagName("minRadius").item(0).getTextContent());
+		float maxRadius = Float.parseFloat(params
+				.getElementsByTagName("maxRadius").item(0).getTextContent());
+		int numLayers = Integer.parseInt(params
+				.getElementsByTagName("numLayers").item(0).getTextContent());
 		float minX = Configuration.getFloat("ArtificialPlaceCells.minX");
 		float minY = Configuration.getFloat("ArtificialPlaceCells.minY");
 
@@ -42,28 +40,28 @@ public class MSMModel extends NslModel {
 		qLUpdVal = new LinkedList<QLUpdateValue>();
 		qLActionSel = new LinkedList<QLActionSelection>();
 		qlData = new LinkedList<QLSupport>();
-		
+
 		// Create the layers
 		float radius = minRadius;
 		// For each layer
 		for (int i = 0; i < numLayers; i++) {
-			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer("PlaceCellLayer", this,
-					univ, radius, minX, minY);
+			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer(
+					"PlaceCellLayer", this, universe, radius, minX, minY);
 			QLSupport qlSupport = new QLSupport(pcl.getSize());
 			pcls.add(pcl);
 			qlData.add(qlSupport);
 			qLActionSel.add(new QLActionSelection("QLActionSel", this,
-					qlSupport, pcl.getSize(), robot, univ));
+					qlSupport, pcl.getSize(), robot, universe));
 			// Update radius
 			radius += (maxRadius - minRadius) / (numLayers - 1);
 		}
 		// Created first to let Qlearning execute once when there is food
 		actionPerformerVote = new ActionPerformerVote("ActionPerformer", this,
-				numLayers, robot,univ);
+				numLayers, robot, universe);
 
 		for (int i = 0; i < numLayers; i++) {
-			qLUpdVal.add(new QLUpdateValue("QLUpdVal", this,
-					pcls.get(i).getSize(),qlData.get(i), robot, univ));
+			qLUpdVal.add(new QLUpdateValue("QLUpdVal", this, pcls.get(i)
+					.getSize(), qlData.get(i), robot, universe));
 		}
 	}
 
@@ -76,7 +74,8 @@ public class MSMModel extends NslModel {
 	public void makeConn() {
 		for (int i = 0; i < pcls.size(); i++) {
 			nslConnect(pcls.get(i), "activation", qLActionSel.get(i), "states");
-			nslConnect(qLActionSel.get(i).actionVote, actionPerformerVote.votes[i]);
+			nslConnect(qLActionSel.get(i).actionVote,
+					actionPerformerVote.votes[i]);
 		}
 	}
 
