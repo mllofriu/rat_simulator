@@ -9,6 +9,7 @@ import org.w3c.dom.Element;
 
 import edu.usf.ratsim.experiment.ExperimentTask;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.ratsim.experiment.subject.ExpSubject;
 
 public class PlaceRobotInitallyTask implements ExperimentTask {
 
@@ -26,7 +27,7 @@ public class PlaceRobotInitallyTask implements ExperimentTask {
 		initPos = points.get(initPosName);
 	}
 
-	public void perform(ExperimentUniverse univ) {
+	public void perform(ExperimentUniverse univ, ExpSubject subject) {
 		univ.setRobotPosition(new Point2D.Float(initPos.x, initPos.z), 0);
 		// TODO: implement orientation in xml
 	}
