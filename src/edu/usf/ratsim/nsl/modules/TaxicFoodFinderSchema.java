@@ -24,7 +24,7 @@ public class TaxicFoodFinderSchema extends NslModule {
 	public void simRun() {
 		// Get angle to food
 		Point3f rPos = univ.getRobotPosition();
-		Point3f fPos = univ.getFoodPosition();
+		Point3f fPos = univ.getFoodPosition(0);
 		Quat4f rRot = univ.getRobotOrientation();
 
 		// Get the vector food - robot
