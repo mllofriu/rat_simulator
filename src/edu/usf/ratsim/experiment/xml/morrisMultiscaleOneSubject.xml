@@ -14,7 +14,7 @@
 	<point name='NE' xp='0.2' yp='0' zp='-0.2' rot='0' />
 	<point name='NW' xp='-0.2' yp='0' zp='-0.2' rot='0' />
 
-    <maze>/edu/usf/ratsim/experiment/mazes/morrisCircularNoLandmarks.xml</maze>
+    <maze>/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
     
 	<!--Subjects -->
 	<subject name='r1'>
