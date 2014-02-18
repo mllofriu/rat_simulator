@@ -9,6 +9,8 @@ import org.w3c.dom.Element;
 
 import edu.usf.ratsim.experiment.model.ModelFactory;
 import edu.usf.ratsim.experiment.model.MultiScaleMorrisModel;
+import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.robot.virtual.ExpUniverseNode;
 import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 import edu.usf.ratsim.robot.virtual.VirtualRobot;
 
@@ -17,22 +19,14 @@ public class ExpSubject {
 	private NslModel model;
 	private NslSequentialScheduler scheduler;
 	private String name;
-	private VirtualExpUniverse universe;
-	private VirtualRobot robot;
 	private NslSystem system;
+	private ExperimentUniverse universe;
 
-	public ExpSubject(String name, Element modelNode) {
+	public ExpSubject(String name, IRobot robot, ExperimentUniverse universe, Element modelNode) {
 		this.name = name;
+		this.universe = universe;
 
 		initNSL();
-
-		// Try to workaround J3d 1.3.1 race condition
-		synchronized (MultiScaleMorrisModel.class) {
-			System.out.println("Creating universe");
-			universe = new VirtualExpUniverse();
-			robot = new VirtualRobot(universe);
-			System.out.println("Init model");
-		}
 
 		model = (MultiScaleMorrisModel) ModelFactory.createModel(modelNode,
 				robot, universe);
@@ -83,15 +77,15 @@ public class ExpSubject {
 		scheduler.stepCycle();
 	}
 
-	public VirtualExpUniverse getUniverse() {
+	public ExperimentUniverse getUniverse() {
 		return universe;
-	}
-
-	public VirtualRobot getRobot() {
-		return robot;
 	}
 
 	public NslModel getModel() {
 		return model;
+	}
+
+	public void setUniverse(ExperimentUniverse universe) {
+		this.universe = universe;
 	}
 }
