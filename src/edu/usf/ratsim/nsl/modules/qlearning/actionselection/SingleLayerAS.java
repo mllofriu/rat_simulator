@@ -1,13 +1,15 @@
-package edu.usf.ratsim.nsl.modules.qlearning;
+package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
 import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
+import edu.usf.ratsim.nsl.modules.qlearning.StateAction;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.Utiles;
 
-public class QLActionSelection extends NslModule {
+public class SingleLayerAS extends NslModule {
 
 	public NslDoutFloat1 actionVote;
 	public NslDinFloat1 states;
@@ -15,7 +17,7 @@ public class QLActionSelection extends NslModule {
 	private ExperimentUniverse universe;
 	private QLSupport value;
 
-	public QLActionSelection(String nslName, NslModule nslParent,
+	public SingleLayerAS(String nslName, NslModule nslParent,
 			QLSupport value, int stateSize, IRobot robot,
 			ExperimentUniverse universe) {
 		super(nslName, nslParent);
