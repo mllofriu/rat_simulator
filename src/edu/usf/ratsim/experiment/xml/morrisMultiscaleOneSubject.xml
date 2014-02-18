@@ -14,8 +14,8 @@
 	<point name='NE' xp='0.2' yp='0' zp='-0.2' rot='0' />
 	<point name='NW' xp='-0.2' yp='0' zp='-0.2' rot='0' />
 
-    <maze>/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
-    
+	<maze>/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
+
 	<!--Subjects -->
 	<subject name='r1'>
 		<model>
@@ -26,7 +26,14 @@
 				<maxRadius>.25</maxRadius>
 			</params>
 		</model>
-
+		<initializers>
+			<initializer>
+				<name>feederSelector</name>
+				<params>
+					<numFeeders>3</numFeeders>
+				</params>
+			</initializer>
+		</initializers>
 	</subject>
 
 	<!--Subject groups -->
@@ -50,6 +57,11 @@
 					<initialPosition>S</initialPosition>
 				</params>
 			</task>
+			<task>
+                <name>ActivateFeeders</name>
+                <params>
+                </params>
+            </task>
 		</initialTasks>
 		<afterCycleTasks>
 		</afterCycleTasks>
@@ -80,6 +92,7 @@
 			</logger>
 		</afterTrialLoggers>
 	</trial>
+
 	<!-- 4 testing trials -->
 	<trial>
 		<type>testing</type>
@@ -91,42 +104,42 @@
 			<group>g1</group>
 		</groups>
 		<initialTasks>
-            <task>
-                <name>PlaceRobotInitiallyTask</name>
-                <params>
-                    <initialPosition>S</initialPosition>
-                </params>
-            </task>
-        </initialTasks>
-        <afterCycleTasks>
-        </afterCycleTasks>
-        <afterTrialTasks>
-            <task>
-                <name>PolicyValueUpdater</name>
-            </task>
-        </afterTrialTasks>
-        <stopConditions>
-            <stopCondition>
-                <name>Time</name>
-                <params>
-                    <time>2000</time>
-                </params>
-            </stopCondition>
-            <stopCondition>
-                <name>FoundFood</name>
-            </stopCondition>
+			<task>
+				<name>PlaceRobotInitiallyTask</name>
+				<params>
+					<initialPosition>S</initialPosition>
+				</params>
+			</task>
+		</initialTasks>
+		<afterCycleTasks>
+		</afterCycleTasks>
+		<afterTrialTasks>
+			<task>
+				<name>PolicyValueUpdater</name>
+			</task>
+		</afterTrialTasks>
+		<stopConditions>
+			<stopCondition>
+				<name>Time</name>
+				<params>
+					<time>2000</time>
+				</params>
+			</stopCondition>
+			<stopCondition>
+				<name>FoundFood</name>
+			</stopCondition>
 
-        </stopConditions>
-        <afterCycleLoggers>
-            <logger>
-                <name>PositionLogger</name>
-            </logger>
-        </afterCycleLoggers>
-        <afterTrialLoggers>
-            <logger>
-                <name>PolicyDumper</name>
-            </logger>
-        </afterTrialLoggers>
+		</stopConditions>
+		<afterCycleLoggers>
+			<logger>
+				<name>PositionLogger</name>
+			</logger>
+		</afterCycleLoggers>
+		<afterTrialLoggers>
+			<logger>
+				<name>PolicyDumper</name>
+			</logger>
+		</afterTrialLoggers>
 	</trial>
 
 

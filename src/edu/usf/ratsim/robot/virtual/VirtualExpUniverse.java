@@ -4,6 +4,8 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.Canvas3D;
@@ -41,7 +43,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	private View topView;
 	private RobotNode robot;
-	private FoodNode[] food;
+	private List<FeederNode> feeders;
 
 	private BranchGroup bg;
 
@@ -118,15 +120,14 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		bg.addChild(robot);
 
 		// food
-		list = doc.getElementsByTagName("food");
-		food = new FoodNode[list.getLength()];
+		list = doc.getElementsByTagName("feeder");
+		feeders = new LinkedList<FeederNode>();
 		for (int i = 0; i < list.getLength(); i++) {
 			params = list.item(i);
-			food[i] = new FoodNode(params);
-			bg.addChild(food[i]);
+			FeederNode feeder = new FeederNode(params);
+			feeders.add(feeder);
+			bg.addChild(feeder);
 		}
-		
-		
 
 		bg.addChild(new DirectionalLightNode(new Vector3f(0f, 0f, -5),
 				new Color3f(1f, 1f, 1f)));
@@ -231,23 +232,18 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	}
 
 	public Point3f getFoodPosition(int i) {
-		Vector3f foodPos = food[i].getPosition();
+		Vector3f foodPos = feeders.get(i).getPosition();
 		return new Point3f(foodPos);
 	}
 
-//	public void setFoodPosition(Point2D.Float pos) {
-//		bg.removeChild(food);
-//		food = new FoodNode(pos.x, 0, pos.y);
-//		bg.addChild(food);
-//	}
-
 	public boolean hasRobotFoundFood() {
 		Point3f robot = getRobotPosition();
-		for (int i = 0; i < this.food.length; i++){
-			if (robot.distance(getFoodPosition(i))< CLOSE_TO_FOOD_THRS)
+		for (FeederNode fNode : feeders) {
+			if (fNode.isActive()
+					&& robot.distance(new Point3f(fNode.getPosition())) < CLOSE_TO_FOOD_THRS)
 				return true;
 		}
-		
+
 		return false;
 	}
 
@@ -272,9 +268,9 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		return (float) (2 * Math.acos(rot.w) * Math.signum(rot.y));
 	}
 
-//	public static void main(String[] args) {
-//		new VirtualExpUniverse();
-//	}
+	// public static void main(String[] args) {
+	// new VirtualExpUniverse();
+	// }
 
 	public boolean[] getRobotAffordances() {
 
@@ -302,9 +298,33 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		return affordances;
 	}
 
-	@Override
 	public Rectangle2D.Float getBoundingRectangle() {
 		return boundingRect.getRect();
 	}
 
+	public List<Integer> getFlashingFeeders() {
+		List<Integer> res = new LinkedList<Integer>();
+		for (int i = 0; i < feeders.size(); i++)
+			if (feeders.get(i).isFlashing())
+				res.add(i);
+
+		return res;
+	}
+	
+	public List<Integer> getActiveFeeders() {
+		List<Integer> res = new LinkedList<Integer>();
+		for (int i = 0; i < feeders.size(); i++)
+			if (feeders.get(i).isActive())
+				res.add(i);
+
+		return res;
+	}
+
+	public int getNumFeeders() {
+		return feeders.size();
+	}
+
+	public void setActiveFeeder(int i, boolean val) {
+		feeders.get(i).setActive(val);
+	}
 }
