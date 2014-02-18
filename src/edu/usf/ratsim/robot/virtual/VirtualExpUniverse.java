@@ -49,7 +49,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	private BoundingRectNode boundingRect;
 
-	public VirtualExpUniverse() {
+	public VirtualExpUniverse(String mazeResource) {
 		super();
 
 		Locale l = new Locale(this);
@@ -60,9 +60,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		l.addBranchGraph(bg);
 
 		try {
-			FileUtils.copyURLToFile(
-					getClass().getResource(
-							Configuration.getString("Experiment.MAZE_FILE")),
+			FileUtils.copyURLToFile(getClass().getResource(mazeResource),
 					new File("/tmp/maze.xml"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -73,10 +71,11 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		// Build the group
 		NodeList list;
 		org.w3c.dom.Node params;
-		
+
 		// Bounding rectangle
-		boundingRect = new BoundingRectNode(doc.getElementsByTagName("boundingRect").item(0));
-		
+		boundingRect = new BoundingRectNode(doc.getElementsByTagName(
+				"boundingRect").item(0));
+
 		// Spheres
 		list = doc.getElementsByTagName("sphere");
 		for (int i = 0; i < list.getLength(); i++) {
@@ -264,9 +263,9 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		return (float) (2 * Math.acos(rot.w) * Math.signum(rot.y));
 	}
 
-	public static void main(String[] args) {
-		new VirtualExpUniverse();
-	}
+//	public static void main(String[] args) {
+//		new VirtualExpUniverse();
+//	}
 
 	public boolean[] getRobotAffordances() {
 

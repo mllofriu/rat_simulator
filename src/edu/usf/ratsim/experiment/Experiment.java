@@ -22,12 +22,16 @@ import java.util.Map.Entry;
 import javax.vecmath.Point4f;
 
 import org.apache.commons.io.FileUtils;
+import org.omg.CORBA.IRObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.robot.RobotFactory;
+import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.XMLDocReader;
 
@@ -39,6 +43,7 @@ public class Experiment implements Runnable {
 	private static final String STR_SUBJECT = "subject";
 	private static final String STR_GROUP = "group";
 	private static final String STR_TRIALGROUPS = "groups";
+	private static final String STR_MAZE = "maze";
 
 	private final String STR_TRIAL = "trial";
 
@@ -58,6 +63,7 @@ public class Experiment implements Runnable {
 	private Map<ExpSubject, List<Trial>> trials;
 	private String logPath;
 	private Hashtable<String, ExpSubject> subjects;
+	private String mazeFile;
 
 	public Experiment(String filename) {
 		logPath = computeLogPath();
@@ -95,12 +101,18 @@ public class Experiment implements Runnable {
 		Hashtable<String, Point4f> points = loadPoints(doc
 				.getElementsByTagName(STR_POINT));
 
-		subjects = loadSubjects(doc);
+		// Set the maze to execute
+		mazeFile = doc.getElementsByTagName(STR_MAZE).item(0).getTextContent();
+		VirtualExpUniverse universe = new VirtualExpUniverse(mazeFile);
+		IRobot robot = RobotFactory.getRobot(
+				Configuration.getString("Reflexion.Robot"), universe);
+
+		subjects = loadSubjects(doc, robot, universe);
 		Hashtable<String, Hashtable<String, ExpSubject>> groups = loadGroups(
 				doc, subjects);
 
 		trials = new HashMap<ExpSubject, List<Trial>>();
-		loadTrials(doc.getDocumentElement(), points, groups, logPath);
+		loadTrials(doc.getDocumentElement(), points, groups, logPath, universe);
 	}
 
 	private Hashtable<String, Hashtable<String, ExpSubject>> loadGroups(
@@ -128,7 +140,8 @@ public class Experiment implements Runnable {
 		return groups;
 	}
 
-	private Hashtable<String, ExpSubject> loadSubjects(Document doc) {
+	private Hashtable<String, ExpSubject> loadSubjects(Document doc,
+			IRobot robot, VirtualExpUniverse universe) {
 		Hashtable<String, ExpSubject> subs = new Hashtable<String, ExpSubject>();
 		NodeList elems = doc.getElementsByTagName(STR_SUBJECT);
 		for (int i = 0; i < elems.getLength(); i++) {
@@ -136,7 +149,8 @@ public class Experiment implements Runnable {
 					.getNodeValue();
 			if (elems.item(i).getParentNode().getNodeName()
 					.equals(XML_ROOT_STR))
-				subs.put(name, new ExpSubject(name, (Element) elems.item(i)));
+				subs.put(name, new ExpSubject(name, robot, universe,
+						(Element) elems.item(i)));
 		}
 
 		return subs;
@@ -149,10 +163,8 @@ public class Experiment implements Runnable {
 	public void execPlottingScripts() {
 		try {
 			// Copy the maze to the experiment's folder
-			FileUtils.copyURLToFile(
-					getClass().getResource(
-							Configuration.getString("Experiment.MAZE_FILE")),
-					new File(getLogPath() + "/maze.xml"));
+			FileUtils.copyURLToFile(getClass().getResource(mazeFile), new File(
+					getLogPath() + "/maze.xml"));
 			// Copy the plotting script to the experiment's folder
 			FileUtils.copyURLToFile(getClass().getResource(PLOTTING_SCRIPT),
 					new File(getLogPath() + "/plotting.r"));
@@ -217,7 +229,7 @@ public class Experiment implements Runnable {
 
 	private void loadTrials(Element docRoot, Hashtable<String, Point4f> points,
 			Hashtable<String, Hashtable<String, ExpSubject>> groups,
-			String experimentLogPath) {
+			String experimentLogPath, ExperimentUniverse universe) {
 
 		NodeList trialNodes = docRoot.getElementsByTagName(STR_TRIAL);
 		// For each trial
@@ -240,7 +252,7 @@ public class Experiment implements Runnable {
 							.getTextContent());
 					for (int k = 0; k < reps; k++) {
 						Trial t = new Trial(trialNode, points, groupName,
-								subject, k);
+								subject, k, universe);
 						if (!trials.containsKey(subject))
 							trials.put(subject, new LinkedList<Trial>());
 						trials.get(subject).add(t);

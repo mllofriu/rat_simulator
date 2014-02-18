@@ -14,6 +14,8 @@
 	<point name='NE' xp='0.2' yp='0' zp='-0.2' rot='0' />
 	<point name='NW' xp='-0.2' yp='0' zp='-0.2' rot='0' />
 
+    <maze>/edu/usf/ratsim/experiment/mazes/morrisCircularNoLandmarks.xml</maze>
+    
 	<!--Subjects -->
 	<subject name='r1'>
 		<model>
@@ -38,7 +40,6 @@
 		<type>training</type>
 		<name>tr</name>
 		<reps>32</reps>
-		<maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
 		<groups>
 			<group>g1</group>
 		</groups>
@@ -89,7 +90,6 @@
 		<groups>
 			<group>g1</group>
 		</groups>
-		<maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
 		<initialTasks>
             <task>
                 <name>PlaceRobotInitiallyTask</name>
