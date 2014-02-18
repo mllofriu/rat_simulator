@@ -6,6 +6,7 @@ import nslj.src.lang.NslModel;
 import edu.usf.ratsim.experiment.ExperimentTask;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.model.MultiScaleMorrisModel;
+import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.nsl.modules.qlearning.update.ReverseUpdate;
 
 public class PolicyValueUpdater implements ExperimentTask {
@@ -24,7 +25,7 @@ public class PolicyValueUpdater implements ExperimentTask {
 		qlValUpdaters = ((MultiScaleMorrisModel) model).getQLValUpdaters();
 	}
 
-	public void perform(ExperimentUniverse univ) {
+	public void perform(ExperimentUniverse univ, ExpSubject subject) {
 		for (ReverseUpdate qLUpdVal : qlValUpdaters)
 			qLUpdVal.updateQValueFoo();
 	}

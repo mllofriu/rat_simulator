@@ -2,6 +2,7 @@ package edu.usf.ratsim.experiment;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.List;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
@@ -14,9 +15,11 @@ public interface ExperimentUniverse {
 
 	public void setRobotPosition(Point2D.Float pos, float angle);
 
-//	public void setFoodPosition(Point2D.Float pos);
-
 	public boolean hasRobotFoundFood();
+	
+	public List<Integer> getFlashingFeeders();
+	
+	public List<Integer> getActiveFeeders();
 
 	/**
 	 * Returns the robot orientation as a 3d heading vector
@@ -33,5 +36,9 @@ public interface ExperimentUniverse {
 	public float getRobotOrientationAngle();
 
 	public Rectangle2D.Float getBoundingRectangle();
+
+	public int getNumFeeders();
+
+	public void setActiveFeeder(int i, boolean active);
 
 }

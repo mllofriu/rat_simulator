@@ -13,6 +13,7 @@ import org.w3c.dom.Element;
 import edu.usf.ratsim.experiment.loggers.LoggerFactory;
 import edu.usf.ratsim.experiment.stopcondition.ConditionFactory;
 import edu.usf.ratsim.experiment.stopcondition.StopCondition;
+import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.experiment.task.TaskFactory;
 import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 import edu.usf.ratsim.support.Configuration;
@@ -106,7 +107,7 @@ public class Trial implements Runnable {
 
 			// Do all after-cycle tasks
 			for (ExperimentTask task : initialTasks)
-				task.perform(getUniverse());
+				task.perform(getUniverse(), getSubject());
 
 			boolean stop;
 			boolean sleep = Configuration.getBoolean("UniverseFrame.display");
@@ -126,7 +127,7 @@ public class Trial implements Runnable {
 					logger.log(getUniverse());
 				// Do all after-cycle tasks
 				for (ExperimentTask task : afterCycleTasks)
-					task.perform(getUniverse());
+					task.perform(getUniverse(),getSubject());
 				// // Check all stop conds
 				stop = false;
 				for (StopCondition sc : stopConds)
@@ -135,7 +136,7 @@ public class Trial implements Runnable {
 
 			// After trial tasks
 			for (ExperimentTask task : afterTrialTasks)
-				task.perform(universe);
+				task.perform(universe, getSubject());
 
 			// Close file handlers
 			for (ExperimentLogger logger : afterCycleloggers)

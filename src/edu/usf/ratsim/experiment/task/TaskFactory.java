@@ -35,6 +35,8 @@ public class TaskFactory {
 				res.add(new PlaceRobotInitallyTask(taskParams, points));
 			} else if (taskName.equals("PolicyValueUpdater")) {
 				res.add(new PolicyValueUpdater(model));
+			} else if (taskName.equals("ActivateFeeders")) {
+				res.add(new ActivateFeeders());
 			} else {
 				throw new RuntimeException("Task " + taskName
 						+ " not implemented.");
