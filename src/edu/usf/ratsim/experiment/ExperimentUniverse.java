@@ -8,13 +8,13 @@ import javax.vecmath.Quat4f;
 
 public interface ExperimentUniverse {
 
-	public Point3f getFoodPosition();
+	public Point3f getFoodPosition(int i);
 
 	public Point3f getRobotPosition();
 
 	public void setRobotPosition(Point2D.Float pos, float angle);
 
-	public void setFoodPosition(Point2D.Float pos);
+//	public void setFoodPosition(Point2D.Float pos);
 
 	public boolean hasRobotFoundFood();
 
