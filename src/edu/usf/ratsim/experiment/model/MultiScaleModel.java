@@ -10,22 +10,28 @@ import org.w3c.dom.Element;
 
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
+import edu.usf.ratsim.nsl.modules.GoalDecider;
+import edu.usf.ratsim.nsl.modules.TaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.SingleLayerAS;
 import edu.usf.ratsim.nsl.modules.qlearning.update.ReverseUpdate;
 import edu.usf.ratsim.robot.IRobot;
 
-public class MultiScaleMorrisModel extends NslModel {
+public class MultiScaleModel extends NslModel {
 	private List<ArtificialPlaceCellLayer> pcls;
 	private List<ReverseUpdate> qLUpdVal;
 	private ProportionalExplorer actionPerformerVote;
 	private List<SingleLayerAS> qLActionSel;
 	private List<QLSupport> qlData;
+	private GoalDecider goalD;
+	private TaxicFoodFinderSchema taxicDrive;
 
-	public MultiScaleMorrisModel(Element params, IRobot robot,
+	public MultiScaleModel(Element params, IRobot robot,
 			ExperimentUniverse universe) {
-		super("MSMModel", (NslModule) null);
+		super("MSModel", (NslModule) null);
+		
+		goalD = new GoalDecider("GoalDecider", this, universe);
 
 		// Get some configuration values for place cells + qlearning
 		float minRadius = Float.parseFloat(params
@@ -57,6 +63,9 @@ public class MultiScaleMorrisModel extends NslModel {
 		// Created first to let Qlearning execute once when there is food
 		actionPerformerVote = new ProportionalExplorer("ActionPerformer", this,
 				numLayers, robot, universe);
+		
+		// Create taxic driver to override in case of flashing
+		taxicDrive = new TaxicFoodFinderSchema("Taxic Driver", this, robot, universe);
 
 		for (int i = 0; i < numLayers; i++) {
 			qLUpdVal.add(new ReverseUpdate("QLUpdVal", this, pcls.get(i)
@@ -76,6 +85,7 @@ public class MultiScaleMorrisModel extends NslModel {
 			nslConnect(qLActionSel.get(i).actionVote,
 					actionPerformerVote.votes[i]);
 		}
+		nslConnect(goalD.goalFeeder, taxicDrive.goalFeeder);
 	}
 
 	public ProportionalExplorer getActionPerformer() {

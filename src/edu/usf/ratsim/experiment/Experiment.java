@@ -59,7 +59,7 @@ public class Experiment implements Runnable {
 	private static final String PLOTTING_SCRIPT = "/edu/usf/ratsim/experiment/plot/plotting.r";
 	private static final String PLOT_EXECUTER = "/edu/usf/ratsim/experiment/plot/plot.sh";
 	private static final String OBJ2PNG_SCRIPT = "/edu/usf/ratsim/experiment/plot/obj2png.r";
-	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/morrisMultiscaleOneSubject.xml";
+	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/multiFeedersOneSub.xml";
 
 	private Map<ExpSubject, List<Trial>> trials;
 	private String logPath;

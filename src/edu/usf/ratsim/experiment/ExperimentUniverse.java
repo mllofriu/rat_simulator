@@ -41,4 +41,8 @@ public interface ExperimentUniverse {
 
 	public void setActiveFeeder(int i, boolean active);
 
+	public void setFlashingFeeder(Integer integer, boolean b);
+
+	public boolean isRobotCloseToFeeder(int currentGoal);
+
 }
