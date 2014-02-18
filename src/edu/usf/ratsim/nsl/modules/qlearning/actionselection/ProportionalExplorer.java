@@ -1,4 +1,4 @@
-package edu.usf.ratsim.nsl.modules;
+package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -14,7 +14,7 @@ import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Utiles;
 
-public class ActionPerformerVote extends NslModule {
+public class ProportionalExplorer extends NslModule {
 
 	private static final float LAPLACIAN = 0.00001f;
 
@@ -38,7 +38,7 @@ public class ActionPerformerVote extends NslModule {
 	private float explorationMaxValMultiplier = Configuration
 			.getFloat("ActionPerformer.maxValMultiplier");
 
-	public ActionPerformerVote(String nslName, NslModule nslParent,
+	public ProportionalExplorer(String nslName, NslModule nslParent,
 			int numLayers, IRobot robot, ExperimentUniverse universe) {
 		super(nslName, nslParent);
 

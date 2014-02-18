@@ -9,7 +9,7 @@ import org.w3c.dom.NodeList;
 import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.Trial;
 import edu.usf.ratsim.experiment.model.MultiScaleMorrisModel;
-import edu.usf.ratsim.nsl.modules.ActionPerformerVote;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 
 public class LoggerFactory {
 
@@ -31,7 +31,7 @@ public class LoggerFactory {
 			// Element loggerParams =
 			// (Element)loggerNode.getElementsByTagName(STR_LOGGER_PARAMS).item(0);
 			if (loggerName.equals("PositionLogger")) {
-				ActionPerformerVote p = ((MultiScaleMorrisModel) t.getSubject()
+				ProportionalExplorer p = ((MultiScaleMorrisModel) t.getSubject()
 						.getModel()).getActionPerformer();
 				res.add(new PositionLogger(t.getName(), t.getGroup(), t
 						.getSubjectName(), t.getRep(), p));
