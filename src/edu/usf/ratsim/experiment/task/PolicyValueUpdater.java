@@ -6,13 +6,13 @@ import nslj.src.lang.NslModel;
 import edu.usf.ratsim.experiment.ExperimentTask;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.model.MultiScaleMorrisModel;
-import edu.usf.ratsim.nsl.modules.qlearning.QLUpdateValue;
+import edu.usf.ratsim.nsl.modules.qlearning.update.ReverseUpdate;
 
 public class PolicyValueUpdater implements ExperimentTask {
 
-	private List<QLUpdateValue> qlValUpdaters;
+	private List<ReverseUpdate> qlValUpdaters;
 
-	public PolicyValueUpdater(List<QLUpdateValue> qlValUpdaters) {
+	public PolicyValueUpdater(List<ReverseUpdate> qlValUpdaters) {
 		this.qlValUpdaters = qlValUpdaters;
 	}
 
@@ -25,7 +25,7 @@ public class PolicyValueUpdater implements ExperimentTask {
 	}
 
 	public void perform(ExperimentUniverse univ) {
-		for (QLUpdateValue qLUpdVal : qlValUpdaters)
+		for (ReverseUpdate qLUpdVal : qlValUpdaters)
 			qLUpdVal.updateQValueFoo();
 	}
 

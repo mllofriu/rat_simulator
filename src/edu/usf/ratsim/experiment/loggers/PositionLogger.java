@@ -12,13 +12,13 @@ import javax.vecmath.Point3f;
 
 import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.nsl.modules.ActionPerformerVote;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.support.Configuration;
 
 public class PositionLogger implements ExperimentLogger {
 
 	private static final String DUMP_FILENAME = "position.txt";
-	private ActionPerformerVote actionPerformer;
+	private ProportionalExplorer actionPerformer;
 	private List<Pose> poses;
 	private String repNum;
 	private String subName;
@@ -27,7 +27,7 @@ public class PositionLogger implements ExperimentLogger {
 	private static PrintWriter writer = null;
 
 	public PositionLogger(String trialName, String groupName, String subName,
-			String repNum, ActionPerformerVote actionPerformer) {
+			String repNum, ProportionalExplorer actionPerformer) {
 		super();
 
 		this.trialName = trialName;

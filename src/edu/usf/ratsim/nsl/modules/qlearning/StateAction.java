@@ -2,7 +2,7 @@ package edu.usf.ratsim.nsl.modules.qlearning;
 
 import edu.usf.ratsim.support.Utiles;
 
-final class StateAction {
+public final class StateAction {
 	private int state;
 	private int action;
 

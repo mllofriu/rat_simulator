@@ -1,12 +1,14 @@
-package edu.usf.ratsim.nsl.modules.qlearning;
+package edu.usf.ratsim.nsl.modules.qlearning.update;
 
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
+import edu.usf.ratsim.nsl.modules.qlearning.StateAction;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Utiles;
 
-public class QLUpdateValue extends NslModule {
+public class ReverseUpdate extends NslModule {
 
 	private static final float FOOD_REWARD = Configuration
 			.getFloat("QLearning.foodReward");
@@ -18,7 +20,7 @@ public class QLUpdateValue extends NslModule {
 
 	private QLSupport qlData;
 
-	public QLUpdateValue(String nslMain, NslModule nslParent, int stateSize,
+	public ReverseUpdate(String nslMain, NslModule nslParent, int stateSize,
 			QLSupport qlData, IRobot robot, ExperimentUniverse universe) {
 		super(nslMain, nslParent);
 
