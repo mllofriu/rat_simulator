@@ -41,7 +41,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	private View topView;
 	private RobotNode robot;
-	private FoodNode food;
+	private FoodNode[] food;
 
 	private BranchGroup bg;
 
@@ -119,9 +119,14 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 		// food
 		list = doc.getElementsByTagName("food");
-		params = list.item(0);
-		food = new FoodNode(params);
-		bg.addChild(food);
+		food = new FoodNode[list.getLength()];
+		for (int i = 0; i < list.getLength(); i++) {
+			params = list.item(i);
+			food[i] = new FoodNode(params);
+			bg.addChild(food[i]);
+		}
+		
+		
 
 		bg.addChild(new DirectionalLightNode(new Vector3f(0f, 0f, -5),
 				new Color3f(1f, 1f, 1f)));
@@ -225,21 +230,25 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		robot.getTransformGroup().setTransform(rPos);
 	}
 
-	public Point3f getFoodPosition() {
-		Vector3f foodPos = food.getPosition();
+	public Point3f getFoodPosition(int i) {
+		Vector3f foodPos = food[i].getPosition();
 		return new Point3f(foodPos);
 	}
 
-	public void setFoodPosition(Point2D.Float pos) {
-		bg.removeChild(food);
-		food = new FoodNode(pos.x, 0, pos.y);
-		bg.addChild(food);
-	}
+//	public void setFoodPosition(Point2D.Float pos) {
+//		bg.removeChild(food);
+//		food = new FoodNode(pos.x, 0, pos.y);
+//		bg.addChild(food);
+//	}
 
 	public boolean hasRobotFoundFood() {
-		Point3f food = getFoodPosition();
 		Point3f robot = getRobotPosition();
-		return robot.distance(food) < CLOSE_TO_FOOD_THRS;
+		for (int i = 0; i < this.food.length; i++){
+			if (robot.distance(getFoodPosition(i))< CLOSE_TO_FOOD_THRS)
+				return true;
+		}
+		
+		return false;
 	}
 
 	public Quat4f getRobotOrientation() {
