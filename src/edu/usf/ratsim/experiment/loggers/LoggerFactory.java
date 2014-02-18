@@ -8,7 +8,7 @@ import org.w3c.dom.NodeList;
 
 import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.Trial;
-import edu.usf.ratsim.experiment.model.MultiScaleMorrisModel;
+import edu.usf.ratsim.experiment.model.MultiScaleModel;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 
 public class LoggerFactory {
@@ -31,12 +31,12 @@ public class LoggerFactory {
 			// Element loggerParams =
 			// (Element)loggerNode.getElementsByTagName(STR_LOGGER_PARAMS).item(0);
 			if (loggerName.equals("PositionLogger")) {
-				ProportionalExplorer p = ((MultiScaleMorrisModel) t.getSubject()
+				ProportionalExplorer p = ((MultiScaleModel) t.getSubject()
 						.getModel()).getActionPerformer();
 				res.add(new PositionLogger(t.getName(), t.getGroup(), t
 						.getSubjectName(), t.getRep(), p));
 			} else if (loggerName.equals("PolicyDumper")) {
-				res.add(new PolicyDumper(((MultiScaleMorrisModel) t
+				res.add(new PolicyDumper(((MultiScaleModel) t
 						.getSubject().getModel()), t.getName(), t.getGroup(), t
 						.getSubjectName(), t.getRep()));
 			} else {

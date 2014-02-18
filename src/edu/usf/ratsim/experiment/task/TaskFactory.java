@@ -37,6 +37,10 @@ public class TaskFactory {
 				res.add(new PolicyValueUpdater(model));
 			} else if (taskName.equals("ActivateFeeders")) {
 				res.add(new ActivateFeeders());
+			}else if (taskName.equals("FlashFeeder")) {
+				res.add(new FlashFeeder());
+			} else if (taskName.equals("UnflashFeeder")) {
+				res.add(new UnflashFeeder());
 			} else {
 				throw new RuntimeException("Task " + taskName
 						+ " not implemented.");
