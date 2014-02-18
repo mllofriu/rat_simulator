@@ -29,6 +29,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.robot.RobotFactory;
 import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
