@@ -310,7 +310,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 		return res;
 	}
-	
+
 	public List<Integer> getActiveFeeders() {
 		List<Integer> res = new LinkedList<Integer>();
 		for (int i = 0; i < feeders.size(); i++)
@@ -326,5 +326,17 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	public void setActiveFeeder(int i, boolean val) {
 		feeders.get(i).setActive(val);
+	}
+
+	@Override
+	public void setFlashingFeeder(Integer i, boolean flashing) {
+		feeders.get(i).setFlashing(flashing);
+	}
+
+	@Override
+	public boolean isRobotCloseToFeeder(int currentGoal) {
+		Point3f robot = getRobotPosition();
+		return robot.distance(new Point3f(feeders.get(currentGoal)
+				.getPosition())) < CLOSE_TO_FOOD_THRS;
 	}
 }
