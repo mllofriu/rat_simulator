@@ -17,7 +17,7 @@ public class ModelFactory {
 		if (name.equals("MSMModel")) {
 			Element params = (Element) model.getElementsByTagName("params")
 					.item(0);
-			return new MultiScaleMorrisModel(params, robot, universe);
+			return new MultiScaleModel(params, robot, universe);
 		}
 
 		throw new RuntimeException("Especified model is not implemented");

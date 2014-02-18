@@ -36,9 +36,9 @@ public class FeederNode extends ExpUniverseNode {
 						app.setColoringAttributes(new ColoringAttributes(
 								flashingColor, 1));
 						Thread.sleep(500);
+						app.setColoringAttributes(new ColoringAttributes(
+								color, 1));
 						if (flashing) {
-							app.setColoringAttributes(new ColoringAttributes(
-									color, 1));
 							Thread.sleep(500);
 						}
 					} catch (InterruptedException e) {

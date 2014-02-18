@@ -15,7 +15,7 @@ import org.w3c.dom.NodeList;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.NslSequentialScheduler;
 import edu.usf.ratsim.experiment.model.ModelFactory;
-import edu.usf.ratsim.experiment.model.MultiScaleMorrisModel;
+import edu.usf.ratsim.experiment.model.MultiScaleModel;
 import edu.usf.ratsim.experiment.subject.initializer.SubInitializerFactory;
 import edu.usf.ratsim.experiment.subject.initializer.SubjectInitializer;
 import edu.usf.ratsim.robot.IRobot;
@@ -39,7 +39,7 @@ public class ExpSubject {
 
 		initNSL();
 
-		model = (MultiScaleMorrisModel) ModelFactory.createModel(subjectNode,
+		model = (MultiScaleModel) ModelFactory.createModel(subjectNode,
 				robot, universe);
 
 		// Load it into nsl
