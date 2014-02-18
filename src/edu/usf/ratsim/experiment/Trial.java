@@ -3,6 +3,7 @@ package edu.usf.ratsim.experiment;
 import java.util.Collection;
 import java.util.Hashtable;
 
+import javax.media.j3d.VirtualUniverse;
 import javax.vecmath.Point4f;
 
 import nslj.src.lang.NslModel;
@@ -13,6 +14,7 @@ import edu.usf.ratsim.experiment.loggers.LoggerFactory;
 import edu.usf.ratsim.experiment.stopcondition.ConditionFactory;
 import edu.usf.ratsim.experiment.stopcondition.StopCondition;
 import edu.usf.ratsim.experiment.task.TaskFactory;
+import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 import edu.usf.ratsim.support.Configuration;
 
 /*
@@ -44,7 +46,6 @@ public class Trial implements Runnable {
 	public static final String STR_TIME = "time";
 	public static final String STR_NAME = "name";
 	public static final String STR_STARTS = "start";
-	private static final String STR_MAZE = "maze";
 
 	private static final long SLEEP_BETWEEN_CYCLES = 30;
 	private static final String STR_INITIAL_TASKS = "initialTasks";
@@ -67,7 +68,7 @@ public class Trial implements Runnable {
 	private String group;
 
 	public Trial(Element trialNode, Hashtable<String, Point4f> points,
-			String group, ExpSubject subject, int rep) {
+			String group, ExpSubject subject, int rep, ExperimentUniverse universe) {
 		super();
 		// Trial is identified by its logpath
 		this.name = trialNode.getElementsByTagName(STR_NAME).item(0)
@@ -75,13 +76,7 @@ public class Trial implements Runnable {
 		this.rep = new Integer(rep).toString();
 		this.subject = subject;
 		this.group = group;
-
-		universe = subject.getUniverse();
-
-		// Set the maze to execute
-		String mazeFile = trialNode.getElementsByTagName(STR_MAZE).item(0)
-				.getTextContent();
-		Configuration.setProperty("Experiment.MAZE_FILE", mazeFile);
+		this.universe = universe;
 
 		// Load the trial tasks
 		loadInitialTasks(
