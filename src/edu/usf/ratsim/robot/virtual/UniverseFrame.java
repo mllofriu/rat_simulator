@@ -284,11 +284,11 @@ public class UniverseFrame extends java.awt.Frame {
 		System.exit(0);
 	}
 
-	public static void main(String args[]) {
-		VirtualExpUniverse expUniv = new VirtualExpUniverse();
-		UniverseFrame worldFrame = new UniverseFrame(expUniv);
-
-		worldFrame.setVisible(true);
-	}
+//	public static void main(String args[]) {
+//		VirtualExpUniverse expUniv = new VirtualExpUniverse();
+//		UniverseFrame worldFrame = new UniverseFrame(expUniv);
+//
+//		worldFrame.setVisible(true);
+//	}
 
 }
