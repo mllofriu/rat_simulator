@@ -339,4 +339,15 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		return robot.distance(new Point3f(feeders.get(currentGoal)
 				.getPosition())) < CLOSE_TO_FOOD_THRS;
 	}
+
+	@Override
+	public int getFeedingFeeder() {
+		Point3f robotPos = getRobotPosition();
+		for (int i = 0; i < feeders.size(); i++) {
+			if (feeders.get(i).isActive()
+					&& robotPos.distance(new Point3f(feeders.get(i).getPosition())) < CLOSE_TO_FOOD_THRS)
+				return i;
+		}
+		return -1;
+	}
 }
