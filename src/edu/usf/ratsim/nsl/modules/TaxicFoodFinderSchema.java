@@ -28,7 +28,8 @@ public class TaxicFoodFinderSchema extends NslModule {
 	public void simRun() {
 		// If the current goal is flashing override other modules actions
 		// (this module should come after others
-		if (univ.getFlashingFeeders().contains(goalFeeder.get())) {
+		if (goalFeeder.get() != -1
+				&& univ.getFlashingFeeders().contains(goalFeeder.get())) {
 			// Get angle to food
 			Point3f rPos = univ.getRobotPosition();
 			Point3f fPos = univ.getFoodPosition(goalFeeder.get());

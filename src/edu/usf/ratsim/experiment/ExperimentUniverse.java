@@ -45,4 +45,6 @@ public interface ExperimentUniverse {
 
 	public boolean isRobotCloseToFeeder(int currentGoal);
 
+	public int getFeedingFeeder();
+
 }
