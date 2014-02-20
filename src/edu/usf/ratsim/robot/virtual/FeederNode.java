@@ -35,11 +35,11 @@ public class FeederNode extends ExpUniverseNode {
 					try {
 						app.setColoringAttributes(new ColoringAttributes(
 								flashingColor, 1));
-						Thread.sleep(500);
+						Thread.sleep(50);
 						app.setColoringAttributes(new ColoringAttributes(
 								color, 1));
 						if (flashing) {
-							Thread.sleep(500);
+							Thread.sleep(50);
 						}
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
@@ -48,7 +48,7 @@ public class FeederNode extends ExpUniverseNode {
 
 				}
 				try {
-					Thread.sleep(500);
+					Thread.sleep(50);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
