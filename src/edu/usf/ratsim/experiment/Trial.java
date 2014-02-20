@@ -48,7 +48,7 @@ public class Trial implements Runnable {
 	public static final String STR_NAME = "name";
 	public static final String STR_STARTS = "start";
 
-	private static final long SLEEP_BETWEEN_CYCLES = 30;
+	private static final long SLEEP_BETWEEN_CYCLES = 1000;
 	private static final String STR_INITIAL_TASKS = "initialTasks";
 	private static final String STR_AFTER_CYCLE_TASKS = "afterCycleTasks";
 	private static final String STR_AFTER_TRIAL_TASKS = "afterTrialTasks";
@@ -115,7 +115,7 @@ public class Trial implements Runnable {
 				// One cycle to the trial
 				subject.stepCycle();
 
-				if (sleep && !rep.equals("0")) {
+				if (sleep) {
 					try {
 						Thread.sleep(SLEEP_BETWEEN_CYCLES);
 					} catch (InterruptedException e) {
@@ -125,13 +125,13 @@ public class Trial implements Runnable {
 				// Run the loggers
 				for (ExperimentLogger logger : afterCycleloggers)
 					logger.log(getUniverse());
-				// Do all after-cycle tasks
-				for (ExperimentTask task : afterCycleTasks)
-					task.perform(getUniverse(),getSubject());
 				// // Check all stop conds
 				stop = false;
 				for (StopCondition sc : stopConds)
 					stop = stop || sc.experimentFinished();
+				// Do all after-cycle tasks
+				for (ExperimentTask task : afterCycleTasks)
+					task.perform(getUniverse(),getSubject());
 			} while (!stop);
 
 			// After trial tasks
