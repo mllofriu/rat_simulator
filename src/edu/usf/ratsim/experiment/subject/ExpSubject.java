@@ -39,8 +39,7 @@ public class ExpSubject {
 
 		initNSL();
 
-		model = (MultiScaleModel) ModelFactory.createModel(subjectNode,
-				robot, universe);
+		model = ModelFactory.createModel(subjectNode, robot, universe);
 
 		// Load it into nsl
 		system.addModel(model);

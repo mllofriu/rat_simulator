@@ -18,9 +18,13 @@ public class ModelFactory {
 			Element params = (Element) model.getElementsByTagName("params")
 					.item(0);
 			return new MultiScaleModel(params, robot, universe);
+		} else 	if (name.equals("MultiScaleMultiIntentionModel")) {
+				Element params = (Element) model.getElementsByTagName("params")
+						.item(0);
+				return new MultiScaleMultiIntentionModel(params, robot, universe);
+		} else {
+			throw new RuntimeException("Model " + name + " not implemented.");
 		}
-
-		throw new RuntimeException("Especified model is not implemented");
 	}
 
 }

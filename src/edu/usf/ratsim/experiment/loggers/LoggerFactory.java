@@ -9,6 +9,8 @@ import org.w3c.dom.NodeList;
 import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.Trial;
 import edu.usf.ratsim.experiment.model.MultiScaleModel;
+import edu.usf.ratsim.experiment.model.MultiScaleMultiIntentionModel;
+import edu.usf.ratsim.experiment.model.RLRatModel;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 
 public class LoggerFactory {
@@ -28,17 +30,25 @@ public class LoggerFactory {
 					.getElementsByTagName(STR_LOGGER_NAME).item(0)
 					.getTextContent();
 
-			// Element loggerParams =
-			// (Element)loggerNode.getElementsByTagName(STR_LOGGER_PARAMS).item(0);
+			Element loggerParams = (Element) loggerNode.getElementsByTagName(
+					STR_LOGGER_PARAMS).item(0);
 			if (loggerName.equals("PositionLogger")) {
-				ProportionalExplorer p = ((MultiScaleModel) t.getSubject()
+				ProportionalExplorer p = ((RLRatModel) t.getSubject()
 						.getModel()).getActionPerformer();
 				res.add(new PositionLogger(t.getName(), t.getGroup(), t
 						.getSubjectName(), t.getRep(), p));
 			} else if (loggerName.equals("PolicyDumper")) {
-				res.add(new PolicyDumper(((MultiScaleModel) t
-						.getSubject().getModel()), t.getName(), t.getGroup(), t
+				res.add(new PolicyDumper(((MultiScaleModel) t.getSubject()
+						.getModel()), t.getName(), t.getGroup(), t
 						.getSubjectName(), t.getRep()));
+			} else if (loggerName.equals("PolicyDumperWithIntention")) {
+				res.add(new PolicyDumperWithIntention(
+						((MultiScaleMultiIntentionModel) t.getSubject()
+								.getModel()), t.getName(), t.getGroup(), t
+								.getSubjectName(), t.getRep(), Integer
+								.parseInt(loggerParams
+										.getElementsByTagName("numIntentions")
+										.item(0).getTextContent())));
 			} else {
 				throw new RuntimeException("Logger " + loggerName
 						+ " not implemented.");
@@ -48,5 +58,4 @@ public class LoggerFactory {
 		return res;
 
 	}
-
 }

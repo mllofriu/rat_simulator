@@ -27,7 +27,7 @@ public class PolicyValueUpdater implements ExperimentTask {
 
 	public void perform(ExperimentUniverse univ, ExpSubject subject) {
 		for (ReverseUpdate qLUpdVal : qlValUpdaters)
-			qLUpdVal.updateQValueFoo();
+			qLUpdVal.updateQValueFood();
 	}
 
 }

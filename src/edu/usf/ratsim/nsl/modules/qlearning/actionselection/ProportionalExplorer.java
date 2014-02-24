@@ -69,6 +69,9 @@ public class ProportionalExplorer extends NslModule {
 			if (maxVal < overallValues[angle])
 				maxVal = overallValues[angle];
 
+//		if (maxVal > 1)
+//			System.out.println(maxVal);
+		
 		explore = r.nextFloat() > (maxVal / maxPossibleVal);
 
 		// System.out.println(maxVal);
