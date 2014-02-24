@@ -5,8 +5,9 @@ import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
-import edu.usf.ratsim.nsl.modules.qlearning.StateAction;
+import edu.usf.ratsim.nsl.modules.qlearning.StateActionReward;
 import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Utiles;
 
 public class SingleLayerAS extends NslModule {
@@ -35,7 +36,7 @@ public class SingleLayerAS extends NslModule {
 	public void simRun() {
 		int s = getActiveState();
 
-		saveStateAction(s);
+//		saveStateAction(s);
 
 		// int nextAction = getNextStep(s);
 		// actionVote.set(nextAction);
@@ -45,7 +46,7 @@ public class SingleLayerAS extends NslModule {
 	private void setVotes(int state) {
 		double[] values = new double[Utiles.discreteAngles.length];
 		for (int angle = 0; angle < Utiles.discreteAngles.length; angle++)
-			values[angle] = value.getValue(new StateAction(state, angle));
+			values[angle] = value.getValue(new StateActionReward(state, angle));
 		actionVote.set(values);
 	}
 
@@ -95,17 +96,4 @@ public class SingleLayerAS extends NslModule {
 		return activeState;
 	}
 
-	private void saveStateAction(int s) {
-		// Save the current state and the past action
-		value.recordStateAction(new StateAction(s, Utiles
-				.discretizeAngle(universe.getRobotOrientationAngle())));
-		// System.out.println(Math.toDegrees(Utiles.discreteAngles[Utiles
-		// .discretizeAngle(universe.getRobotOrientationAngle())]));
-		// try {
-		// Thread.sleep(1000);
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-	}
 }

@@ -43,17 +43,17 @@ mazePlot <- function(mazeFile){
   dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, FALSE)
   m <- geom_path(data=dat,aes(x,y))
   
-#  ns <- getNodeSet(doc, "/world//food")
-#  r <- as.numeric(xmlGetAttr(ns[[1]], "r"))
-#  x <- as.numeric(xmlGetAttr(ns[[1]], "xp"))
+  #  ns <- getNodeSet(doc, "/world//food")
+  #  r <- as.numeric(xmlGetAttr(ns[[1]], "r"))
+  #  x <- as.numeric(xmlGetAttr(ns[[1]], "xp"))
   # y coordinate is -z
-#  y <- - as.numeric(xmlGetAttr(ns[[1]], "zp"))
-#  dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, TRUE)
-#  p <- geom_polygon(data=dat, aes(x,y), color="grey", fill="grey")
+  #  y <- - as.numeric(xmlGetAttr(ns[[1]], "zp"))
+  #  dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, TRUE)
+  #  p <- geom_polygon(data=dat, aes(x,y), color="grey", fill="grey")
   
   # Return a list with the maze and platform
-#  list(m,p)
-   m
+  #  list(m,p)
+  m
 }
 
 ratPathPlot <- function(pathData, p){
@@ -113,9 +113,9 @@ plotPathOnMaze <- function (name, pathData, mazeFile){
   #   print(p)
   #   dev.off()
   # Save the plot to an image
-    ggsave(plot=p,filename=paste("plots/path/",name,
-                                 ".pdf", sep=''), width=10, height=10)
-#   saveRDS(p, paste("plots/path/",name,".obj", sep=''))
+  ggsave(plot=p,filename=paste("plots/path/",name,
+                               ".pdf", sep=''), width=10, height=10)
+  #   saveRDS(p, paste("plots/path/",name,".obj", sep=''))
 }
 
 plotPolicyOnMaze <- function(name, pathData, policyData, maze){  
@@ -136,8 +136,8 @@ plotPolicyOnMaze <- function(name, pathData, policyData, maze){
   p <- mazePlotTheme(p)
   # Save the plot to an image
   print(system.time(ggsave(plot=p,filename=paste("plots/policy/",name,
-                                 ".pdf", sep=''), width=10, height=10)))
-#   saveRDS(p, paste("plots/policy/",name,".obj", sep=''))
+                                                 ".pdf", sep=''), width=10, height=10)))
+  #   saveRDS(p, paste("plots/policy/",name,".obj", sep=''))
 }
 
 plotArrivalTime <- function(pathData){
@@ -145,8 +145,8 @@ plotArrivalTime <- function(pathData){
   summarizedRunTimes <- ddply(runTimes, .(group, repetition), summarise, sdRT = sd(runTime)/sqrt(length(runTime)), mRT = mean(runTime))
   print(summarizedRunTimes)
   p <- ggplot(summarizedRunTimes, aes(x=repetition, y=mRT)) + geom_errorbar(aes(ymin=mRT-sdRT, ymax=mRT+sdRT, color=group), width=.3) + geom_point(aes(color=group))
-#   print(p)
-    ggsave(plot=p,filename=paste("plots/runtime/",pathData[[1,'trial']],
+  #   print(p)
+  ggsave(plot=p,filename=paste("plots/runtime/",pathData[[1,'trial']],
                                ".pdf", sep=''), width=10, height=10)
 }
 
@@ -181,15 +181,15 @@ ddply(pathData, .(trial), plotArrivalTime)
 # Saving objs in parallel:
 # user  system elapsed
 # 17.039   0.323  20.475
-# system.time(llply(names(splitPol), function(x){
-#   # Split data by layers
-#   splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('layer')], drop=TRUE)
-#   # Plot different layers with same path data
-#   lapply(names(splitPolLayer), function (y) plotPolicyOnMaze(paste(x,y,sep='.'),
-#                                                              splitPath[[x]], 
-#                                                            splitPolLayer[[y]],
-#                                                            maze))
-# }, .parallel = TRUE))
+llply(names(splitPol), function(x){
+  # Split data by layers and intention
+  splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('layer','intention')], drop=TRUE)
+  # Plot different layers with same path data
+  lapply(names(splitPolLayer), function (y) plotPolicyOnMaze(paste(x,y,sep='.'),
+                                                             splitPath[[x]], 
+                                                             splitPolLayer[[y]],
+                                                             maze))
+}, .parallel = TRUE)
 # 
 # # Plot just path
 invisible(llply(names(splitPath), function(x) plotPathOnMaze(x,
