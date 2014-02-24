@@ -19,11 +19,12 @@
 	<!--Subjects -->
 	<subject name='r1'>
 		<model>
-			<name>MSMModel</name>
+			<name>MultiScaleMultiIntentionModel</name>
 			<params>
-				<numLayers>5</numLayers>
+				<numLayers>1</numLayers>
 				<minRadius>.05</minRadius>
-				<maxRadius>.25</maxRadius>
+				<maxRadius>.05</maxRadius>
+				<numIntentions>8</numIntentions>
 			</params>
 		</model>
 		<initializers>
@@ -83,10 +84,15 @@
 			<logger>
 				<name>PositionLogger</name>
 			</logger>
+
+
 		</afterCycleLoggers>
 		<afterTrialLoggers>
 			<logger>
-				<name>PolicyDumper</name>
+				<name>PolicyDumperWithIntention</name>
+				<params>
+					<numIntentions>8</numIntentions>
+				</params>
 			</logger>
 		</afterTrialLoggers>
 	</trial>
@@ -123,7 +129,7 @@
 			<stopCondition>
 				<name>FoundNFood</name>
 				<params>
-					<n>10</n>
+					<n>15</n>
 				</params>
 			</stopCondition>
 		</stopConditions>
@@ -134,7 +140,10 @@
 		</afterCycleLoggers>
 		<afterTrialLoggers>
 			<logger>
-				<name>PolicyDumper</name>
+				<name>PolicyDumperWithIntention</name>
+				<params>
+					<numIntentions>8</numIntentions>
+				</params>
 			</logger>
 		</afterTrialLoggers>
 	</trial>

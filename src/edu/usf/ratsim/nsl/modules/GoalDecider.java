@@ -32,15 +32,18 @@ public class GoalDecider extends NslModule {
 		if (!universe.getFlashingFeeders().isEmpty()){
 			currentGoal = universe.getFlashingFeeders().get(0);
 		} else {
-			List<Integer> active = universe.getActiveFeeders();
-			if (!active.isEmpty())
-				currentGoal = active.get(r.nextInt(active.size()));
-			else 
-				currentGoal = -1;
+			if (universe.hasRobotFoundFood()){
+				List<Integer> active = universe.getActiveFeeders();
+				// Dont pick the same goal twice
+				active.remove(new Integer(currentGoal));
+				if (!active.isEmpty()){
+					currentGoal = active.get(r.nextInt(active.size()));
+				} 
+			}
 		}
 		
 		goalFeeder.set(currentGoal);
 		
-//		System.out.println(currentGoal);
+		System.out.println(currentGoal);
 	} 
 }

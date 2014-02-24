@@ -27,7 +27,7 @@ public class TaxicFoodFinderSchema extends NslModule {
 
 	public void simRun() {
 		// If the current goal is flashing override other modules actions
-		// (this module should come after others
+		// (this module should come after others)
 		if (goalFeeder.get() != -1
 				&& univ.getFlashingFeeders().contains(goalFeeder.get())) {
 			// Get angle to food
