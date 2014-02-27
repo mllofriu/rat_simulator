@@ -6,8 +6,6 @@ import edu.usf.ratsim.experiment.subject.ExpSubject;
 
 public class FeederTemporalDeactivate implements ExperimentTask {
 
-	private static final int SLEEP_TIME = 50;
-	private int sleepingTime;
 	private int sleepingFeeder;
 	
 	public FeederTemporalDeactivate(){
@@ -16,16 +14,13 @@ public class FeederTemporalDeactivate implements ExperimentTask {
 
 	public void perform(ExperimentUniverse univ, ExpSubject subject) {
 		if(univ.hasRobotFoundFood()){
+			// If one is sleeping, reactivate
+			if (sleepingFeeder != -1)
+				univ.setActiveFeeder(sleepingFeeder, true);
+			// Deactivate the feeder
 			sleepingFeeder = univ.getFeedingFeeder();
 			univ.setActiveFeeder(sleepingFeeder, false);
-			sleepingTime = SLEEP_TIME;
-		} else if(sleepingFeeder != -1){
-			sleepingTime--;
-			if (sleepingTime <= 0){
-				univ.setActiveFeeder(sleepingFeeder, true);
-				sleepingFeeder = -1;
-			}
-		}
+		} 
 	}
 
 }
