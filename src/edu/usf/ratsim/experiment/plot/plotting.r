@@ -5,6 +5,7 @@ require(grid, quietly = TRUE)
 require(plyr, quietly = TRUE)
 require(parallel, quietly = TRUE)
 require(doParallel, quietly = TRUE)
+require(animation, quietly = TRUE)
 
 mazePlotTheme <- function(p){
   p + theme(axis.line=element_blank(),axis.text.x=element_blank(),
@@ -113,9 +114,13 @@ plotPathOnMaze <- function (name, pathData, mazeFile){
   #   print(p)
   #   dev.off()
   # Save the plot to an image
+  if (name == '')
+    print(p)  
+  else
   ggsave(plot=p,filename=paste("plots/path/",name,
                                ".pdf", sep=''), width=10, height=10)
-  #   saveRDS(p, paste("plots/path/",name,".obj", sep=''))
+  
+#   saveRDS(p, paste("plots/path/",name,".obj", sep=''))
 }
 
 plotPolicyOnMaze <- function(name, pathData, policyData, maze){  
@@ -148,6 +153,12 @@ plotArrivalTime <- function(pathData){
   #   print(p)
   ggsave(plot=p,filename=paste("plots/runtime/",pathData[[1,'trial']],
                                ".pdf", sep=''), width=10, height=10)
+}
+
+incrementalPath <- function(pathData)
+{
+  for (i in seq(2, dim(pathData)[1], 10)) { 
+    plotPathOnMaze('', pathData[1:i,], maze)}
 }
 
 mazeFile <- "maze.xml"
@@ -195,4 +206,8 @@ llply(names(splitPol), function(x){
 invisible(llply(names(splitPath), function(x) plotPathOnMaze(x,
             splitPath[[x]], maze), .parallel = TRUE))
 
-
+# for (i in 2:dim(recallPath)[1]) {
+#   + plotPathOnMaze('', recallPath[1:i,], maze)
+#   + 
+ani.options(outdir = paste(getwd(),'/plots/path/', sep=''))
+saveMovie(incrementalPath(splitPath[["recall.g1.r1.0"]]), interval = .2, movie.name = 'pathAnimation.gif', ani.width=500, ani.height = 500,)
