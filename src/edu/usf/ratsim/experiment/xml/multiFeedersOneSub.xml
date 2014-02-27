@@ -23,7 +23,7 @@
 			<params>
 				<numLayers>1</numLayers>
 				<minRadius>.05</minRadius>
-				<maxRadius>.05</maxRadius>
+				<maxRadius>.25</maxRadius>
 				<numIntentions>8</numIntentions>
 			</params>
 		</model>
@@ -76,7 +76,7 @@
 			<stopCondition>
 				<name>FoundNFood</name>
 				<params>
-					<n>100</n>
+					<n>1000</n>
 				</params>
 			</stopCondition>
 		</stopConditions>

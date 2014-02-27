@@ -73,7 +73,7 @@ public class ProportionalExplorer extends NslModule {
 //			System.out.println(maxVal);
 		
 		explore = r.nextFloat() > (maxVal / maxPossibleVal);
-
+//		explore = maxVal == 0;
 		// System.out.println(maxVal);
 		// Make a list of actions and values
 		List<ActionValue> actions = new LinkedList<ActionValue>();
@@ -87,12 +87,13 @@ public class ProportionalExplorer extends NslModule {
 			// Add a small bias towards going forward and small rotations
 			// Radial function centered on the going forward angle
 			float val = overallValues[angle];
-			if (explore)
+			if (explore) {
 				val += Math.max(explorationMaxValMultiplier * maxVal, 1)
 						* Math.exp(-Math.pow(
 								Utiles.actionDistance(action,
 										Utiles.discretizeAction(0)), 2)
 								/ EXPLORATORY_VARIANCE);
+			}
 
 			// float val = (float) (overallValues[angle] +
 			// EXPLORATORY_COMPONENT);
@@ -120,6 +121,8 @@ public class ProportionalExplorer extends NslModule {
 				float nextRVal = r.nextFloat() * totalVal;
 				// Find the next action
 				action = -1;
+				if (actions.isEmpty())
+					System.out.println("no actions");
 				do {
 					action++;
 					nextRVal -= (actions.get(action).getValue() - minVal);
