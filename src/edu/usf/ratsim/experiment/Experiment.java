@@ -59,7 +59,7 @@ public class Experiment implements Runnable {
 	private static final String PLOTTING_SCRIPT = "/edu/usf/ratsim/experiment/plot/plotting.r";
 	private static final String PLOT_EXECUTER = "/edu/usf/ratsim/experiment/plot/plot.sh";
 	private static final String OBJ2PNG_SCRIPT = "/edu/usf/ratsim/experiment/plot/obj2png.r";
-	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/multiFeedersOneSub.xml";
+	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/multiFeeders.xml";
 
 	private Map<ExpSubject, List<Trial>> trials;
 	private String logPath;
@@ -104,16 +104,13 @@ public class Experiment implements Runnable {
 
 		// Set the maze to execute
 		mazeFile = doc.getElementsByTagName(STR_MAZE).item(0).getTextContent();
-		VirtualExpUniverse universe = new VirtualExpUniverse(mazeFile);
-		IRobot robot = RobotFactory.getRobot(
-				Configuration.getString("Reflexion.Robot"), universe);
 
-		subjects = loadSubjects(doc, robot, universe);
+		subjects = loadSubjects(doc);
 		Hashtable<String, Hashtable<String, ExpSubject>> groups = loadGroups(
 				doc, subjects);
 
 		trials = new HashMap<ExpSubject, List<Trial>>();
-		loadTrials(doc.getDocumentElement(), points, groups, logPath, universe);
+		loadTrials(doc.getDocumentElement(), points, groups, logPath);
 	}
 
 	private Hashtable<String, Hashtable<String, ExpSubject>> loadGroups(
@@ -141,17 +138,20 @@ public class Experiment implements Runnable {
 		return groups;
 	}
 
-	private Hashtable<String, ExpSubject> loadSubjects(Document doc,
-			IRobot robot, VirtualExpUniverse universe) {
+	private Hashtable<String, ExpSubject> loadSubjects(Document doc) {
 		Hashtable<String, ExpSubject> subs = new Hashtable<String, ExpSubject>();
 		NodeList elems = doc.getElementsByTagName(STR_SUBJECT);
 		for (int i = 0; i < elems.getLength(); i++) {
 			String name = elems.item(i).getAttributes().getNamedItem("name")
 					.getNodeValue();
 			if (elems.item(i).getParentNode().getNodeName()
-					.equals(XML_ROOT_STR))
+					.equals(XML_ROOT_STR)){
+				VirtualExpUniverse universe = new VirtualExpUniverse(mazeFile);
+				IRobot robot = RobotFactory.getRobot(
+						Configuration.getString("Reflexion.Robot"), universe);
 				subs.put(name, new ExpSubject(name, robot, universe,
 						(Element) elems.item(i)));
+			}
 		}
 
 		return subs;
@@ -230,7 +230,7 @@ public class Experiment implements Runnable {
 
 	private void loadTrials(Element docRoot, Hashtable<String, Point4f> points,
 			Hashtable<String, Hashtable<String, ExpSubject>> groups,
-			String experimentLogPath, ExperimentUniverse universe) {
+			String experimentLogPath) {
 
 		NodeList trialNodes = docRoot.getElementsByTagName(STR_TRIAL);
 		// For each trial
@@ -253,7 +253,7 @@ public class Experiment implements Runnable {
 							.getTextContent());
 					for (int k = 0; k < reps; k++) {
 						Trial t = new Trial(trialNode, points, groupName,
-								subject, k, universe);
+								subject, k);
 						if (!trials.containsKey(subject))
 							trials.put(subject, new LinkedList<Trial>());
 						trials.get(subject).add(t);
@@ -298,6 +298,7 @@ public class Experiment implements Runnable {
 				}
 			});
 			ts[i].start();
+//			ts[i].run();
 			i++;
 		}
 

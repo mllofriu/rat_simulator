@@ -32,8 +32,6 @@ public class MultiScaleMultiIntentionModel extends NslModel implements
 			ExperimentUniverse universe) {
 		super("MSMIModel", (NslModule) null);
 
-		goalD = new GoalDecider("GoalDecider", this, universe);
-
 		// Get some configuration values for place cells + qlearning
 		float minRadius = Float.parseFloat(params
 				.getElementsByTagName("minRadius").item(0).getTextContent());
@@ -71,6 +69,8 @@ public class MultiScaleMultiIntentionModel extends NslModel implements
 		// Create taxic driver to override in case of flashing
 		taxicDrive = new TaxicFoodFinderSchema("Taxic Driver", this, robot,
 				universe);
+		
+		goalD = new GoalDecider("GoalDecider", this, universe);
 
 		for (int i = 0; i < numLayers; i++) {
 			qLUpdVal.add(new NormalUpdate("QLUpdVal", this, pcls.get(i)

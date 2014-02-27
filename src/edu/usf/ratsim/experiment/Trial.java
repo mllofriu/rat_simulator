@@ -69,7 +69,7 @@ public class Trial implements Runnable {
 	private String group;
 
 	public Trial(Element trialNode, Hashtable<String, Point4f> points,
-			String group, ExpSubject subject, int rep, ExperimentUniverse universe) {
+			String group, ExpSubject subject, int rep) {
 		super();
 		// Trial is identified by its logpath
 		this.name = trialNode.getElementsByTagName(STR_NAME).item(0)
@@ -77,7 +77,7 @@ public class Trial implements Runnable {
 		this.rep = new Integer(rep).toString();
 		this.subject = subject;
 		this.group = group;
-		this.universe = universe;
+		this.universe = subject.getUniverse();
 
 		// Load the trial tasks
 		loadInitialTasks(
