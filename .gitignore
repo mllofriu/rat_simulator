@@ -6,6 +6,7 @@ rat_sim.*
 *circe/
 *.DS_Store
 *.png
+*.pdf
 /target
 *.Rhistory
 bin/
