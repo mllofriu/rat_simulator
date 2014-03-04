@@ -59,7 +59,7 @@ public class Experiment implements Runnable {
 	private static final String PLOTTING_SCRIPT = "/edu/usf/ratsim/experiment/plot/plotting.r";
 	private static final String PLOT_EXECUTER = "/edu/usf/ratsim/experiment/plot/plot.sh";
 	private static final String OBJ2PNG_SCRIPT = "/edu/usf/ratsim/experiment/plot/obj2png.r";
-	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/multiFeeders.xml";
+	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/multiFeedersSingleVsMulti.xml";
 	private static final String STR_NUM_MEMBERS = "numMembers";
 
 	private Map<ExpSubject, List<Trial>> trials;
@@ -132,7 +132,7 @@ public class Experiment implements Runnable {
 
 				Hashtable<String, ExpSubject> sGroup = new Hashtable<String, ExpSubject>();
 				for (int k = 1; k <= groupNumSubs; k++) {
-					String subName = gName + k;
+					String subName = gName + " - rat " + k;
 					VirtualExpUniverse universe = new VirtualExpUniverse(
 							mazeFile);
 					IRobot robot = RobotFactory.getRobot(
