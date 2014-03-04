@@ -98,6 +98,12 @@
 					<n>1000</n>
 				</params>
 			</stopCondition>
+			<stopCondition>
+                <name>Time</name>
+                <params>
+                    <time>200000</time>
+                </params>
+            </stopCondition>
 		</stopConditions>
 		<afterCycleLoggers>
 			<logger>
@@ -152,6 +158,12 @@
 					<n>15</n>
 				</params>
 			</stopCondition>
+			<stopCondition>
+                <name>Time</name>
+                <params>
+                    <time>200000</time>
+                </params>
+            </stopCondition>
 		</stopConditions>
 		<afterCycleLoggers>
 			<logger>

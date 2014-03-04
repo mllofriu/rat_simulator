@@ -155,10 +155,11 @@ plotArrivalTime <- function(pathData){
                                ".pdf", sep=''), width=10, height=10)
 }
 
-incrementalPath <- function(pathData)
+incrementalPath <- function(pathData, maze)
 {
-  for (i in seq(2, dim(pathData)[1], 10)) { 
-    plotPathOnMaze('', pathData[1:i,], maze)}
+  for (i in seq(2, dim(pathData)[1], dim(pathData)[1]/100)) { 
+    plotPathOnMaze('', pathData[1:i,], maze)
+  }
 }
 
 mazeFile <- "maze.xml"
@@ -177,7 +178,7 @@ splitPol <- split(policyData, policyData[c('trial', 'group', 'subject', 'repetit
 # One worker per plot
 registerDoParallel()
 
-# Plot arrival times as a function of repetition number
+#Plot arrival times as a function of repetition number
 ddply(pathData, .(trial), plotArrivalTime)
 
 # Saving image non-parallel:
@@ -209,5 +210,5 @@ invisible(llply(names(splitPath), function(x) plotPathOnMaze(x,
 # for (i in 2:dim(recallPath)[1]) {
 #   + plotPathOnMaze('', recallPath[1:i,], maze)
 #   + 
-ani.options(outdir = paste(getwd(),'/plots/path/', sep=''))
-saveMovie(incrementalPath(splitPath[["recall.g1.r1.0"]]), interval = .2, movie.name = 'pathAnimation.gif', ani.width=500, ani.height = 500,)
+# ani.options(outdir = paste(getwd(),'/plots/path/', sep=''))
+# llply(names(splitPath), function(x) saveMovie(incrementalPath(splitPath[[x]], maze), interval = .2, movie.name = paste(x,'pathAnimation.gif', sep=''), ani.width=500, ani.height = 500,))
