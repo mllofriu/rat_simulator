@@ -49,7 +49,7 @@ public class ProportionalExplorer extends NslModule {
 		for (int i = 0; i < numLayers; i++)
 			votes[i] = new NslDinFloat1(this, "votes" + i);
 
-		maxPossibleVal = Configuration.getFloat("QLearning.foodReward") / 2
+		maxPossibleVal = Configuration.getFloat("QLearning.foodReward")
 				* numLayers;
 
 		r = new Random();

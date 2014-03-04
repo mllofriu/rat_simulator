@@ -17,7 +17,7 @@
 	<maze>/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
 
 	<!--Subject groups -->
-    <group name='g1'>
+    <group name='oneLayer'>
         <numMembers>1</numMembers>
         <model>
             <name>MultiScaleMultiIntentionModel</name>
@@ -45,7 +45,7 @@
 		<name>training</name>
 		<reps>1</reps>
 		<groups>
-			<group>g1</group>
+			<group>oneLayer</group>
 		</groups>
 		<initialTasks>
 			<task>
@@ -99,7 +99,7 @@
 		<name>recall</name>
 		<reps>1</reps>
 		<groups>
-			<group>g1</group>
+			<group>oneLayer</group>
 		</groups>
 		<initialTasks>
 			<task>
