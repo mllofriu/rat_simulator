@@ -43,7 +43,7 @@
 		<name>training</name>
 		<reps>1</reps>
 		<groups>
-			<group>g1</group>
+			<group>oneLayer</group>
 		</groups>
 		<initialTasks>
 			<task>
@@ -97,7 +97,7 @@
 		<name>recall</name>
 		<reps>1</reps>
 		<groups>
-			<group>g1</group>
+			<group>oneLayer</group>
 		</groups>
 		<initialTasks>
 			<task>
