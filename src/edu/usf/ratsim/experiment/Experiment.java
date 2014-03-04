@@ -60,11 +60,12 @@ public class Experiment implements Runnable {
 	private static final String PLOT_EXECUTER = "/edu/usf/ratsim/experiment/plot/plot.sh";
 	private static final String OBJ2PNG_SCRIPT = "/edu/usf/ratsim/experiment/plot/obj2png.r";
 	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/multiFeeders.xml";
+	private static final String STR_NUM_MEMBERS = "numMembers";
 
 	private Map<ExpSubject, List<Trial>> trials;
 	private String logPath;
-	private Hashtable<String, ExpSubject> subjects;
 	private String mazeFile;
+	private Hashtable<String, Hashtable<String, ExpSubject>> groups;
 
 	public Experiment(String filename) {
 		logPath = computeLogPath();
@@ -105,56 +106,46 @@ public class Experiment implements Runnable {
 		// Set the maze to execute
 		mazeFile = doc.getElementsByTagName(STR_MAZE).item(0).getTextContent();
 
-		subjects = loadSubjects(doc);
-		Hashtable<String, Hashtable<String, ExpSubject>> groups = loadGroups(
-				doc, subjects);
+//		subjects = loadSubjects(doc);
+		groups = loadGroups(
+				doc);
 
 		trials = new HashMap<ExpSubject, List<Trial>>();
 		loadTrials(doc.getDocumentElement(), points, groups, logPath);
 	}
 
 	private Hashtable<String, Hashtable<String, ExpSubject>> loadGroups(
-			Document doc, Hashtable<String, ExpSubject> subjects) {
+			Document doc) {
 		Hashtable<String, Hashtable<String, ExpSubject>> groups = new Hashtable<String, Hashtable<String, ExpSubject>>();
 		NodeList elems = doc.getElementsByTagName(STR_GROUP);
 		for (int i = 0; i < elems.getLength(); i++) {
 			// Only group node that are direct children of <simulation>
 			if (elems.item(i).getParentNode().getNodeName()
 					.equals(XML_ROOT_STR)) {
-				NodeList subsNL = elems.item(i).getChildNodes();
-				Hashtable<String, ExpSubject> sGroup = new Hashtable<String, ExpSubject>();
-				for (int j = 0; j < subsNL.getLength(); j++) {
-					if (subsNL.item(j).getNodeType() == Node.ELEMENT_NODE) {
-						String name = subsNL.item(j).getAttributes()
-								.getNamedItem(STR_NAME).getNodeValue();
-						sGroup.put(name, subjects.get(name));
-					}
-				}
+				Element gNode = (Element) elems.item(i);
 				String gName = elems.item(i).getAttributes()
-						.getNamedItem(STR_NAME).getNodeValue();
+						.getNamedItem("name").getNodeValue();
+
+				int groupNumSubs = Integer.parseInt(gNode
+						.getElementsByTagName(STR_NUM_MEMBERS).item(0)
+						.getTextContent());
+
+				Hashtable<String, ExpSubject> sGroup = new Hashtable<String, ExpSubject>();
+				for (int k = 1; k <= groupNumSubs; k++) {
+					String subName = gName + k;
+					VirtualExpUniverse universe = new VirtualExpUniverse(
+							mazeFile);
+					IRobot robot = RobotFactory.getRobot(
+							Configuration.getString("Reflexion.Robot"),
+							universe);
+					sGroup.put(subName, new ExpSubject(subName, robot,
+							universe, gNode));
+				}
+
 				groups.put(gName, sGroup);
 			}
 		}
 		return groups;
-	}
-
-	private Hashtable<String, ExpSubject> loadSubjects(Document doc) {
-		Hashtable<String, ExpSubject> subs = new Hashtable<String, ExpSubject>();
-		NodeList elems = doc.getElementsByTagName(STR_SUBJECT);
-		for (int i = 0; i < elems.getLength(); i++) {
-			String name = elems.item(i).getAttributes().getNamedItem("name")
-					.getNodeValue();
-			if (elems.item(i).getParentNode().getNodeName()
-					.equals(XML_ROOT_STR)){
-				VirtualExpUniverse universe = new VirtualExpUniverse(mazeFile);
-				IRobot robot = RobotFactory.getRobot(
-						Configuration.getString("Reflexion.Robot"), universe);
-				subs.put(name, new ExpSubject(name, robot, universe,
-						(Element) elems.item(i)));
-			}
-		}
-
-		return subs;
 	}
 
 	public String getLogPath() {
@@ -287,7 +278,8 @@ public class Experiment implements Runnable {
 		Thread[] ts = new Thread[trials.size()];
 
 		int i = 0;
-		for (final Entry<String, ExpSubject> entry : subjects.entrySet()) {
+		for(Entry<String, Hashtable<String, ExpSubject>> subjects : groups.entrySet())
+		for (final Entry<String, ExpSubject> entry : subjects.getValue().entrySet()) {
 			// Create a thread for each subject, executing all its experiments
 			// in order
 			ts[i] = new Thread(new Runnable() {
@@ -298,7 +290,7 @@ public class Experiment implements Runnable {
 				}
 			});
 			ts[i].start();
-//			ts[i].run();
+			// ts[i].run();
 			i++;
 		}
 
