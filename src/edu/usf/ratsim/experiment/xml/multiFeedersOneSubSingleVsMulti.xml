@@ -16,34 +16,58 @@
 
 	<maze>/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
 
-	<!--Subjects -->
-	<group name='oneLayer'>
-		<numMembers>8</numMembers>
-		<model>
-			<name>MultiScaleMultiIntentionModel</name>
-			<params>
-				<numLayers>1</numLayers>
-				<minRadius>.05</minRadius>
-				<maxRadius>.25</maxRadius>
-				<numIntentions>8</numIntentions>
-			</params>
-		</model>
-		<initializers>
-			<initializer>
-				<name>feederSelector</name>
-				<params>
-					<numFeeders>3</numFeeders>
-				</params>
-			</initializer>
-		</initializers>
-	</group>
+	<!--Subject groups -->
+    <group name='One Layer'>
+        <numMembers>1</numMembers>
+        <model>
+            <name>MultiScaleMultiIntentionModel</name>
+            <params>
+                <numLayers>1</numLayers>
+                <minRadius>.05</minRadius>
+                <maxRadius>.25</maxRadius>
+                <numIntentions>8</numIntentions>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>3</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
+    </group>
+    
+    <group name='Five Layers'>
+        <numMembers>1</numMembers>
+        <model>
+            <name>MultiScaleMultiIntentionModel</name>
+            <params>
+                <numLayers>5</numLayers>
+                <minRadius>.05</minRadius>
+                <maxRadius>.25</maxRadius>
+                <numIntentions>8</numIntentions>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>3</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
+    </group>
+		
 
-	<!--Training trials - flashing food -->
+	<!--Experiment Trials -->
+	<!-- 8 training trials -->
 	<trial>
 		<name>training</name>
 		<reps>1</reps>
 		<groups>
-			<group>oneLayer</group>
+			<group>One Layer</group>
+			<group>Five Layers</group>
 		</groups>
 		<initialTasks>
 			<task>
@@ -92,12 +116,13 @@
 		</afterTrialLoggers>
 	</trial>
 
-	<!-- 4 testing trials - no flash -->
+	<!-- 4 testing trials -->
 	<trial>
 		<name>recall</name>
 		<reps>1</reps>
 		<groups>
-			<group>oneLayer</group>
+			<group>One Layer</group>
+			<group>Five Layers</group>
 		</groups>
 		<initialTasks>
 			<task>
