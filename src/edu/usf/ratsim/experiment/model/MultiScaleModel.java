@@ -17,6 +17,7 @@ import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.SingleLayerAS;
 import edu.usf.ratsim.nsl.modules.qlearning.update.ReverseUpdate;
 import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.support.ElementWrapper;
 
 public class MultiScaleModel extends NslModel implements RLRatModel {
 	private List<ArtificialPlaceCellLayer> pcls;
@@ -27,19 +28,16 @@ public class MultiScaleModel extends NslModel implements RLRatModel {
 	private GoalDecider goalD;
 	private TaxicFoodFinderSchema taxicDrive;
 
-	public MultiScaleModel(Element params, IRobot robot,
+	public MultiScaleModel(ElementWrapper params, IRobot robot,
 			ExperimentUniverse universe) {
 		super("MSModel", (NslModule) null);
 		
 		goalD = new GoalDecider("GoalDecider", this, universe);
 
 		// Get some configuration values for place cells + qlearning
-		float minRadius = Float.parseFloat(params
-				.getElementsByTagName("minRadius").item(0).getTextContent());
-		float maxRadius = Float.parseFloat(params
-				.getElementsByTagName("maxRadius").item(0).getTextContent());
-		int numLayers = Integer.parseInt(params
-				.getElementsByTagName("numLayers").item(0).getTextContent());
+		float minRadius = params.getChildFloat("minRadius");
+		float maxRadius = params.getChildFloat("maxRadius");
+		int numLayers = params.getChildInt("numLayers");
 
 		pcls = new LinkedList<ArtificialPlaceCellLayer>();
 		qLUpdVal = new LinkedList<ReverseUpdate>();

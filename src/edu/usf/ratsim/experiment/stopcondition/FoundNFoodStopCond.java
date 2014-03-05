@@ -3,6 +3,7 @@ package edu.usf.ratsim.experiment.stopcondition;
 import org.w3c.dom.Element;
 
 import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.ratsim.support.ElementWrapper;
 
 public class FoundNFoodStopCond implements StopCondition {
 
@@ -10,8 +11,8 @@ public class FoundNFoodStopCond implements StopCondition {
 	private ExperimentUniverse uni;
 	private int n;
 
-	public FoundNFoodStopCond(ExperimentUniverse uni, Element paramNode) {
-		this.n = Integer.parseInt(paramNode.getElementsByTagName(STR_N).item(0).getTextContent());
+	public FoundNFoodStopCond(ExperimentUniverse uni, ElementWrapper condParams) {
+		this.n = condParams.getChildInt(STR_N);
 		this.uni = uni;
 	}
 
