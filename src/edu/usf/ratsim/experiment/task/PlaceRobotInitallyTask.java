@@ -5,11 +5,10 @@ import java.util.Map;
 
 import javax.vecmath.Point4f;
 
-import org.w3c.dom.Element;
-
 import edu.usf.ratsim.experiment.ExperimentTask;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.subject.ExpSubject;
+import edu.usf.ratsim.support.ElementWrapper;
 
 public class PlaceRobotInitallyTask implements ExperimentTask {
 
@@ -20,10 +19,9 @@ public class PlaceRobotInitallyTask implements ExperimentTask {
 		this.initPos = initPos;
 	}
 
-	public PlaceRobotInitallyTask(Element taskParams,
+	public PlaceRobotInitallyTask(ElementWrapper taskParams,
 			Map<String, Point4f> points) {
-		String initPosName = taskParams.getElementsByTagName(STR_INIT_POS)
-				.item(0).getTextContent();
+		String initPosName = taskParams.getChildText(STR_INIT_POS);
 		initPos = points.get(initPosName);
 	}
 

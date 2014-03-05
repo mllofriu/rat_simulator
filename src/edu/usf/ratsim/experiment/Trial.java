@@ -17,6 +17,7 @@ import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.experiment.task.TaskFactory;
 import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 import edu.usf.ratsim.support.Configuration;
+import edu.usf.ratsim.support.ElementWrapper;
 
 /*
  * SimulationItem.java
@@ -68,36 +69,31 @@ public class Trial implements Runnable {
 	private String rep;
 	private String group;
 
-	public Trial(Element trialNode, Hashtable<String, Point4f> points,
+	public Trial(ElementWrapper trialNode, Hashtable<String, Point4f> points,
 			String group, ExpSubject subject, int rep) {
 		super();
 		// Trial is identified by its logpath
-		this.name = trialNode.getElementsByTagName(STR_NAME).item(0)
-				.getTextContent();
+		this.name = trialNode.getChildText(STR_NAME);
 		this.rep = new Integer(rep).toString();
 		this.subject = subject;
 		this.group = group;
 		this.universe = subject.getUniverse();
 
 		// Load the trial tasks
-		loadInitialTasks(
-				(Element) trialNode.getElementsByTagName(STR_INITIAL_TASKS)
-						.item(0), points, subject.getModel());
-		loadAfterCycleTasks(
-				(Element) trialNode.getElementsByTagName(STR_AFTER_CYCLE_TASKS)
-						.item(0), points, subject.getModel());
-		loadAfterTrialTasks(
-				(Element) trialNode.getElementsByTagName(STR_AFTER_TRIAL_TASKS)
-						.item(0), points, subject.getModel());
+		loadInitialTasks(trialNode.getChild(STR_INITIAL_TASKS)
+				, points, subject.getModel());
+		loadAfterCycleTasks(trialNode.getChild(STR_AFTER_CYCLE_TASKS)
+						, points, subject.getModel());
+		loadAfterTrialTasks(trialNode.getChild(STR_AFTER_TRIAL_TASKS)
+				, points, subject.getModel());
 		// Load the stop conditions
-		loadConditions(
-				(Element) trialNode.getElementsByTagName(STR_STOP_CONDITIONS)
-						.item(0), points, subject.getModel(), universe);
+		loadConditions(trialNode.getChild(STR_STOP_CONDITIONS)
+				, points, subject.getModel(), universe);
 		// Load loggers
-		loadAfterCycleLoggers((Element) trialNode.getElementsByTagName(
-				STR_CYCLE_LOGGERS).item(0));
-		loadAfterTrialLoggers((Element) trialNode.getElementsByTagName(
-				STR_TRIAL_LOGGERS).item(0));
+		loadAfterCycleLoggers(trialNode.getChild(
+				STR_CYCLE_LOGGERS));
+		loadAfterTrialLoggers(trialNode.getChild(
+				STR_TRIAL_LOGGERS));
 	}
 
 	public void run() {
@@ -154,34 +150,34 @@ public class Trial implements Runnable {
 
 	}
 
-	public void loadConditions(Element codintions,
+	public void loadConditions(ElementWrapper elementWrapper,
 			Hashtable<String, Point4f> points, NslModel nslModel,
 			ExperimentUniverse universe) {
-		stopConds = ConditionFactory.createConditions(codintions, points,
+		stopConds = ConditionFactory.createConditions(elementWrapper, points,
 				nslModel, universe);
 	}
 
-	public void loadAfterCycleTasks(Element tasks,
+	public void loadAfterCycleTasks(ElementWrapper elementWrapper,
 			Hashtable<String, Point4f> points, NslModel nslModel) {
-		afterCycleTasks = TaskFactory.createTasks(tasks, points, nslModel);
+		afterCycleTasks = TaskFactory.createTasks(elementWrapper, points, nslModel);
 	}
 
-	public void loadAfterTrialTasks(Element tasks,
+	public void loadAfterTrialTasks(ElementWrapper elementWrapper,
 			Hashtable<String, Point4f> points, NslModel nslModel) {
-		afterTrialTasks = TaskFactory.createTasks(tasks, points, nslModel);
+		afterTrialTasks = TaskFactory.createTasks(elementWrapper, points, nslModel);
 	}
 
-	public void loadInitialTasks(Element tasks,
+	public void loadInitialTasks(ElementWrapper elementWrapper,
 			Hashtable<String, Point4f> points, NslModel nslModel) {
-		initialTasks = TaskFactory.createTasks(tasks, points, nslModel);
+		initialTasks = TaskFactory.createTasks(elementWrapper, points, nslModel);
 	}
 
-	public void loadAfterCycleLoggers(Element loggers) {
-		afterCycleloggers = LoggerFactory.createLoggers(loggers, this);
+	public void loadAfterCycleLoggers(ElementWrapper elementWrapper) {
+		afterCycleloggers = LoggerFactory.createLoggers(elementWrapper, this);
 	}
 
-	private void loadAfterTrialLoggers(Element loggers) {
-		afterTrialloggers = LoggerFactory.createLoggers(loggers, this);
+	private void loadAfterTrialLoggers(ElementWrapper elementWrapper) {
+		afterTrialloggers = LoggerFactory.createLoggers(elementWrapper, this);
 	}
 
 	public ExperimentUniverse getUniverse() {
