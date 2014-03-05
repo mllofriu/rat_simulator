@@ -2,6 +2,7 @@ package edu.usf.ratsim.experiment.task;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.vecmath.Point4f;
@@ -12,6 +13,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import edu.usf.ratsim.experiment.ExperimentTask;
+import edu.usf.ratsim.support.ElementWrapper;
 
 public class TaskFactory {
 
@@ -19,18 +21,15 @@ public class TaskFactory {
 	private static final String STR_TASK_NAME = "name";
 	private static final String STR_TASK_PARAMS = "params";
 
-	public static Collection<ExperimentTask> createTasks(Element tasks,
+	public static Collection<ExperimentTask> createTasks(ElementWrapper elementWrapper,
 			Map<String, Point4f> points, NslModel model) {
 		Collection<ExperimentTask> res = new LinkedList<ExperimentTask>();
 
-		NodeList taskList = tasks.getElementsByTagName(STR_TASK);
-		for (int i = 0; i < taskList.getLength(); i++) {
-			Element taskNode = (Element) taskList.item(i);
-			String taskName = taskNode.getElementsByTagName(STR_TASK_NAME)
-					.item(0).getTextContent();
+		List<ElementWrapper> taskList = elementWrapper.getDirectChildren(STR_TASK);
+		for (ElementWrapper taskNode : taskList) {
+			String taskName = taskNode.getChildText(STR_TASK_NAME);
 
-			Element taskParams = (Element) taskNode.getElementsByTagName(
-					STR_TASK_PARAMS).item(0);
+			ElementWrapper taskParams = taskNode.getChild(STR_TASK_PARAMS);
 			if (taskName.equals("PlaceRobotInitiallyTask")) {
 				res.add(new PlaceRobotInitallyTask(taskParams, points));
 			} else if (taskName.equals("PolicyValueUpdater")) {

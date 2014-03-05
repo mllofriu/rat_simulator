@@ -22,18 +22,14 @@ import java.util.Map.Entry;
 import javax.vecmath.Point4f;
 
 import org.apache.commons.io.FileUtils;
-import org.omg.CORBA.IRObject;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.robot.RobotFactory;
 import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 import edu.usf.ratsim.support.Configuration;
+import edu.usf.ratsim.support.ElementWrapper;
 import edu.usf.ratsim.support.XMLDocReader;
 
 public class Experiment implements Runnable {
@@ -88,6 +84,8 @@ public class Experiment implements Runnable {
 		}
 		Document doc = XMLDocReader.readDocument(logPath + "experiment.xml");
 
+		ElementWrapper root = new ElementWrapper(doc.getDocumentElement());
+
 		// Copy the configuration file to the experiment's folder
 		try {
 			FileUtils.copyURLToFile(
@@ -100,51 +98,40 @@ public class Experiment implements Runnable {
 		}
 
 		// Load points from xml
-		Hashtable<String, Point4f> points = loadPoints(doc
-				.getElementsByTagName(STR_POINT));
+		Hashtable<String, Point4f> points = loadPoints(root
+				.getDirectChildren(STR_POINT));
 
 		// Set the maze to execute
-		mazeFile = doc.getElementsByTagName(STR_MAZE).item(0).getTextContent();
+		mazeFile = root.getChildText(STR_MAZE);
 
-//		subjects = loadSubjects(doc);
-		groups = loadGroups(
-				doc);
+		// subjects = loadSubjects(doc);
+		groups = loadGroups(root);
 
 		trials = new HashMap<ExpSubject, List<Trial>>();
-		loadTrials(doc.getDocumentElement(), points, groups, logPath);
+		loadTrials(root, points, groups, logPath);
 	}
 
 	private Hashtable<String, Hashtable<String, ExpSubject>> loadGroups(
-			Document doc) {
+			ElementWrapper root) {
 		Hashtable<String, Hashtable<String, ExpSubject>> groups = new Hashtable<String, Hashtable<String, ExpSubject>>();
-		NodeList elems = doc.getElementsByTagName(STR_GROUP);
-		for (int i = 0; i < elems.getLength(); i++) {
-			// Only group node that are direct children of <simulation>
-			if (elems.item(i).getParentNode().getNodeName()
-					.equals(XML_ROOT_STR)) {
-				Element gNode = (Element) elems.item(i);
-				String gName = elems.item(i).getAttributes()
-						.getNamedItem("name").getNodeValue();
+		List<ElementWrapper> groupNodes = root.getDirectChildren(STR_GROUP);
+		for (ElementWrapper gNode : groupNodes) {
+			String gName = gNode.getChildText(STR_NAME);
+			int groupNumSubs = gNode.getChildInt(STR_NUM_MEMBERS);
 
-				int groupNumSubs = Integer.parseInt(gNode
-						.getElementsByTagName(STR_NUM_MEMBERS).item(0)
-						.getTextContent());
-
-				Hashtable<String, ExpSubject> sGroup = new Hashtable<String, ExpSubject>();
-				for (int k = 1; k <= groupNumSubs; k++) {
-					String subName = gName + " - rat " + k;
-					VirtualExpUniverse universe = new VirtualExpUniverse(
-							mazeFile);
-					IRobot robot = RobotFactory.getRobot(
-							Configuration.getString("Reflexion.Robot"),
-							universe);
-					sGroup.put(subName, new ExpSubject(subName, robot,
-							universe, gNode));
-				}
-
-				groups.put(gName, sGroup);
+			Hashtable<String, ExpSubject> sGroup = new Hashtable<String, ExpSubject>();
+			for (int k = 1; k <= groupNumSubs; k++) {
+				String subName = gName + " - rat " + k;
+				VirtualExpUniverse universe = new VirtualExpUniverse(mazeFile);
+				IRobot robot = RobotFactory.getRobot(
+						Configuration.getString("Reflexion.Robot"), universe);
+				sGroup.put(subName, new ExpSubject(subName, robot, universe,
+						gNode));
 			}
+
+			groups.put(gName, sGroup);
 		}
+
 		return groups;
 	}
 
@@ -219,29 +206,24 @@ public class Experiment implements Runnable {
 		return logPath + File.separator;
 	}
 
-	private void loadTrials(Element docRoot, Hashtable<String, Point4f> points,
+	private void loadTrials(ElementWrapper root,
+			Hashtable<String, Point4f> points,
 			Hashtable<String, Hashtable<String, ExpSubject>> groups,
 			String experimentLogPath) {
 
-		NodeList trialNodes = docRoot.getElementsByTagName(STR_TRIAL);
+		List<ElementWrapper> trialNodes = root.getDirectChildren(STR_TRIAL);
 		// For each trial
-		for (int i = 0; i < trialNodes.getLength(); i++) {
-			Element trialNode = (Element) trialNodes.item(i);
-			Element trialGroupsNode = (Element) trialNode.getElementsByTagName(
-					STR_TRIALGROUPS).item(0);
-
+		for (ElementWrapper trialNode : trialNodes) {
 			// For each group
-			NodeList trialGroups = trialGroupsNode
-					.getElementsByTagName(STR_GROUP);
-			for (int j = 0; j < trialGroups.getLength(); j++) {
-				String groupName = trialGroups.item(j).getTextContent();
+			List<ElementWrapper> trialGroups = trialNode.getChild(STR_TRIALGROUPS)
+					.getDirectChildren(STR_GROUP);
+			for (ElementWrapper groupNode : trialGroups) {
+				String groupName = groupNode.getText();
 				// For each subject in the group
 				for (String subName : groups.get(groupName).keySet()) {
 					ExpSubject subject = groups.get(groupName).get(subName);
 					// For each repetition
-					int reps = Integer.parseInt(trialNode
-							.getElementsByTagName(STR_REPETITIONS).item(0)
-							.getTextContent());
+					int reps = trialNode.getChildInt(STR_REPETITIONS);
 					for (int k = 0; k < reps; k++) {
 						Trial t = new Trial(trialNode, points, groupName,
 								subject, k);
@@ -254,20 +236,15 @@ public class Experiment implements Runnable {
 		}
 	}
 
-	private Hashtable<String, Point4f> loadPoints(NodeList list) {
+	private Hashtable<String, Point4f> loadPoints(List<ElementWrapper> pointList) {
 		Hashtable<String, Point4f> points = new Hashtable<String, Point4f>();
 
-		for (int i = 0; i < list.getLength(); i++) {
-			NamedNodeMap attributes = list.item(i).getAttributes();
-			float x = Float.parseFloat(attributes.getNamedItem(STR_X_POSITION)
-					.getNodeValue());
-			float y = Float.parseFloat(attributes.getNamedItem(STR_Y_POSITION)
-					.getNodeValue());
-			float z = Float.parseFloat(attributes.getNamedItem(STR_Z_POSITION)
-					.getNodeValue());
-			float r = Float.parseFloat(attributes.getNamedItem(STR_ANGLE)
-					.getNodeValue());
-			String pointName = attributes.getNamedItem(STR_NAME).getNodeValue();
+		for (ElementWrapper e : pointList) {
+			float x = e.getChildFloat(STR_X_POSITION);
+			float y = e.getChildFloat(STR_Y_POSITION);
+			float z = e.getChildFloat(STR_Z_POSITION);
+			float r = e.getChildFloat(STR_ANGLE);
+			String pointName = e.getChildText(STR_NAME);
 			points.put(pointName, new Point4f(x, y, z, r));
 		}
 
@@ -278,21 +255,24 @@ public class Experiment implements Runnable {
 		Thread[] ts = new Thread[trials.size()];
 
 		int i = 0;
-		for(Entry<String, Hashtable<String, ExpSubject>> subjects : groups.entrySet())
-		for (final Entry<String, ExpSubject> entry : subjects.getValue().entrySet()) {
-			// Create a thread for each subject, executing all its experiments
-			// in order
-			ts[i] = new Thread(new Runnable() {
+		for (Entry<String, Hashtable<String, ExpSubject>> subjects : groups
+				.entrySet())
+			for (final Entry<String, ExpSubject> entry : subjects.getValue()
+					.entrySet()) {
+				// Create a thread for each subject, executing all its
+				// experiments
+				// in order
+				ts[i] = new Thread(new Runnable() {
 
-				public void run() {
-					for (Trial trial : trials.get(entry.getValue()))
-						trial.run();
-				}
-			});
-			ts[i].start();
-			// ts[i].run();
-			i++;
-		}
+					public void run() {
+						for (Trial trial : trials.get(entry.getValue()))
+							trial.run();
+					}
+				});
+				ts[i].start();
+				// ts[i].run();
+				i++;
+			}
 
 		for (Thread thread : ts) {
 			try {

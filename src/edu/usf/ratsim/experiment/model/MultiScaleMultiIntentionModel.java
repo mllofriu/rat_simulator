@@ -17,6 +17,7 @@ import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.SingleLayerAS;
 import edu.usf.ratsim.nsl.modules.qlearning.update.NormalUpdate;
 import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.support.ElementWrapper;
 
 public class MultiScaleMultiIntentionModel extends NslModel implements
 		RLRatModel {
@@ -28,20 +29,15 @@ public class MultiScaleMultiIntentionModel extends NslModel implements
 	private GoalDecider goalD;
 	private TaxicFoodFinderSchema taxicDrive;
 
-	public MultiScaleMultiIntentionModel(Element params, IRobot robot,
+	public MultiScaleMultiIntentionModel(ElementWrapper params, IRobot robot,
 			ExperimentUniverse universe) {
 		super("MSMIModel", (NslModule) null);
 
 		// Get some configuration values for place cells + qlearning
-		float minRadius = Float.parseFloat(params
-				.getElementsByTagName("minRadius").item(0).getTextContent());
-		float maxRadius = Float.parseFloat(params
-				.getElementsByTagName("maxRadius").item(0).getTextContent());
-		int numLayers = Integer.parseInt(params
-				.getElementsByTagName("numLayers").item(0).getTextContent());
-		int numIntentions = Integer
-				.parseInt(params.getElementsByTagName("numIntentions").item(0)
-						.getTextContent());
+		float minRadius = params.getChildFloat("minRadius");
+		float maxRadius = params.getChildFloat("maxRadius");
+		int numLayers = params.getChildInt("numLayers");
+		int numIntentions = params.getChildInt("numIntentions");
 
 		pcls = new LinkedList<ArtificialPlaceCellLayerWithIntention>();
 		qLUpdVal = new LinkedList<NormalUpdate>();

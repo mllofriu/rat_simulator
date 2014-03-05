@@ -2,6 +2,7 @@ package edu.usf.ratsim.experiment.subject.initializer;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.vecmath.Point4f;
@@ -14,6 +15,7 @@ import org.w3c.dom.NodeList;
 import edu.usf.ratsim.experiment.ExperimentTask;
 import edu.usf.ratsim.experiment.task.PlaceRobotInitallyTask;
 import edu.usf.ratsim.experiment.task.PolicyValueUpdater;
+import edu.usf.ratsim.support.ElementWrapper;
 
 public class SubInitializerFactory {
 
@@ -21,16 +23,13 @@ public class SubInitializerFactory {
 	private static final String STR_INIT_NAME = "name";
 	private static final String STR_INIT_PARAMS = "params";
 
-	public static Collection<SubjectInitializer> createInitializer(NodeList initList){
+	public static Collection<SubjectInitializer> createInitializer(List<ElementWrapper> initializersList){
 		Collection<SubjectInitializer> res = new LinkedList<SubjectInitializer>();
 		
-		for (int i = 0; i < initList.getLength(); i++) {
-			Element initNode = (Element) initList.item(i);
-			String initName = initNode.getElementsByTagName(STR_INIT_NAME)
-					.item(0).getTextContent();
+		for (ElementWrapper initNode : initializersList) {
+			String initName = initNode.getChildText(STR_INIT_NAME);
 			
-			Element initParams = (Element) initNode.getElementsByTagName(
-					STR_INIT_PARAMS).item(0);
+			ElementWrapper initParams = initNode.getChild(STR_INIT_PARAMS);
 			if (initName.equals("feederSelector")) {
 				res.add(new FeederSelector(initParams));
 			} else {

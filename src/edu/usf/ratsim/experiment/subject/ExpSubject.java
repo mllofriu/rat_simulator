@@ -2,6 +2,7 @@ package edu.usf.ratsim.experiment.subject;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import nslj.src.lang.NslHierarchy;
@@ -19,10 +20,12 @@ import edu.usf.ratsim.experiment.model.MultiScaleModel;
 import edu.usf.ratsim.experiment.subject.initializer.SubInitializerFactory;
 import edu.usf.ratsim.experiment.subject.initializer.SubjectInitializer;
 import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.support.ElementWrapper;
 
 public class ExpSubject {
 
 	private static final String STR_INITIALIZERS = "initializers";
+	private static final String STR_MODEL = "model";
 	private NslModel model;
 	private NslSequentialScheduler scheduler;
 	private String name;
@@ -31,7 +34,7 @@ public class ExpSubject {
 	private Map<String, Object> properties;
 
 	public ExpSubject(String name, IRobot robot, ExperimentUniverse universe,
-			Element subjectNode) {
+			ElementWrapper params) {
 		this.name = name;
 		this.universe = universe;
 
@@ -39,14 +42,13 @@ public class ExpSubject {
 
 		initNSL();
 
-		model = ModelFactory.createModel(subjectNode, robot, universe);
+		model = ModelFactory.createModel(params.getChild(STR_MODEL), robot, universe);
 
 		// Load it into nsl
 		system.addModel(model);
 
 		// Create and run subject initializers
-		NodeList initializersList = subjectNode
-				.getElementsByTagName(STR_INITIALIZERS);
+		List<ElementWrapper> initializersList = params.getDirectChildren(STR_INITIALIZERS);
 		Collection<SubjectInitializer> initializers = SubInitializerFactory
 				.createInitializer(initializersList);
 		for (SubjectInitializer si : initializers)
