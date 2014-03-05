@@ -2,6 +2,7 @@ package edu.usf.ratsim.experiment.loggers;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -12,26 +13,26 @@ import edu.usf.ratsim.experiment.model.MultiScaleModel;
 import edu.usf.ratsim.experiment.model.MultiScaleMultiIntentionModel;
 import edu.usf.ratsim.experiment.model.RLRatModel;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
+import edu.usf.ratsim.support.ElementWrapper;
 
 public class LoggerFactory {
 
 	private static final String STR_LOGGER = "logger";
 	private static final String STR_LOGGER_NAME = "name";
 	private static final String STR_LOGGER_PARAMS = "params";
+	private static final String STR_NUM_INTENTIONS = "numIntentions";
 
-	public static Collection<ExperimentLogger> createLoggers(Element loggers,
-			Trial t) {
+	public static Collection<ExperimentLogger> createLoggers(
+			ElementWrapper loggersNode, Trial t) {
 		Collection<ExperimentLogger> res = new LinkedList<ExperimentLogger>();
 
-		NodeList loggerList = loggers.getElementsByTagName(STR_LOGGER);
-		for (int i = 0; i < loggerList.getLength(); i++) {
-			Element loggerNode = (Element) loggerList.item(i);
-			String loggerName = loggerNode
-					.getElementsByTagName(STR_LOGGER_NAME).item(0)
-					.getTextContent();
+		List<ElementWrapper> loggerList = loggersNode
+				.getDirectChildren(STR_LOGGER);
+		for (ElementWrapper loggerNode : loggerList) {
+			String loggerName = loggerNode.getChildText(STR_LOGGER_NAME);
 
-			Element loggerParams = (Element) loggerNode.getElementsByTagName(
-					STR_LOGGER_PARAMS).item(0);
+			ElementWrapper loggerParams = loggerNode
+					.getChild(STR_LOGGER_PARAMS);
 			if (loggerName.equals("PositionLogger")) {
 				ProportionalExplorer p = ((RLRatModel) t.getSubject()
 						.getModel()).getActionPerformer();
@@ -47,8 +48,7 @@ public class LoggerFactory {
 								.getModel()), t.getName(), t.getGroup(), t
 								.getSubjectName(), t.getRep(), Integer
 								.parseInt(loggerParams
-										.getElementsByTagName("numIntentions")
-										.item(0).getTextContent())));
+										.getChildText(STR_NUM_INTENTIONS))));
 			} else {
 				throw new RuntimeException("Logger " + loggerName
 						+ " not implemented.");

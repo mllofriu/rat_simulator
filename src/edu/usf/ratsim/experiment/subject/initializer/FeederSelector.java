@@ -10,6 +10,7 @@ import edu.usf.ratsim.experiment.ExperimentTask;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.experiment.task.ActivateFeeders;
+import edu.usf.ratsim.support.ElementWrapper;
 
 public class FeederSelector implements SubjectInitializer {
 
@@ -17,10 +18,9 @@ public class FeederSelector implements SubjectInitializer {
 	private Random r;
 	private int numFeeders;
 
-	public FeederSelector(Element initParams) {
+	public FeederSelector(ElementWrapper initParams) {
 		numFeeders = Integer
-				.parseInt(initParams.getElementsByTagName(STR_NUM_FEEDERS)
-						.item(0).getTextContent());
+				.parseInt(initParams.getChildText(STR_NUM_FEEDERS));
 		r = new Random();
 	}
 
