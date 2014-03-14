@@ -198,11 +198,11 @@ llply(names(splitPol), function(x){
   splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('layer','intention')], drop=TRUE)
   # Plot different layers with same path data
   lapply(names(splitPolLayer), function (y) plotPolicyOnMaze(paste(x,y,sep='.'),
-                                                             splitPath[[x]], 
-                                                             splitPolLayer[[y]],
-                                                             maze))
+                                                          splitPath[[x]], 
+                                                           splitPolLayer[[y]],
+                                                            maze))
 }, .parallel = TRUE)
-# 
+ 
 # # Plot just path
 invisible(llply(names(splitPath), function(x) plotPathOnMaze(x,
             splitPath[[x]], maze), .parallel = TRUE))

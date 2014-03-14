@@ -11,16 +11,16 @@ import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
 
 public class PolicyDumper implements ExperimentLogger {
 	private List<ArtificialPlaceCellLayer> pclLayers;
-	private List<QLSupport> qlDatas;
+	private List<edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper> polDumpers;
 	private String rep;
 	private String subName;
 	private String trial;
 	private String groupName;
 
-	public PolicyDumper(MultiScaleModel rlRatModel, String trial,
+	public PolicyDumper(RLRatModel rlRatModel, String trial,
 			String groupName, String subName, String rep) {
 		pclLayers = rlRatModel.getPCLLayers();
-		qlDatas = rlRatModel.getQLDatas();
+		polDumpers = rlRatModel.getPolicyDumpers();
 		this.trial = trial;
 		this.subName = subName;
 		this.groupName = groupName;
@@ -28,8 +28,8 @@ public class PolicyDumper implements ExperimentLogger {
 	}
 
 	public void log(ExperimentUniverse universe) {
-		for (int i = 0; i < pclLayers.size(); i++)
-			qlDatas.get(i).dumpPolicy(trial, groupName, subName, rep,
+		for (int i = 0; i < polDumpers.size(); i++)
+			polDumpers.get(i).dumpPolicy(trial, groupName, subName, rep,
 					pclLayers.get(i), i);
 	}
 

@@ -22,7 +22,7 @@ public class TaxicFoodFinderSchema extends NslModule {
 		this.robot = robot;
 		this.univ = univ;
 
-		goalFeeder = new NslDinInt0(this);
+		goalFeeder = new NslDinInt0(this, "goalFeeder");
 	}
 
 	public void simRun() {

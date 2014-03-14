@@ -4,26 +4,25 @@ import java.util.List;
 
 import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.experiment.model.MultiScaleModel;
 import edu.usf.ratsim.experiment.model.MultiScaleMultiIntentionModel;
 import edu.usf.ratsim.experiment.model.RLRatModel;
-import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayerWithIntention;
 import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
+import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
 
 public class PolicyDumperWithIntention implements ExperimentLogger {
 	private List<ArtificialPlaceCellLayerWithIntention> pclLayers;
-	private List<QLSupport> qlDatas;
+	private List<PolicyDumper> policyDumpers;
 	private String rep;
 	private String subName;
 	private String trial;
 	private String groupName;
 	private int numIntentions;
 
-	public PolicyDumperWithIntention(MultiScaleMultiIntentionModel rlRatModel, String trial,
+	public PolicyDumperWithIntention(RLRatModel rlRatModel, String trial,
 			String groupName, String subName, String rep, int numIntentions) {
-		pclLayers = rlRatModel.getPCLLayers();
-		qlDatas = rlRatModel.getQLDatas();
+		pclLayers = rlRatModel.getPCLLayersIntention();
+		policyDumpers = rlRatModel.getPolicyDumpers();
 		this.trial = trial;
 		this.subName = subName;
 		this.groupName = groupName;
@@ -32,8 +31,8 @@ public class PolicyDumperWithIntention implements ExperimentLogger {
 	}
 
 	public void log(ExperimentUniverse universe) {
-		for (int i = 0; i < pclLayers.size(); i++)
-			qlDatas.get(i).dumpPolicy(trial, groupName, subName, rep,
+		for (int i = 0; i < policyDumpers.size(); i++)
+			policyDumpers.get(i).dumpPolicy(trial, groupName, subName, rep,
 					pclLayers.get(i), i, numIntentions);
 	}
 

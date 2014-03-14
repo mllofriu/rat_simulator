@@ -19,7 +19,7 @@ public class ElementWrapper {
 		return new ElementWrapper((Element) e.getElementsByTagName(name).item(0));
 	}
 	
-	public List<ElementWrapper> getDirectChildren(String name){
+	public List<ElementWrapper> getChildren(String name){
 		List<ElementWrapper> res = new LinkedList<ElementWrapper>(); 
 		
 		NodeList elems = e.getElementsByTagName(name);

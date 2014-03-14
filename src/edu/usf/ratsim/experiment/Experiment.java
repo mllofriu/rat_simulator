@@ -55,7 +55,7 @@ public class Experiment implements Runnable {
 	private static final String PLOTTING_SCRIPT = "/edu/usf/ratsim/experiment/plot/plotting.r";
 	private static final String PLOT_EXECUTER = "/edu/usf/ratsim/experiment/plot/plot.sh";
 	private static final String OBJ2PNG_SCRIPT = "/edu/usf/ratsim/experiment/plot/obj2png.r";
-	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/multiFeedersOneSubSingleVsMulti.xml";
+	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/multiFeedersOneSubSingleVsMultiConfModel.xml";
 	private static final String STR_NUM_MEMBERS = "numMembers";
 
 	private Map<ExpSubject, List<Trial>> trials;
@@ -99,7 +99,7 @@ public class Experiment implements Runnable {
 
 		// Load points from xml
 		Hashtable<String, Point4f> points = loadPoints(root
-				.getDirectChildren(STR_POINT));
+				.getChildren(STR_POINT));
 
 		// Set the maze to execute
 		mazeFile = root.getChildText(STR_MAZE);
@@ -114,7 +114,7 @@ public class Experiment implements Runnable {
 	private Hashtable<String, Hashtable<String, ExpSubject>> loadGroups(
 			ElementWrapper root) {
 		Hashtable<String, Hashtable<String, ExpSubject>> groups = new Hashtable<String, Hashtable<String, ExpSubject>>();
-		List<ElementWrapper> groupNodes = root.getDirectChildren(STR_GROUP);
+		List<ElementWrapper> groupNodes = root.getChildren(STR_GROUP);
 		for (ElementWrapper gNode : groupNodes) {
 			String gName = gNode.getChildText(STR_NAME);
 			int groupNumSubs = gNode.getChildInt(STR_NUM_MEMBERS);
@@ -211,12 +211,12 @@ public class Experiment implements Runnable {
 			Hashtable<String, Hashtable<String, ExpSubject>> groups,
 			String experimentLogPath) {
 
-		List<ElementWrapper> trialNodes = root.getDirectChildren(STR_TRIAL);
+		List<ElementWrapper> trialNodes = root.getChildren(STR_TRIAL);
 		// For each trial
 		for (ElementWrapper trialNode : trialNodes) {
 			// For each group
 			List<ElementWrapper> trialGroups = trialNode.getChild(STR_TRIALGROUPS)
-					.getDirectChildren(STR_GROUP);
+					.getChildren(STR_GROUP);
 			for (ElementWrapper groupNode : trialGroups) {
 				String groupName = groupNode.getText();
 				// For each subject in the group

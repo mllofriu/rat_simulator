@@ -31,7 +31,7 @@ public class ArtificialPlaceCellLayerWithIntention extends NslModule {
 		float minX = (float) rect.getMinX();
 		float minY = (float) rect.getMinY();
 		
-		goalFeeder = new NslDinInt0(this);
+		goalFeeder = new NslDinInt0(this, "goalFeeder");
 
 		// Compute number of cells
 		intentionCells = new LinkedList<List<ArtificialPlaceCell>>();

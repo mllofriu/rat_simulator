@@ -6,7 +6,6 @@ import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
 import edu.usf.ratsim.nsl.modules.qlearning.StateActionReward;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.Configuration;
-import edu.usf.ratsim.support.Utiles;
 
 public class ReverseUpdate extends NslModule {
 

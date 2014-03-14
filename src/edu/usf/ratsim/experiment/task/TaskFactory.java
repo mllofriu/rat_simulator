@@ -8,10 +8,6 @@ import java.util.Map;
 import javax.vecmath.Point4f;
 
 import nslj.src.lang.NslModel;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import edu.usf.ratsim.experiment.ExperimentTask;
 import edu.usf.ratsim.support.ElementWrapper;
 
@@ -25,7 +21,7 @@ public class TaskFactory {
 			Map<String, Point4f> points, NslModel model) {
 		Collection<ExperimentTask> res = new LinkedList<ExperimentTask>();
 
-		List<ElementWrapper> taskList = elementWrapper.getDirectChildren(STR_TASK);
+		List<ElementWrapper> taskList = elementWrapper.getChildren(STR_TASK);
 		for (ElementWrapper taskNode : taskList) {
 			String taskName = taskNode.getChildText(STR_TASK_NAME);
 
