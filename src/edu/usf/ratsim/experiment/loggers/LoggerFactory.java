@@ -4,9 +4,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.Trial;
 import edu.usf.ratsim.experiment.model.MultiScaleModel;
@@ -27,7 +24,7 @@ public class LoggerFactory {
 		Collection<ExperimentLogger> res = new LinkedList<ExperimentLogger>();
 
 		List<ElementWrapper> loggerList = loggersNode
-				.getDirectChildren(STR_LOGGER);
+				.getChildren(STR_LOGGER);
 		for (ElementWrapper loggerNode : loggerList) {
 			String loggerName = loggerNode.getChildText(STR_LOGGER_NAME);
 
@@ -44,7 +41,7 @@ public class LoggerFactory {
 						.getSubjectName(), t.getRep()));
 			} else if (loggerName.equals("PolicyDumperWithIntention")) {
 				res.add(new PolicyDumperWithIntention(
-						((MultiScaleMultiIntentionModel) t.getSubject()
+						((RLRatModel) t.getSubject()
 								.getModel()), t.getName(), t.getGroup(), t
 								.getSubjectName(), t.getRep(), Integer
 								.parseInt(loggerParams

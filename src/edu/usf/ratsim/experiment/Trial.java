@@ -3,19 +3,14 @@ package edu.usf.ratsim.experiment;
 import java.util.Collection;
 import java.util.Hashtable;
 
-import javax.media.j3d.VirtualUniverse;
 import javax.vecmath.Point4f;
 
 import nslj.src.lang.NslModel;
-
-import org.w3c.dom.Element;
-
 import edu.usf.ratsim.experiment.loggers.LoggerFactory;
 import edu.usf.ratsim.experiment.stopcondition.ConditionFactory;
 import edu.usf.ratsim.experiment.stopcondition.StopCondition;
 import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.experiment.task.TaskFactory;
-import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.ElementWrapper;
 

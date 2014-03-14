@@ -1,9 +1,6 @@
 package edu.usf.ratsim.experiment.model;
 
 import nslj.src.lang.NslModel;
-
-import org.w3c.dom.Element;
-
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.ElementWrapper;
@@ -14,11 +11,14 @@ public class ModelFactory {
 			ExperimentUniverse universe) {
 		String name = modelNode.getChildText("name");
 
-		ElementWrapper params = modelNode.getChild("params");
 		if (name.equals("MSMModel")) {
+			ElementWrapper params = modelNode.getChild("params");
 			return new MultiScaleModel(params, robot, universe);
-		} else 	if (name.equals("MultiScaleMultiIntentionModel")) {
-				return new MultiScaleMultiIntentionModel(params, robot, universe);
+		} else if (name.equals("MultiScaleMultiIntentionModel")) {
+			ElementWrapper params = modelNode.getChild("params");
+			return new MultiScaleMultiIntentionModel(params, robot, universe);
+		} else if (name.equals("ConfigurableModel")) {
+			return new ConfigurableModel(modelNode, robot, universe);
 		} else {
 			throw new RuntimeException("Model " + name + " not implemented.");
 		}
