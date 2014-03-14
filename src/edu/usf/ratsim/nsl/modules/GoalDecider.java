@@ -3,8 +3,6 @@ package edu.usf.ratsim.nsl.modules;
 import java.util.List;
 import java.util.Random;
 
-import org.omg.PortableInterceptor.ACTIVE;
-
 import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
@@ -21,7 +19,7 @@ public class GoalDecider extends NslModule {
 		super(nslName, nslParent);
 
 		this.universe = univ;
-		goalFeeder = new NslDoutInt0(this);
+		goalFeeder = new NslDoutInt0(this, "goalFeeder");
 
 		currentGoal = -1;
 

@@ -5,16 +5,15 @@ import java.util.List;
 
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
-
-import org.w3c.dom.Element;
-
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
+import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayerWithIntention;
 import edu.usf.ratsim.nsl.modules.GoalDecider;
 import edu.usf.ratsim.nsl.modules.TaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.SingleLayerAS;
+import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
 import edu.usf.ratsim.nsl.modules.qlearning.update.ReverseUpdate;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.ElementWrapper;
@@ -54,7 +53,7 @@ public class MultiScaleModel extends NslModel implements RLRatModel {
 			pcls.add(pcl);
 			qlData.add(qlSupport);
 			qLActionSel.add(new SingleLayerAS("QLActionSel", this,
-					qlSupport, pcl.getSize(), robot, universe));
+					qlSupport, pcl.getSize()));
 			// Update radius
 			radius += (maxRadius - minRadius) / (numLayers - 1);
 		}
@@ -100,6 +99,18 @@ public class MultiScaleModel extends NslModel implements RLRatModel {
 
 	public List<QLSupport> getQLDatas() {
 		return qlData;
+	}
+
+	@Override
+	public List<ArtificialPlaceCellLayerWithIntention> getPCLLayersIntention() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<PolicyDumper> getPolicyDumpers() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

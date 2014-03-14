@@ -8,10 +8,6 @@ import java.util.List;
 import javax.vecmath.Point4f;
 
 import nslj.src.lang.NslModel;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.support.ElementWrapper;
 
@@ -26,7 +22,7 @@ public class ConditionFactory {
 			NslModel nslModel, ExperimentUniverse universe) {
 		Collection<StopCondition> res = new LinkedList<StopCondition>();
 
-		List<ElementWrapper> condList = elementWrapper.getDirectChildren(STR_CONDITION);
+		List<ElementWrapper> condList = elementWrapper.getChildren(STR_CONDITION);
 		for (ElementWrapper condNode : condList) {
 			String condName = condNode.getChildText(STR_COND_NAME);
 
