@@ -9,14 +9,9 @@ import nslj.src.lang.NslHierarchy;
 import nslj.src.lang.NslModel;
 import nslj.src.system.NslInterpreter;
 import nslj.src.system.NslSystem;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.NslSequentialScheduler;
 import edu.usf.ratsim.experiment.model.ModelFactory;
-import edu.usf.ratsim.experiment.model.MultiScaleModel;
 import edu.usf.ratsim.experiment.subject.initializer.SubInitializerFactory;
 import edu.usf.ratsim.experiment.subject.initializer.SubjectInitializer;
 import edu.usf.ratsim.robot.IRobot;
@@ -48,7 +43,7 @@ public class ExpSubject {
 		system.addModel(model);
 
 		// Create and run subject initializers
-		List<ElementWrapper> initializersList = params.getDirectChildren(STR_INITIALIZERS);
+		List<ElementWrapper> initializersList = params.getChildren(STR_INITIALIZERS);
 		Collection<SubjectInitializer> initializers = SubInitializerFactory
 				.createInitializer(initializersList);
 		for (SubjectInitializer si : initializers)

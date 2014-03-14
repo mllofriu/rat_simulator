@@ -2,79 +2,92 @@ package edu.usf.ratsim.experiment.model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
-
-import org.w3c.dom.Element;
-
 import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayerWithIntention;
 import edu.usf.ratsim.nsl.modules.GoalDecider;
+import edu.usf.ratsim.nsl.modules.HeadingAngle;
 import edu.usf.ratsim.nsl.modules.TaxicFoodFinderSchema;
-import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
+import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.SingleLayerAS;
-import edu.usf.ratsim.nsl.modules.qlearning.update.NormalUpdate;
+import edu.usf.ratsim.nsl.modules.qlearning.update.NormalQL;
+import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
 import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.support.ElementWrapper;
+import edu.usf.ratsim.support.Utiles;
 
 public class ConfigurableModel extends NslModel implements RLRatModel {
-	private List<ArtificialPlaceCellLayerWithIntention> pcls;
-	private List<NormalUpdate> qLUpdVal;
+	private static final String STR_MODULE_TYPE = "type";
+	private static final String STR_MODULE_PARAMS = "params";
+	private static final String STR_MODULE_NAME = "name";
+	private List<ArtificialPlaceCellLayerWithIntention> pclsI;
+	private List<ArtificialPlaceCellLayer> pcls;
 	private ProportionalExplorer actionPerformerVote;
-	private List<SingleLayerAS> qLActionSel;
-	private List<QLSupport> qlData;
-	private GoalDecider goalD;
-	private TaxicFoodFinderSchema taxicDrive;
 
-	public ConfigurableModel(Element params, IRobot robot,
+	private List<ElementWrapper> connections;
+	private List<PolicyDumper> polDumpers;
+
+	public ConfigurableModel(ElementWrapper modelNode, IRobot robot,
 			ExperimentUniverse universe) {
 		super("ConfigurableModel", (NslModule) null);
 
-		// Get some configuration values for place cells + qlearning
-		float minRadius = Float.parseFloat(params
-				.getElementsByTagName("minRadius").item(0).getTextContent());
-		float maxRadius = Float.parseFloat(params
-				.getElementsByTagName("maxRadius").item(0).getTextContent());
-		int numLayers = Integer.parseInt(params
-				.getElementsByTagName("numLayers").item(0).getTextContent());
-		int numIntentions = Integer
-				.parseInt(params.getElementsByTagName("numIntentions").item(0)
-						.getTextContent());
+		pclsI = new LinkedList<ArtificialPlaceCellLayerWithIntention>();
+		pcls = new LinkedList<ArtificialPlaceCellLayer>();
+		polDumpers = new LinkedList<PolicyDumper>();
+		for (ElementWrapper module : modelNode.getChild("modules").getChildren(
+				"module")) {
+			String type = module.getChildText(STR_MODULE_TYPE);
+			String name = module.getChildText(STR_MODULE_NAME);
+			ElementWrapper params = module.getChild(STR_MODULE_PARAMS);
 
-		pcls = new LinkedList<ArtificialPlaceCellLayerWithIntention>();
-		qLUpdVal = new LinkedList<NormalUpdate>();
-		qLActionSel = new LinkedList<SingleLayerAS>();
-		qlData = new LinkedList<QLSupport>();
+			if (type.equals("SingleLayerAS")) {
+				int numStates = params.getChildInt("numStates");
+				new SingleLayerAS(name, this, numStates);
+			} else if (type.equals("PCLayer")) {
+				float radius = params.getChildFloat("radius");
+				pcls.add(new ArtificialPlaceCellLayer(name, this, universe, radius));
+			} else if (type.equals("IPCLayer")) {
+				float radius = params.getChildFloat("radius");
+				int numIntentions = params.getChildInt("numIntentions");
+				pclsI.add(new ArtificialPlaceCellLayerWithIntention(name, this,
+						universe, numIntentions, radius));
+			} else if (type.equals("ProportionalExplorer")) {
+				int numLayers = params.getChildInt("numLayers");
+				int maxPossibleReward = params.getChildInt("maxPossibleReward");
+				actionPerformerVote = new ProportionalExplorer(name, this,
+						numLayers, maxPossibleReward, robot, universe);
+			} else if (type.equals("TaxicFoodFinderSchema")) {
+				new TaxicFoodFinderSchema(name, this, robot, universe);
+			} else if (type.equals("GoalDecider")) {
+				new GoalDecider(name, this, universe);
+			} else if (type.equals("NormalQL")) {
+				int numStates = params.getChildInt("numStates");
+				int numActions = Utiles.discreteAngles.length;
+				float discountFactor = params.getChildFloat("discountFactor");
+				float alpha = params.getChildFloat("alpha");
+				float initialValue = params.getChildFloat("initialValue");
+				polDumpers.add(new NormalQL(name, this, numStates, numActions,
+						discountFactor, alpha, initialValue));
+			} else if (type.equals("Reward")) {
+				float foodReward = params.getChildFloat("foodReward");
+				float nonFoodReward = params.getChildFloat("nonFoodReward");
 
-		// Create the layers
-		float radius = minRadius;
-		// For each layer
-		for (int i = 0; i < numLayers; i++) {
-			ArtificialPlaceCellLayerWithIntention pcl = new ArtificialPlaceCellLayerWithIntention(
-					"PlaceCellLayer", this, universe, numIntentions, radius);
-			QLSupport qlSupport = new QLSupport(pcl.getSize());
-			pcls.add(pcl);
-			qlData.add(qlSupport);
-			qLActionSel.add(new SingleLayerAS("QLActionSel", this, qlSupport,
-					pcl.getSize(), robot, universe));
-			// Update radius
-			radius += (maxRadius - minRadius) / (numLayers - 1);
+				new Reward(name, this, universe, foodReward, nonFoodReward);
+			} else if (type.equals("HeadingAngle")) {
+				new HeadingAngle(name, this, universe);
+			} else {
+				throw new RuntimeException("Module " + type
+						+ " not implemented.");
+			}
 		}
-		// Created first to let Qlearning execute once when there is food
-		actionPerformerVote = new ProportionalExplorer("ActionPerformer", this,
-				numLayers, robot, universe);
 
-		// Create taxic driver to override in case of flashing
-		taxicDrive = new TaxicFoodFinderSchema("Taxic Driver", this, robot,
-				universe);
-
-		goalD = new GoalDecider("GoalDecider", this, universe);
-
-		for (int i = 0; i < numLayers; i++) {
-			qLUpdVal.add(new NormalUpdate("QLUpdVal", this, pcls.get(i)
-					.getSize(), qlData.get(i), robot, universe));
-		}
+		this.connections = modelNode.getChild("connections").getChildren(
+				"connection");
 	}
 
 	public void initSys() {
@@ -84,30 +97,50 @@ public class ConfigurableModel extends NslModel implements RLRatModel {
 	}
 
 	public void makeConn() {
-		for (int i = 0; i < pcls.size(); i++) {
-			nslConnect(pcls.get(i), "activation", qLActionSel.get(i), "states");
-			nslConnect(qLActionSel.get(i).actionVote,
-					actionPerformerVote.votes[i]);
-			nslConnect(goalD.goalFeeder, pcls.get(i).goalFeeder);
-			nslConnect(pcls.get(i), "activation", qLUpdVal.get(i), "states");
+		for (ElementWrapper conn : connections) {
+			ElementWrapper from = conn.getChild("from");
+			ElementWrapper to = conn.getChild("to");
+			System.out.println(from.getChildText("name") + " "
+					+ from.getChildText("variable") + " "
+					+ to.getChildText("name") + " "
+					+ to.getChildText("variable"));
+
+			nslConnect(getChild(from.getChildText("name")),
+					from.getChildText("variable"),
+					getChild(to.getChildText("name")),
+					to.getChildText("variable"));
 		}
-		nslConnect(goalD.goalFeeder, taxicDrive.goalFeeder);
+	}
+
+	private NslModule getChild(String name) {
+		for (NslModule module : (Vector<NslModule>) nslGetModuleChildrenVector()) {
+			if (module.nslGetName().equals(name))
+				return module;
+		}
+
+		return null;
 	}
 
 	public ProportionalExplorer getActionPerformer() {
 		return actionPerformerVote;
 	}
 
-	public List<NormalUpdate> getQLValUpdaters() {
-		return qLUpdVal;
+	public List<NormalQL> getQLValUpdaters() {
+		return null;
 	}
 
-	public List<ArtificialPlaceCellLayerWithIntention> getPCLLayers() {
+	public List<ArtificialPlaceCellLayerWithIntention> getPCLLayersIntention() {
+		return pclsI;
+	}
+
+	@Override
+	public List<PolicyDumper> getPolicyDumpers() {
+		return polDumpers;
+	}
+
+	@Override
+	public List<ArtificialPlaceCellLayer> getPCLLayers() {
 		return pcls;
-	}
-
-	public List<QLSupport> getQLDatas() {
-		return qlData;
 	}
 
 }

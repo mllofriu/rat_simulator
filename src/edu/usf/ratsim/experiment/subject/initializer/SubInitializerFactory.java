@@ -3,18 +3,7 @@ package edu.usf.ratsim.experiment.subject.initializer;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import javax.vecmath.Point4f;
-
-import nslj.src.lang.NslModel;
-
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import edu.usf.ratsim.experiment.ExperimentTask;
-import edu.usf.ratsim.experiment.task.PlaceRobotInitallyTask;
-import edu.usf.ratsim.experiment.task.PolicyValueUpdater;
 import edu.usf.ratsim.support.ElementWrapper;
 
 public class SubInitializerFactory {

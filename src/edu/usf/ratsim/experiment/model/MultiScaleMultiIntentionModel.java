@@ -5,9 +5,6 @@ import java.util.List;
 
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
-
-import org.w3c.dom.Element;
-
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayerWithIntention;
 import edu.usf.ratsim.nsl.modules.GoalDecider;
@@ -15,14 +12,14 @@ import edu.usf.ratsim.nsl.modules.TaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.SingleLayerAS;
-import edu.usf.ratsim.nsl.modules.qlearning.update.NormalUpdate;
+import edu.usf.ratsim.nsl.modules.qlearning.update.NormalQL;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.ElementWrapper;
 
 public class MultiScaleMultiIntentionModel extends NslModel implements
 		RLRatModel {
 	private List<ArtificialPlaceCellLayerWithIntention> pcls;
-	private List<NormalUpdate> qLUpdVal;
+	private List<NormalQL> qLUpdVal;
 	private ProportionalExplorer actionPerformerVote;
 	private List<SingleLayerAS> qLActionSel;
 	private List<QLSupport> qlData;
@@ -40,7 +37,7 @@ public class MultiScaleMultiIntentionModel extends NslModel implements
 		int numIntentions = params.getChildInt("numIntentions");
 
 		pcls = new LinkedList<ArtificialPlaceCellLayerWithIntention>();
-		qLUpdVal = new LinkedList<NormalUpdate>();
+		qLUpdVal = new LinkedList<NormalQL>();
 		qLActionSel = new LinkedList<SingleLayerAS>();
 		qlData = new LinkedList<QLSupport>();
 
@@ -54,7 +51,7 @@ public class MultiScaleMultiIntentionModel extends NslModel implements
 			pcls.add(pcl);
 			qlData.add(qlSupport);
 			qLActionSel.add(new SingleLayerAS("QLActionSel", this, qlSupport,
-					pcl.getSize(), robot, universe));
+					pcl.getSize()));
 			// Update radius
 			radius += (maxRadius - minRadius) / (numLayers - 1);
 		}
@@ -69,7 +66,7 @@ public class MultiScaleMultiIntentionModel extends NslModel implements
 		goalD = new GoalDecider("GoalDecider", this, universe);
 
 		for (int i = 0; i < numLayers; i++) {
-			qLUpdVal.add(new NormalUpdate("QLUpdVal", this, pcls.get(i)
+			qLUpdVal.add(new NormalQL("QLUpdVal", this, pcls.get(i)
 					.getSize(), qlData.get(i), robot, universe));
 		}
 	}
@@ -95,7 +92,7 @@ public class MultiScaleMultiIntentionModel extends NslModel implements
 		return actionPerformerVote;
 	}
 
-	public List<NormalUpdate> getQLValUpdaters() {
+	public List<NormalQL> getQLValUpdaters() {
 		return qLUpdVal;
 	}
 

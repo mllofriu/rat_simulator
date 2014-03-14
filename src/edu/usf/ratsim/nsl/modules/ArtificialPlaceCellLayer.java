@@ -9,6 +9,7 @@ import javax.vecmath.Point3f;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.ratsim.support.ElementWrapper;
 
 public class ArtificialPlaceCellLayer extends NslModule {
 
@@ -27,6 +28,8 @@ public class ArtificialPlaceCellLayer extends NslModule {
 		float maxY = (float) rect.getMaxY();
 		float minX = (float) rect.getMinX();
 		float minY = (float) rect.getMinY();
+		
+		
 
 		// Compute number of cells
 		cells = new LinkedList<ArtificialPlaceCell>();

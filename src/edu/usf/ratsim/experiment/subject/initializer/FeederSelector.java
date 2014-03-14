@@ -4,9 +4,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Random;
 
-import org.w3c.dom.Element;
-
-import edu.usf.ratsim.experiment.ExperimentTask;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.experiment.task.ActivateFeeders;

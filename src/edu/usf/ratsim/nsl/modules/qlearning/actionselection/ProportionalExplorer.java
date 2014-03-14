@@ -33,13 +33,13 @@ public class ProportionalExplorer extends NslModule {
 
 	private ExperimentUniverse universe;
 
-	private float maxPossibleVal;
+	private float maxPossibleReward;
 
 	private float explorationMaxValMultiplier = Configuration
 			.getFloat("ActionPerformer.maxValMultiplier");
 
 	public ProportionalExplorer(String nslName, NslModule nslParent,
-			int numLayers, IRobot robot, ExperimentUniverse universe) {
+			int numLayers, float maxPossibleReward, IRobot robot, ExperimentUniverse universe) {
 		super(nslName, nslParent);
 
 		this.robot = robot;
@@ -49,8 +49,7 @@ public class ProportionalExplorer extends NslModule {
 		for (int i = 0; i < numLayers; i++)
 			votes[i] = new NslDinFloat1(this, "votes" + i);
 
-		maxPossibleVal = Configuration.getFloat("QLearning.foodReward")
-				* numLayers;
+		this.maxPossibleReward = maxPossibleReward;
 
 		r = new Random();
 	}
@@ -72,7 +71,7 @@ public class ProportionalExplorer extends NslModule {
 //		if (maxVal > 1)
 //			System.out.println(maxVal);
 		
-		explore = r.nextFloat() > (maxVal / maxPossibleVal);
+		explore = r.nextFloat() > (maxVal / maxPossibleReward);
 //		explore = maxVal == 0;
 		// System.out.println(maxVal);
 		// Make a list of actions and values
