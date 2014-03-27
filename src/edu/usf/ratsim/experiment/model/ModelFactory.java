@@ -11,7 +11,7 @@ public class ModelFactory {
 			ExperimentUniverse universe) {
 		String name = modelNode.getChildText("name");
 
-		if (name.equals("MSMModel")) {
+		if (name.equals("MultiScaleModel")) {
 			ElementWrapper params = modelNode.getChild("params");
 			return new MultiScaleModel(params, robot, universe);
 		} else if (name.equals("MultiScaleMultiIntentionModel")) {
