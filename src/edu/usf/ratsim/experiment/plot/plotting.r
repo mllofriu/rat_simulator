@@ -44,17 +44,20 @@ mazePlot <- function(mazeFile){
   dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, FALSE)
   m <- geom_path(data=dat,aes(x,y))
   
-  #  ns <- getNodeSet(doc, "/world//food")
-  #  r <- as.numeric(xmlGetAttr(ns[[1]], "r"))
-  #  x <- as.numeric(xmlGetAttr(ns[[1]], "xp"))
-  # y coordinate is -z
-  #  y <- - as.numeric(xmlGetAttr(ns[[1]], "zp"))
-  #  dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, TRUE)
-  #  p <- geom_polygon(data=dat, aes(x,y), color="grey", fill="grey")
+   ns <- getNodeSet(doc, "/world//feeder")
+   feeders <- llply(ns, function (f) {
+     r <- as.numeric(xmlGetAttr(f, "r"))
+     x <- as.numeric(xmlGetAttr(f, "xp"))
+     # y coordinate is -z
+     y <- - as.numeric(xmlGetAttr(f, "zp"))
+     dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, TRUE)
+     p <- geom_polygon(data=dat, aes(x,y), color="grey", fill="grey")
+  })
+   
   
-  # Return a list with the maze and platform
-  #  list(m,p)
-  m
+  #Return a list with the maze and platform
+  list(m,feeders)
+  #m
 }
 
 ratPathPlot <- function(pathData, p){

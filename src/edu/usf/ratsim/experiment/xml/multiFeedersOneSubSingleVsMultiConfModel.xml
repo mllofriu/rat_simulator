@@ -82,8 +82,8 @@
 					<type>SingleLayerAS</type>
 					<name>ASL1</name>
 					<params>
-					   <!-- (1 m / .05) ^ 2 * 2 * 8  -->
-					   <!-- (boundingSide / radius) ^ 2 * numsublayers * numIntentions  -->
+						<!-- (1 m / .05) ^ 2 * 2 * 8 -->
+						<!-- (boundingSide / radius) ^ 2 * numsublayers * numIntentions -->
 						<numStates>3200</numStates>
 					</params>
 				</module>
@@ -104,26 +104,27 @@
 					<name>GD1</name>
 				</module>
 				<module>
-                    <type>IPCLayer</type>
-                    <name>AfterAPCL1</name>
-                    <params>
-                        <radius>.05</radius>
-                        <numIntentions>8</numIntentions>
-                    </params>
-                </module>
+					<type>IPCLayer</type>
+					<name>AfterAPCL1</name>
+					<params>
+						<radius>.05</radius>
+						<numIntentions>8</numIntentions>
+					</params>
+				</module>
 				<module>
 					<type>Reward</type>
 					<name>R1</name>
 					<params>
-					<foodReward>100</foodReward>
-					<nonFoodReward>-.001</nonFoodReward></params>
+						<foodReward>100</foodReward>
+						<nonFoodReward>-.001</nonFoodReward>
+					</params>
 				</module>
 				<module>
-                    <type>HeadingAngle</type>
-                    <name>HA1</name>
-                    <params>
-                    </params>
-                </module>
+					<type>HeadingAngle</type>
+					<name>HA1</name>
+					<params>
+					</params>
+				</module>
 				<module>
 					<type>NormalQL</type>
 					<name>NQL1</name>
@@ -157,106 +158,90 @@
 					</to>
 				</connection>
 				<connection>
-                    <from>
-                        <name>ASL1</name>
-                        <variable>votes</variable>
-                    </from>
-                    <to>
-                        <name>PE1</name>
-                        <variable>votes0</variable>
-                    </to>
-                </connection>
-				<!-- <connection>
 					<from>
 						<name>ASL1</name>
 						<variable>votes</variable>
 					</from>
 					<to>
 						<name>PE1</name>
-						<variable>votes</variable>
+						<variable>votes0</variable>
 					</to>
-				</connection> -->
-				<!-- <connection>
+				</connection>
+				<!-- <connection> <from> <name>ASL1</name> <variable>votes</variable> 
+					</from> <to> <name>PE1</name> <variable>votes</variable> </to> </connection> -->
+				<!-- <connection> <from> <name>GD1</name> <variable>goalFeeder</variable> 
+					</from> <to> <name>PCL1</name> <variable>goalFeeder</variable> </to> </connection> -->
+				<connection>
 					<from>
 						<name>GD1</name>
 						<variable>goalFeeder</variable>
 					</from>
 					<to>
-						<name>PCL1</name>
+						<name>TFF1</name>
 						<variable>goalFeeder</variable>
 					</to>
-				</connection> -->
+				</connection>
 				<connection>
-                    <from>
-                        <name>GD1</name>
-                        <variable>goalFeeder</variable>
-                    </from>
-                    <to>
-                        <name>TFF1</name>
-                        <variable>goalFeeder</variable>
-                    </to>
-                </connection>
-                <connection>
-                    <from>
-                        <name>GD1</name>
-                        <variable>goalFeeder</variable>
-                    </from>
-                    <to>
-                        <name>BeforeAPCL1</name>
-                        <variable>goalFeeder</variable>
-                    </to>
-                </connection>
-                <connection>
-                    <from>
-                        <name>GD1</name>
-                        <variable>goalFeeder</variable>
-                    </from>
-                    <to>
-                        <name>AfterAPCL1</name>
-                        <variable>goalFeeder</variable>
-                    </to>
-                </connection>
-                <connection>
-                    <from>
-                        <name>HA1</name>
-                        <variable>headingAngle</variable>
-                    </from>
-                    <to>
-                        <name>NQL1</name>
-                        <variable>takenAction</variable>
-                    </to>
-                </connection>
+					<from>
+						<name>GD1</name>
+						<variable>goalFeeder</variable>
+					</from>
+					<to>
+						<name>BeforeAPCL1</name>
+						<variable>goalFeeder</variable>
+					</to>
+				</connection>
 				<connection>
-                    <from>
-                        <name>R1</name>
-                        <variable>reward</variable>
-                    </from>
-                    <to>
-                        <name>NQL1</name>
-                        <variable>reward</variable>
-                    </to>
-                </connection>
-                <connection>
-                    <from>
-                        <name>BeforeAPCL1</name>
-                        <variable>activation</variable>
-                    </from>
-                    <to>
-                        <name>NQL1</name>
-                        <variable>statesBefore</variable>
-                    </to>
-                </connection>
-                <connection>
-                    <from>
-                        <name>AfterAPCL1</name>
-                        <variable>activation</variable>
-                    </from>
-                    <to>
-                        <name>NQL1</name>
-                        <variable>statesAfter</variable>
-                    </to>
-                </connection>
-                
+					<from>
+						<name>GD1</name>
+						<variable>goalFeeder</variable>
+					</from>
+					<to>
+						<name>AfterAPCL1</name>
+						<variable>goalFeeder</variable>
+					</to>
+				</connection>
+				<connection>
+					<from>
+						<name>HA1</name>
+						<variable>headingAngle</variable>
+					</from>
+					<to>
+						<name>NQL1</name>
+						<variable>takenAction</variable>
+					</to>
+				</connection>
+				<connection>
+					<from>
+						<name>R1</name>
+						<variable>reward</variable>
+					</from>
+					<to>
+						<name>NQL1</name>
+						<variable>reward</variable>
+					</to>
+				</connection>
+				<connection>
+					<from>
+						<name>BeforeAPCL1</name>
+						<variable>activation</variable>
+					</from>
+					<to>
+						<name>NQL1</name>
+						<variable>statesBefore</variable>
+					</to>
+				</connection>
+				<connection>
+					<from>
+						<name>AfterAPCL1</name>
+						<variable>activation</variable>
+					</from>
+					<to>
+						<name>NQL1</name>
+						<variable>statesAfter</variable>
+					</to>
+				</connection>
+
 			</connections>
 			<params>
 
@@ -273,34 +258,19 @@
 		</initializers>
 	</group>
 
-	<!-- <group>
-		<name>Five Layers</name>
-		<numMembers>1</numMembers>
-		<model>
-			<name>MultiScaleMultiIntentionModel</name>
-			<params>
-				<numLayers>5</numLayers>
-				<minRadius>.05</minRadius>
-				<maxRadius>.25</maxRadius>
-				<numIntentions>8</numIntentions>
-			</params>
-		</model>
-		<initializers>
-			<initializer>
-				<name>feederSelector</name>
-				<params>
-					<numFeeders>3</numFeeders>
-				</params>
-			</initializer>
-		</initializers>
-	</group> -->
+	<!-- <group> <name>Five Layers</name> <numMembers>1</numMembers> <model> 
+		<name>MultiScaleMultiIntentionModel</name> <params> <numLayers>5</numLayers> 
+		<minRadius>.05</minRadius> <maxRadius>.25</maxRadius> <numIntentions>8</numIntentions> 
+		</params> </model> <initializers> <initializer> <name>feederSelector</name> 
+		<params> <numFeeders>3</numFeeders> </params> </initializer> </initializers> 
+		</group> -->
 
 
 	<!--Experiment Trials -->
 	<!-- 8 training trials -->
 	<trial>
 		<name>training</name>
-		<reps>1</reps>
+		<reps>4</reps>
 		<groups>
 			<group>One Layer</group>
 			<!-- <group>Five Layers</group> -->
@@ -354,14 +324,14 @@
 				<params>
 					<numIntentions>8</numIntentions>
 				</params>
-			</logger> 
+			</logger>
 		</afterTrialLoggers>
 	</trial>
 
 	<!-- 4 testing trials -->
 	<trial>
 		<name>recall</name>
-		<reps>1</reps>
+		<reps>2</reps>
 		<groups>
 			<group>One Layer</group>
 			<!-- <group>Five Layers</group> -->

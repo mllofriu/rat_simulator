@@ -3,16 +3,13 @@
 
 <experiment>
 	<!--Robot startin points -->
-	<point name='W' xp='-0.4' yp='0' zp='0' rot='0' />
-	<point name='N' xp='0' yp='0' zp='-0.4' rot='0' />
-	<point name='E' xp='0.4' yp='0' zp='0' rot='0' />
-	<point name='S' xp='0' yp='0' zp='0.35' rot='0' />
-
-	<!--Hidden platform points -->
-	<point name='SE' xp='0.2' yp='0' zp='0.2' rot='0' />
-	<point name='SW' xp='-0.2' yp='0' zp='0.2' rot='0' />
-	<point name='NE' xp='0.2' yp='0' zp='-0.2' rot='0' />
-	<point name='NW' xp='-0.2' yp='0' zp='-0.2' rot='0' />
+	<point>
+        <name>S</name>
+        <xp>0</xp>
+        <yp>0</yp>
+        <zp>0.35</zp>
+        <rot>0</rot>
+    </point>
 
 	<maze>/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
 
