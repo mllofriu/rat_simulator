@@ -2,6 +2,7 @@ package edu.usf.ratsim.experiment.model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
 
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
@@ -9,64 +10,85 @@ import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayerWithIntention;
 import edu.usf.ratsim.nsl.modules.GoalDecider;
+import edu.usf.ratsim.nsl.modules.HeadingAngle;
 import edu.usf.ratsim.nsl.modules.TaxicFoodFinderSchema;
-import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
+import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.SingleLayerAS;
+import edu.usf.ratsim.nsl.modules.qlearning.update.NormalQL;
 import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
-import edu.usf.ratsim.nsl.modules.qlearning.update.ReverseUpdate;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.ElementWrapper;
+import edu.usf.ratsim.support.Utiles;
 
 public class MultiScaleModel extends NslModel implements RLRatModel {
-	private List<ArtificialPlaceCellLayer> pcls;
-	private List<ReverseUpdate> qLUpdVal;
+	private static final String ACTION_SELECTION_STR = "ASL";
+	private static final String ACTION_PERFORMER_STR = "AP";
+	private static final String FOOD_FINDER_STR = "TD";
+	private static final String BEFORE_STATE_STR = "BeforePCL";
+	private static final String AFTER_STATE_STR = "AfterPCL";
+	private static final String QL_STR = "NQL";
+	private static final String TAKEN_ACTION_STR = "TA";
+	private static final String REWARD_STR = "R";
+	private static final String GOAL_DECIDER_STR = "GD";
+	private List<ArtificialPlaceCellLayer> beforePcls;
+	private List<PolicyDumper> qLUpdVal;
 	private ProportionalExplorer actionPerformerVote;
 	private List<SingleLayerAS> qLActionSel;
-	private List<QLSupport> qlData;
-	private GoalDecider goalD;
-	private TaxicFoodFinderSchema taxicDrive;
+	private LinkedList<ArtificialPlaceCellLayer> afterPcls;
+	private int numLayers;
 
 	public MultiScaleModel(ElementWrapper params, IRobot robot,
 			ExperimentUniverse universe) {
 		super("MSModel", (NslModule) null);
-		
-		goalD = new GoalDecider("GoalDecider", this, universe);
+
+		new GoalDecider(GOAL_DECIDER_STR, this, universe);
 
 		// Get some configuration values for place cells + qlearning
 		float minRadius = params.getChildFloat("minRadius");
 		float maxRadius = params.getChildFloat("maxRadius");
-		int numLayers = params.getChildInt("numLayers");
+		numLayers = params.getChildInt("numLayers");
+		float maxPossibleReward = params.getChildFloat("maxPossibleReward");
+		int numActions = Utiles.discreteAngles.length;
+		float discountFactor = params.getChildFloat("discountFactor");
+		float alpha = params.getChildFloat("alpha");
+		float initialValue = params.getChildFloat("initialValue");
+		float foodReward = params.getChildFloat("foodReward");
+		float nonFoodReward = params.getChildFloat("nonFoodReward");
 
-		pcls = new LinkedList<ArtificialPlaceCellLayer>();
-		qLUpdVal = new LinkedList<ReverseUpdate>();
+		beforePcls = new LinkedList<ArtificialPlaceCellLayer>();
+		afterPcls = new LinkedList<ArtificialPlaceCellLayer>();
+		qLUpdVal = new LinkedList<PolicyDumper>();
 		qLActionSel = new LinkedList<SingleLayerAS>();
-		qlData = new LinkedList<QLSupport>();
 
 		// Create the layers
 		float radius = minRadius;
 		// For each layer
 		for (int i = 0; i < numLayers; i++) {
 			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer(
-					"PlaceCellLayer", this, universe, radius);
-			QLSupport qlSupport = new QLSupport(pcl.getSize());
-			pcls.add(pcl);
-			qlData.add(qlSupport);
-			qLActionSel.add(new SingleLayerAS("QLActionSel", this,
-					qlSupport, pcl.getSize()));
+					BEFORE_STATE_STR + i, this, universe, radius);
+			beforePcls.add(pcl);
+			qLActionSel.add(new SingleLayerAS(ACTION_SELECTION_STR + i, this,
+					pcl.getSize()));
 			// Update radius
 			radius += (maxRadius - minRadius) / (numLayers - 1);
 		}
 		// Created first to let Qlearning execute once when there is food
-		actionPerformerVote = new ProportionalExplorer("ActionPerformer", this,
-				numLayers, robot, universe);
-		
-		// Create taxic driver to override in case of flashing
-		taxicDrive = new TaxicFoodFinderSchema("Taxic Driver", this, robot, universe);
+		actionPerformerVote = new ProportionalExplorer(ACTION_PERFORMER_STR,
+				this, numLayers, maxPossibleReward, robot, universe);
 
+		// Create taxic driver to override in case of flashing
+		new TaxicFoodFinderSchema(FOOD_FINDER_STR, this, robot,
+				universe);
+
+		new Reward(REWARD_STR, this, universe, foodReward, nonFoodReward);
+		new HeadingAngle(TAKEN_ACTION_STR, this, universe);
 		for (int i = 0; i < numLayers; i++) {
-			qLUpdVal.add(new ReverseUpdate("QLUpdVal", this, pcls.get(i)
-					.getSize(), qlData.get(i), robot, universe));
+			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer(
+					AFTER_STATE_STR + i, this, universe, radius);
+			afterPcls.add(pcl);
+			qLUpdVal.add(new NormalQL(QL_STR + i, this, beforePcls.get(i)
+					.getSize(), numActions, discountFactor, alpha, initialValue));
 		}
 	}
 
@@ -77,40 +99,52 @@ public class MultiScaleModel extends NslModel implements RLRatModel {
 	}
 
 	public void makeConn() {
-		for (int i = 0; i < pcls.size(); i++) {
-			nslConnect(pcls.get(i), "activation", qLActionSel.get(i), "states");
-			nslConnect(qLActionSel.get(i).actionVote,
-					actionPerformerVote.votes[i]);
+		for (int i = 0; i < numLayers; i++) {
+			nslConnect(getChild(GOAL_DECIDER_STR), "goalFeeder",
+					getChild(FOOD_FINDER_STR), "goalFeeder");
+			nslConnect(getChild(BEFORE_STATE_STR + i), "activation",
+					getChild(ACTION_SELECTION_STR + i), "states");
+			nslConnect(getChild(QL_STR + i), "value",
+					getChild(ACTION_SELECTION_STR + i), "value");
+			nslConnect(getChild(ACTION_SELECTION_STR + i), "votes",
+					getChild(ACTION_PERFORMER_STR), "votes" + i);
+			nslConnect(getChild(TAKEN_ACTION_STR), "headingAngle",
+					getChild(QL_STR + i), "takenAction");
+			nslConnect(getChild(REWARD_STR), "reward",
+					getChild(QL_STR + i), "reward");
+			nslConnect(getChild(BEFORE_STATE_STR + i), "activation",
+					getChild(QL_STR + i), "statesBefore");
+			nslConnect(getChild(BEFORE_STATE_STR + i), "activation",
+					getChild(QL_STR + i), "statesAfter");
 		}
-		nslConnect(goalD.goalFeeder, taxicDrive.goalFeeder);
+	}
+
+	@SuppressWarnings("unchecked")
+	private NslModule getChild(String name) {
+		for (NslModule module : (Vector<NslModule>) nslGetModuleChildrenVector()) {
+			if (module.nslGetName() != null && module.nslGetName().equals(name))
+				return module;
+		}
+
+		return null;
 	}
 
 	public ProportionalExplorer getActionPerformer() {
 		return actionPerformerVote;
 	}
 
-	public List<ReverseUpdate> getQLValUpdaters() {
-		return qLUpdVal;
-	}
-
 	public List<ArtificialPlaceCellLayer> getPCLLayers() {
-		return pcls;
-	}
-
-	public List<QLSupport> getQLDatas() {
-		return qlData;
+		return beforePcls;
 	}
 
 	@Override
 	public List<ArtificialPlaceCellLayerWithIntention> getPCLLayersIntention() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new RuntimeException("Method not implemented");
 	}
 
 	@Override
 	public List<PolicyDumper> getPolicyDumpers() {
-		// TODO Auto-generated method stub
-		return null;
+		return qLUpdVal;
 	}
 
 }
