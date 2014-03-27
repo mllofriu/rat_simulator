@@ -13,16 +13,17 @@ import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.SingleLayerAS;
 import edu.usf.ratsim.nsl.modules.qlearning.update.NormalQL;
+import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.ElementWrapper;
+import edu.usf.ratsim.support.Utiles;
 
 public class MultiScaleMultiIntentionModel extends NslModel implements
 		RLRatModel {
 	private List<ArtificialPlaceCellLayerWithIntention> pcls;
-	private List<NormalQL> qLUpdVal;
+	private List<PolicyDumper> qLUpdVal;
 	private ProportionalExplorer actionPerformerVote;
 	private List<SingleLayerAS> qLActionSel;
-	private List<QLSupport> qlData;
 	private GoalDecider goalD;
 	private TaxicFoodFinderSchema taxicDrive;
 
@@ -35,11 +36,15 @@ public class MultiScaleMultiIntentionModel extends NslModel implements
 		float maxRadius = params.getChildFloat("maxRadius");
 		int numLayers = params.getChildInt("numLayers");
 		int numIntentions = params.getChildInt("numIntentions");
-
+		float maxPossibleReward = params.getChildFloat("maxPossibleReward");
+		int numActions = Utiles.discreteAngles.length;
+		float discountFactor = params.getChildFloat("discountFactor");
+		float alpha = params.getChildFloat("alpha");
+		float initialValue = params.getChildFloat("initialValue");
+		
 		pcls = new LinkedList<ArtificialPlaceCellLayerWithIntention>();
-		qLUpdVal = new LinkedList<NormalQL>();
+		qLUpdVal = new LinkedList<PolicyDumper>();
 		qLActionSel = new LinkedList<SingleLayerAS>();
-		qlData = new LinkedList<QLSupport>();
 
 		// Create the layers
 		float radius = minRadius;
@@ -47,27 +52,25 @@ public class MultiScaleMultiIntentionModel extends NslModel implements
 		for (int i = 0; i < numLayers; i++) {
 			ArtificialPlaceCellLayerWithIntention pcl = new ArtificialPlaceCellLayerWithIntention(
 					"PlaceCellLayer", this, universe, numIntentions, radius);
-			QLSupport qlSupport = new QLSupport(pcl.getSize());
 			pcls.add(pcl);
-			qlData.add(qlSupport);
-			qLActionSel.add(new SingleLayerAS("QLActionSel", this, qlSupport,
-					pcl.getSize()));
+			qLActionSel.add(new SingleLayerAS("QLActionSel", this, pcl
+					.getSize()));
 			// Update radius
 			radius += (maxRadius - minRadius) / (numLayers - 1);
 		}
 		// Created first to let Qlearning execute once when there is food
 		actionPerformerVote = new ProportionalExplorer("ActionPerformer", this,
-				numLayers, robot, universe);
+				numLayers, maxPossibleReward, robot, universe);
 
 		// Create taxic driver to override in case of flashing
 		taxicDrive = new TaxicFoodFinderSchema("Taxic Driver", this, robot,
 				universe);
-		
+
 		goalD = new GoalDecider("GoalDecider", this, universe);
 
 		for (int i = 0; i < numLayers; i++) {
-			qLUpdVal.add(new NormalQL("QLUpdVal", this, pcls.get(i)
-					.getSize(), qlData.get(i), robot, universe));
+			qLUpdVal.add(new NormalQL("QLUpdVal", this, pcls.get(i).getSize(),
+					numActions, discountFactor, alpha, initialValue));
 		}
 	}
 
@@ -83,7 +86,6 @@ public class MultiScaleMultiIntentionModel extends NslModel implements
 			nslConnect(qLActionSel.get(i).actionVote,
 					actionPerformerVote.votes[i]);
 			nslConnect(goalD.goalFeeder, pcls.get(i).goalFeeder);
-			nslConnect(pcls.get(i), "activation", qLUpdVal.get(i), "states");
 		}
 		nslConnect(goalD.goalFeeder, taxicDrive.goalFeeder);
 	}
@@ -92,16 +94,12 @@ public class MultiScaleMultiIntentionModel extends NslModel implements
 		return actionPerformerVote;
 	}
 
-	public List<NormalQL> getQLValUpdaters() {
-		return qLUpdVal;
-	}
-
-	public List<ArtificialPlaceCellLayerWithIntention> getPCLLayers() {
+	public List<ArtificialPlaceCellLayerWithIntention> getPCLLayersIntention() {
 		return pcls;
 	}
 
-	public List<QLSupport> getQLDatas() {
-		return qlData;
+	public List<PolicyDumper> getPolicyDumpers() {
+		throw new RuntimeException("Method not implemented");
 	}
 
 }

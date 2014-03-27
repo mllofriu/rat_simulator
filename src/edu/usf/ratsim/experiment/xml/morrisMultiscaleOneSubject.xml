@@ -2,53 +2,52 @@
 <!-- Just a test of new format -->
 
 <experiment>
-	<!--Robot startin points -->
-	<point name='W' xp='-0.4' yp='0' zp='0' rot='0' />
-	<point name='N' xp='0' yp='0' zp='-0.4' rot='0' />
-	<point name='E' xp='0.4' yp='0' zp='0' rot='0' />
-	<point name='S' xp='0' yp='0' zp='0.35' rot='0' />
+    <point>
+        <name>S</name>
+        <xp>0</xp>
+        <yp>0</yp>
+        <zp>0.35</zp>
+        <rot>0</rot>
+    </point>
+	
 
-	<!--Hidden platform points -->
-	<point name='SE' xp='0.2' yp='0' zp='0.2' rot='0' />
-	<point name='SW' xp='-0.2' yp='0' zp='0.2' rot='0' />
-	<point name='NE' xp='0.2' yp='0' zp='-0.2' rot='0' />
-	<point name='NW' xp='-0.2' yp='0' zp='-0.2' rot='0' />
-
-	<maze>/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
+	<maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
 
 	<!--Subjects -->
-	<subject name='r1'>
-		<model>
-			<name>MSMModel</name>
-			<params>
-				<numLayers>5</numLayers>
-				<minRadius>.05</minRadius>
-				<maxRadius>.25</maxRadius>
-			</params>
-		</model>
-		<initializers>
-			<initializer>
-				<name>feederSelector</name>
-				<params>
-					<numFeeders>3</numFeeders>
-				</params>
-			</initializer>
-		</initializers>
-	</subject>
-
-	<!--Subject groups -->
-	<group name='g1'>
-		<member name='r1' />
-	</group>
+	<group>
+	   <name>One Layer</name>
+        <numMembers>1</numMembers>
+        <model>
+            <name>MultiScaleModel</name>
+            <params>
+                <numLayers>1</numLayers>
+                <minRadius>.05</minRadius>
+                <maxRadius>.05</maxRadius>
+                <maxPossibleReward>100</maxPossibleReward>
+                <foodReward>100</foodReward>
+                <nonFoodReward>-.001</nonFoodReward>
+                <discountFactor>.95</discountFactor>
+                <alpha>.8</alpha>
+                <initialValue>0</initialValue>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>1</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
+    </group>
 
 	<!--Experiment Trials -->
 	<!-- 8 training trials -->
 	<trial>
 		<type>training</type>
-		<name>tr</name>
 		<reps>32</reps>
 		<groups>
-			<group>g1</group>
+			<group>One Layer</group>
 		</groups>
 		<initialTasks>
 			<task>
@@ -66,9 +65,6 @@
 		<afterCycleTasks>
 		</afterCycleTasks>
 		<afterTrialTasks>
-			<task>
-				<name>PolicyValueUpdater</name>
-			</task>
 		</afterTrialTasks>
 		<stopConditions>
 			<stopCondition>
@@ -96,12 +92,9 @@
 	<!-- 4 testing trials -->
 	<trial>
 		<type>testing</type>
-		<name>te</name>
-		<start>S</start>
-		<time>500</time>
 		<reps>8</reps>
 		<groups>
-			<group>g1</group>
+			<group>One Layer</group>
 		</groups>
 		<initialTasks>
 			<task>
@@ -114,9 +107,6 @@
 		<afterCycleTasks>
 		</afterCycleTasks>
 		<afterTrialTasks>
-			<task>
-				<name>PolicyValueUpdater</name>
-			</task>
 		</afterTrialTasks>
 		<stopConditions>
 			<stopCondition>
