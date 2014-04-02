@@ -82,6 +82,7 @@ public class Utiles {
 		return res;
 	}
 
+
 	public static Vector3f vectorToPoint(Point3f from, Point3f to) {
 		to.sub(from);
 		Vector3f fVect = new Vector3f(to);
@@ -136,27 +137,9 @@ public class Utiles {
 	 * @return
 	 */
 	public static int discretizeAngle(float allotAngle) {
+//		System.out.print(allotAngle);
 		Quat4f allotRot = angleToRot(allotAngle);
-		int angle = -1;
-		float angleDifference = (float) (Math.PI * 2);
-		for (int i = 0; i < discreteAngles.length; i++) {
-			// Make rotation for this action
-			Quat4f rotAction = angleToRot(discreteAngles[i]);
-			// Invert
-			rotAction.inverse();
-			// Compose rotToMake and inverse of action.
-			rotAction.mul(allotRot);
-			// Compare axis angle. The closer to 0, the more suitable
-			float resultingAngle = (float) Math.abs(rotToAngle(rotAction));
-			float resultingAngleInv = (float) Math.abs(Math.PI * 2
-					- resultingAngle);
-			if (Math.min(resultingAngle, resultingAngleInv) < angleDifference) {
-				angleDifference = Math.min(resultingAngle, resultingAngleInv);
-				angle = i;
-			}
-		}
-
-		return angle;
+		return discretizeAngle(allotRot);
 	}
 
 	private static float rotToAngle(Quat4f rot) {
@@ -198,17 +181,43 @@ public class Utiles {
 		return action;
 	}
 
-	public static void main(String[] args) {
-		// System.out.println(discretizeAngle((float) (-135 * Math.PI / 180)));
-		// System.out.println(discretizeAngle((float) (-90 * Math.PI / 180)));
-		System.out.println(Math.toDegrees(actions[bestActionToRot(
-				angleToRot((float) Math.toRadians(135)),
-				angleToRot((float) Math.toRadians(90)))]));
-	}
+//	public static void main(String[] args) {
+//		// System.out.println(discretizeAngle((float) (-135 * Math.PI / 180)));
+//		// System.out.println(discretizeAngle((float) (-90 * Math.PI / 180)));
+//		System.out.println(Math.toDegrees(actions[bestActionToRot(
+//				angleToRot((float) Math.toRadians(135)),
+//				angleToRot((float) Math.toRadians(90)))]));
+//	}
 
 	public static double actionDistance(int a1, int a2) {
 		return Math.min(Math.abs(a1 - a2),
 				Math.abs(Utiles.actions.length - a2 + a1));
+	}
+
+	public static int discretizeAngle(Quat4f allotRot) {
+//		System.out.print(allotAngle);
+//		Quat4f allotRot = angleToRot(allotAngle);
+		int angle = -1;
+		float angleDifference = (float) (Math.PI * 2);
+		for (int i = 0; i < discreteAngles.length; i++) {
+			// Make rotation for this action
+			Quat4f rotAction = angleToRot(discreteAngles[i]);
+			// Invert
+			rotAction.inverse();
+			// Compose rotToMake and inverse of action.
+			rotAction.mul(allotRot);
+			// Compare axis angle. The closer to 0, the more suitable
+			float resultingAngle = (float) Math.abs(rotToAngle(rotAction));
+			float resultingAngleInv = (float) Math.abs(Math.PI * 2
+					- resultingAngle);
+			if (Math.min(resultingAngle, resultingAngleInv) < angleDifference) {
+				angleDifference = Math.min(resultingAngle, resultingAngleInv);
+				angle = i;
+			}
+		}
+
+//		System.out.println(  " " + discreteAngles[angle]);
+		return angle;
 	}
 
 }
