@@ -58,7 +58,7 @@ public class TaxicFoodFinderSchema extends NslModule {
 			// Get best action to food
 //			int action = Utiles.bestActionToRot(rotToFood, rRot);
 
-			System.out.println(goalFeeder.get() + " " + Utiles.discretizeAngle(new Vector3f(1, 0, 0).angle(vToFood)));
+//			System.out.println(goalFeeder.get() + " " + Utiles.discretizeAngle(new Vector3f(1, 0, 0).angle(vToFood)));
 			
 			votes.set(Utiles.discretizeAngle(rotToFood), maxReward);
 			
