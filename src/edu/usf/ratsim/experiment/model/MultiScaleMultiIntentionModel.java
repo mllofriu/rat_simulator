@@ -84,13 +84,14 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 			// Update radius
 			radius += (maxRadius - minRadius) / (numLayers - 1);
 		}
-		// Created first to let Qlearning execute once when there is food
-		actionPerformerVote = new ProportionalExplorer(ACTION_PERFORMER_STR,
-				this, numLayers, maxPossibleReward, robot, universe);
 
 		// Create taxic driver to override in case of flashing
 		new TaxicFoodFinderSchema(FOOD_FINDER_STR, this, robot,
-				universe);
+				universe, numActions, maxPossibleReward);
+		
+		// Get votes from QL and other behaviors and perform an action
+		actionPerformerVote = new ProportionalExplorer(ACTION_PERFORMER_STR,
+				this, numLayers + 1, maxPossibleReward, robot, universe);
 
 		new Reward(REWARD_STR, this, universe, foodReward, nonFoodReward);
 		new HeadingAngle(TAKEN_ACTION_STR, this, universe);
@@ -112,9 +113,13 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 	}
 
 	public void makeConn() {
+		nslConnect(getChild(GOAL_DECIDER_STR), "goalFeeder",
+				getChild(FOOD_FINDER_STR), "goalFeeder");
+		nslConnect(getChild(FOOD_FINDER_STR), "votes",
+				getChild(ACTION_PERFORMER_STR), "votes" + numLayers);
+		
 		for (int i = 0; i < numLayers; i++) {
-			nslConnect(getChild(GOAL_DECIDER_STR), "goalFeeder",
-					getChild(FOOD_FINDER_STR), "goalFeeder");
+			
 			nslConnect(getChild(GOAL_DECIDER_STR), "goalFeeder",
 					getChild(BEFORE_PLACE_INTENTION_STR + i), "goalFeeder");
 			nslConnect(getChild(BEFORE_STATE_STR + i), "activation",
