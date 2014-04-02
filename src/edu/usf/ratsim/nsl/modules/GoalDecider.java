@@ -22,6 +22,12 @@ public class GoalDecider extends NslModule {
 		goalFeeder = new NslDoutInt0(this, "goalFeeder");
 
 		currentGoal = -1;
+		List<Integer> active = universe.getActiveFeeders();
+		// Dont pick the same goal twice
+		active.remove(new Integer(currentGoal));
+		if (!active.isEmpty()) {
+			currentGoal = active.get(r.nextInt(active.size()));
+		}
 
 		r = new Random();
 	}
@@ -46,6 +52,6 @@ public class GoalDecider extends NslModule {
 
 		goalFeeder.set(currentGoal);
 
-//		System.out.println(currentGoal);
+		System.out.println(currentGoal);
 	}
 }
