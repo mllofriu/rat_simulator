@@ -21,6 +21,7 @@ import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.ElementWrapper;
 import edu.usf.ratsim.support.Utiles;
 
+// TODO: works but does not learn in this version
 public class MultiScaleModel extends NslModel implements RLRatModel {
 	private static final String ACTION_SELECTION_STR = "ASL";
 	private static final String ACTION_PERFORMER_STR = "AP";
