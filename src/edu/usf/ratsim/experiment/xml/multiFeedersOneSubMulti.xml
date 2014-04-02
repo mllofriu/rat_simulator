@@ -20,7 +20,7 @@
         <model>
             <name>MultiScaleMultiIntentionModel</name>
             <params>
-                <numLayers>1</numLayers>
+                <numLayers>5</numLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.25</maxRadius>
                 <numIntentions>8</numIntentions>

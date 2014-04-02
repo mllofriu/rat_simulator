@@ -46,9 +46,10 @@ public class NormalQL extends NslModule implements PolicyDumper {
 		statesAfter = new NslDinFloat1(this, "statesAfter", numStates);
 		
 		value = new NslDoutFloat2(this, "value", numStates, numActions);
-		for (int s = 0; s < numStates; s++)
-			for (int a = 0; a < numActions; a++)
-				value.set(s,a,initialValue);
+		value.set(initialValue);
+//		for (int s = 0; s < numStates; s++)
+//			for (int a = 0; a < numActions; a++)
+//				value.set(s,a,initialValue);
 		
 	}
 
