@@ -68,7 +68,7 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 		qLUpdVal = new LinkedList<PolicyDumper>();
 		qLActionSel = new LinkedList<SingleLayerAS>();
 		
-		new GoalDecider(GOAL_DECIDER_STR, this, universe);
+		
 
 		// Create the layers
 		float radius = minRadius;
@@ -93,6 +93,7 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 		actionPerformerVote = new ProportionalExplorer(ACTION_PERFORMER_STR,
 				this, numLayers + 1, maxPossibleReward, robot, universe);
 
+		radius = minRadius;
 		new Reward(REWARD_STR, this, universe, foodReward, nonFoodReward);
 		new HeadingAngle(TAKEN_ACTION_STR, this, universe);
 		for (int i = 0; i < numLayers; i++) {
@@ -103,7 +104,10 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 			afterPI.add(pIntention);
 			qLUpdVal.add(new NormalQL(QL_STR + i, this, beforePI.get(i)
 					.getSize(), numActions, discountFactor, alpha, initialValue));
+			radius += (maxRadius - minRadius) / (numLayers - 1);
 		}
+		
+		new GoalDecider(GOAL_DECIDER_STR, this, universe);
 	}
 
 	public void initSys() {
