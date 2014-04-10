@@ -46,5 +46,9 @@ public interface ExperimentUniverse {
 	public boolean isRobotCloseToFeeder(int currentGoal);
 
 	public int getFeedingFeeder();
+	
+	public void addWall(float x1, float y1, float x2, float y2);
+	
+	public void clearWalls();
 
 }
