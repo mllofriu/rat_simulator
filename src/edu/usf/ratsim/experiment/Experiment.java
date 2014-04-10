@@ -287,7 +287,8 @@ public class Experiment implements Runnable {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(args[0]);
+		if (args.length < 1)
+			System.out.println("Missing experiment xml argument");
 		new Experiment(args[0]).run();
 		System.exit(0);
 	}
