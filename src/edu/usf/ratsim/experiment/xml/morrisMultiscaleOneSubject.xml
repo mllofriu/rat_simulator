@@ -15,7 +15,7 @@
 
 	<!--Subjects -->
 	<group>
-	   <name>One Layer</name>
+	   <name>oneLayer</name>
         <numMembers>1</numMembers>
         <model>
             <name>MultiScaleModel</name>
@@ -44,10 +44,10 @@
 	<!--Experiment Trials -->
 	<!-- 8 training trials -->
 	<trial>
-		<type>training</type>
+		<name>training</name>
 		<reps>32</reps>
 		<groups>
-			<group>One Layer</group>
+			<group>oneLayer</group>
 		</groups>
 		<initialTasks>
 			<task>
@@ -91,10 +91,10 @@
 
 	<!-- 4 testing trials -->
 	<trial>
-		<type>testing</type>
+		<name>testing</name>
 		<reps>8</reps>
 		<groups>
-			<group>One Layer</group>
+			<group>oneLayer</group>
 		</groups>
 		<initialTasks>
 			<task>

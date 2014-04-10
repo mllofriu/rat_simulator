@@ -1,119 +1,166 @@
 <?xml version="1.0" encoding="us-ascii"?>
 <!-- Just a test of new format -->
 
-<simulation>
-    <!--Robot startin points-->
-    <point name='W' xp='-0.4' yp='0' zp='0' rot='0'/>
-    <point name='N' xp='0' yp='0' zp='-0.4' rot='0'/>
-    <point name='E' xp='0.4' yp='0' zp='0' rot='0'/>
-    <point name='S' xp='0' yp='0' zp='0.35' rot='0'/>
-
-    <!--Hidden platform points-->
-    <point name='SE' xp='0.2' yp='0' zp='0.2' rot='0'/>
-    <point name='SW' xp='-0.2' yp='0' zp='0.2' rot='0'/>
-    <point name='NE' xp='0.2' yp='0' zp='-0.2' rot='0'/>
-    <point name='NW' xp='-0.2' yp='0' zp='-0.2' rot='0'/>
-    
-    <!--Subjects-->
-    <subject name='rat1'>
-        <numLayers>1</numLayers>
-     </subject>
-    <subject name='rat2'>
-        <numLayers>1</numLayers>
-     </subject>
-    <subject name='rat3'>
-        <numLayers>1</numLayers>
-     </subject>
-    <subject name='rat4'>
-        <numLayers>1</numLayers>
-     </subject>
-    <subject name='rat5'>
-        <numLayers>1</numLayers>
-     </subject>
-    <subject name='rat6'>
-        <numLayers>1</numLayers>
-     </subject>
-    <subject name='rat7'>
-        <numLayers>1</numLayers>
-     </subject>
-    <subject name='rat8'>
-        <numLayers>1</numLayers>
-     </subject>
-    <subject name='rat9'>
-        <numLayers>5</numLayers>
-     </subject>
-    <subject name='rat10'>
-        <numLayers>5</numLayers>
-     </subject>
-    <subject name='rat11'>
-        <numLayers>5</numLayers>
-     </subject>
-    <subject name='rat12'>
-        <numLayers>5</numLayers>
-     </subject>
-    <subject name='rat13'>
-        <numLayers>5</numLayers>
-     </subject>
-    <subject name='rat14'>
-        <numLayers>5</numLayers>
-     </subject>
-    <subject name='rat15'>
-        <numLayers>5</numLayers>
-     </subject>
-    <subject name='rat16'>
-        <numLayers>5</numLayers>
-     </subject>
+<experiment>
+    <point>
+        <name>S</name>
+        <xp>0</xp>
+        <yp>0</yp>
+        <zp>0.35</zp>
+        <rot>0</rot>
+    </point>
     
 
-    <!--Subject groups-->
-    <group name='g1'>
-        <member name='rat1'/>
-        <member name='rat2'/>
-        <member name='rat3'/>
-        <member name='rat4'/>
-        <member name='rat5'/>
-        <member name='rat6'/>
-        <member name='rat7'/>
-        <member name='rat8'/>
+    <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
+
+    <!--Subjects -->
+    <group>
+       <name>One Layer</name>
+        <numMembers>8</numMembers>
+        <model>
+            <name>MultiScaleModel</name>
+            <params>
+                <numLayers>1</numLayers>
+                <minRadius>.05</minRadius>
+                <maxRadius>.05</maxRadius>
+                <maxPossibleReward>100</maxPossibleReward>
+                <foodReward>100</foodReward>
+                <nonFoodReward>-.001</nonFoodReward>
+                <discountFactor>.95</discountFactor>
+                <alpha>.8</alpha>
+                <initialValue>0</initialValue>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>1</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
     </group>
-    <group name='g2'>
-        <member name='rat9'/>
-        <member name='rat10'/>
-        <member name='rat11'/>
-        <member name='rat12'/>
-        <member name='rat13'/>
-        <member name='rat14'/>
-        <member name='rat15'/>
-        <member name='rat16'/>
+    
+    <group>
+       <name>Five Layers</name>
+        <numMembers>8</numMembers>
+        <model>
+            <name>MultiScaleModel</name>
+            <params>
+                <numLayers>5</numLayers>
+                <minRadius>.05</minRadius>
+                <maxRadius>.05</maxRadius>
+                <maxPossibleReward>100</maxPossibleReward>
+                <foodReward>100</foodReward>
+                <nonFoodReward>-.001</nonFoodReward>
+                <discountFactor>.95</discountFactor>
+                <alpha>.8</alpha>
+                <initialValue>0</initialValue>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>1</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
     </group>
-    <!--Experiment Trials-->
+
+    <!--Experiment Trials -->
+    <!-- 8 training trials -->
     <trial>
-        <type>training</type>
-        <name>train</name>
-        <start>S</start>
-        <time>2000</time>
+        <name>training</name>
         <reps>32</reps>
-        <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
-	<groups>
-		<group>g1</group>
-		<group>g2</group>
-	</groups>
-
+        <groups>
+            <group>One Layer</group>
+            <group>Five Layers</group>
+        </groups>
+        <initialTasks>
+            <task>
+                <name>PlaceRobotInitiallyTask</name>
+                <params>
+                    <initialPosition>S</initialPosition>
+                </params>
+            </task>
+            <task>
+                <name>ActivateFeeders</name>
+                <params>
+                </params>
+            </task>
+        </initialTasks>
+        <afterCycleTasks>
+        </afterCycleTasks>
+        <afterTrialTasks>
+        </afterTrialTasks>
+        <stopConditions>
+            <stopCondition>
+                <name>Time</name>
+                <params>
+                    <time>2000</time>
+                </params>
+            </stopCondition>
+            <stopCondition>
+                <name>FoundFood</name>
+            </stopCondition>
+        </stopConditions>
+        <afterCycleLoggers>
+            <logger>
+                <name>PositionLogger</name>
+            </logger>
+        </afterCycleLoggers>
+        <afterTrialLoggers>
+            <logger>
+                <name>PolicyDumper</name>
+            </logger>
+        </afterTrialLoggers>
     </trial>
-    <!-- 4 testing trials-->
+
+    <!-- 4 testing trials -->
     <trial>
-        <type>testing</type>
-        <name>test</name>
-        <start>S</start>
-        <time>500</time>
+        <name>testing</name>
         <reps>8</reps>
         <groups>
-		<group>g1</group>
-		<group>g2</group>
-	</groups>
-        <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
+            <group>One Layer</group>
+            <group>Five Layers</group>
+        </groups>
+        <initialTasks>
+            <task>
+                <name>PlaceRobotInitiallyTask</name>
+                <params>
+                    <initialPosition>S</initialPosition>
+                </params>
+            </task>
+        </initialTasks>
+        <afterCycleTasks>
+        </afterCycleTasks>
+        <afterTrialTasks>
+        </afterTrialTasks>
+        <stopConditions>
+            <stopCondition>
+                <name>Time</name>
+                <params>
+                    <time>2000</time>
+                </params>
+            </stopCondition>
+            <stopCondition>
+                <name>FoundFood</name>
+            </stopCondition>
+
+        </stopConditions>
+        <afterCycleLoggers>
+            <logger>
+                <name>PositionLogger</name>
+            </logger>
+        </afterCycleLoggers>
+        <afterTrialLoggers>
+            <logger>
+                <name>PolicyDumper</name>
+            </logger>
+        </afterTrialLoggers>
     </trial>
-    
 
 
-</simulation>
+
+</experiment>

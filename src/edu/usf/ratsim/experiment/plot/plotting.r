@@ -44,16 +44,16 @@ mazePlot <- function(mazeFile){
   dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, FALSE)
   m <- geom_path(data=dat,aes(x,y))
   
-   ns <- getNodeSet(doc, "/world//feeder")
-   feeders <- llply(ns, function (f) {
-     r <- as.numeric(xmlGetAttr(f, "r"))
-     x <- as.numeric(xmlGetAttr(f, "xp"))
-     # y coordinate is -z
-     y <- - as.numeric(xmlGetAttr(f, "zp"))
-     dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, TRUE)
-     p <- geom_polygon(data=dat, aes(x,y), color="grey", fill="grey")
+  ns <- getNodeSet(doc, "/world//feeder")
+  feeders <- llply(ns, function (f) {
+    r <- as.numeric(xmlGetAttr(f, "r"))
+    x <- as.numeric(xmlGetAttr(f, "xp"))
+    # y coordinate is -z
+    y <- - as.numeric(xmlGetAttr(f, "zp"))
+    dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, TRUE)
+    p <- geom_polygon(data=dat, aes(x,y), color="grey", fill="grey")
   })
-   
+  
   
   #Return a list with the maze and platform
   list(m,feeders)
@@ -120,10 +120,10 @@ plotPathOnMaze <- function (name, pathData, mazeFile){
   if (name == '')
     print(p)  
   else
-  ggsave(plot=p,filename=paste("plots/path/",name,
-                               ".pdf", sep=''), width=10, height=10)
+    ggsave(plot=p,filename=paste("plots/path/",name,
+                                 ".pdf", sep=''), width=10, height=10)
   
-#   saveRDS(p, paste("plots/path/",name,".obj", sep=''))
+  #   saveRDS(p, paste("plots/path/",name,".obj", sep=''))
 }
 
 plotPolicyOnMaze <- function(name, pathData, policyData, maze){  
@@ -143,8 +143,10 @@ plotPolicyOnMaze <- function(name, pathData, policyData, maze){
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
   # Save the plot to an image
-  print(system.time(ggsave(plot=p,filename=paste("plots/policy/",name,
-                                                 ".pdf", sep=''), width=10, height=10)))
+  
+  
+  ggsave(plot=p,filename=paste("plots/policy/",name,
+                               ".pdf", sep=''), width=10, height=10)
   #   saveRDS(p, paste("plots/policy/",name,".obj", sep=''))
 }
 
@@ -185,30 +187,20 @@ registerDoParallel()
 ddply(pathData, .(trial), plotArrivalTime)
 
 # Saving image non-parallel:
-#user  system elapsed
-#73.457   2.219  95.331
-# Saving image parallel:
-#   user  system elapsed
-# 62.713   1.106  95.903
-# Saving without circle constraint:
-# user  system elapsed
-# 77.764   1.355  82.097
-# Saving objs in parallel:
-# user  system elapsed
-# 17.039   0.323  20.475
-llply(names(splitPol), function(x){
+invisible(llply(names(splitPol), function(x){
   # Split data by layers and intention
-  splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('layer','intention')], drop=TRUE)
+  #   splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('layer','intention')], drop=TRUE)
+  splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('layer')], drop=TRUE)
   # Plot different layers with same path data
   lapply(names(splitPolLayer), function (y) plotPolicyOnMaze(paste(x,y,sep='.'),
-                                                          splitPath[[x]], 
-                                                           splitPolLayer[[y]],
-                                                            maze))
-}, .parallel = TRUE)
- 
+                                                             splitPath[[x]], 
+                                                             splitPolLayer[[y]],
+                                                             maze))
+}, .parallel = TRUE))
+
 # # Plot just path
 invisible(llply(names(splitPath), function(x) plotPathOnMaze(x,
-            splitPath[[x]], maze), .parallel = TRUE))
+                                                             splitPath[[x]], maze), .parallel = TRUE))
 
 # for (i in 2:dim(recallPath)[1]) {
 #   + plotPathOnMaze('', recallPath[1:i,], maze)
