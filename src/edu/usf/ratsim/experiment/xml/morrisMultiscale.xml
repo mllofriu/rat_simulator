@@ -50,7 +50,7 @@
                 <numLayers>5</numLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.25</maxRadius>
-                <maxPossibleReward>100</maxPossibleReward>
+                <maxPossibleReward>500</maxPossibleReward>
                 <foodReward>100</foodReward>
                 <nonFoodReward>-.001</nonFoodReward>
                 <discountFactor>.95</discountFactor>

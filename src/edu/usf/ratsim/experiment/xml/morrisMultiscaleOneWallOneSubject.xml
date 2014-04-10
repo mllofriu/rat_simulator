@@ -33,10 +33,10 @@
         <model>
             <name>MultiScaleModel</name>
             <params>
-                <numLayers>1</numLayers>
+                <numLayers>5</numLayers>
                 <minRadius>.05</minRadius>
-                <maxRadius>.05</maxRadius>
-                <maxPossibleReward>100</maxPossibleReward>
+                <maxRadius>.25</maxRadius>
+                <maxPossibleReward>500</maxPossibleReward>
                 <foodReward>100</foodReward>
                 <nonFoodReward>-.001</nonFoodReward>
                 <discountFactor>.95</discountFactor>
@@ -58,7 +58,7 @@
 	<!-- 8 training trials -->
 	<trial>
 		<name>training</name>
-		<reps>1</reps>
+		<reps>16</reps>
 		<groups>
 			<group>oneLayer</group>
 		</groups>
@@ -105,7 +105,7 @@
 	<!-- 4 testing trials -->
 	<trial>
 		<name>testing</name>
-		<reps>1</reps>
+		<reps>8</reps>
 		<groups>
 			<group>oneLayer</group>
 		</groups>
