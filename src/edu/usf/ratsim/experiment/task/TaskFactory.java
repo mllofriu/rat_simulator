@@ -38,6 +38,10 @@ public class TaskFactory {
 				res.add(new FeederTemporalDeactivate());
 			} else if (taskName.equals("UnflashFeeder")) {
 				res.add(new UnflashFeeder());
+			} else if (taskName.equals("PlaceWall")) {
+				res.add(new PlaceWallTask(taskParams, points));
+			} else if (taskName.equals("ClearWalls")) {
+				res.add(new ClearWallsTask());
 			} else {
 				throw new RuntimeException("Task " + taskName
 						+ " not implemented.");

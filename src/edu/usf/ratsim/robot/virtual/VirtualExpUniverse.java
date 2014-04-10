@@ -23,6 +23,9 @@ import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LineSegment;
+
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Utiles;
@@ -50,6 +53,8 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	private PoolNode pool;
 
 	private BoundingRectNode boundingRect;
+
+	private List<WallNode> wallNodes;
 
 	public VirtualExpUniverse(String mazeResource) {
 		super();
@@ -144,7 +149,21 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		bg.addChild(new DirectionalLightNode(new Vector3f(0f, -5, 0),
 				new Color3f(1f, 1f, 1f)));
 
+		// bg.addChild(new WallNode(-0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f,
+		// 0.025f));
+		wallNodes = new LinkedList<WallNode>();
+//		addWall(-0.2f, 0.0f, 0.2f, 0.0f);
 		// bg.compile();
+	}
+
+	public void addWall(float x1, float y1, float x2, float y2) {
+		WallNode w = new WallNode(x1, 0, y1, x2, 0, y2, 0.025f);
+		bg.addChild(w);
+		wallNodes.add(w);
+	}
+
+	public void clearWalls() {
+		wallNodes.clear();
 	}
 
 	public View getTopView() {
@@ -279,6 +298,9 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			// The current position with rotation
 			Transform3D rPos = new Transform3D();
 			robot.getTransformGroup().getTransform(rPos);
+			Vector3f p = new Vector3f();
+			rPos.get(p);
+			Coordinate initCoordinate = new Coordinate(p.x, p.z);
 			// A translation vector to calc affordances
 			Transform3D trans = new Transform3D();
 			trans.setTranslation(new Vector3f(VirtualRobot.STEP * 5, 0f, 0f));
@@ -291,8 +313,22 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			// Get the new position
 			Vector3f finalPos = new Vector3f();
 			rPos.get(finalPos);
+			Coordinate finalCoordinate = new Coordinate(finalPos.x,
+					finalPos.z);
 			// Check it's in the maze
-			affordances[action] = pool.isInside(new Point3f(finalPos));
+			boolean insideMaze = pool.isInside(new Point3f(finalPos));
+			// Check if crosses any wall
+			boolean intesectsWall = false;
+			LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
+			for (WallNode wallNode : wallNodes) {
+//				System.out.println(path);
+//				System.out.println(wallNode.segment);
+//				System.out.println(path.intersection(wallNode.segment));
+				intesectsWall = intesectsWall
+						|| (path.intersection(wallNode.segment) != null);
+			}
+
+			affordances[action] = insideMaze && !intesectsWall;
 		}
 
 		return affordances;
@@ -345,7 +381,8 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		Point3f robotPos = getRobotPosition();
 		for (int i = 0; i < feeders.size(); i++) {
 			if (feeders.get(i).isActive()
-					&& robotPos.distance(new Point3f(feeders.get(i).getPosition())) < CLOSE_TO_FOOD_THRS)
+					&& robotPos.distance(new Point3f(feeders.get(i)
+							.getPosition())) < CLOSE_TO_FOOD_THRS)
 				return i;
 		}
 		return -1;
