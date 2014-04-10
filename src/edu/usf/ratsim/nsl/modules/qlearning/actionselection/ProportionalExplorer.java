@@ -141,10 +141,20 @@ public class ProportionalExplorer extends NslModule {
 			// lastActionRandom = actions.get(action).getValue() <=
 			// EXPLORATORY_VARIANCE;
 			actions.remove(action);
-		} while (!aff[Utiles.discretizeAction(0)]);
+//		} while (!aff[Utiles.discretizeAction(0)]);
+		} while (false);
 
 		// Now it is safe to forward
-		robot.forward();
+		if(!aff[Utiles.discretizeAction(0)]){
+			if (Math.random() > .5)
+				robot.rotate((float) (Math.PI/2));
+			else {
+				robot.rotate((float) (-Math.PI/2));
+			}
+			aff = robot.getAffordances();
+		}
+		if (aff[Utiles.discretizeAction(0)])
+			robot.forward();
 	}
 
 	public boolean wasLastActionRandom() {
