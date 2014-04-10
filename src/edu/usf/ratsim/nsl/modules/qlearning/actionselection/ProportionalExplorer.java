@@ -72,8 +72,8 @@ public class ProportionalExplorer extends NslModule {
 //			System.out.println(maxVal);
 		
 		explore = r.nextFloat() > (maxVal / maxPossibleReward);
-		if (explore)
-			System.out.println("Exploring");
+//		if (explore)
+//			System.out.println("Exploring");
 //		explore = maxVal == 0;
 		// System.out.println(maxVal);
 		// Make a list of actions and values

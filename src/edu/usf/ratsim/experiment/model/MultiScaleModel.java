@@ -80,16 +80,18 @@ public class MultiScaleModel extends NslModel implements RLRatModel {
 
 		// Create taxic driver to override in case of flashing
 		new TaxicFoodFinderSchema(FOOD_FINDER_STR, this, robot,
-				universe);
+				universe, numActions, maxPossibleReward);
 
 		new Reward(REWARD_STR, this, universe, foodReward, nonFoodReward);
 		new HeadingAngle(TAKEN_ACTION_STR, this, universe);
+		radius = minRadius;
 		for (int i = 0; i < numLayers; i++) {
 			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer(
 					AFTER_STATE_STR + i, this, universe, radius);
 			afterPcls.add(pcl);
 			qLUpdVal.add(new NormalQL(QL_STR + i, this, beforePcls.get(i)
 					.getSize(), numActions, discountFactor, alpha, initialValue));
+			radius += (maxRadius - minRadius) / (numLayers - 1);
 		}
 	}
 
@@ -115,7 +117,7 @@ public class MultiScaleModel extends NslModel implements RLRatModel {
 					getChild(QL_STR + i), "reward");
 			nslConnect(getChild(BEFORE_STATE_STR + i), "activation",
 					getChild(QL_STR + i), "statesBefore");
-			nslConnect(getChild(BEFORE_STATE_STR + i), "activation",
+			nslConnect(getChild(AFTER_STATE_STR + i), "activation",
 					getChild(QL_STR + i), "statesAfter");
 		}
 	}
