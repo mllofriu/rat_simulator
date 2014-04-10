@@ -62,7 +62,9 @@ public class ConfigurableModel extends NslModel implements RLRatModel {
 				actionPerformerVote = new ProportionalExplorer(name, this,
 						numLayers, maxPossibleReward, robot, universe);
 			} else if (type.equals("TaxicFoodFinderSchema")) {
-				new TaxicFoodFinderSchema(name, this, robot, universe);
+				int numActions = Utiles.discreteAngles.length;
+				int maxPossibleReward = params.getChildInt("maxPossibleReward");
+				new TaxicFoodFinderSchema(name, this, robot, universe, numActions, maxPossibleReward);
 			} else if (type.equals("GoalDecider")) {
 				new GoalDecider(name, this, universe);
 			} else if (type.equals("NormalQL")) {
