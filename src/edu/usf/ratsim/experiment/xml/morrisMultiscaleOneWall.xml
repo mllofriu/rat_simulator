@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!-- Just a test of new format -->
+
+<experiment>
+    <point>
+        <name>S</name>
+        <xp>0</xp>
+        <yp>0</yp>
+        <zp>0.35</zp>
+        <rot>0</rot>
+    </point>
+    <point>
+        <name>W1</name>
+        <xp>0.2</xp>
+        <yp>0</yp>
+        <zp>0</zp>
+        <rot>0</rot>
+    </point>
+    <point>
+        <name>W2</name>
+        <xp>-.2</xp>
+        <yp>0</yp>
+        <zp>0</zp>
+        <rot>0</rot>
+    </point>
+    
+
+    <maze>/edu/usf/ratsim/experiment/mazes/morrisCircular.xml</maze>
+
+    <!--Subjects -->
+    <group>
+       <name>One Layer</name>
+        <numMembers>8</numMembers>
+        <model>
+            <name>MultiScaleModel</name>
+            <params>
+                <numLayers>1</numLayers>
+                <minRadius>.05</minRadius>
+                <maxRadius>.05</maxRadius>
+                <maxPossibleReward>100</maxPossibleReward>
+                <foodReward>100</foodReward>
+                <nonFoodReward>-.001</nonFoodReward>
+                <discountFactor>.95</discountFactor>
+                <alpha>.8</alpha>
+                <initialValue>0</initialValue>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>1</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
+    </group>
+    
+    <group>
+       <name>Five Layers</name>
+        <numMembers>8</numMembers>
+        <model>
+            <name>MultiScaleModel</name>
+            <params>
+                <numLayers>5</numLayers>
+                <minRadius>.05</minRadius>
+                <maxRadius>.25</maxRadius>
+                <maxPossibleReward>100</maxPossibleReward>
+                <foodReward>100</foodReward>
+                <nonFoodReward>-.001</nonFoodReward>
+                <discountFactor>.95</discountFactor>
+                <alpha>.8</alpha>
+                <initialValue>0</initialValue>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>1</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
+    </group>
+
+    <!--Experiment Trials -->
+    <!-- 8 training trials -->
+    <trial>
+        <name>training</name>
+        <reps>16</reps>
+        <groups>
+            <group>One Layer</group>
+            <group>Five Layers</group>
+        </groups>
+        <initialTasks>
+            <task>
+                <name>PlaceRobotInitiallyTask</name>
+                <params>
+                    <initialPosition>S</initialPosition>
+                </params>
+            </task>
+            <task>
+                <name>ActivateFeeders</name>
+                <params>
+                </params>
+            </task>
+        </initialTasks>
+        <afterCycleTasks>
+        </afterCycleTasks>
+        <afterTrialTasks>
+        </afterTrialTasks>
+        <stopConditions>
+            <stopCondition>
+                <name>Time</name>
+                <params>
+                    <time>2000</time>
+                </params>
+            </stopCondition>
+            <stopCondition>
+                <name>FoundFood</name>
+            </stopCondition>
+        </stopConditions>
+        <afterCycleLoggers>
+            <logger>
+                <name>PositionLogger</name>
+            </logger>
+        </afterCycleLoggers>
+        <afterTrialLoggers>
+            <logger>
+                <name>PolicyDumper</name>
+            </logger>
+        </afterTrialLoggers>
+    </trial>
+
+    <!-- 4 testing trials -->
+    <trial>
+        <name>testing</name>
+        <reps>8</reps>
+        <groups>
+            <group>One Layer</group>
+            <group>Five Layers</group>
+        </groups>
+        <initialTasks>
+            <task>
+                <name>PlaceRobotInitiallyTask</name>
+                <params>
+                    <initialPosition>S</initialPosition>
+                </params>
+            </task>
+            <task>
+                <name>ClearWalls</name>
+                <params>
+                </params>
+            </task>
+            <task>
+                <name>PlaceWall</name>
+                <params>
+                    <x1>W1</x1>
+                    <x2>W2</x2>
+                </params>
+            </task>
+        </initialTasks>
+        <afterCycleTasks>
+        </afterCycleTasks>
+        <afterTrialTasks>
+        </afterTrialTasks>
+        <stopConditions>
+            <stopCondition>
+                <name>Time</name>
+                <params>
+                    <time>2000</time>
+                </params>
+            </stopCondition>
+            <stopCondition>
+                <name>FoundFood</name>
+            </stopCondition>
+
+        </stopConditions>
+        <afterCycleLoggers>
+            <logger>
+                <name>PositionLogger</name>
+            </logger>
+        </afterCycleLoggers>
+        <afterTrialLoggers>
+            <logger>
+                <name>PolicyDumper</name>
+            </logger>
+        </afterTrialLoggers>
+    </trial>
+
+
+
+</experiment>
