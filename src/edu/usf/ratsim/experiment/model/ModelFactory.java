@@ -19,6 +19,8 @@ public class ModelFactory {
 			return new MultiScaleMultiIntentionModel(params, robot, universe);
 		} else if (name.equals("ConfigurableModel")) {
 			return new ConfigurableModel(modelNode, robot, universe);
+		} else if (name.equals("MultiScaleMultiIntentionCooperativeModel")) {
+			return new MultiScaleMultiIntentionCooperativeModel(modelNode, robot, universe);
 		} else {
 			throw new RuntimeException("Model " + name + " not implemented.");
 		}

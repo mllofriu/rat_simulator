@@ -152,7 +152,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		// bg.addChild(new WallNode(-0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f,
 		// 0.025f));
 		wallNodes = new LinkedList<WallNode>();
-//		addWall(-0.2f, 0.0f, 0.2f, 0.0f);
+		// addWall(-0.2f, 0.0f, 0.2f, 0.0f);
 		// bg.compile();
 	}
 
@@ -313,17 +313,16 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			// Get the new position
 			Vector3f finalPos = new Vector3f();
 			rPos.get(finalPos);
-			Coordinate finalCoordinate = new Coordinate(finalPos.x,
-					finalPos.z);
+			Coordinate finalCoordinate = new Coordinate(finalPos.x, finalPos.z);
 			// Check it's in the maze
 			boolean insideMaze = pool.isInside(new Point3f(finalPos));
 			// Check if crosses any wall
 			boolean intesectsWall = false;
 			LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
 			for (WallNode wallNode : wallNodes) {
-//				System.out.println(path);
-//				System.out.println(wallNode.segment);
-//				System.out.println(path.intersection(wallNode.segment));
+				// System.out.println(path);
+				// System.out.println(wallNode.segment);
+				// System.out.println(path.intersection(wallNode.segment));
 				intesectsWall = intesectsWall
 						|| (path.intersection(wallNode.segment) != null);
 			}
@@ -387,4 +386,29 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		}
 		return -1;
 	}
+
+	@Override
+	public List<Integer> getFeeders() {
+		List<Integer> res = new LinkedList<Integer>();
+		for (int i = 0; i < feeders.size(); i++)
+			res.add(i);
+
+		return res;
+	}
+
+	@Override
+	public boolean hasRobotFoundFeeder(int i) {
+		Point3f robot = getRobotPosition();
+		FeederNode fNode = feeders.get(i);
+		return robot.distance(new Point3f(fNode.getPosition())) < CLOSE_TO_FOOD_THRS;
+	}
+
+	@Override
+	public boolean isRobotParallelToWall() {
+		boolean aff[] = getRobotAffordances();
+		
+		// If I cannot move to any of the perpendicular directions I am near a wall
+		return !aff[Utiles.discretizeAction(-90)] || !aff[Utiles.discretizeAction(90)];
+	}
+
 }

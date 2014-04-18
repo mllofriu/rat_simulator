@@ -28,6 +28,8 @@ public class TaskFactory {
 			ElementWrapper taskParams = taskNode.getChild(STR_TASK_PARAMS);
 			if (taskName.equals("PlaceRobotInitiallyTask")) {
 				res.add(new PlaceRobotInitallyTask(taskParams, points));
+			}else if (taskName.equals("ResetModelTask")) {
+				res.add(new ResetModelTaks());
 //			} else if (taskName.equals("PolicyValueUpdater")) {
 //				res.add(new PolicyValueUpdater(model));
 			} else if (taskName.equals("ActivateFeeders")) {

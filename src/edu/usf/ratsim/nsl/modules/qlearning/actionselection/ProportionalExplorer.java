@@ -16,12 +16,7 @@ import edu.usf.ratsim.support.Utiles;
 
 public class ProportionalExplorer extends NslModule {
 
-	private static final float LAPLACIAN = 0.00001f;
-
-	private static final float INITIAL_MAXVAL = 0;
-
-	public final float EXPLORATORY_VARIANCE = Configuration
-			.getFloat("ActionPerformer.ExploratoryVariance");
+	public float aprioriValueVariance;
 
 	public NslDinFloat1[] votes;
 
@@ -35,11 +30,9 @@ public class ProportionalExplorer extends NslModule {
 
 	private float maxPossibleReward;
 
-	private float explorationMaxValMultiplier = Configuration
-			.getFloat("ActionPerformer.maxValMultiplier");
-
 	public ProportionalExplorer(String nslName, NslModule nslParent,
-			int numLayers, float maxPossibleReward, IRobot robot, ExperimentUniverse universe) {
+			int numLayers, float maxPossibleReward, float aprioriValueVariance,
+			IRobot robot, ExperimentUniverse universe) {
 		super(nslName, nslParent);
 
 		this.robot = robot;
@@ -50,7 +43,7 @@ public class ProportionalExplorer extends NslModule {
 			votes[i] = new NslDinFloat1(this, "votes" + i);
 
 		this.maxPossibleReward = maxPossibleReward;
-
+		this.aprioriValueVariance = aprioriValueVariance;
 		r = new Random();
 	}
 
@@ -63,18 +56,18 @@ public class ProportionalExplorer extends NslModule {
 			for (int angle = 0; angle < layerVal.getSize(); angle++)
 				overallValues[angle] += layerVal.get(angle);
 		// find total value with laplacian
-		float maxVal = INITIAL_MAXVAL;
+		float maxVal = Float.MIN_VALUE;
 		for (int angle = 0; angle < overallValues.length; angle++)
 			if (maxVal < overallValues[angle])
 				maxVal = overallValues[angle];
 
-//		if (maxVal > 1)
-//			System.out.println(maxVal);
-		
-		explore = r.nextFloat() > (maxVal / maxPossibleReward);
-//		if (explore)
-//			System.out.println("Exploring");
-//		explore = maxVal == 0;
+		// if (maxVal > 1)
+		// System.out.println(maxVal);
+
+//		explore = r.nextFloat() > (maxVal / maxPossibleReward);
+		// if (explore)
+		// System.out.println("Exploring");
+		 explore = maxVal == 0;
 		// System.out.println(maxVal);
 		// Make a list of actions and values
 		List<ActionValue> actions = new LinkedList<ActionValue>();
@@ -89,11 +82,11 @@ public class ProportionalExplorer extends NslModule {
 			// Radial function centered on the going forward angle
 			float val = overallValues[angle];
 			if (explore) {
-				val += Math.max(explorationMaxValMultiplier * maxVal, 1)
-						* Math.exp(-Math.pow(
-								Utiles.actionDistance(action,
-										Utiles.discretizeAction(0)), 2)
-								/ EXPLORATORY_VARIANCE);
+				float increment = (float) (Math.max(maxVal, 1) * Math.exp(-Math
+						.pow(Utiles.actionDistance(action,
+								Utiles.discretizeAction(0)), 2)
+						/ aprioriValueVariance));
+				val += increment;
 			}
 
 			// float val = (float) (overallValues[angle] +
@@ -101,6 +94,12 @@ public class ProportionalExplorer extends NslModule {
 			actions.add(new ActionValue(action, val));
 		}
 		// Collections.sort(actions);
+
+		// Recompute max val
+		maxVal = Float.MIN_VALUE;
+		for (int a = 0; a < overallValues.length; a++)
+			if (maxVal < overallValues[a])
+				maxVal = overallValues[a];
 
 		boolean[] aff;
 		do {
@@ -141,15 +140,15 @@ public class ProportionalExplorer extends NslModule {
 			// lastActionRandom = actions.get(action).getValue() <=
 			// EXPLORATORY_VARIANCE;
 			actions.remove(action);
-//		} while (!aff[Utiles.discretizeAction(0)]);
+			// } while (!aff[Utiles.discretizeAction(0)]);
 		} while (false);
 
 		// Now it is safe to forward
-		if(!aff[Utiles.discretizeAction(0)]){
+		if (!aff[Utiles.discretizeAction(0)]) {
 			if (Math.random() > .5)
-				robot.rotate((float) (Math.PI/2));
+				robot.rotate((float) (Math.PI / 2));
 			else {
-				robot.rotate((float) (-Math.PI/2));
+				robot.rotate((float) (-Math.PI / 2));
 			}
 			aff = robot.getAffordances();
 		}
@@ -162,69 +161,4 @@ public class ProportionalExplorer extends NslModule {
 	}
 }
 
-class Votes implements Comparable<Votes> {
-	private int action;
-	private int votes;
 
-	public Votes(int action, int votes) {
-		this.action = action;
-		this.votes = votes;
-	}
-
-	public int getAction() {
-		return action;
-	}
-
-	public int getVotes() {
-		return votes;
-	}
-
-	public void incrementVotes() {
-		votes++;
-	}
-
-	public int compareTo(Votes o) {
-		if (votes < o.votes)
-			return -1;
-		else if (votes == o.votes)
-			return 0;
-		else
-			return 1;
-	}
-
-	public String toString() {
-		return action + " voted " + votes + " times";
-	}
-
-}
-
-final class ActionValue implements Comparable<ActionValue> {
-
-	private int action;
-	private float value;
-
-	public ActionValue(int action, float value) {
-		super();
-		this.action = action;
-		this.value = value;
-	}
-
-	public int getAction() {
-		return action;
-	}
-
-	public float getValue() {
-		return value;
-	}
-
-	@Override
-	public int compareTo(ActionValue o) {
-		if (value < o.value)
-			return -1;
-		else if (value == o.value)
-			return 0;
-		else
-			return 1;
-	}
-
-}
