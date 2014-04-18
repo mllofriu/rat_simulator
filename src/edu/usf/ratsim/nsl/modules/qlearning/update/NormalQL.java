@@ -72,6 +72,7 @@ public class NormalQL extends NslModule implements PolicyDumper {
 		float newValue = actionValue + alpha
 				* (reward.get() + discountFactor * maxERNextState - actionValue);
 
+
 		value.set(sBefore, a, newValue);
 //		System.out.println(sBefore);
 //		if (actionValue != value.get(sBefore, a))

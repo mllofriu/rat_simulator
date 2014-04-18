@@ -10,6 +10,20 @@
         <zp>0.35</zp>
         <rot>0</rot>
     </point>
+    <point>
+        <name>W1</name>
+        <xp>0</xp>
+        <yp>0</yp>
+        <zp>0.2</zp>
+        <rot>0</rot>
+    </point>
+    <point>
+        <name>W2</name>
+        <xp>0</xp>
+        <yp>0</yp>
+        <zp>-.2</zp>
+        <rot>0</rot>
+    </point>
 
 	<maze>/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
 
@@ -18,7 +32,7 @@
         <name>oneLayer</name>
         <numMembers>1</numMembers>
         <model>
-            <name>MultiScaleMultiIntentionModel</name>
+            <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numLayers>1</numLayers>
                 <minRadius>.05</minRadius>
@@ -30,6 +44,9 @@
                 <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
+                <flashingReward>100</flashingReward>
+                <nonFlashingReward>5</nonFlashingReward>
+                <wallFollowingVal>20</wallFollowingVal>
             </params>
         </model>
         <initializers>
@@ -113,10 +130,27 @@
 				</params>
 			</task>
 			<task>
+                <name>ResetModelTask</name>
+                <params>
+                </params>
+            </task>
+			<task>
 				<name>ActivateFeeders</name>
 				<params>
 				</params>
 			</task>
+			<!-- <task>
+                <name>ClearWalls</name>
+                <params>
+                </params>
+            </task>
+            <task>
+                <name>PlaceWall</name>
+                <params>
+                    <x1>W1</x1>
+                    <x2>W2</x2>
+                </params>
+            </task> -->
 
 		</initialTasks>
 		<afterCycleTasks>

@@ -7,14 +7,14 @@ import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 
-public class GoalDecider extends NslModule {
+public class FlashingActiveGoalDecider extends NslModule {
 
 	private ExperimentUniverse universe;
 	public NslDoutInt0 goalFeeder;
 	private int currentGoal;
 	private Random r;
 
-	public GoalDecider(String nslName, NslModule nslParent,
+	public FlashingActiveGoalDecider(String nslName, NslModule nslParent,
 			ExperimentUniverse univ) {
 		super(nslName, nslParent);
 
@@ -53,6 +53,10 @@ public class GoalDecider extends NslModule {
 
 		goalFeeder.set(currentGoal);
 
-//		System.out.println(currentGoal);
+		System.out.println("Active GD: " +currentGoal);
+	}
+
+	public void newTrial() {
+		currentGoal = -1;
 	}
 }

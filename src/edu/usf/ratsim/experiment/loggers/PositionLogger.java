@@ -42,7 +42,7 @@ public class PositionLogger implements ExperimentLogger {
 	public void log(ExperimentUniverse universe) {
 		Point3f pos = universe.getRobotPosition();
 		// -Z coordinate corresponds to y
-		poses.add(new Pose(pos.x, -pos.z, actionPerformer.wasLastActionRandom()));
+		poses.add(new Pose(pos.x, -pos.z, false));//actionPerformer.wasLastActionRandom()));
 	}
 
 	public void finalizeLog() {

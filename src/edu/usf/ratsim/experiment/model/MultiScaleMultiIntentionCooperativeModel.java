@@ -10,10 +10,14 @@ import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayerWithIntention;
 import edu.usf.ratsim.nsl.modules.FlashingActiveGoalDecider;
+import edu.usf.ratsim.nsl.modules.FlashingOrAnyGoalDecider;
+import edu.usf.ratsim.nsl.modules.GeneralTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.HeadingAngle;
 import edu.usf.ratsim.nsl.modules.PlaceIntention;
 import edu.usf.ratsim.nsl.modules.FlashingTaxicFoodFinderSchema;
+import edu.usf.ratsim.nsl.modules.WallFollower;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.NoExploration;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.SingleLayerAS;
 import edu.usf.ratsim.nsl.modules.qlearning.update.NormalQL;
@@ -23,7 +27,7 @@ import edu.usf.ratsim.support.ElementWrapper;
 import edu.usf.ratsim.support.Utiles;
 
 // TODO: works but does not learn in this version
-public class MultiScaleMultiIntentionModel extends NslModel implements RLRatModel {
+public class MultiScaleMultiIntentionCooperativeModel extends NslModel implements RLRatModel {
 	private static final String ACTION_SELECTION_STR = "ASL";
 	private static final String ACTION_PERFORMER_STR = "AP";
 	private static final String FOOD_FINDER_STR = "TD";
@@ -32,19 +36,23 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 	private static final String QL_STR = "NQL";
 	private static final String TAKEN_ACTION_STR = "TA";
 	private static final String REWARD_STR = "R";
-	private static final String GOAL_DECIDER_STR = "GD";
+	private static final String ACTIVE_GOAL_DECIDER_STR = "ACTIVEGD";
+	private static final String ANY_GOAL_DECIDER_STR = "ANYGD";
 	private static final String AFTER_PLACE_INTENTION_STR = "API";
 	private static final String BEFORE_PLACE_INTENTION_STR = "BPI";
+	private static final String WALLFW_STR = "WF";
 	private List<ArtificialPlaceCellLayer> beforePcls;
 	private List<PolicyDumper> qLUpdVal;
-	private ProportionalExplorer actionPerformerVote;
+	private NoExploration actionPerformerVote;
 	private List<SingleLayerAS> qLActionSel;
 	private LinkedList<ArtificialPlaceCellLayer> afterPcls;
 	private int numLayers;
 	private LinkedList<PlaceIntention> beforePI;
 	private LinkedList<PlaceIntention> afterPI;
+	private FlashingActiveGoalDecider activeGoalDecider;
+	private FlashingOrAnyGoalDecider anyGoalDecider;
 
-	public MultiScaleMultiIntentionModel(ElementWrapper params, IRobot robot,
+	public MultiScaleMultiIntentionCooperativeModel(ElementWrapper params, IRobot robot,
 			ExperimentUniverse universe) {
 		super("MSMIModel", (NslModule) null);
 
@@ -52,15 +60,17 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 		float minRadius = params.getChildFloat("minRadius");
 		float maxRadius = params.getChildFloat("maxRadius");
 		numLayers = params.getChildInt("numLayers");
-		float maxPossibleReward = params.getChildFloat("maxPossibleReward");
+//		float maxPossibleReward = params.getChildFloat("maxPossibleReward");
 		int numActions = Utiles.discreteAngles.length;
 		float discountFactor = params.getChildFloat("discountFactor");
 		float alpha = params.getChildFloat("alpha");
 		float initialValue = params.getChildFloat("initialValue");
 		float foodReward = params.getChildFloat("foodReward");
-		float aprioriExploreVar = params.getChildFloat("aprioriExploreVar");
 		float nonFoodReward = params.getChildFloat("nonFoodReward");
 		int numIntentions = params.getChildInt("numIntentions");
+		float flashingReward = params.getChildFloat("flashingReward");
+		float nonFlashingReward = params.getChildFloat("nonFlashingReward");
+		float wallFollowingVal = params.getChildFloat("wallFollowingVal");
 
 		beforePcls = new LinkedList<ArtificialPlaceCellLayer>();
 		beforePI = new LinkedList<PlaceIntention>();
@@ -87,12 +97,15 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 		}
 
 		// Create taxic driver to override in case of flashing
-		new FlashingTaxicFoodFinderSchema(FOOD_FINDER_STR, this, robot,
-				universe, numActions, maxPossibleReward);
+		new GeneralTaxicFoodFinderSchema(FOOD_FINDER_STR, this, robot,universe, numActions, flashingReward, nonFlashingReward);
+		
+		// Wall following for obst. avoidance
+		new WallFollower(WALLFW_STR, this, robot, universe, numActions, wallFollowingVal);
 		
 		// Get votes from QL and other behaviors and perform an action
-		actionPerformerVote = new ProportionalExplorer(ACTION_PERFORMER_STR,
-				this, numLayers + 1, maxPossibleReward, aprioriExploreVar, robot, universe);
+		// One vote per layer + taxic + wf
+		actionPerformerVote = new NoExploration(ACTION_PERFORMER_STR,
+				this, numLayers + 2, robot, universe);
 
 		radius = minRadius;
 		new Reward(REWARD_STR, this, universe, foodReward, nonFoodReward);
@@ -103,12 +116,13 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 			afterPcls.add(pcl);
 			PlaceIntention pIntention = new PlaceIntention(this, AFTER_PLACE_INTENTION_STR + i, pcl.getSize(), numIntentions);
 			afterPI.add(pIntention);
-			qLUpdVal.add(new NormalQL(QL_STR + i, this, beforePI.get(i)
+			qLUpdVal.add(new NormalQL(QL_STR + i, this, pIntention
 					.getSize(), numActions, discountFactor, alpha, initialValue));
 			radius += (maxRadius - minRadius) / (numLayers - 1);
 		}
 		
-		new FlashingActiveGoalDecider(GOAL_DECIDER_STR, this, universe);
+		activeGoalDecider = new FlashingActiveGoalDecider(ACTIVE_GOAL_DECIDER_STR, this, universe);
+		anyGoalDecider =new FlashingOrAnyGoalDecider(ANY_GOAL_DECIDER_STR, this, universe);
 	}
 
 	public void initSys() {
@@ -118,19 +132,23 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 	}
 
 	public void makeConn() {
-		nslConnect(getChild(GOAL_DECIDER_STR), "goalFeeder",
+		nslConnect(getChild(ANY_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(FOOD_FINDER_STR), "goalFeeder");
 		nslConnect(getChild(FOOD_FINDER_STR), "votes",
 				getChild(ACTION_PERFORMER_STR), "votes" + numLayers);
+		nslConnect(getChild(WALLFW_STR), "votes",
+				getChild(ACTION_PERFORMER_STR), "votes" + (numLayers + 1));
 		
 		for (int i = 0; i < numLayers; i++) {
 			
-			nslConnect(getChild(GOAL_DECIDER_STR), "goalFeeder",
+			nslConnect(getChild(ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 					getChild(BEFORE_PLACE_INTENTION_STR + i), "goalFeeder");
 			nslConnect(getChild(BEFORE_STATE_STR + i), "activation",
 					getChild(BEFORE_PLACE_INTENTION_STR + i), "places");
 			nslConnect(getChild(BEFORE_PLACE_INTENTION_STR + i), "states",
 					getChild(ACTION_SELECTION_STR + i), "states");
+//			nslConnect(getChild(BEFORE_STATE_STR + i), "activation",
+//					getChild(ACTION_SELECTION_STR + i), "states");
 			nslConnect(getChild(QL_STR + i), "value",
 					getChild(ACTION_SELECTION_STR + i), "value");
 			nslConnect(getChild(ACTION_SELECTION_STR + i), "votes",
@@ -141,12 +159,16 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 					getChild(QL_STR + i), "reward");
 			nslConnect(getChild(BEFORE_PLACE_INTENTION_STR + i), "states",
 					getChild(QL_STR + i), "statesBefore");
-			nslConnect(getChild(GOAL_DECIDER_STR), "goalFeeder",
+//			nslConnect(getChild(BEFORE_STATE_STR + i), "activation",
+//					getChild(QL_STR + i), "statesBefore");
+			nslConnect(getChild(ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 					getChild(AFTER_PLACE_INTENTION_STR + i), "goalFeeder");
 			nslConnect(getChild(AFTER_STATE_STR + i), "activation",
 					getChild(AFTER_PLACE_INTENTION_STR + i), "places");
 			nslConnect(getChild(AFTER_PLACE_INTENTION_STR + i), "states",
 					getChild(QL_STR + i), "statesAfter");
+//			nslConnect(getChild(AFTER_STATE_STR + i), "activation",
+//					getChild(QL_STR + i), "statesAfter");
 		}
 	}
 
@@ -161,7 +183,7 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 	}
 
 	public ProportionalExplorer getActionPerformer() {
-		return actionPerformerVote;
+		return null;
 	}
 
 	public List<ArtificialPlaceCellLayer> getPCLLayers() {
@@ -176,6 +198,11 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 	@Override
 	public List<PolicyDumper> getPolicyDumpers() {
 		return qLUpdVal;
+	}
+	
+	public void newTrial(){
+		activeGoalDecider.newTrial();
+		anyGoalDecider.newTrial();
 	}
 
 }
