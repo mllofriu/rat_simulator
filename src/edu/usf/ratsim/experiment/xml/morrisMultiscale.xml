@@ -28,6 +28,8 @@
                 <nonFoodReward>-.001</nonFoodReward>
                 <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
+                <aprioriExploreVar>.5</aprioriExploreVar>
+                
                 <initialValue>0</initialValue>
             </params>
         </model>

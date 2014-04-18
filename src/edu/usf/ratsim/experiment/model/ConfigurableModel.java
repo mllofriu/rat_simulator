@@ -9,9 +9,9 @@ import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayerWithIntention;
-import edu.usf.ratsim.nsl.modules.GoalDecider;
+import edu.usf.ratsim.nsl.modules.FlashingActiveGoalDecider;
 import edu.usf.ratsim.nsl.modules.HeadingAngle;
-import edu.usf.ratsim.nsl.modules.TaxicFoodFinderSchema;
+import edu.usf.ratsim.nsl.modules.FlashingTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.SingleLayerAS;
@@ -59,14 +59,15 @@ public class ConfigurableModel extends NslModel implements RLRatModel {
 			} else if (type.equals("ProportionalExplorer")) {
 				int numLayers = params.getChildInt("numLayers");
 				int maxPossibleReward = params.getChildInt("maxPossibleReward");
+				float aprioriExploreVar = params.getChildFloat("aprioriExploreVar");
 				actionPerformerVote = new ProportionalExplorer(name, this,
-						numLayers, maxPossibleReward, robot, universe);
+						numLayers, maxPossibleReward, aprioriExploreVar, robot, universe);
 			} else if (type.equals("TaxicFoodFinderSchema")) {
 				int numActions = Utiles.discreteAngles.length;
 				int maxPossibleReward = params.getChildInt("maxPossibleReward");
-				new TaxicFoodFinderSchema(name, this, robot, universe, numActions, maxPossibleReward);
+				new FlashingTaxicFoodFinderSchema(name, this, robot, universe, numActions, maxPossibleReward);
 			} else if (type.equals("GoalDecider")) {
-				new GoalDecider(name, this, universe);
+				new FlashingActiveGoalDecider(name, this, universe);
 			} else if (type.equals("NormalQL")) {
 				int numStates = params.getChildInt("numStates");
 				int numActions = Utiles.discreteAngles.length;

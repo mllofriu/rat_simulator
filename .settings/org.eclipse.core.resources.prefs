@@ -1,6 +1,8 @@
 eclipse.preferences.version=1
 encoding//src/edu/usf/ratsim/nsl/modules/Explorer.java=UTF-8
-encoding//src/edu/usf/ratsim/nsl/modules/TaxicFoodFinderSchema.java=UTF-8
+encoding//src/edu/usf/ratsim/nsl/modules/FlashingTaxicFoodFinderSchema.java=UTF-8
+encoding//src/edu/usf/ratsim/nsl/modules/GeneralTaxicFoodFinderSchema.java=UTF-8
+encoding//src/edu/usf/ratsim/nsl/modules/WallFollower.java=UTF-8
 encoding//src/edu/usf/ratsim/robot/IRobot.java=UTF-8
 encoding//src/edu/usf/ratsim/robot/virtual/VirtualRobot.java=UTF-8
 encoding//src/edu/usf/ratsim/support/Utiles.java=UTF-8

@@ -20,14 +20,15 @@
         <model>
             <name>MultiScaleModel</name>
             <params>
-                <numLayers>1</numLayers>
+                <numLayers>5</numLayers>
                 <minRadius>.05</minRadius>
-                <maxRadius>.05</maxRadius>
+                <maxRadius>.25</maxRadius>
                 <maxPossibleReward>500</maxPossibleReward>
                 <foodReward>100</foodReward>
                 <nonFoodReward>-.001</nonFoodReward>
                 <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
+                <aprioriExploreVar>.5</aprioriExploreVar>
                 <initialValue>0</initialValue>
             </params>
         </model>

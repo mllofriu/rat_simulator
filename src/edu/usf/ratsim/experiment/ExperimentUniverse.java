@@ -51,4 +51,10 @@ public interface ExperimentUniverse {
 	
 	public void clearWalls();
 
+	public List<Integer> getFeeders();
+
+	public boolean hasRobotFoundFeeder(int i);
+
+	public boolean isRobotParallelToWall();
+
 }

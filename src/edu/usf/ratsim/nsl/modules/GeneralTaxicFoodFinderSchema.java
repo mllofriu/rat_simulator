@@ -7,26 +7,29 @@ import javax.vecmath.Vector3f;
 import nslj.src.lang.NslDinInt0;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
-import nslj.src.lang.NslNumeric0;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.Utiles;
 
-public class TaxicFoodFinderSchema extends NslModule {
+/**
+ * Sets the dopaminergic votes for both a flashing feeder and a non flashing one.
+ * @author ludo
+ *
+ */
+public class GeneralTaxicFoodFinderSchema extends NslModule {
 
-	private IRobot robot;
 	private ExperimentUniverse univ;
 	public NslDinInt0 goalFeeder;
 	public NslDoutFloat1 votes;
-	private float maxReward;
+	private float rewardFlashing, rewardNonFlashing;
 
-	public TaxicFoodFinderSchema(String nslName, NslModule nslParent,
+	public GeneralTaxicFoodFinderSchema(String nslName, NslModule nslParent,
 			IRobot robot, ExperimentUniverse univ, int numActions,
-			float maxReward) {
+			float rewardFlashing, float rewardNonFlashing) {
 		super(nslName, nslParent);
-		this.robot = robot;
 		this.univ = univ;
-		this.maxReward = maxReward;
+		this.rewardFlashing = rewardFlashing;
+		this.rewardNonFlashing = rewardNonFlashing;
 
 		goalFeeder = new NslDinInt0(this, "goalFeeder");
 		votes = new NslDoutFloat1(this, "votes", numActions);
@@ -37,12 +40,11 @@ public class TaxicFoodFinderSchema extends NslModule {
 		// If the current goal is flashing override other modules actions
 		// (this module should come after others)
 		votes.set(0);
-		if (goalFeeder.get() != -1
-				&& univ.getFlashingFeeders().contains(goalFeeder.get())) {
+//		System.out.println(goalFeeder.get());
+		if (goalFeeder.get() != -1) {
 			// Get angle to food
 			Point3f rPos = univ.getRobotPosition();
 			Point3f fPos = univ.getFoodPosition(goalFeeder.get());
-			Quat4f rRot = univ.getRobotOrientation();
 
 			// Get the vector food - robot
 			Vector3f vToFood = Utiles.vectorToPoint(rPos, fPos);
@@ -52,25 +54,11 @@ public class TaxicFoodFinderSchema extends NslModule {
 			Quat4f rotToFood = Utiles
 					.rotToPoint(new Vector3f(1, 0, 0), vToFood);
 
-			// Get affordances
-//			boolean[] affordances;
-
-			// Get best action to food
-//			int action = Utiles.bestActionToRot(rotToFood, rRot);
-
-//			System.out.println(goalFeeder.get() + " " + Utiles.discretizeAngle(new Vector3f(1, 0, 0).angle(vToFood)));
+			if (univ.getFlashingFeeders().contains(goalFeeder.get()))
+				votes.set(Utiles.discretizeAngle(rotToFood), rewardFlashing);
+			else 
+				votes.set(Utiles.discretizeAngle(rotToFood), rewardNonFlashing);
 			
-			votes.set(Utiles.discretizeAngle(rotToFood), maxReward);
-			
-//			if (action == -1)
-//				System.out.println("No affordances available");
-//			else {
-//				robot.rotate(Utiles.actions[action]);
-//				affordances = robot.getAffordances();
-//				if (affordances[Utiles.discretizeAction(0)])
-//					robot.forward();
-//			}
-
 		}
 	}
 }
