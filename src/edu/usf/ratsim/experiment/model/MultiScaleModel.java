@@ -9,9 +9,9 @@ import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayerWithIntention;
-import edu.usf.ratsim.nsl.modules.GoalDecider;
+import edu.usf.ratsim.nsl.modules.FlashingActiveGoalDecider;
 import edu.usf.ratsim.nsl.modules.HeadingAngle;
-import edu.usf.ratsim.nsl.modules.TaxicFoodFinderSchema;
+import edu.usf.ratsim.nsl.modules.FlashingTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.SingleLayerAS;
@@ -43,7 +43,7 @@ public class MultiScaleModel extends NslModel implements RLRatModel {
 			ExperimentUniverse universe) {
 		super("MSModel", (NslModule) null);
 
-		new GoalDecider(GOAL_DECIDER_STR, this, universe);
+		new FlashingActiveGoalDecider(GOAL_DECIDER_STR, this, universe);
 
 		// Get some configuration values for place cells + qlearning
 		float minRadius = params.getChildFloat("minRadius");
@@ -54,6 +54,7 @@ public class MultiScaleModel extends NslModel implements RLRatModel {
 		float discountFactor = params.getChildFloat("discountFactor");
 		float alpha = params.getChildFloat("alpha");
 		float initialValue = params.getChildFloat("initialValue");
+		float aprioriExploreVar = params.getChildFloat("aprioriExploreVar");
 		float foodReward = params.getChildFloat("foodReward");
 		float nonFoodReward = params.getChildFloat("nonFoodReward");
 
@@ -76,10 +77,10 @@ public class MultiScaleModel extends NslModel implements RLRatModel {
 		}
 		// Created first to let Qlearning execute once when there is food
 		actionPerformerVote = new ProportionalExplorer(ACTION_PERFORMER_STR,
-				this, numLayers, maxPossibleReward, robot, universe);
+				this, numLayers, maxPossibleReward, aprioriExploreVar, robot, universe);
 
 		// Create taxic driver to override in case of flashing
-		new TaxicFoodFinderSchema(FOOD_FINDER_STR, this, robot,
+		new FlashingTaxicFoodFinderSchema(FOOD_FINDER_STR, this, robot,
 				universe, numActions, maxPossibleReward);
 
 		new Reward(REWARD_STR, this, universe, foodReward, nonFoodReward);
