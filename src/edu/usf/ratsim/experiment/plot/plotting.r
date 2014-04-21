@@ -172,13 +172,13 @@ mazeFile <- "maze.xml"
 maze <- mazePlot(mazeFile)
 
 pathFile = 'position.txt'
-policyFile = 'policy.txt'
+# policyFile = 'policy.txt'
 
-policyData <- read.csv(policyFile, sep='\t')
+# policyData <- read.csv(policyFile, sep='\t')
 pathData <- read.csv(pathFile, sep='\t')
 
 splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
-splitPol <- split(policyData, policyData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+# splitPol <- split(policyData, policyData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 
 # One worker per plot
 registerDoParallel()
@@ -187,16 +187,16 @@ registerDoParallel()
 ddply(pathData, .(trial), plotArrivalTime)
 
 # Saving image non-parallel:
-invisible(llply(names(splitPol), function(x){
-  # Split data by layers and intention
-  #   splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('layer','intention')], drop=TRUE)
-  splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('layer')], drop=TRUE)
-  # Plot different layers with same path data
-  lapply(names(splitPolLayer), function (y) plotPolicyOnMaze(paste(x,y,sep='.'),
-                                                             splitPath[[x]], 
-                                                             splitPolLayer[[y]],
-                                                             maze))
-}, .parallel = TRUE))
+# invisible(llply(names(splitPol), function(x){
+#   # Split data by layers and intention
+#   #   splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('layer','intention')], drop=TRUE)
+#   splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('layer')], drop=TRUE)
+#   # Plot different layers with same path data
+#   lapply(names(splitPolLayer), function (y) plotPolicyOnMaze(paste(x,y,sep='.'),
+#                                                              splitPath[[x]], 
+#                                                              splitPolLayer[[y]],
+#                                                              maze))
+# }, .parallel = TRUE))
 
 # # Plot just path
 invisible(llply(names(splitPath), function(x) plotPathOnMaze(x,

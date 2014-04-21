@@ -303,7 +303,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			Coordinate initCoordinate = new Coordinate(p.x, p.z);
 			// A translation vector to calc affordances
 			Transform3D trans = new Transform3D();
-			trans.setTranslation(new Vector3f(VirtualRobot.STEP * 5, 0f, 0f));
+			trans.setTranslation(new Vector3f(VirtualRobot.STEP, 0f, 0f));
 			// The rotatio of the action
 			Transform3D rot = new Transform3D();
 			rot.rotY(Utiles.actions[action]);
