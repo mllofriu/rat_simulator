@@ -32,4 +32,5 @@ public class PlaceIntention extends NslModule {
 	public int getSize() {
 		return states.getSize();
 	}
+
 }
