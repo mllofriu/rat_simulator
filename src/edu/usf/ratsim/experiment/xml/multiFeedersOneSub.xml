@@ -34,7 +34,7 @@
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
-                <numLayers>1</numLayers>
+                <numLayers>5</numLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.25</maxRadius>
                 <numIntentions>8</numIntentions>
@@ -144,13 +144,13 @@
                 <params>
                 </params>
             </task>
-            <task>
+            <!-- <task>
                 <name>PlaceWall</name>
                 <params>
                     <x1>W1</x1>
                     <x2>W2</x2>
                 </params>
-            </task> 
+            </task>  -->
 
 		</initialTasks>
 		<afterCycleTasks>
@@ -167,6 +167,12 @@
 					<n>15</n>
 				</params>
 			</stopCondition>
+			<stopCondition>
+                <name>Time</name>
+                <params>
+                    <time>10000</time>
+                </params>
+            </stopCondition>
 		</stopConditions>
 		<afterCycleLoggers>
 			<logger>
