@@ -16,8 +16,8 @@ public class Utiles {
 //			-(float) (3 * Math.PI / 4), -(float) (Math.PI / 2),
 //			-(float) (Math.PI / 4), 0, (float) (Math.PI / 4),
 //			(float) (Math.PI / 2), (float) (3 * Math.PI / 4) };
-	 public static final float[] actions = { -(float) (Math.PI / 4), -(float) (Math.PI / 8), 0,
-	 (float) (Math.PI / 8), (float) (Math.PI / 4) };
+	 public static final float[] actions = {-(float) (Math.PI / 8), 0,
+	 (float) (Math.PI / 8) };
 	public static final float[] discreteAngles = { 0, (float) (Math.PI / 4),
 			(float) (Math.PI / 2), (float) (3 * Math.PI / 4), (float) Math.PI,
 			(float) (5 * Math.PI / 4), (float) (6 * Math.PI / 4),

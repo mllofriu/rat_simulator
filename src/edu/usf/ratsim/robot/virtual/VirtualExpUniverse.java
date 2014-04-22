@@ -44,6 +44,8 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	private static final float CLOSE_TO_FOOD_THRS = Configuration
 			.getFloat("VirtualUniverse.closeToFood");
 
+	private static final float LOOKAHEADSTEPS = 5;
+
 	private View topView;
 	private RobotNode robot;
 	private List<FeederNode> feeders;
@@ -303,7 +305,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			Coordinate initCoordinate = new Coordinate(p.x, p.z);
 			// A translation vector to calc affordances
 			Transform3D trans = new Transform3D();
-			trans.setTranslation(new Vector3f(VirtualRobot.STEP, 0f, 0f));
+			trans.setTranslation(new Vector3f(VirtualRobot.STEP * LOOKAHEADSTEPS, 0f, 0f));
 			// The rotatio of the action
 			Transform3D rot = new Transform3D();
 			rot.rotY(Utiles.actions[action]);
