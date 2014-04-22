@@ -12,14 +12,14 @@
     </point>
     <point>
         <name>W1</name>
-        <xp>0</xp>
+        <xp>0.05</xp>
         <yp>0</yp>
         <zp>0.2</zp>
         <rot>0</rot>
     </point>
     <point>
         <name>W2</name>
-        <xp>0</xp>
+        <xp>0.05</xp>
         <yp>0</yp>
         <zp>-.2</zp>
         <rot>0</rot>
@@ -139,7 +139,7 @@
 				<params>
 				</params>
 			</task>
-			<!-- <task>
+			<task>
                 <name>ClearWalls</name>
                 <params>
                 </params>
@@ -150,7 +150,7 @@
                     <x1>W1</x1>
                     <x2>W2</x2>
                 </params>
-            </task> -->
+            </task> 
 
 		</initialTasks>
 		<afterCycleTasks>
