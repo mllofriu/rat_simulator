@@ -30,7 +30,7 @@
 	<!--Subject groups -->
 	<group>
 		<name>One Layer</name>
-		<numMembers>16</numMembers>
+		<numMembers>8</numMembers>
 		<model>
 			<name>MultiScaleMultiIntentionCooperativeModel</name>
 			<params>
@@ -60,7 +60,7 @@
 	</group>
 	<group>
 		<name>Five Layers</name>
-		<numMembers>16</numMembers>
+		<numMembers>8</numMembers>
 		<model>
 			<name>MultiScaleMultiIntentionCooperativeModel</name>
 			<params>
