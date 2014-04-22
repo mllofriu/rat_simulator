@@ -85,7 +85,7 @@ public class WallFollower extends NslModule {
 		if (currentValue > EPS_VALUE){
 			Quat4f ori = univ.getRobotOrientation();
 			if (!aff[Utiles.discretizeAction(0)]){
-				Quat4f turn = Utiles.angleToRot( direction * 45);
+				Quat4f turn = Utiles.angleToRot( direction * Utiles.actionInterval);
 				ori.mul(turn);
 				votes.set(Utiles.discretizeAngle(ori), currentValue);
 //				j = Utiles.discretizeAction(45);

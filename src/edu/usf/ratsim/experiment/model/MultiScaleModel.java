@@ -50,7 +50,7 @@ public class MultiScaleModel extends NslModel implements RLRatModel {
 		float maxRadius = params.getChildFloat("maxRadius");
 		numLayers = params.getChildInt("numLayers");
 		float maxPossibleReward = params.getChildFloat("maxPossibleReward");
-		int numActions = Utiles.discreteAngles.length;
+		int numActions = Utiles.numAngles;
 		float discountFactor = params.getChildFloat("discountFactor");
 		float alpha = params.getChildFloat("alpha");
 		float initialValue = params.getChildFloat("initialValue");

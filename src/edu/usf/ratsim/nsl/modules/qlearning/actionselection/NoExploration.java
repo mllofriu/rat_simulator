@@ -34,7 +34,7 @@ public class NoExploration extends NslModule {
 	}
 
 	public void simRun() {
-		float[] overallValues = new float[Utiles.discreteAngles.length];
+		float[] overallValues = new float[Utiles.numAngles];
 		for (int i = 0; i < overallValues.length; i++)
 			overallValues[i] = 0;
 		// Add each contribution
@@ -59,7 +59,7 @@ public class NoExploration extends NslModule {
 		LinkedList<ActionValue> actions = new LinkedList<ActionValue>();
 		for (int angle = 0; angle < overallValues.length; angle++) {
 			// Get angle to that maximal direction
-			Quat4f nextRot = Utiles.angleToRot(Utiles.discreteAngles[angle]);
+			Quat4f nextRot = Utiles.angleToRot(Utiles.getAngle(angle));
 
 			// Get the action that better approximates that angle
 			int action = Utiles.bestActionToRot(nextRot,
@@ -82,7 +82,7 @@ public class NoExploration extends NslModule {
 
 //			if (actions.get(action).getAction() != Utiles.discretizeAction(0)) {
 				// Try the selected action
-				robot.rotate(Utiles.actions[actions.get(action).getAction()]);
+				robot.rotate(Utiles.getAction(actions.get(action).getAction()));
 				rotations++;
 				
 //				try {

@@ -45,7 +45,7 @@ public final class StateActionReward {
 	}
 
 	public int hashCode() {
-		return state * Utiles.discreteAngles.length + action;
+		return state * Utiles.numAngles + action;
 	}
 
 }
