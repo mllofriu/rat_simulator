@@ -130,7 +130,7 @@ public class NormalQL extends NslModule implements PolicyDumper {
 				if (angle == -1)
 					policyAngle = "NA";
 				else
-					policyAngle = new Float(Utiles.discreteAngles[angle])
+					policyAngle = new Float(Utiles.getAngle(angle))
 							.toString();
 
 				writer.println(trial + '\t' + groupName + '\t' + subName + '\t'
@@ -174,7 +174,7 @@ public class NormalQL extends NslModule implements PolicyDumper {
 					if (angle == -1)
 						policyAngle = "NA";
 					else
-						policyAngle = new Float(Utiles.discreteAngles[angle])
+						policyAngle = new Float(Utiles.getAngle(angle))
 								.toString();
 
 					writer.println(trial + '\t' + groupName + '\t' + subName
@@ -207,10 +207,10 @@ public class NormalQL extends NslModule implements PolicyDumper {
 	}
 	
 	public int getMaxAngle(int s) {
-		float[] vals = new float[Utiles.discreteAngles.length];
+		float[] vals = new float[Utiles.numAngles];
 		int maxAngle = -1;
 		float maxVal = 0;
-		for (int angle = 0; angle < Utiles.discreteAngles.length; angle++) {
+		for (int angle = 0; angle < Utiles.numAngles; angle++) {
 			vals[angle] = value.get(s, angle); 
 			if (vals[angle] > maxVal) {
 				maxVal = vals[angle];
