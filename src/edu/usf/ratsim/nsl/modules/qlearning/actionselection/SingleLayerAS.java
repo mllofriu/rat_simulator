@@ -16,7 +16,7 @@ public class SingleLayerAS extends NslModule {
 	public SingleLayerAS(String nslName, NslModule nslParent, int numStates) {
 		super(nslName, nslParent);
 
-		numActions = Utiles.discreteAngles.length;
+		numActions = Utiles.numAngles;
 		
 		actionVote = new NslDoutFloat1(this, "votes", numActions);
 		states = new NslDinFloat1(this, "states", numStates);
