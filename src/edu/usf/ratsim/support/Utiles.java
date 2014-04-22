@@ -16,13 +16,46 @@ public class Utiles {
 //			-(float) (3 * Math.PI / 4), -(float) (Math.PI / 2),
 //			-(float) (Math.PI / 4), 0, (float) (Math.PI / 4),
 //			(float) (Math.PI / 2), (float) (3 * Math.PI / 4) };
-	 public static final float[] actions = {-(float) (Math.PI / 8), 0,
-	 (float) (Math.PI / 8) };
-	public static final float[] discreteAngles = { 0, (float) (Math.PI / 4),
-			(float) (Math.PI / 2), (float) (3 * Math.PI / 4), (float) Math.PI,
-			(float) (5 * Math.PI / 4), (float) (6 * Math.PI / 4),
-			(float) (7 * Math.PI / 4) };
+//	 public static final float[] actions = {-(float) (Math.PI / 8), 0,
+//	 (float) (Math.PI / 8) };
+//	public static final float[] discreteAngles = { 0, (float) (Math.PI / 4),
+//			(float) (Math.PI / 2), (float) (3 * Math.PI / 4), (float) Math.PI,
+//			(float) (5 * Math.PI / 4), (float) (6 * Math.PI / 4),
+//			(float) (7 * Math.PI / 4) };
 
+	public static final float actionInterval = (float) (Math.PI/8);
+	private static final float actionMin = (float) (-Math.PI/8);
+	public static final int numActions = 3;
+//	private static final float actionMax = (float) (Math.PI/8);
+	
+
+	private static final float angleInterval = (float) (Math.PI/8);
+	private static final float angleMin = 0;
+	public static final int numAngles = 16;
+//	private static final float angleMax = (float) (2* Math.PI - angleInterval);
+	
+	public static float getAction(int index){
+		float angle = actionMin;
+		int i = 0;
+		while (i < index){
+			angle += actionInterval;
+			i++;
+		}
+		
+		return angle;
+	}
+	
+	public static float getAngle(int index){
+		float angle = angleMin;
+		int i = 0;
+		while (i < index){
+			angle += angleInterval;
+			i++;
+		}
+		
+		return angle;
+	}
+	
 	public static int contador(BufferedImage image, Color color) {
 		int iterH, iterW;
 		int contador = 0;
@@ -97,9 +130,9 @@ public class Utiles {
 
 		int action = -1;
 		float angleDifference = (float) (Math.PI * 2);
-		for (int i = 0; i < actions.length; i++) {
+		for (int i = 0; i < numActions; i++) {
 			// Make rotation for this action
-			Quat4f rotAction = angleToRot(actions[i]);
+			Quat4f rotAction = angleToRot(getAction(i));
 			// Invert
 			rotAction.inverse();
 			// Compose rotToMake and inverse of action.
@@ -160,9 +193,9 @@ public class Utiles {
 
 		int action = -1;
 		float angleDifference = (float) (Math.PI * 2);
-		for (int i = 0; i < actions.length; i++) {
+		for (int i = 0; i < numActions; i++) {
 			// Make rotation for this action
-			Quat4f rotAction = angleToRot(actions[i]);
+			Quat4f rotAction = angleToRot(getAction(i));
 			// Invert
 			rotAction.inverse();
 			// Compose rotToMake and inverse of action.
@@ -191,7 +224,7 @@ public class Utiles {
 
 	public static double actionDistance(int a1, int a2) {
 		return Math.min(Math.abs(a1 - a2),
-				Math.abs(Utiles.actions.length - a2 + a1));
+				Math.abs(numActions - a2 + a1));
 	}
 
 	public static int discretizeAngle(Quat4f allotRot) {
@@ -199,9 +232,9 @@ public class Utiles {
 //		Quat4f allotRot = angleToRot(allotAngle);
 		int angle = -1;
 		float angleDifference = (float) (Math.PI * 2);
-		for (int i = 0; i < discreteAngles.length; i++) {
+		for (int i = 0; i < numAngles; i++) {
 			// Make rotation for this action
-			Quat4f rotAction = angleToRot(discreteAngles[i]);
+			Quat4f rotAction = angleToRot(getAngle(i));
 			// Invert
 			rotAction.inverse();
 			// Compose rotToMake and inverse of action.

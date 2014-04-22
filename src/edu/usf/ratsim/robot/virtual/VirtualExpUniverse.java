@@ -295,8 +295,8 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	public boolean[] getRobotAffordances() {
 
-		boolean[] affordances = new boolean[Utiles.actions.length];
-		for (int action = 0; action < Utiles.actions.length; action++) {
+		boolean[] affordances = new boolean[Utiles.numActions];
+		for (int action = 0; action < Utiles.numActions; action++) {
 			// The current position with rotation
 			Transform3D rPos = new Transform3D();
 			robot.getTransformGroup().getTransform(rPos);
@@ -308,7 +308,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			trans.setTranslation(new Vector3f(VirtualRobot.STEP * LOOKAHEADSTEPS, 0f, 0f));
 			// The rotatio of the action
 			Transform3D rot = new Transform3D();
-			rot.rotY(Utiles.actions[action]);
+			rot.rotY(Utiles.getAction(action));
 			// Apply hipotetical transformations
 			rPos.mul(rot);
 			rPos.mul(trans);
