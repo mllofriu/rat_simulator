@@ -44,7 +44,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	private static final float CLOSE_TO_FOOD_THRS = Configuration
 			.getFloat("VirtualUniverse.closeToFood");
 
-	private static final float LOOKAHEADSTEPS = 5;
+	private static final int LOOKAHEADSTEPS = 5;
 
 	private View topView;
 	private RobotNode robot;
@@ -295,44 +295,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	public boolean[] getRobotAffordances() {
 
-		boolean[] affordances = new boolean[Utiles.numActions];
-		for (int action = 0; action < Utiles.numActions; action++) {
-			// The current position with rotation
-			Transform3D rPos = new Transform3D();
-			robot.getTransformGroup().getTransform(rPos);
-			Vector3f p = new Vector3f();
-			rPos.get(p);
-			Coordinate initCoordinate = new Coordinate(p.x, p.z);
-			// A translation vector to calc affordances
-			Transform3D trans = new Transform3D();
-			trans.setTranslation(new Vector3f(VirtualRobot.STEP * LOOKAHEADSTEPS, 0f, 0f));
-			// The rotatio of the action
-			Transform3D rot = new Transform3D();
-			rot.rotY(Utiles.getAction(action));
-			// Apply hipotetical transformations
-			rPos.mul(rot);
-			rPos.mul(trans);
-			// Get the new position
-			Vector3f finalPos = new Vector3f();
-			rPos.get(finalPos);
-			Coordinate finalCoordinate = new Coordinate(finalPos.x, finalPos.z);
-			// Check it's in the maze
-			boolean insideMaze = pool.isInside(new Point3f(finalPos));
-			// Check if crosses any wall
-			boolean intesectsWall = false;
-			LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
-			for (WallNode wallNode : wallNodes) {
-				// System.out.println(path);
-				// System.out.println(wallNode.segment);
-				// System.out.println(path.intersection(wallNode.segment));
-				intesectsWall = intesectsWall
-						|| (path.intersection(wallNode.segment) != null);
-			}
-
-			affordances[action] = insideMaze && !intesectsWall;
-		}
-
-		return affordances;
+		return getRobotAffordances(LOOKAHEADSTEPS);
 	}
 
 	public Rectangle2D.Float getBoundingRectangle() {
@@ -411,6 +374,47 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		
 		// If I cannot move to any of the perpendicular directions I am near a wall
 		return !aff[Utiles.discretizeAction(-90)] || !aff[Utiles.discretizeAction(90)];
+	}
+
+	public boolean[] getRobotAffordances(int lookahead) {
+		boolean[] affordances = new boolean[Utiles.numActions];
+		for (int action = 0; action < Utiles.numActions; action++) {
+			// The current position with rotation
+			Transform3D rPos = new Transform3D();
+			robot.getTransformGroup().getTransform(rPos);
+			Vector3f p = new Vector3f();
+			rPos.get(p);
+			Coordinate initCoordinate = new Coordinate(p.x, p.z);
+			// A translation vector to calc affordances
+			Transform3D trans = new Transform3D();
+			trans.setTranslation(new Vector3f(VirtualRobot.STEP * lookahead, 0f, 0f));
+			// The rotatio of the action
+			Transform3D rot = new Transform3D();
+			rot.rotY(Utiles.getAction(action));
+			// Apply hipotetical transformations
+			rPos.mul(rot);
+			rPos.mul(trans);
+			// Get the new position
+			Vector3f finalPos = new Vector3f();
+			rPos.get(finalPos);
+			Coordinate finalCoordinate = new Coordinate(finalPos.x, finalPos.z);
+			// Check it's in the maze
+			boolean insideMaze = pool.isInside(new Point3f(finalPos));
+			// Check if crosses any wall
+			boolean intesectsWall = false;
+			LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
+			for (WallNode wallNode : wallNodes) {
+				// System.out.println(path);
+				// System.out.println(wallNode.segment);
+				// System.out.println(path.intersection(wallNode.segment));
+				intesectsWall = intesectsWall
+						|| (path.intersection(wallNode.segment) != null);
+			}
+
+			affordances[action] = insideMaze && !intesectsWall;
+		}
+
+		return affordances;
 	}
 
 }

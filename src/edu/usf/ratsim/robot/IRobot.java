@@ -55,4 +55,6 @@ public interface IRobot {
 
 	public abstract void forward();
 
+	public abstract boolean[] getAffordances(int wallLookahead);
+
 }

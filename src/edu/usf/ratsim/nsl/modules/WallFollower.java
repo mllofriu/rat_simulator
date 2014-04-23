@@ -21,6 +21,7 @@ public class WallFollower extends NslModule {
 
 	private static final float EPS_VALUE = 1f;
 	private static final float DIMINISH_FACTOR = .8f;
+	private static final int WALL_LOOKAHEAD = 15;
 	private ExperimentUniverse univ;
 	public NslDoutFloat1 votes;
 	private float wallFollowingValue;
@@ -64,7 +65,7 @@ public class WallFollower extends NslModule {
 //		if (currentValue > EPS_VALUE)
 		
 		// Stop wall following if there is no near wall
-		boolean[] aff = robot.getAffordances();
+		boolean[] aff = robot.getAffordances(WALL_LOOKAHEAD);
 		if (!aff[Utiles.discretizeAction(0)]){
 //			active = true;
 			currentValue = wallFollowingValue;
@@ -85,6 +86,7 @@ public class WallFollower extends NslModule {
 		if (currentValue > EPS_VALUE){
 			Quat4f ori = univ.getRobotOrientation();
 			if (!aff[Utiles.discretizeAction(0)]){
+//				votes.set(Utiles.discretizeAngle(ori), -2000);
 				Quat4f turn = Utiles.angleToRot( direction * Utiles.actionInterval);
 				ori.mul(turn);
 				votes.set(Utiles.discretizeAngle(ori), currentValue);
