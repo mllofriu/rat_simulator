@@ -28,10 +28,10 @@ public class ProportionalExplorer extends NslModule {
 
 	private ExperimentUniverse universe;
 
-	private float maxPossibleReward;
+//	private float maxPossibleReward;
 
 	public ProportionalExplorer(String nslName, NslModule nslParent,
-			int numLayers, float maxPossibleReward, float aprioriValueVariance,
+			int numLayers,
 			IRobot robot, ExperimentUniverse universe) {
 		super(nslName, nslParent);
 
@@ -42,8 +42,6 @@ public class ProportionalExplorer extends NslModule {
 		for (int i = 0; i < numLayers; i++)
 			votes[i] = new NslDinFloat1(this, "votes" + i);
 
-		this.maxPossibleReward = maxPossibleReward;
-		this.aprioriValueVariance = aprioriValueVariance;
 		r = new Random();
 	}
 
@@ -67,7 +65,7 @@ public class ProportionalExplorer extends NslModule {
 //		explore = r.nextFloat() > (maxVal / maxPossibleReward);
 		// if (explore)
 		// System.out.println("Exploring");
-		 explore = maxVal == 0;
+//		 explore = maxVal == 0;
 		// System.out.println(maxVal);
 		// Make a list of actions and values
 		List<ActionValue> actions = new LinkedList<ActionValue>();
@@ -101,12 +99,9 @@ public class ProportionalExplorer extends NslModule {
 			if (maxVal < overallValues[a])
 				maxVal = overallValues[a];
 
-		boolean[] aff;
-		do {
 			int action;
 			// Roulette algorithm
 			// Get total value
-			if (explore) {
 				// Find min val
 				float minVal = 0;
 				for (ActionValue aValue : actions)
@@ -127,31 +122,25 @@ public class ProportionalExplorer extends NslModule {
 					action++;
 					nextRVal -= (actions.get(action).getValue() - minVal);
 				} while (nextRVal >= 0 && action < actions.size() - 1);
-			} else {
-				// Select best action
-				Collections.sort(actions);
-				action = actions.size() - 1;
-			}
 
 			// Try the selected action
 			robot.rotate(Utiles.getAction(actions.get(action).getAction()));
-			aff = robot.getAffordances();
+			boolean[] aff = robot.getAffordances();
 			// Random if there was no affordable positive value action
 			// lastActionRandom = actions.get(action).getValue() <=
 			// EXPLORATORY_VARIANCE;
 			actions.remove(action);
 			// } while (!aff[Utiles.discretizeAction(0)]);
-		} while (false);
 
 		// Now it is safe to forward
-		if (!aff[Utiles.discretizeAction(0)]) {
-			if (Math.random() > .5)
-				robot.rotate((float) (Math.PI / 2));
-			else {
-				robot.rotate((float) (-Math.PI / 2));
-			}
-			aff = robot.getAffordances();
-		}
+//		if (!aff[Utiles.discretizeAction(0)]) {
+//			if (Math.random() > .5)
+//				robot.rotate((float) (Math.PI / 2));
+//			else {
+//				robot.rotate((float) (-Math.PI / 2));
+//			}
+//			aff = robot.getAffordances();
+//		}
 		if (aff[Utiles.discretizeAction(0)])
 			robot.forward();
 	}
