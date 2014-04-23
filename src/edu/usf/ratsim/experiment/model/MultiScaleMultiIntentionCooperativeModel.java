@@ -60,7 +60,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel implement
 		float minRadius = params.getChildFloat("minRadius");
 		float maxRadius = params.getChildFloat("maxRadius");
 		numLayers = params.getChildInt("numLayers");
-//		float maxPossibleReward = params.getChildFloat("maxPossibleReward");
+		float maxPossibleReward = params.getChildFloat("maxPossibleReward");
 		int numActions = Utiles.numAngles;
 		float discountFactor = params.getChildFloat("discountFactor");
 		float alpha = params.getChildFloat("alpha");
@@ -106,6 +106,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel implement
 		// One vote per layer + taxic + wf
 		actionPerformerVote = new NoExploration(ACTION_PERFORMER_STR,
 				this, numLayers + 2, robot, universe);
+//		actionPerformerVote = new ProportionalExplorer(ACTION_PERFORMER_STR, this, numLayers + 2, robot, universe);
 
 		radius = minRadius;
 		new Reward(REWARD_STR, this, universe, foodReward, nonFoodReward);

@@ -24,8 +24,9 @@ public class Utiles {
 //			(float) (7 * Math.PI / 4) };
 
 	public static final float actionInterval = (float) (Math.PI/8);
-	private static final float actionMin = (float) (-Math.PI/8);
-	public static final int numActions = 3;
+//	private static final float actionMin = (float) (-Math.PI/8);
+	private static final float actionMin = (float) 0;
+	public static final int numActions = 16;
 //	private static final float actionMax = (float) (Math.PI/8);
 	
 
