@@ -47,9 +47,9 @@ public class NoExploration extends NslModule {
 			// System.out.println();
 		}
 
-//		 for (int angle = 0; angle < Utiles.discreteAngles.length; angle++)
-//			 System.out.print(overallValues[angle] + "\t");
-//		 System.out.println();
+//		for (int angle = 0; angle < Utiles.numAngles; angle++)
+//			System.out.print(overallValues[angle] + "\t");
+//		System.out.println();
 		//
 		float maxVal = Float.MIN_VALUE;
 		for (int angle = 0; angle < overallValues.length; angle++)
@@ -57,17 +57,25 @@ public class NoExploration extends NslModule {
 				maxVal = overallValues[angle];
 
 		LinkedList<ActionValue> actions = new LinkedList<ActionValue>();
-		for (int angle = 0; angle < overallValues.length; angle++) {
-			// Get angle to that maximal direction
-			Quat4f nextRot = Utiles.angleToRot(Utiles.getAngle(angle));
-
-			// Get the action that better approximates that angle
-			int action = Utiles.bestActionToRot(nextRot,
-					universe.getRobotOrientation());
-			// Add a small bias towards going forward and small rotations
-			// Radial function centered on the going forward angle
-			float val = overallValues[angle];
-
+		// for (int angle = 0; angle < overallValues.length; angle++) {
+		// // Get angle to that maximal direction
+		// Quat4f nextRot = Utiles.angleToRot(Utiles.getAngle(angle));
+		//
+		// // Get the action that better approximates that angle
+		// int action = Utiles.bestActionToRot(nextRot,
+		// universe.getRobotOrientation());
+		// // Add a small bias towards going forward and small rotations
+		// // Radial function centered on the going forward angle
+		// float val = overallValues[angle];
+		//
+		// actions.add(new ActionValue(action, val));
+		// }
+		// Assign values to actions as a function of angles instead of viceversa
+		for (int action = 0; action < Utiles.numActions; action++) {
+			Quat4f robOri = universe.getRobotOrientation();
+			Quat4f turn = Utiles.angleToRot(Utiles.getAction(action));
+			robOri.mul(turn);
+			float val = overallValues[Utiles.discretizeAngle(robOri)];
 			actions.add(new ActionValue(action, val));
 		}
 
@@ -76,41 +84,10 @@ public class NoExploration extends NslModule {
 
 		// Select best action
 		Collections.sort(actions);
-		int rotations = 0;
-//		do {
-			action = actions.size() - 1;
+		action = actions.size() - 1;
 
-//			if (actions.get(action).getAction() != Utiles.discretizeAction(0)) {
-				// Try the selected action
-				robot.rotate(Utiles.getAction(actions.get(action).getAction()));
-				rotations++;
-				
-//				try {
-//					Thread.sleep(100);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			} else {
-//				actions.remove(action);
-//			}
-
-			// // Push the action back
-			// ActionValue aValue = actions.get(action);
-			// actions.remove(action);
-			// actions.add(0, aValue);
-			aff = robot.getAffordances();
-//		} while (!aff[Utiles.discretizeAction(0)] && !actions.isEmpty());
-
-		// Now it is safe to forward
-		// if (!aff[Utiles.discretizeAction(0)]) {
-		// if (Math.random() > .5)
-		// robot.rotate((float) (Math.PI / 2));
-		// else {
-		// robot.rotate((float) (-Math.PI / 2));
-		// }
-		// aff = robot.getAffordances();
-		// }
+		robot.rotate(Utiles.getAction(actions.get(action).getAction()));
+		
 		aff = robot.getAffordances();
 		if (aff[Utiles.discretizeAction(0)])
 			robot.forward();
