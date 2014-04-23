@@ -46,7 +46,7 @@
                 <initialValue>0</initialValue>
                 <flashingReward>100</flashingReward>
                 <nonFlashingReward>5</nonFlashingReward>
-                <wallFollowingVal>2000</wallFollowingVal>
+                <wallFollowingVal>-50</wallFollowingVal>
             </params>
         </model>
         <initializers>

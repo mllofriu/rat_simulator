@@ -63,47 +63,63 @@ public class WallFollower extends NslModule {
 //			j = (j - 1 + angles) % angles;
 		
 //		if (currentValue > EPS_VALUE)
-		
-		// Stop wall following if there is no near wall
 		boolean[] aff = robot.getAffordances(WALL_LOOKAHEAD);
-		if (!aff[Utiles.discretizeAction(0)]){
-//			active = true;
-			currentValue = wallFollowingValue;
+		boolean anyBlocked = false;
+		for (int i = 0; i < aff.length; i++)
+			anyBlocked = anyBlocked || !aff[i];
+		
+		if (!active && anyBlocked)
 			if (r.nextFloat() > .5)
 				direction = 1;
 			else {
 				direction = -1;
 			}
-		} /*else {
-			boolean anyBlocked = false;
-			for (int i = 0; i < aff.length; i++)
-				anyBlocked = anyBlocked || !aff[i];
-			if (anyBlocked)
-				active = false;
-		}
-		*/
 		
-		if (currentValue > EPS_VALUE){
-			Quat4f ori = univ.getRobotOrientation();
-			if (!aff[Utiles.discretizeAction(0)]){
-//				votes.set(Utiles.discretizeAngle(ori), -2000);
-				Quat4f turn = Utiles.angleToRot( direction * Utiles.actionInterval);
-				ori.mul(turn);
-				votes.set(Utiles.discretizeAngle(ori), currentValue);
-//				j = Utiles.discretizeAction(45);
-//				ori = univ.getRobotOrientation();
-//				turn = Utiles.angleToRot(Utiles.actions[j]);
-//				ori.mul(turn);
-//				votes.set(Utiles.discretizeAngle(ori), currentValue);
-//				Quat4f ori = univ.getRobotOrientation();
-//				votes.set(currentValue);
-//				votes.set(Utiles.discretizeAngle(ori), 0);
-			} else {
-				votes.set(Utiles.discretizeAngle(ori), currentValue);
+		active = anyBlocked;
+		
+		// Stop wall following if there is no near wall
+		
+//		if (!aff[Utiles.discretizeAction(0)] && ! active){
+//			active = true;
+////			currentValue = wallFollowingValue;
+//			
+//		} else if (!active) {
+//			
+//		}
+//		
+		
+//		if (currentValue > EPS_VALUE){
+		if (active) {
+			
+			for (int action = 0; action < Utiles.numActions; action++){
+				if (!aff[action]){
+					Quat4f ori = univ.getRobotOrientation();
+					Quat4f turn = Utiles.angleToRot(Utiles.getAction(action));
+					ori.mul(turn);
+					votes.set(Utiles.discretizeAngle(ori), wallFollowingValue);
+				}
 			}
+//			if (!aff[Utiles.discretizeAction(0)]){
+////				votes.set(Utiles.discretizeAngle(ori), -2000);
+//				Quat4f turn = Utiles.angleToRot( direction * Utiles.actionInterval);
+//				ori.mul(turn);
+////				votes.set(Utiles.discretizeAngle(ori), currentValue);
+//				votes.set(Utiles.discretizeAngle(ori), wallFollowingValue);
+////				j = Utiles.discretizeAction(45);
+////				ori = univ.getRobotOrientation();
+////				turn = Utiles.angleToRot(Utiles.actions[j]);
+////				ori.mul(turn);
+////				votes.set(Utiles.discretizeAngle(ori), currentValue);
+////				Quat4f ori = univ.getRobotOrientation();
+////				votes.set(currentValue);
+////				votes.set(Utiles.discretizeAngle(ori), 0);
+//			} else {
+////				votes.set(Utiles.discretizeAngle(ori), currentValue);
+//				votes.set(Utiles.discretizeAngle(ori), wallFollowingValue);
+//			}
 		} 
 		
-		currentValue *= DIMINISH_FACTOR;
+//		currentValue *= DIMINISH_FACTOR;
 		// Find the next to the right
 //		j = (i + 1) % angles;
 //		while (!aff[j])
