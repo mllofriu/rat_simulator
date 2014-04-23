@@ -114,4 +114,9 @@ public class VirtualRobot implements IRobot {
 		validCachedAffordances = false;
 	}
 
+	@Override
+	public boolean[] getAffordances(int lookahead) {
+		return universe.getRobotAffordances(lookahead);
+	}
+
 }

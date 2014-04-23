@@ -11,16 +11,16 @@ public class SingleLayerAS extends NslModule {
 	public NslDoutFloat1 actionVote;
 	public NslDinFloat1 states;
 	public NslDinFloat2 value;
-	private int numActions;
+	private int numAngles;
 
 	public SingleLayerAS(String nslName, NslModule nslParent, int numStates) {
 		super(nslName, nslParent);
 
-		numActions = Utiles.numAngles;
+		numAngles = Utiles.numAngles;
 		
-		actionVote = new NslDoutFloat1(this, "votes", numActions);
+		actionVote = new NslDoutFloat1(this, "votes", numAngles);
 		states = new NslDinFloat1(this, "states", numStates);
-		value = new NslDinFloat2(this, "value", numStates, numActions);
+		value = new NslDinFloat2(this, "value", numStates, numAngles);
 	}
 
 	public void simRun() {
@@ -30,8 +30,8 @@ public class SingleLayerAS extends NslModule {
 	}
 
 	private void setVotes(int state) {
-		float[] values = new float[numActions];
-		for (int action = 0; action < numActions; action++){
+		float[] values = new float[numAngles];
+		for (int action = 0; action < numAngles; action++){
 			values[action] = value.get(state, action);
 //			System.out.print(value.get(state, action));
 		}
