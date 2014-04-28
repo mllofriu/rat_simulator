@@ -34,19 +34,22 @@
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
-                <numLayers>5</numLayers>
+                <numPCLayers>5</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.25</maxRadius>
+                <numHDLayers>4</numHDLayers>
+                <minHDCellsPerLayer>4</minHDCellsPerLayer>
+                <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
-                <maxPossibleReward>100</maxPossibleReward>
+                <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>100</foodReward>
                 <nonFoodReward>-.001</nonFoodReward>
                 <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
                 <flashingReward>100</flashingReward>
-                <nonFlashingReward>5</nonFlashingReward>
-                <wallFollowingVal>-50</wallFollowingVal>
+                <nonFlashingReward>0</nonFlashingReward>
+                <wallFollowingVal>0</wallFollowingVal>
             </params>
         </model>
         <initializers>
@@ -94,7 +97,7 @@
 			<stopCondition>
 				<name>FoundNFood</name>
 				<params>
-					<n>1000</n>
+					<n>100</n>
 				</params>
 			</stopCondition>
 		</stopConditions>
@@ -139,7 +142,7 @@
 				<params>
 				</params>
 			</task>
-			<task>
+			<!-- <task>
                 <name>ClearWalls</name>
                 <params>
                 </params>
@@ -150,7 +153,7 @@
                     <x1>W1</x1>
                     <x2>W2</x2>
                 </params>
-            </task>  
+            </task>   -->
 
 		</initialTasks>
 		<afterCycleTasks>

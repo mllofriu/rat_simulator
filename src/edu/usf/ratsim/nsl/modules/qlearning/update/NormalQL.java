@@ -9,6 +9,7 @@ import java.util.List;
 
 import nslj.src.lang.NslDinFloat0;
 import nslj.src.lang.NslDinFloat1;
+import nslj.src.lang.NslDinInt0;
 import nslj.src.lang.NslDoutFloat2;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
@@ -24,7 +25,7 @@ public class NormalQL extends NslModule implements PolicyDumper {
 	
 	private static PrintWriter writer;
 	private NslDinFloat0 reward;
-	private NslDinFloat0 takenAction;
+	private NslDinInt0 takenAction;
 	private NslDoutFloat2 value;
 	private NslDinFloat1 statesBefore;
 
@@ -40,7 +41,7 @@ public class NormalQL extends NslModule implements PolicyDumper {
 		this.alpha = alpha;
 		this.numStates = numStates;
 		
-		takenAction = new NslDinFloat0(this, "takenAction");
+		takenAction = new NslDinInt0(this, "takenAction");
 		reward = new NslDinFloat0(this, "reward");
 		statesBefore = new NslDinFloat1(this, "statesBefore", numStates);
 		statesAfter = new NslDinFloat1(this, "statesAfter", numStates);
@@ -57,7 +58,7 @@ public class NormalQL extends NslModule implements PolicyDumper {
 		// Gets the active state as computed at the beginning of the cycle
 		int sBefore = getActiveState(statesBefore);
 		int sAfter = getActiveState(statesAfter);
-		int a = takenAction.getint();
+		int a = takenAction.get();
 		updateLastAction(sBefore, sAfter, a);
 	}
 
