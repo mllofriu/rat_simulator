@@ -47,4 +47,8 @@ public class ElementWrapper {
 	public String getText() {
 		return e.getTextContent();
 	}
+
+	public boolean getChildBoolean(String name) {
+		return Boolean.parseBoolean(getChildText(name));
+	}
 }
