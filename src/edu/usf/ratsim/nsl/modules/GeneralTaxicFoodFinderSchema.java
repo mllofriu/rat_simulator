@@ -54,10 +54,12 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 			Quat4f rotToFood = Utiles
 					.rotToPoint(new Vector3f(1, 0, 0), vToFood);
 
+			Quat4f currRot = univ.getRobotOrientation();
+			int action = Utiles.bestActionToRot(rotToFood, currRot);
 			if (univ.getFlashingFeeders().contains(goalFeeder.get()))
-				votes.set(Utiles.discretizeAngle(rotToFood), rewardFlashing);
+				votes.set(action, rewardFlashing);
 			else 
-				votes.set(Utiles.discretizeAngle(rotToFood), rewardNonFlashing);
+				votes.set(action, rewardNonFlashing);
 			
 		}
 	}

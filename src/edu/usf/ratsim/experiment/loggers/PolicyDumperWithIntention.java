@@ -4,10 +4,8 @@ import java.util.List;
 
 import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.experiment.model.MultiScaleMultiIntentionModel;
 import edu.usf.ratsim.experiment.model.RLRatModel;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayerWithIntention;
-import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
 import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
 
 public class PolicyDumperWithIntention implements ExperimentLogger {
