@@ -4,10 +4,8 @@ import java.util.List;
 
 import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.experiment.model.MultiScaleModel;
 import edu.usf.ratsim.experiment.model.RLRatModel;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
-import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
 
 public class PolicyDumper implements ExperimentLogger {
 	private List<ArtificialPlaceCellLayer> pclLayers;

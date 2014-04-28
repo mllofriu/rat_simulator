@@ -1,6 +1,5 @@
 package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -8,10 +7,10 @@ import java.util.Random;
 import javax.vecmath.Quat4f;
 
 import nslj.src.lang.NslDinFloat1;
+import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
-import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Utiles;
 
 public class ProportionalExplorer extends NslModule {
@@ -19,6 +18,7 @@ public class ProportionalExplorer extends NslModule {
 	public float aprioriValueVariance;
 
 	public NslDinFloat1[] votes;
+	public NslDoutInt0 takenAction;
 
 	private IRobot robot;
 
@@ -28,15 +28,16 @@ public class ProportionalExplorer extends NslModule {
 
 	private ExperimentUniverse universe;
 
-//	private float maxPossibleReward;
+	// private float maxPossibleReward;
 
 	public ProportionalExplorer(String nslName, NslModule nslParent,
-			int numLayers,
-			IRobot robot, ExperimentUniverse universe) {
+			int numLayers, IRobot robot, ExperimentUniverse universe) {
 		super(nslName, nslParent);
 
 		this.robot = robot;
 		this.universe = universe;
+
+		takenAction = new NslDoutInt0(this, "takenAction");
 
 		votes = new NslDinFloat1[numLayers];
 		for (int i = 0; i < numLayers; i++)
@@ -46,7 +47,7 @@ public class ProportionalExplorer extends NslModule {
 	}
 
 	public void simRun() {
-		float[] overallValues = new float[Utiles.numAngles];
+		float[] overallValues = new float[Utiles.numActions];
 		for (int i = 0; i < overallValues.length; i++)
 			overallValues[i] = 0;
 		// Add each contribution
@@ -62,34 +63,15 @@ public class ProportionalExplorer extends NslModule {
 		// if (maxVal > 1)
 		// System.out.println(maxVal);
 
-//		explore = r.nextFloat() > (maxVal / maxPossibleReward);
+		// explore = r.nextFloat() > (maxVal / maxPossibleReward);
 		// if (explore)
 		// System.out.println("Exploring");
-//		 explore = maxVal == 0;
+		// explore = maxVal == 0;
 		// System.out.println(maxVal);
 		// Make a list of actions and values
 		List<ActionValue> actions = new LinkedList<ActionValue>();
 		for (int angle = 0; angle < overallValues.length; angle++) {
-			// Get angle to that maximal direction
-			Quat4f nextRot = Utiles.angleToRot(Utiles.getAngle(angle));
-
-			// Get the action that better approximates that angle
-			int action = Utiles.bestActionToRot(nextRot,
-					universe.getRobotOrientation());
-			// Add a small bias towards going forward and small rotations
-			// Radial function centered on the going forward angle
-			float val = overallValues[angle];
-			if (explore) {
-				float increment = (float) (Math.max(maxVal, 1) * Math.exp(-Math
-						.pow(Utiles.actionDistance(action,
-								Utiles.discretizeAction(0)), 2)
-						/ aprioriValueVariance));
-				val += increment;
-			}
-
-			// float val = (float) (overallValues[angle] +
-			// EXPLORATORY_COMPONENT);
-			actions.add(new ActionValue(action, val));
+			actions.add(new ActionValue(angle, overallValues[angle]));
 		}
 		// Collections.sort(actions);
 
@@ -99,48 +81,51 @@ public class ProportionalExplorer extends NslModule {
 			if (maxVal < overallValues[a])
 				maxVal = overallValues[a];
 
-			int action;
-			// Roulette algorithm
-			// Get total value
-				// Find min val
-				float minVal = 0;
-				for (ActionValue aValue : actions)
-					if (aValue.getValue() < minVal)
-						minVal = aValue.getValue();
-				// Get max value
-				float totalVal = 0;
-				for (ActionValue aValue : actions)
-					// Substract min val to raise everything above 0
-					totalVal += aValue.getValue() - minVal;
-				// Calc a new random in [0, totalVal]
-				float nextRVal = r.nextFloat() * totalVal;
-				// Find the next action
-				action = -1;
-				if (actions.isEmpty())
-					System.out.println("no actions");
-				do {
-					action++;
-					nextRVal -= (actions.get(action).getValue() - minVal);
-				} while (nextRVal >= 0 && action < actions.size() - 1);
+		int action;
+		// Roulette algorithm
+		// Get total value
+		// Find min val
+		float minVal = 0;
+		for (ActionValue aValue : actions)
+			if (aValue.getValue() < minVal)
+				minVal = aValue.getValue();
+		// Get max value
+		float totalVal = 0;
+		for (ActionValue aValue : actions)
+			// Substract min val to raise everything above 0
+			totalVal += aValue.getValue() - minVal;
+		// Calc a new random in [0, totalVal]
+		float nextRVal = r.nextFloat() * totalVal;
+		// Find the next action
+		action = -1;
+		if (actions.isEmpty())
+			System.out.println("no actions");
+		do {
+			action++;
+			nextRVal -= (actions.get(action).getValue() - minVal);
+		} while (nextRVal >= 0 && action < actions.size() - 1);
 
-			// Try the selected action
-			robot.rotate(Utiles.getAction(actions.get(action).getAction()));
-			boolean[] aff = robot.getAffordances();
-			// Random if there was no affordable positive value action
-			// lastActionRandom = actions.get(action).getValue() <=
-			// EXPLORATORY_VARIANCE;
-			actions.remove(action);
-			// } while (!aff[Utiles.discretizeAction(0)]);
+		// Try the selected action
+		robot.rotate(Utiles.getAction(actions.get(action).getAction()));
+		boolean[] aff = robot.getAffordances();
+		// Random if there was no affordable positive value action
+		// lastActionRandom = actions.get(action).getValue() <=
+		// EXPLORATORY_VARIANCE;
+//		actions.remove(action);
+		// } while (!aff[Utiles.discretizeAction(0)]);
+
+		// Publish the taken action
+		takenAction.set(actions.get(action).getAction());
 
 		// Now it is safe to forward
-//		if (!aff[Utiles.discretizeAction(0)]) {
-//			if (Math.random() > .5)
-//				robot.rotate((float) (Math.PI / 2));
-//			else {
-//				robot.rotate((float) (-Math.PI / 2));
-//			}
-//			aff = robot.getAffordances();
-//		}
+		// if (!aff[Utiles.discretizeAction(0)]) {
+		// if (Math.random() > .5)
+		// robot.rotate((float) (Math.PI / 2));
+		// else {
+		// robot.rotate((float) (-Math.PI / 2));
+		// }
+		// aff = robot.getAffordances();
+		// }
 		if (aff[Utiles.discretizeAction(0)])
 			robot.forward();
 	}
@@ -149,5 +134,3 @@ public class ProportionalExplorer extends NslModule {
 		return explore;
 	}
 }
-
-

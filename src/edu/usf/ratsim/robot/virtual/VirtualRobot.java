@@ -3,6 +3,7 @@ package edu.usf.ratsim.robot.virtual;
 //import Rat;
 
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.ImageComponent2D;
@@ -110,7 +111,7 @@ public class VirtualRobot implements IRobot {
 	}
 
 	public void forward() {
-		universe.moveRobot(new Vector3f(STEP, 0f, 0f));
+		universe.moveRobot(new Vector3f(STEP + STEP * new Random().nextFloat() * .1f, 0f, 0f));
 		validCachedAffordances = false;
 	}
 

@@ -3,11 +3,9 @@ package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 import java.util.Collections;
 import java.util.LinkedList;
 
-import javax.vecmath.Quat4f;
-
 import nslj.src.lang.NslDinFloat1;
+import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
-import sun.misc.Queue;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.Utiles;
@@ -15,6 +13,7 @@ import edu.usf.ratsim.support.Utiles;
 public class NoExploration extends NslModule {
 
 	public NslDinFloat1[] votes;
+	public NslDoutInt0 takenAction;
 
 	private IRobot robot;
 
@@ -29,12 +28,14 @@ public class NoExploration extends NslModule {
 
 		votes = new NslDinFloat1[numVotes];
 		for (int i = 0; i < numVotes; i++)
-			votes[i] = new NslDinFloat1(this, "votes" + i);
+			votes[i] = new NslDinFloat1(this, "votes" + i, Utiles.numActions);
+		
+		takenAction = new NslDoutInt0(this, "takenAction");
 
 	}
 
 	public void simRun() {
-		float[] overallValues = new float[Utiles.numAngles];
+		float[] overallValues = new float[Utiles.numActions];
 		for (int i = 0; i < overallValues.length; i++)
 			overallValues[i] = 0;
 		// Add each contribution
@@ -47,9 +48,9 @@ public class NoExploration extends NslModule {
 			// System.out.println();
 		}
 
-//		for (int angle = 0; angle < Utiles.numAngles; angle++)
-//			System.out.print(overallValues[angle] + "\t");
-//		System.out.println();
+		for (int angle = 0; angle < Utiles.numActions; angle++)
+			System.out.print(overallValues[angle] + "\t");
+		System.out.println();
 		//
 		float maxVal = Float.MIN_VALUE;
 		for (int angle = 0; angle < overallValues.length; angle++)
@@ -72,11 +73,7 @@ public class NoExploration extends NslModule {
 		// }
 		// Assign values to actions as a function of angles instead of viceversa
 		for (int action = 0; action < Utiles.numActions; action++) {
-			Quat4f robOri = universe.getRobotOrientation();
-			Quat4f turn = Utiles.angleToRot(Utiles.getAction(action));
-			robOri.mul(turn);
-			float val = overallValues[Utiles.discretizeAngle(robOri)];
-			actions.add(new ActionValue(action, val));
+			actions.add(new ActionValue(action, overallValues[action]));
 		}
 
 		int action;
@@ -86,7 +83,11 @@ public class NoExploration extends NslModule {
 		Collections.sort(actions);
 		action = actions.size() - 1;
 
+		// Rotate the robot the desired angle
 		robot.rotate(Utiles.getAction(actions.get(action).getAction()));
+		
+		// Publish the taken action
+		takenAction.set(actions.get(action).getAction());
 		
 		aff = robot.getAffordances();
 		if (aff[Utiles.discretizeAction(0)])

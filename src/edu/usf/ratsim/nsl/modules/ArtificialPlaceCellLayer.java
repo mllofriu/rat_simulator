@@ -9,7 +9,6 @@ import javax.vecmath.Point3f;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.support.ElementWrapper;
 
 public class ArtificialPlaceCellLayer extends NslModule {
 
