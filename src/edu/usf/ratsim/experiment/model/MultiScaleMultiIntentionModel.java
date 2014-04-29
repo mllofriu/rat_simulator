@@ -15,7 +15,7 @@ import edu.usf.ratsim.nsl.modules.HeadingAngle;
 import edu.usf.ratsim.nsl.modules.PlaceIntention;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.SingleLayerAS;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.update.NormalQL;
 import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
 import edu.usf.ratsim.robot.IRobot;
@@ -38,7 +38,7 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 	private List<ArtificialPlaceCellLayer> beforePcls;
 	private List<PolicyDumper> qLUpdVal;
 	private ProportionalExplorer actionPerformerVote;
-	private List<SingleLayerAS> qLActionSel;
+	private List<WTAVotes> qLActionSel;
 	private LinkedList<ArtificialPlaceCellLayer> afterPcls;
 	private int numLayers;
 	private LinkedList<PlaceIntention> beforePI;
@@ -67,7 +67,7 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 		afterPcls = new LinkedList<ArtificialPlaceCellLayer>();
 		afterPI	= new LinkedList<PlaceIntention>();
 		qLUpdVal = new LinkedList<PolicyDumper>();
-		qLActionSel = new LinkedList<SingleLayerAS>();
+		qLActionSel = new LinkedList<WTAVotes>();
 		
 		
 
@@ -80,7 +80,7 @@ public class MultiScaleMultiIntentionModel extends NslModel implements RLRatMode
 			beforePcls.add(pcl);
 			PlaceIntention pIntention = new PlaceIntention(this, BEFORE_PLACE_INTENTION_STR + i, pcl.getSize(), numIntentions);
 			beforePI.add(pIntention);
-			qLActionSel.add(new SingleLayerAS(ACTION_SELECTION_STR + i, this,
+			qLActionSel.add(new WTAVotes(ACTION_SELECTION_STR + i, this,
 					pIntention.getSize()));
 			// Update radius
 			radius += (maxRadius - minRadius) / (numLayers - 1);
