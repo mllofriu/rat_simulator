@@ -6,14 +6,14 @@ import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.support.Utiles;
 
-public class SingleLayerAS extends NslModule {
+public class WTAVotes extends NslModule {
 
 	public NslDoutFloat1 actionVote;
 	public NslDinFloat1 states;
 	public NslDinFloat2 value;
 	private int numActions;
 
-	public SingleLayerAS(String nslName, NslModule nslParent, int numStates) {
+	public WTAVotes(String nslName, NslModule nslParent, int numStates) {
 		super(nslName, nslParent);
 
 		numActions = Utiles.numActions;

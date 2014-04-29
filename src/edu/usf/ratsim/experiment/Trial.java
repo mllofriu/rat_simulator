@@ -106,7 +106,7 @@ public class Trial implements Runnable {
 				// One cycle to the trial
 				subject.stepCycle();
 
-				if (sleep/* && !name.equals("training")*/) {
+				if (sleep && !name.equals("training")) {
 					try {
 						Thread.sleep(SLEEP_BETWEEN_CYCLES);
 					} catch (InterruptedException e) {
