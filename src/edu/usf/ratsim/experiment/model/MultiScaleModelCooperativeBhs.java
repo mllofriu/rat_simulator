@@ -14,7 +14,7 @@ import edu.usf.ratsim.nsl.modules.GeneralTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.HeadingAngle;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.SingleLayerAS;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.update.NormalQL;
 import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
 import edu.usf.ratsim.robot.IRobot;
@@ -34,7 +34,7 @@ public class MultiScaleModelCooperativeBhs extends NslModel implements RLRatMode
 	private List<ArtificialPlaceCellLayer> beforePcls;
 	private List<PolicyDumper> qLUpdVal;
 	private ProportionalExplorer actionPerformerVote;
-	private List<SingleLayerAS> qLActionSel;
+	private List<WTAVotes> qLActionSel;
 	private LinkedList<ArtificialPlaceCellLayer> afterPcls;
 	private int numLayers;
 
@@ -62,7 +62,7 @@ public class MultiScaleModelCooperativeBhs extends NslModel implements RLRatMode
 		beforePcls = new LinkedList<ArtificialPlaceCellLayer>();
 		afterPcls = new LinkedList<ArtificialPlaceCellLayer>();
 		qLUpdVal = new LinkedList<PolicyDumper>();
-		qLActionSel = new LinkedList<SingleLayerAS>();
+		qLActionSel = new LinkedList<WTAVotes>();
 
 		// Create the layers
 		float radius = minRadius;
@@ -71,7 +71,7 @@ public class MultiScaleModelCooperativeBhs extends NslModel implements RLRatMode
 			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer(
 					BEFORE_STATE_STR + i, this, universe, radius);
 			beforePcls.add(pcl);
-			qLActionSel.add(new SingleLayerAS(ACTION_SELECTION_STR + i, this,
+			qLActionSel.add(new WTAVotes(ACTION_SELECTION_STR + i, this,
 					pcl.getSize()));
 			// Update radius
 			radius += (maxRadius - minRadius) / (numLayers - 1);

@@ -14,7 +14,7 @@ import edu.usf.ratsim.nsl.modules.FlashingTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.HeadingAngle;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.SingleLayerAS;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.update.NormalQL;
 import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
 import edu.usf.ratsim.robot.IRobot;
@@ -47,7 +47,7 @@ public class ConfigurableModel extends NslModel implements RLRatModel {
 
 			if (type.equals("SingleLayerAS")) {
 				int numStates = params.getChildInt("numStates");
-				new SingleLayerAS(name, this, numStates);
+				new WTAVotes(name, this, numStates);
 			} else if (type.equals("PCLayer")) {
 				float radius = params.getChildFloat("radius");
 				pcls.add(new ArtificialPlaceCellLayer(name, this, universe, radius));
