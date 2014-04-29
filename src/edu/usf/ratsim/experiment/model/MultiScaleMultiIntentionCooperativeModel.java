@@ -20,7 +20,7 @@ import edu.usf.ratsim.nsl.modules.WallFollower;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.NoExploration;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.SingleLayerAS;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.update.NormalQL;
 import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
 import edu.usf.ratsim.robot.IRobot;
@@ -51,7 +51,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private List<ArtificialPlaceCellLayer> beforePcls;
 	private List<PolicyDumper> qLUpdVal;
 //	private ProportionalExplorer actionPerformerVote;
-	private List<SingleLayerAS> qLActionSel;
+	private List<WTAVotes> qLActionSel;
 	private LinkedList<ArtificialPlaceCellLayer> afterPcls;
 	private int numPCLayers;
 	private LinkedList<PlaceIntention> beforePI;
@@ -89,7 +89,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		afterPcls = new LinkedList<ArtificialPlaceCellLayer>();
 		afterPI = new LinkedList<PlaceIntention>();
 		qLUpdVal = new LinkedList<PolicyDumper>();
-		qLActionSel = new LinkedList<SingleLayerAS>();
+		qLActionSel = new LinkedList<WTAVotes>();
 
 		new Intention(this, INTENTION_STR, numIntentions);
 
@@ -120,7 +120,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 				JointStates jStates = new JointStates(BEFORE_PIHD
 						+ (i * numHDLayers + j), this, universe, beforePcls
 						.get(i).getSize(), beforeHDs.get(j).getSize());
-				qLActionSel.add(new SingleLayerAS(ACTION_SELECTION_STR
+				qLActionSel.add(new WTAVotes(ACTION_SELECTION_STR
 						+ (i * numHDLayers + j), this, jStates.getSize()));
 			}
 
