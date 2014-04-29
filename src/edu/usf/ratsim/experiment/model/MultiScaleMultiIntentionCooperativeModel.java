@@ -20,6 +20,7 @@ import edu.usf.ratsim.nsl.modules.WallFollower;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.NoExploration;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.update.NormalQL;
 import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
@@ -50,7 +51,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private static final String BEFORE_PIHD = "BPIHD";
 	private List<ArtificialPlaceCellLayer> beforePcls;
 	private List<PolicyDumper> qLUpdVal;
-//	private ProportionalExplorer actionPerformerVote;
+	// private ProportionalExplorer actionPerformerVote;
 	private List<WTAVotes> qLActionSel;
 	private LinkedList<ArtificialPlaceCellLayer> afterPcls;
 	private int numPCLayers;
@@ -83,7 +84,9 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		float flashingReward = params.getChildFloat("flashingReward");
 		float nonFlashingReward = params.getChildFloat("nonFlashingReward");
 		float wallFollowingVal = params.getChildFloat("wallFollowingVal");
-		boolean deterministic = params.getChildBoolean("deterministicActionSelection");
+		boolean deterministic = params
+				.getChildBoolean("deterministicActionSelection");
+		boolean proportionalVotes = params.getChildBoolean("proportionalVotes");
 		beforePcls = new LinkedList<ArtificialPlaceCellLayer>();
 		beforePI = new LinkedList<PlaceIntention>();
 		afterPcls = new LinkedList<ArtificialPlaceCellLayer>();
@@ -120,8 +123,12 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 				JointStates jStates = new JointStates(BEFORE_PIHD
 						+ (i * numHDLayers + j), this, universe, beforePcls
 						.get(i).getSize(), beforeHDs.get(j).getSize());
-				qLActionSel.add(new WTAVotes(ACTION_SELECTION_STR
-						+ (i * numHDLayers + j), this, jStates.getSize()));
+				if (proportionalVotes)
+					new ProportionalVotes(ACTION_SELECTION_STR
+							+ (i * numHDLayers + j), this, jStates.getSize());
+				else
+					new WTAVotes(ACTION_SELECTION_STR + (i * numHDLayers + j),
+							this, jStates.getSize());
 			}
 
 		// Create taxic driver to override in case of flashing
@@ -134,14 +141,13 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer + taxic + wf
-		if (deterministic){
-			new NoExploration(ACTION_PERFORMER_STR, this,
-					numPCLayers * numHDLayers + 2, robot, universe);
+		if (deterministic) {
+			new NoExploration(ACTION_PERFORMER_STR, this, numPCLayers
+					* numHDLayers + 2, robot, universe);
 		} else {
-			new ProportionalExplorer(ACTION_PERFORMER_STR,
-					 this, numPCLayers * numHDLayers + 2, robot, universe);
+			new ProportionalExplorer(ACTION_PERFORMER_STR, this, numPCLayers
+					* numHDLayers + 2, robot, universe);
 		}
-		 
 
 		radius = minRadius;
 		new Reward(REWARD_STR, this, universe, foodReward, nonFoodReward);
@@ -189,9 +195,11 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		nslConnect(getChild(ANY_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(FOOD_FINDER_STR), "goalFeeder");
 		nslConnect(getChild(FOOD_FINDER_STR), "votes",
-				getChild(ACTION_PERFORMER_STR), "votes" + numPCLayers * numHDLayers);
+				getChild(ACTION_PERFORMER_STR), "votes" + numPCLayers
+						* numHDLayers);
 		nslConnect(getChild(WALLFW_STR), "votes",
-				getChild(ACTION_PERFORMER_STR), "votes" + (numPCLayers * numHDLayers + 1));
+				getChild(ACTION_PERFORMER_STR), "votes"
+						+ (numPCLayers * numHDLayers + 1));
 		nslConnect(getChild(ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(INTENTION_STR), "goalFeeder");
 
@@ -236,7 +244,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 						getChild(ACTION_PERFORMER_STR), "votes"
 								+ (i * numHDLayers + j));
 				nslConnect(getChild(ACTION_PERFORMER_STR), "takenAction",
-						getChild(QL_STR +  (i * numHDLayers + j)), "takenAction");
+						getChild(QL_STR + (i * numHDLayers + j)), "takenAction");
 				nslConnect(getChild(REWARD_STR), "reward", getChild(QL_STR
 						+ (i * numHDLayers + j)), "reward");
 				nslConnect(getChild(BEFORE_PIHD + (i * numHDLayers + j)),

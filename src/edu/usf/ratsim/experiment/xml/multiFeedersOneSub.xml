@@ -34,11 +34,11 @@
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
-                <numPCLayers>1</numPCLayers>
+                <numPCLayers>5</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.25</maxRadius>
-                <numHDLayers>1</numHDLayers>
-                <minHDCellsPerLayer>16</minHDCellsPerLayer>
+                <numHDLayers>4</numHDLayers>
+                <minHDCellsPerLayer>4</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
@@ -47,9 +47,10 @@
                 <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
-                <flashingReward>100</flashingReward>
+                <flashingReward>100000</flashingReward>
                 <nonFlashingReward>0</nonFlashingReward>
                 <wallFollowingVal>0</wallFollowingVal>
+                <proportionalVotes>true</proportionalVotes>
             </params>
         </model>
         <initializers>
@@ -97,7 +98,7 @@
 			<stopCondition>
 				<name>FoundNFood</name>
 				<params>
-					<n>1000</n>
+					<n>100</n>
 				</params>
 			</stopCondition>
 		</stopConditions>
