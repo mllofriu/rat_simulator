@@ -30,7 +30,7 @@ public class ProportionalVotes extends NslModule {
 		
 		for (int state = 0; state < states.getSize(); state++){
 			for (int action = 0; action < numActions; action++){
-				values[action] = states.get(state) * value.get(state, action);
+				values[action] += states.get(state) * value.get(state, action);
 	//			System.out.print(value.get(state, action));
 			}
 	//		System.out.println();
