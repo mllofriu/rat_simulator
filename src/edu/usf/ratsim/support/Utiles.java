@@ -34,6 +34,7 @@ public class Utiles {
 	private static final float angleMin = 0;
 	public static final int numAngles = 16;
 //	private static final float angleMax = (float) (2* Math.PI - angleInterval);
+	private static final float EPS_STRAIGHT = actionInterval;;
 	
 	public static float getAction(int index){
 		float angle = actionMin;
@@ -128,6 +129,14 @@ public class Utiles {
 		Quat4f rotToMake = new Quat4f();
 		rotToMake.inverse(currentRot);
 		rotToMake.mul(rotToGoal);
+		
+		// See if going straight isnt good enough
+		float resultingAnglePos = (float) Math.abs(rotToAngle(rotToMake));
+		float resultingAngleInv = (float) Math.abs(Math.PI * 2
+				- resultingAnglePos);
+		if (Math.min(resultingAnglePos, resultingAngleInv) < EPS_STRAIGHT) {
+			return discretizeAction(0);
+		}
 
 		int action = -1;
 		float angleDifference = (float) (Math.PI * 2);
@@ -141,8 +150,8 @@ public class Utiles {
 			tmpRot.mul(rotAction);
 			// Compare axis angle. The closer to 0, the more suitable
 			// Take the min of normal and inverse
-			float resultingAnglePos = (float) Math.abs(rotToAngle(tmpRot));
-			float resultingAngleInv = (float) Math.abs(Math.PI * 2
+			resultingAnglePos = (float) Math.abs(rotToAngle(tmpRot));
+			resultingAngleInv = (float) Math.abs(Math.PI * 2
 					- resultingAnglePos);
 			if (Math.min(resultingAnglePos, resultingAngleInv) < angleDifference) {
 				angleDifference = Math
