@@ -21,7 +21,7 @@ public class WallFollower extends NslModule {
 
 	private static final float EPS_VALUE = 1f;
 	private static final float DIMINISH_FACTOR = .8f;
-	private static final int WALL_LOOKAHEAD = 15;
+	private static final int WALL_LOOKAHEAD = 10;
 	private ExperimentUniverse univ;
 	public NslDoutFloat1 votes;
 	private float wallFollowingValue;
