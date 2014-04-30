@@ -15,7 +15,7 @@ import edu.usf.ratsim.nsl.modules.HeadingAngle;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
-import edu.usf.ratsim.nsl.modules.qlearning.update.NormalQL;
+import edu.usf.ratsim.nsl.modules.qlearning.update.SingleStateQL;
 import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.ElementWrapper;
@@ -74,7 +74,7 @@ public class ConfigurableModel extends NslModel implements RLRatModel {
 				float discountFactor = params.getChildFloat("discountFactor");
 				float alpha = params.getChildFloat("alpha");
 				float initialValue = params.getChildFloat("initialValue");
-				polDumpers.add(new NormalQL(name, this, numStates, numActions,
+				polDumpers.add(new SingleStateQL(name, this, numStates, numActions,
 						discountFactor, alpha, initialValue));
 			} else if (type.equals("Reward")) {
 				float foodReward = params.getChildFloat("foodReward");
@@ -128,7 +128,7 @@ public class ConfigurableModel extends NslModel implements RLRatModel {
 		return actionPerformerVote;
 	}
 
-	public List<NormalQL> getQLValUpdaters() {
+	public List<SingleStateQL> getQLValUpdaters() {
 		return null;
 	}
 

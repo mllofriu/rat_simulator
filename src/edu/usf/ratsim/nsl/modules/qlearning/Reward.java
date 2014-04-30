@@ -22,9 +22,10 @@ public class Reward extends NslModule {
 	}
 	
 	public void simRun(){
-		if(universe.hasRobotFoundFood())
+		if(universe.hasRobotFoundFood()){
+			System.out.println("Found Food");
 			reward.set(foodReward);
-		else 
+		} else 
 			reward.set(nonFoodReward);
 	}
 }

@@ -1,17 +1,21 @@
 package edu.usf.ratsim.nsl.modules;
 
+import com.vividsolutions.jts.algorithm.Angle;
+
 
 public class ArtificialHDCell {
 
 	private float preferredOrientation;
+	private float width;
 
-	public ArtificialHDCell(float preferredOrientation) {
+	public ArtificialHDCell(float preferredOrientation, float width) {
 		super();
 		this.preferredOrientation = preferredOrientation;
+		this.width = width;
 	}
 
 	public float getActivation(float currOrientation) {
-		return (float) Math.exp(-angleDistance(currOrientation, preferredOrientation));
+		return (float) Math.exp(-angleDistance(currOrientation, preferredOrientation) / width);
 	}
 
 	private float angleDistance(float from, float to) {
@@ -27,10 +31,24 @@ public class ArtificialHDCell {
 		double i = i1 * r2 + r1 * i2;
 		// Get the argument and complementary
 		double arg = Math.atan2(i, r);
-		double argComp = Math.PI * 2 - arg;
+		double argComp;
+		
+		if (arg > 0)
+			argComp = - (2 * Math.PI - arg);
+		else
+			argComp = 2 * Math.PI + arg;
 		
 		// Return the minimum of the absolute values
 		return (float) Math.min(Math.abs(arg), Math.abs(argComp));		
+	}
+	
+	public static void main(String[] args){
+		ArtificialHDCell hdc = new ArtificialHDCell(1, 1);
+		System.out.println(hdc.angleDistance((float) (Math.PI /2), 0f));
+		System.out.println(hdc.angleDistance(0, 0f));
+		System.out.println(hdc.angleDistance((float) (Math.PI ),(float) (Math.PI /2)));
+		System.out.println(hdc.angleDistance(0.1f, -0.1f));
+		System.out.println(hdc.angleDistance(-0.1f, 0.1f));
 	}
 
 }

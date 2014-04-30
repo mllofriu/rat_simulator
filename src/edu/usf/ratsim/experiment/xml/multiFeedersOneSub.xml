@@ -34,11 +34,11 @@
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
-                <numPCLayers>5</numPCLayers>
+                <numPCLayers>3</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.25</maxRadius>
-                <numHDLayers>4</numHDLayers>
-                <minHDCellsPerLayer>4</minHDCellsPerLayer>
+                <numHDLayers>3</numHDLayers>
+                <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
@@ -47,10 +47,10 @@
                 <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
-                <flashingReward>100000</flashingReward>
-                <nonFlashingReward>0</nonFlashingReward>
-                <wallFollowingVal>0</wallFollowingVal>
-                <proportionalVotes>true</proportionalVotes>
+                <flashingReward>100</flashingReward>
+                <nonFlashingReward>50</nonFlashingReward>
+                <wallFollowingVal>-100</wallFollowingVal>
+                <proportionalQL>true</proportionalQL>
             </params>
         </model>
         <initializers>
@@ -88,9 +88,9 @@
 			<task>
 				<name>FlashFeeder</name>
 			</task>
-			<task>
+			<!-- <task>
 				<name>UnflashFeeder</name>
-			</task>
+			</task> -->
 		</afterCycleTasks>
 		<afterTrialTasks>
 		</afterTrialTasks>

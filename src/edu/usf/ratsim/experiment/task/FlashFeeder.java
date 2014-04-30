@@ -11,24 +11,31 @@ import edu.usf.ratsim.experiment.subject.ExpSubject;
 public class FlashFeeder implements ExperimentTask {
 
 	private Random r;
-	private int lastFeeder;
 
 	public FlashFeeder() {
 		r = new Random();
-		lastFeeder = -1;
 	}
 
 	public void perform(ExperimentUniverse univ, ExpSubject subject) {
 		if (univ.getFlashingFeeders().isEmpty()) {
 			List<Integer> active = (List<Integer>) subject
 					.getProperty(ActivateFeeders.STR_ACTIVE_FEEDERS);
+			active = new LinkedList<Integer>(active);
+			int feeder = active.get(r.nextInt(active.size()));
+			univ.setFlashingFeeder(feeder, true);
+			univ.setActiveFeeder(feeder, true);
+		} else if (!univ.getFlashingFeeders().isEmpty()
+				&& univ.hasRobotFoundFeeder(univ.getFlashingFeeders().get(0))) {
+			int flashingFeeder = univ.getFlashingFeeders().get(0);
+			univ.setFlashingFeeder(flashingFeeder, false);
+			univ.setActiveFeeder(flashingFeeder, false);
+			List<Integer> active = (List<Integer>) subject
+					.getProperty(ActivateFeeders.STR_ACTIVE_FEEDERS);
 			// Copy to avoid modifying the property holder
 			active = new LinkedList<Integer>(active);
-			if (active.contains(lastFeeder))
-				active.remove(new Integer(lastFeeder));
-			lastFeeder = active.get(r.nextInt(active.size()));
-			univ.setFlashingFeeder(lastFeeder, true);
-			univ.setActiveFeeder(lastFeeder, true);
+			int feeder = active.get(r.nextInt(active.size()));
+			univ.setFlashingFeeder(feeder, true);
+			univ.setActiveFeeder(feeder, true);
 		}
 	}
 

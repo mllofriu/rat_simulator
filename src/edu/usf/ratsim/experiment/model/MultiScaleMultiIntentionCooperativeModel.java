@@ -22,7 +22,8 @@ import edu.usf.ratsim.nsl.modules.qlearning.actionselection.NoExploration;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
-import edu.usf.ratsim.nsl.modules.qlearning.update.NormalQL;
+import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQL;
+import edu.usf.ratsim.nsl.modules.qlearning.update.SingleStateQL;
 import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.ElementWrapper;
@@ -39,12 +40,15 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private static final String QL_STR = "NQL";
 	private static final String TAKEN_ACTION_STR = "TA";
 	private static final String REWARD_STR = "R";
-	private static final String ACTIVE_GOAL_DECIDER_STR = "ACTIVEGD";
-	private static final String ANY_GOAL_DECIDER_STR = "ANYGD";
+	private static final String BEFORE_ACTIVE_GOAL_DECIDER_STR = "BACTIVEGD";
+	private static final String AFTER_ACTIVE_GOAL_DECIDER_STR = "AACTIVEGD";
+	private static final String BEFORE_ANY_GOAL_DECIDER_STR = "BANYGD";
+	private static final String AFTER_ANY_GOAL_DECIDER_STR = "AANYGD";
 	private static final String AFTER_PLACE_INTENTION_STR = "API";
 	private static final String BEFORE_PLACE_INTENTION_STR = "BPI";
 	private static final String WALLFW_STR = "WF";
-	private static final String INTENTION_STR = "INT";
+	private static final String BEFORE_INTENTION_STR = "BINT";
+	private static final String AFTER_INTENTION_STR = "AINT";
 	private static final String BEFORE_HD_LAYER_STR = "BHDL";
 	private static final String AFTER_HD_LAYER_STR = "AHDL";
 	private static final String AFTER_PIHD = "APIHD";
@@ -86,15 +90,20 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		float wallFollowingVal = params.getChildFloat("wallFollowingVal");
 		boolean deterministic = params
 				.getChildBoolean("deterministicActionSelection");
-		boolean proportionalVotes = params.getChildBoolean("proportionalVotes");
+		boolean proportionalQl = params.getChildBoolean("proportionalQL");
 		beforePcls = new LinkedList<ArtificialPlaceCellLayer>();
 		beforePI = new LinkedList<PlaceIntention>();
 		afterPcls = new LinkedList<ArtificialPlaceCellLayer>();
 		afterPI = new LinkedList<PlaceIntention>();
 		qLUpdVal = new LinkedList<PolicyDumper>();
 		qLActionSel = new LinkedList<WTAVotes>();
-
-		new Intention(this, INTENTION_STR, numIntentions);
+		
+		activeGoalDecider = new FlashingActiveGoalDecider(
+				BEFORE_ACTIVE_GOAL_DECIDER_STR, this, universe);
+		anyGoalDecider = new FlashingOrAnyGoalDecider(BEFORE_ANY_GOAL_DECIDER_STR,
+				this, universe);
+		
+		new Intention(this, BEFORE_INTENTION_STR, numIntentions);
 
 		// Create the layers
 		float radius = minRadius;
@@ -122,8 +131,8 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 			for (int j = 0; j < numHDLayers; j++) {
 				JointStates jStates = new JointStates(BEFORE_PIHD
 						+ (i * numHDLayers + j), this, universe, beforePcls
-						.get(i).getSize(), beforeHDs.get(j).getSize());
-				if (proportionalVotes)
+						.get(i).getSize() * numIntentions, beforeHDs.get(j).getSize());
+				if (proportionalQl)
 					new ProportionalVotes(ACTION_SELECTION_STR
 							+ (i * numHDLayers + j), this, jStates.getSize());
 				else
@@ -149,8 +158,18 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 					* numHDLayers + 2, robot, universe);
 		}
 
-		radius = minRadius;
+		
 		new Reward(REWARD_STR, this, universe, foodReward, nonFoodReward);
+		
+		// Second goal deciders after the robot has moved
+		activeGoalDecider = new FlashingActiveGoalDecider(
+				AFTER_ACTIVE_GOAL_DECIDER_STR, this, universe);
+		anyGoalDecider = new FlashingOrAnyGoalDecider(AFTER_ANY_GOAL_DECIDER_STR,
+				this, universe);
+		
+		new Intention(this, AFTER_INTENTION_STR, numIntentions);
+		
+		radius = minRadius;
 		for (int i = 0; i < numPCLayers; i++) {
 			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer(
 					AFTER_STATE_STR + i, this, universe, radius);
@@ -173,16 +192,18 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 			for (int j = 0; j < numHDLayers; j++) {
 				JointStates pihd = new JointStates(AFTER_PIHD
 						+ (i * numHDLayers + j), this, universe, afterPcls.get(
-						i).getSize(), afterHDs.get(j).getSize());
-				qLUpdVal.add(new NormalQL(QL_STR + (i * numHDLayers + j), this,
-						pihd.getSize(), numActions, discountFactor, alpha,
-						initialValue));
+						i).getSize() * numIntentions, afterHDs.get(j).getSize());
+				if (proportionalQl)
+					new MultiStateProportionalQL(
+							QL_STR + (i * numHDLayers + j), this,
+							pihd.getSize(), numActions, discountFactor, alpha,
+							initialValue);
+				else
+					new SingleStateQL(QL_STR + (i * numHDLayers + j), this,
+							pihd.getSize(), numActions, discountFactor, alpha,
+							initialValue);
 			}
-
-		activeGoalDecider = new FlashingActiveGoalDecider(
-				ACTIVE_GOAL_DECIDER_STR, this, universe);
-		anyGoalDecider = new FlashingOrAnyGoalDecider(ANY_GOAL_DECIDER_STR,
-				this, universe);
+		
 	}
 
 	public void initSys() {
@@ -192,7 +213,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	}
 
 	public void makeConn() {
-		nslConnect(getChild(ANY_GOAL_DECIDER_STR), "goalFeeder",
+		nslConnect(getChild(BEFORE_ANY_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(FOOD_FINDER_STR), "goalFeeder");
 		nslConnect(getChild(FOOD_FINDER_STR), "votes",
 				getChild(ACTION_PERFORMER_STR), "votes" + numPCLayers
@@ -200,18 +221,22 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		nslConnect(getChild(WALLFW_STR), "votes",
 				getChild(ACTION_PERFORMER_STR), "votes"
 						+ (numPCLayers * numHDLayers + 1));
-		nslConnect(getChild(ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
-				getChild(INTENTION_STR), "goalFeeder");
+		nslConnect(getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
+				getChild(BEFORE_INTENTION_STR), "goalFeeder");
+		nslConnect(getChild(AFTER_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
+				getChild(AFTER_INTENTION_STR), "goalFeeder");
+		nslConnect(getChild(BEFORE_INTENTION_STR), "goalFeeder",
+				getChild(AFTER_INTENTION_STR), "goalFeeder");
 
 		// Build place intention layers
 		for (int i = 0; i < numPCLayers; i++) {
 			nslConnect(getChild(BEFORE_STATE_STR + i), "activation",
 					getChild(BEFORE_PLACE_INTENTION_STR + i), "state1");
-			nslConnect(getChild(INTENTION_STR), "intention",
+			nslConnect(getChild(BEFORE_INTENTION_STR), "intention",
 					getChild(BEFORE_PLACE_INTENTION_STR + i), "state2");
 			nslConnect(getChild(AFTER_STATE_STR + i), "activation",
 					getChild(AFTER_PLACE_INTENTION_STR + i), "state1");
-			nslConnect(getChild(INTENTION_STR), "intention",
+			nslConnect(getChild(AFTER_INTENTION_STR), "intention",
 					getChild(AFTER_PLACE_INTENTION_STR + i), "state2");
 		}
 

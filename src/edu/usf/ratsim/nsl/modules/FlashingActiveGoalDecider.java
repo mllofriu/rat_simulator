@@ -11,7 +11,6 @@ public class FlashingActiveGoalDecider extends NslModule {
 
 	private ExperimentUniverse universe;
 	public NslDoutInt0 goalFeeder;
-	private int currentGoal;
 	private Random r;
 
 	public FlashingActiveGoalDecider(String nslName, NslModule nslParent,
@@ -21,42 +20,38 @@ public class FlashingActiveGoalDecider extends NslModule {
 		this.universe = univ;
 		goalFeeder = new NslDoutInt0(this, "goalFeeder");
 
-		// Initialize a goal 
-		currentGoal = -1;
+		r = new Random();
+		// Initialize a goal
 		List<Integer> active = universe.getActiveFeeders();
 		// Dont pick the same goal twice
-		active.remove(new Integer(currentGoal));
 		if (!active.isEmpty()) {
-			currentGoal = active.get(r.nextInt(active.size()));
+			goalFeeder.set(active.get(r.nextInt(active.size())));
 		}
 
-		r = new Random();
 	}
 
 	public void simRun() {
-		if (currentGoal == -1)
-			currentGoal = universe.getActiveFeeders().get(
-					r.nextInt(universe.getActiveFeeders().size()));
+		if (goalFeeder.get() == -1)
+			goalFeeder.set(universe.getActiveFeeders().get(
+					r.nextInt(universe.getActiveFeeders().size())));
 
 		if (!universe.getFlashingFeeders().isEmpty()) {
-			currentGoal = universe.getFlashingFeeders().get(0);
+			goalFeeder.set(universe.getFlashingFeeders().get(0));
 		} else {
 			if (universe.hasRobotFoundFood()) {
 				List<Integer> active = universe.getActiveFeeders();
 				// Dont pick the same goal twice
-				active.remove(new Integer(currentGoal));
+				active.remove(new Integer(goalFeeder.get()));
 				if (!active.isEmpty()) {
-					currentGoal = active.get(r.nextInt(active.size()));
+					goalFeeder.set(active.get(r.nextInt(active.size())));
 				}
 			}
 		}
 
-		goalFeeder.set(currentGoal);
-
-//		System.out.println("Active GD: " +currentGoal);
+		// System.out.println("Active GD: " +currentGoal);
 	}
 
 	public void newTrial() {
-		currentGoal = -1;
+		goalFeeder.set(-1);
 	}
 }
