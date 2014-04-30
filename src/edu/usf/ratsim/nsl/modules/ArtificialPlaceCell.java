@@ -9,7 +9,7 @@ public class ArtificialPlaceCell {
 
 	public ArtificialPlaceCell(Point3f center, float radius) {
 		this.center = center;
-		this.width = 1 / radius;
+		this.width = 1 / (radius*400);
 	}
 
 //	public boolean isActive(Point3f currLocation) {

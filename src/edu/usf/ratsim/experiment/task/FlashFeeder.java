@@ -29,11 +29,13 @@ public class FlashFeeder implements ExperimentTask {
 			int flashingFeeder = univ.getFlashingFeeders().get(0);
 			univ.setFlashingFeeder(flashingFeeder, false);
 			univ.setActiveFeeder(flashingFeeder, false);
-			List<Integer> active = (List<Integer>) subject
+			List<Integer> selectedFeeders = (List<Integer>) subject
 					.getProperty(ActivateFeeders.STR_ACTIVE_FEEDERS);
 			// Copy to avoid modifying the property holder
-			active = new LinkedList<Integer>(active);
-			int feeder = active.get(r.nextInt(active.size()));
+			selectedFeeders = new LinkedList<Integer>(selectedFeeders);
+			if (selectedFeeders.contains(flashingFeeder))
+				selectedFeeders.remove(new Integer(flashingFeeder));
+			int feeder = selectedFeeders.get(r.nextInt(selectedFeeders.size()));
 			univ.setFlashingFeeder(feeder, true);
 			univ.setActiveFeeder(feeder, true);
 		}
