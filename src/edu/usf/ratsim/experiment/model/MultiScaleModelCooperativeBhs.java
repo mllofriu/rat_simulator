@@ -15,7 +15,7 @@ import edu.usf.ratsim.nsl.modules.HeadingAngle;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
-import edu.usf.ratsim.nsl.modules.qlearning.update.NormalQL;
+import edu.usf.ratsim.nsl.modules.qlearning.update.SingleStateQL;
 import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.ElementWrapper;
@@ -91,7 +91,7 @@ public class MultiScaleModelCooperativeBhs extends NslModel implements RLRatMode
 			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer(
 					AFTER_STATE_STR + i, this, universe, radius);
 			afterPcls.add(pcl);
-			qLUpdVal.add(new NormalQL(QL_STR + i, this, beforePcls.get(i)
+			qLUpdVal.add(new SingleStateQL(QL_STR + i, this, beforePcls.get(i)
 					.getSize(), numActions, discountFactor, alpha, initialValue));
 			radius += (maxRadius - minRadius) / (numLayers - 1);
 		}

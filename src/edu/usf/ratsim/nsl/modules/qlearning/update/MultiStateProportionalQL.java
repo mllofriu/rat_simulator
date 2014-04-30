@@ -19,10 +19,12 @@ import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Utiles;
 
-public class NormalQL extends NslModule implements PolicyDumper {
-	
+public class MultiStateProportionalQL extends NslModule implements PolicyDumper {
+
 	private static final String DUMP_FILENAME = "policy.txt";
-	
+
+	private static final float EPS = 0.0f;
+
 	private static PrintWriter writer;
 	private NslDinFloat0 reward;
 	private NslDinInt0 takenAction;
@@ -34,76 +36,77 @@ public class NormalQL extends NslModule implements PolicyDumper {
 	private NslDinFloat1 statesAfter;
 	private int numStates;
 
-	public NormalQL(String nslMain, NslModule nslParent, int numStates, int numActions, float discountFactor, float alpha, float initialValue) {
+	public MultiStateProportionalQL(String nslMain, NslModule nslParent,
+			int numStates, int numActions, float discountFactor, float alpha,
+			float initialValue) {
 		super(nslMain, nslParent);
 
 		this.discountFactor = discountFactor;
 		this.alpha = alpha;
 		this.numStates = numStates;
-		
+
 		takenAction = new NslDinInt0(this, "takenAction");
 		reward = new NslDinFloat0(this, "reward");
 		statesBefore = new NslDinFloat1(this, "statesBefore", numStates);
 		statesAfter = new NslDinFloat1(this, "statesAfter", numStates);
-		
+
 		value = new NslDoutFloat2(this, "value", numStates, numActions);
 		value.set(initialValue);
-//		for (int s = 0; s < numStates; s++)
-//			for (int a = 0; a < numActions; a++)
-//				value.set(s,a,initialValue);
-		
+		// for (int s = 0; s < numStates; s++)
+		// for (int a = 0; a < numActions; a++)
+		// value.set(s,a,initialValue);
+
 	}
 
 	public void simRun() {
-		// Gets the active state as computed at the beginning of the cycle
-		int sBefore = getActiveState(statesBefore);
-		int sAfter = getActiveState(statesAfter);
+		// // Gets the active state as computed at the beginning of the cycle
+		// int sBefore = getActiveState(statesBefore);
+		// int sAfter = getActiveState(statesAfter);
 		int a = takenAction.get();
-		updateLastAction(sBefore, sAfter, a);
+//		System.out.println(a);
+		// updateLastAction(sBefore, sAfter, a);
+		for (int stateAfter = 0; stateAfter < numStates; stateAfter++) {
+			if (statesAfter.get(stateAfter) != 0){
+				float maxERNextState;
+				if (a != -1)
+					maxERNextState = getMaxExpectedReward(value, stateAfter);
+				else
+					maxERNextState = 0;
+				for (int stateBefore = 0; stateBefore < numStates; stateBefore++)
+					if (statesBefore.get(stateBefore) * statesAfter.get(stateAfter) > EPS)
+						updateLastAction(stateBefore, stateAfter, a, maxERNextState);
+			} 
+		}
 	}
 
-	private void updateLastAction(int sBefore, int sAfter, int a) {
-		float maxERNextState;
-		if (a != -1)
-			 maxERNextState = getMaxExpectedReward(value, sAfter);
-		else 
-			maxERNextState = 0;
+	private void updateLastAction(int sBefore, int sAfter, int a, float maxERNextState) {
 		
+
 		float actionValue = value.get(sBefore, a);
-		float newValue = actionValue + alpha
+		// Weight by the activity of both states
+		float newValue = actionValue
+				+ alpha
+				* statesBefore.get(sBefore)
+				* statesAfter.get(sAfter)
 				* (reward.get() + discountFactor * maxERNextState - actionValue);
 
-
+//		System.out.println("Updating action " + a);
 		value.set(sBefore, a, newValue);
-//		System.out.println(sBefore);
-//		if (actionValue != value.get(sBefore, a))
-//			System.out.println(actionValue + " " + value.get(sBefore, a));
+		// System.out.println(sBefore);
+		// if (actionValue != value.get(sBefore, a))
+		// System.out.println(actionValue + " " + value.get(sBefore, a));
 	}
 
-	
 	private float getMaxExpectedReward(NslDoutFloat2 value, int s) {
 		float maxER = value.get(s, 0);
-		for (int a = 1; a < value.getSize2(); a++){
+		for (int a = 1; a < value.getSize2(); a++) {
 			if (value.get(s, a) > maxER)
 				maxER = value.get(s, a);
 		}
-		
+
 		return maxER;
 	}
 
-	private int getActiveState(NslDinFloat1 states) {
-		// Winner take all within the layer
-		float maxVal = 0;
-		int activeState = -1;
-		for (int i = 0; i < states.getSize(); i++)
-			if (states.get(i) > maxVal) {
-				activeState = i;
-				maxVal = states.get(i);
-			}
-
-		return activeState;
-	}
-	
 	/**
 	 * Dumps the qlearning policy to a file. The assumption of the alignment
 	 * between pcl cells and ql states is assumed for efficiency purposes.
@@ -119,7 +122,7 @@ public class NormalQL extends NslModule implements PolicyDumper {
 	public void dumpPolicy(String trial, String groupName, String subName,
 			String rep, ArtificialPlaceCellLayer pcl, int layer) {
 		synchronized (QLSupport.class) {
-			PrintWriter writer = NormalQL.getWriter();
+			PrintWriter writer = MultiStateProportionalQL.getWriter();
 
 			List<ArtificialPlaceCell> cells = pcl.getCells();
 			for (int activeState = 0; activeState < numStates; activeState++) {
@@ -131,8 +134,7 @@ public class NormalQL extends NslModule implements PolicyDumper {
 				if (angle == -1)
 					policyAngle = "NA";
 				else
-					policyAngle = new Float(Utiles.getAngle(angle))
-							.toString();
+					policyAngle = new Float(Utiles.getAngle(angle)).toString();
 
 				writer.println(trial + '\t' + groupName + '\t' + subName + '\t'
 						+ rep + '\t' + cells.get(activeState).getCenter().x
@@ -160,15 +162,15 @@ public class NormalQL extends NslModule implements PolicyDumper {
 			String rep, ArtificialPlaceCellLayerWithIntention pcl, int layer,
 			int numIntentions) {
 		synchronized (QLSupport.class) {
-			PrintWriter writer = NormalQL.getWriter();
+			PrintWriter writer = MultiStateProportionalQL.getWriter();
 			for (int intention = 0; intention < numIntentions; intention++) {
-				
 
 				List<ArtificialPlaceCell> cells = pcl.getCells(intention);
 				for (int activeState = 0; activeState < cells.size(); activeState++) {
 					// Get the policy angle for this state
 					// Offset with the intention
-					int angle = getMaxAngle(intention * cells.size() + activeState);
+					int angle = getMaxAngle(intention * cells.size()
+							+ activeState);
 
 					// Write to file
 					String policyAngle;
@@ -189,7 +191,6 @@ public class NormalQL extends NslModule implements PolicyDumper {
 
 	}
 
-
 	private static PrintWriter getWriter() {
 		if (writer == null) {
 			try {
@@ -206,13 +207,13 @@ public class NormalQL extends NslModule implements PolicyDumper {
 
 		return writer;
 	}
-	
+
 	public int getMaxAngle(int s) {
 		float[] vals = new float[Utiles.numAngles];
 		int maxAngle = -1;
 		float maxVal = 0;
 		for (int angle = 0; angle < Utiles.numAngles; angle++) {
-			vals[angle] = value.get(s, angle); 
+			vals[angle] = value.get(s, angle);
 			if (vals[angle] > maxVal) {
 				maxVal = vals[angle];
 				maxAngle = angle;
