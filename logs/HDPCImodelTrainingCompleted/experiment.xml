@@ -43,12 +43,12 @@
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>100</foodReward>
-                <nonFoodReward>-0.1</nonFoodReward>
-                <discountFactor>1</discountFactor>
+                <nonFoodReward>-0.001</nonFoodReward>
+                <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
                 <flashingReward>10000</flashingReward>
-                <nonFlashingReward>50000</nonFlashingReward>
+                <nonFlashingReward>50</nonFlashingReward>
                 <wallFollowingVal>-200000</wallFollowingVal>
                 <proportionalQL>true</proportionalQL>
             </params>
@@ -137,9 +137,6 @@
                 <name>ResetModelTask</name>
                 <params>
                 </params>
-            </task>
-            <task>
-                <name>UnflashFeeder</name>
             </task>
 			<task>
 				<name>ActivateFeeders</name>
