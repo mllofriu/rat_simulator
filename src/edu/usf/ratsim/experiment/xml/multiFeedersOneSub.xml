@@ -44,12 +44,12 @@
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>100</foodReward>
                 <nonFoodReward>-0.1</nonFoodReward>
-                <discountFactor>1</discountFactor>
+                <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
-                <flashingReward>10000</flashingReward>
-                <nonFlashingReward>50000</nonFlashingReward>
-                <wallFollowingVal>-200000</wallFollowingVal>
+                <flashingReward>100000</flashingReward>
+                <nonFlashingReward>100000</nonFlashingReward>
+                <wallFollowingVal>-10000000</wallFollowingVal>
                 <proportionalQL>true</proportionalQL>
             </params>
         </model>
