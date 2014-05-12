@@ -10,6 +10,7 @@ import edu.usf.ratsim.experiment.ExperimentUniverse;
 
 public class JointStatesMany extends NslModule {
 
+	private static final float EPS = 0.01f;
 	public List<NslDinFloat1> states;
 	public NslDoutFloat1 jointState;
 
@@ -32,16 +33,35 @@ public class JointStatesMany extends NslModule {
 		jointState.set(0);
 		// Iterate over all states
 		
-		for (int i =0 ; i < jointState.getSize(); i++){
+		boolean broke;
+		int jointStatesSize = jointState.getSize();
+		for (int i =0 ; i < jointStatesSize; i++){
+			broke = false; 
 			float jointActivation = 1;
 			int remainingSize = jointState.getSize();
 			for (NslDinFloat1 state : states){
 				remainingSize /= state.getSize();
 				// Get the contribution of the particular state
 				int index = (i / remainingSize) % state.getSize();
-				jointActivation *= state.get(index);
+				float activation = state.get(index);
+				// If I see a cero activation, I can skip all states involving this one
+				if (activation < EPS){
+//					System.out.println("adding " + remainingSize);
+					i += remainingSize;
+					broke = true;
+					break;
+				} else {
+					// Else i multiply its activation with its partners
+					jointActivation *= activation;
+				}
+
+				
 			}
-			jointState.set(i,jointActivation);
+			
+			if (!broke)
+				jointState.set(i,jointActivation);
+				
+
 		}
 	}
 
