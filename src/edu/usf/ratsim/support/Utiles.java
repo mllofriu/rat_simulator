@@ -12,52 +12,52 @@ import javax.vecmath.Vector3f;
 
 public class Utiles {
 
-//	public static final float[] actions = { -(float) Math.PI,
-//			-(float) (3 * Math.PI / 4), -(float) (Math.PI / 2),
-//			-(float) (Math.PI / 4), 0, (float) (Math.PI / 4),
-//			(float) (Math.PI / 2), (float) (3 * Math.PI / 4) };
-//	 public static final float[] actions = {-(float) (Math.PI / 8), 0,
-//	 (float) (Math.PI / 8) };
-//	public static final float[] discreteAngles = { 0, (float) (Math.PI / 4),
-//			(float) (Math.PI / 2), (float) (3 * Math.PI / 4), (float) Math.PI,
-//			(float) (5 * Math.PI / 4), (float) (6 * Math.PI / 4),
-//			(float) (7 * Math.PI / 4) };
+	// public static final float[] actions = { -(float) Math.PI,
+	// -(float) (3 * Math.PI / 4), -(float) (Math.PI / 2),
+	// -(float) (Math.PI / 4), 0, (float) (Math.PI / 4),
+	// (float) (Math.PI / 2), (float) (3 * Math.PI / 4) };
+	// public static final float[] actions = {-(float) (Math.PI / 8), 0,
+	// (float) (Math.PI / 8) };
+	// public static final float[] discreteAngles = { 0, (float) (Math.PI / 4),
+	// (float) (Math.PI / 2), (float) (3 * Math.PI / 4), (float) Math.PI,
+	// (float) (5 * Math.PI / 4), (float) (6 * Math.PI / 4),
+	// (float) (7 * Math.PI / 4) };
 
-	public static final float actionInterval = (float) (Math.PI/8);
-	private static final float actionMin = (float) (-Math.PI/8);
-//	private static final float actionMin = (float) 0;
+	public static final float actionInterval = (float) (Math.PI / 8);
+	private static final float actionMin = (float) (-Math.PI / 8);
+	// private static final float actionMin = (float) 0;
 	public static final int numActions = 3;
-//	private static final float actionMax = (float) (Math.PI/8);
-	
+	// private static final float actionMax = (float) (Math.PI/8);
 
-	private static final float angleInterval = (float) (Math.PI/8);
+	private static final float angleInterval = (float) (Math.PI / 8);
 	private static final float angleMin = 0;
 	public static final int numAngles = 16;
-//	private static final float angleMax = (float) (2* Math.PI - angleInterval);
+	// private static final float angleMax = (float) (2* Math.PI -
+	// angleInterval);
 	private static final float EPS_STRAIGHT = actionInterval;;
-	
-	public static float getAction(int index){
+
+	public static float getAction(int index) {
 		float angle = actionMin;
 		int i = 0;
-		while (i < index){
+		while (i < index) {
 			angle += actionInterval;
 			i++;
 		}
-		
+
 		return angle;
 	}
-	
-	public static float getAngle(int index){
+
+	public static float getAngle(int index) {
 		float angle = angleMin;
 		int i = 0;
-		while (i < index){
+		while (i < index) {
 			angle += angleInterval;
 			i++;
 		}
-		
+
 		return angle;
 	}
-	
+
 	public static int contador(BufferedImage image, Color color) {
 		int iterH, iterW;
 		int contador = 0;
@@ -117,7 +117,6 @@ public class Utiles {
 		return res;
 	}
 
-
 	public static Vector3f vectorToPoint(Point3f from, Point3f to) {
 		to.sub(from);
 		Vector3f fVect = new Vector3f(to);
@@ -129,7 +128,7 @@ public class Utiles {
 		Quat4f rotToMake = new Quat4f();
 		rotToMake.inverse(currentRot);
 		rotToMake.mul(rotToGoal);
-		
+
 		// See if going straight isnt good enough
 		float resultingAnglePos = (float) Math.abs(rotToAngle(rotToMake));
 		float resultingAngleInv = (float) Math.abs(Math.PI * 2
@@ -180,7 +179,7 @@ public class Utiles {
 	 * @return
 	 */
 	public static int discretizeAngle(float allotAngle) {
-//		System.out.print(allotAngle);
+		// System.out.print(allotAngle);
 		Quat4f allotRot = angleToRot(allotAngle);
 		return discretizeAngle(allotRot);
 	}
@@ -224,22 +223,21 @@ public class Utiles {
 		return action;
 	}
 
-//	public static void main(String[] args) {
-//		// System.out.println(discretizeAngle((float) (-135 * Math.PI / 180)));
-//		// System.out.println(discretizeAngle((float) (-90 * Math.PI / 180)));
-//		System.out.println(Math.toDegrees(actions[bestActionToRot(
-//				angleToRot((float) Math.toRadians(135)),
-//				angleToRot((float) Math.toRadians(90)))]));
-//	}
+	// public static void main(String[] args) {
+	// // System.out.println(discretizeAngle((float) (-135 * Math.PI / 180)));
+	// // System.out.println(discretizeAngle((float) (-90 * Math.PI / 180)));
+	// System.out.println(Math.toDegrees(actions[bestActionToRot(
+	// angleToRot((float) Math.toRadians(135)),
+	// angleToRot((float) Math.toRadians(90)))]));
+	// }
 
 	public static double actionDistance(int a1, int a2) {
-		return Math.min(Math.abs(a1 - a2),
-				Math.abs(numActions - a2 + a1));
+		return Math.min(Math.abs(a1 - a2), Math.abs(numActions - a2 + a1));
 	}
 
 	public static int discretizeAngle(Quat4f allotRot) {
-//		System.out.print(allotAngle);
-//		Quat4f allotRot = angleToRot(allotAngle);
+		// System.out.print(allotAngle);
+		// Quat4f allotRot = angleToRot(allotAngle);
 		int angle = -1;
 		float angleDifference = (float) (Math.PI * 2);
 		for (int i = 0; i < numAngles; i++) {
@@ -259,8 +257,13 @@ public class Utiles {
 			}
 		}
 
-//		System.out.println(  " " + discreteAngles[angle]);
+		// System.out.println( " " + discreteAngles[angle]);
 		return angle;
+	}
+
+	public static float gaussian(float distance, float width) {
+		return (float) ((1 / Math.sqrt(2 * Math.PI) / width) * Math.exp(-Math
+				.pow(distance, 2) / (2 * Math.pow(width, 2))));
 	}
 
 }
