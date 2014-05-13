@@ -9,7 +9,7 @@ public class ArtificialPlaceCell {
 
 	public ArtificialPlaceCell(Point3f center, float radius) {
 		this.center = center;
-		this.width = 1 / (radius*20);
+		this.width = radius*2;
 	}
 
 //	public boolean isActive(Point3f currLocation) {
@@ -18,8 +18,8 @@ public class ArtificialPlaceCell {
 
 	public float getActivation(Point3f currLocation) {
 //		return 1 / center.distance(currLocation);
-		// TODO: add spread
 		return (float) Math.exp(-center.distance(currLocation) / width);
+//		return 0;
 	}
 
 	public Point3f getCenter() {

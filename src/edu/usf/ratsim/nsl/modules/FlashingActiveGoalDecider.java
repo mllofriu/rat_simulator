@@ -48,7 +48,7 @@ public class FlashingActiveGoalDecider extends NslModule {
 			}
 		}
 
-		// System.out.println("Active GD: " +currentGoal);
+//		 System.out.println("Active GD: " + goalFeeder.get());
 	}
 
 	public void newTrial() {
