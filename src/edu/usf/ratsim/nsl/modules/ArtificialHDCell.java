@@ -1,5 +1,7 @@
 package edu.usf.ratsim.nsl.modules;
 
+import edu.usf.ratsim.support.Utiles;
+
 public class ArtificialHDCell {
 
 	private float preferredOrientation;
@@ -12,7 +14,8 @@ public class ArtificialHDCell {
 	}
 
 	public float getActivation(float currOrientation) {
-		return (float) Math.exp(-angleDistance(currOrientation, preferredOrientation) / width);
+//		return (float) Math.exp(-angleDistance(currOrientation, preferredOrientation) / width);
+		return Utiles.gaussian(angleDistance(currOrientation, preferredOrientation), width);
 	}
 
 	private float angleDistance(float from, float to) {
