@@ -23,7 +23,7 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 
 	private static final String DUMP_FILENAME = "policy.txt";
 
-	private static final float EPS = 0.0f;
+	private static final float EPS = 0.01f;
 
 	private static PrintWriter writer;
 	private NslDinFloat0 reward;
@@ -66,14 +66,14 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 //		System.out.println(a);
 		// updateLastAction(sBefore, sAfter, a);
 		for (int stateAfter = 0; stateAfter < numStates; stateAfter++) {
-			if (statesAfter.get(stateAfter) != 0){
+			if (statesAfter.get(stateAfter) > EPS){
 				float maxERNextState;
 				if (a != -1)
 					maxERNextState = getMaxExpectedReward(value, stateAfter);
 				else
 					maxERNextState = 0;
 				for (int stateBefore = 0; stateBefore < numStates; stateBefore++)
-					if (statesBefore.get(stateBefore) * statesAfter.get(stateAfter) > EPS)
+					if (statesBefore.get(stateBefore) > EPS)
 						updateLastAction(stateBefore, stateAfter, a, maxERNextState);
 			} 
 		}
@@ -87,8 +87,7 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 		float newValue = actionValue
 				+ alpha
 				* statesBefore.get(sBefore)
-				* statesAfter.get(sAfter)
-				* (reward.get() + discountFactor * maxERNextState - actionValue);
+				* (reward.get() + discountFactor * statesAfter.get(sAfter) * maxERNextState - actionValue);
 
 //		System.out.println("Updating action " + a);
 		value.set(sBefore, a, newValue);
