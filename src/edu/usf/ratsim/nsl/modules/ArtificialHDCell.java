@@ -1,8 +1,5 @@
 package edu.usf.ratsim.nsl.modules;
 
-import com.vividsolutions.jts.algorithm.Angle;
-
-
 public class ArtificialHDCell {
 
 	private float preferredOrientation;
@@ -49,6 +46,7 @@ public class ArtificialHDCell {
 		System.out.println(hdc.angleDistance((float) (Math.PI ),(float) (Math.PI /2)));
 		System.out.println(hdc.angleDistance(0.1f, -0.1f));
 		System.out.println(hdc.angleDistance(-0.1f, 0.1f));
+		System.out.println(hdc.angleDistance(-(float) (Math.PI ), (float) (Math.PI )));
 	}
 
 }
