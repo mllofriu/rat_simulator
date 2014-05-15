@@ -63,33 +63,53 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 		// int sBefore = getActiveState(statesBefore);
 		// int sAfter = getActiveState(statesAfter);
 		int a = takenAction.get();
-//		System.out.println(a);
+		// System.out.println(a);
 		// updateLastAction(sBefore, sAfter, a);
+		// for (int stateAfter = 0; stateAfter < numStates; stateAfter++) {
+		// if (statesAfter.get(stateAfter) > EPS){
+		// float maxERNextState;
+		// if (a != -1)
+		// maxERNextState = getMaxExpectedReward(value, stateAfter);
+		// else
+		// maxERNextState = 0;
+		// for (int stateBefore = 0; stateBefore < numStates; stateBefore++)
+		// if (statesBefore.get(stateBefore) > EPS)
+		// updateLastAction(stateBefore, stateAfter, a, maxERNextState);
+		// }
+		// }
+
+		// Calculate weighted max expected reward batch
+		float maxExpectedR = Float.NEGATIVE_INFINITY;
 		for (int stateAfter = 0; stateAfter < numStates; stateAfter++) {
-			if (statesAfter.get(stateAfter) > EPS){
-				float maxERNextState;
-				if (a != -1)
-					maxERNextState = getMaxExpectedReward(value, stateAfter);
-				else
-					maxERNextState = 0;
-				for (int stateBefore = 0; stateBefore < numStates; stateBefore++)
-					if (statesBefore.get(stateBefore) > EPS)
-						updateLastAction(stateBefore, stateAfter, a, maxERNextState);
-			} 
+			if (a != -1 && statesAfter.get(stateAfter) > EPS) {
+				float weightedMaxExpRet = getMaxExpectedReward(value,
+						stateAfter) * statesAfter.get(stateAfter);
+				if (weightedMaxExpRet > maxExpectedR)
+					maxExpectedR = weightedMaxExpRet;
+			}
 		}
+
+		// Do the update once for each state
+		for (int stateBefore = 0; stateBefore < numStates; stateBefore++)
+			// Dont bother if the activation is to small
+			if (statesBefore.get(stateBefore) > EPS)
+				updateLastAction(stateBefore, a, maxExpectedR);
+
 	}
 
-	private void updateLastAction(int sBefore, int sAfter, int a, float maxERNextState) {
-		
+	private void updateLastAction(int sBefore, int a, float maxERNextState) {
 
 		float actionValue = value.get(sBefore, a);
 		// Weight by the activity of both states
-		float newValue = actionValue
-				+ alpha
-				* statesBefore.get(sBefore)
-				* (reward.get() + discountFactor * statesAfter.get(sAfter) * maxERNextState - actionValue);
+		// Q(s,a) = A(s) * [Q(s,a) + 
+		//	alpha ( reward + gamma * sum_s' max_a' A(s')*Q(s',a') - Q(s,a)]
+		//	+ (1-A(s)) Q(s,a)
+		float newValue = statesBefore.get(sBefore)
+				* (actionValue + alpha
+						* (reward.get() + discountFactor * maxERNextState - actionValue))
+				+ (1 - statesBefore.get(sBefore)) * actionValue;
 
-//		System.out.println("Updating action " + a);
+		// System.out.println("Updating action " + a);
 		value.set(sBefore, a, newValue);
 		// System.out.println(sBefore);
 		// if (actionValue != value.get(sBefore, a))

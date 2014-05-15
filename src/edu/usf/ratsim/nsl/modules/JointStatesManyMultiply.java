@@ -8,13 +8,13 @@ import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 
-public class JointStatesMany extends NslModule {
+public class JointStatesManyMultiply extends NslModule {
 
 	private static final float EPS = 0.01f;
 	public List<NslDinFloat1> states;
 	public NslDoutFloat1 jointState;
 
-	public JointStatesMany(String nslName, NslModule nslParent,
+	public JointStatesManyMultiply(String nslName, NslModule nslParent,
 			ExperimentUniverse universe, List<Integer> stateSizes) {
 		super(nslName, nslParent);
 

@@ -31,6 +31,7 @@ public class FlashingActiveGoalDecider extends NslModule {
 	}
 
 	public void simRun() {
+//		System.out.println("Got goal: " + goalFeeder.get());
 		if (goalFeeder.get() == -1)
 			goalFeeder.set(universe.getActiveFeeders().get(
 					r.nextInt(universe.getActiveFeeders().size())));
@@ -48,6 +49,8 @@ public class FlashingActiveGoalDecider extends NslModule {
 			}
 		}
 
+		universe.clearWantedFeeders();
+		universe.setWantedFeeder(goalFeeder.get(), true);
 //		 System.out.println("Active GD: " + goalFeeder.get());
 	}
 

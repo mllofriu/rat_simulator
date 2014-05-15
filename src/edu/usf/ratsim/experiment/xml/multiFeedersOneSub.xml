@@ -38,16 +38,16 @@
                 <minRadius>.05</minRadius>
                 <maxRadius>.25</maxRadius>
                 <numHDLayers>8</numHDLayers>
-                <minHDCellsPerLayer>2</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>2</stepHDCellsPerLayer>
+                <minHDCellsPerLayer>1</minHDCellsPerLayer>
+                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
-                <foodReward>1000</foodReward>
-                <nonFoodReward>-0.01</nonFoodReward>
-                <discountFactor>.95</discountFactor>
+                <foodReward>1</foodReward>
+                <nonFoodReward>1</nonFoodReward>
+                <discountFactor>.095</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
-                <flashingReward>1000</flashingReward>
+                <flashingReward>250</flashingReward>
                 <nonFlashingReward>0</nonFlashingReward>
                 <wallFollowingVal>-10E200</wallFollowingVal>
                 <proportionalQL>true</proportionalQL>

@@ -15,12 +15,14 @@ import edu.usf.ratsim.nsl.modules.FlashingOrAnyGoalDecider;
 import edu.usf.ratsim.nsl.modules.GeneralTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.Intention;
 import edu.usf.ratsim.nsl.modules.JointStates;
-import edu.usf.ratsim.nsl.modules.JointStatesMany;
+import edu.usf.ratsim.nsl.modules.JointStatesManyConcatenate;
+import edu.usf.ratsim.nsl.modules.JointStatesManyMultiply;
 import edu.usf.ratsim.nsl.modules.PlaceIntention;
 import edu.usf.ratsim.nsl.modules.WallFollower;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.NoExploration;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalMaxVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQL;
@@ -54,6 +56,8 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private static final String AFTER_HD_LAYER_STR = "AHDL";
 	private static final String AFTER_PIHD = "APIHD";
 	private static final String BEFORE_PIHD = "BPIHD";
+	private static final String BEFORE_CONCAT = "BALL";
+	private static final String AFTER_CONCAT = "AALL";
 	private List<ArtificialPlaceCellLayer> beforePcls;
 	private List<PolicyDumper> qLUpdVal;
 	// private ProportionalExplorer actionPerformerVote;
@@ -128,6 +132,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 			numHDCells += stepHDCellsPerLayer;
 		}
 
+		List<Integer> bpihdSizes = new LinkedList<Integer>();
 		for (int i = 0; i < numPCLayers; i++)
 			for (int j = 0; j < numHDLayers; j++) {
 				// JointStates jStates = new JointStates(BEFORE_PIHD
@@ -138,15 +143,22 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 				statesSizes.add(numIntentions);
 				statesSizes.add(beforeHDs.get(j).getSize());
 				statesSizes.add(beforePcls.get(i).getSize());
-				JointStatesMany jStates = new JointStatesMany(BEFORE_PIHD
-						+ (i * numHDLayers + j), this, universe, statesSizes);
-				if (proportionalQl)
-					new ProportionalVotes(ACTION_SELECTION_STR
-							+ (i * numHDLayers + j), this, jStates.getSize());
-				else
-					new WTAVotes(ACTION_SELECTION_STR + (i * numHDLayers + j),
-							this, jStates.getSize());
+				JointStatesManyMultiply jStates = new JointStatesManyMultiply(
+						BEFORE_PIHD + (i * numHDLayers + j), this, universe,
+						statesSizes);
+				bpihdSizes.add(jStates.getSize());
+
 			}
+
+		// Concatenate all layers
+		JointStatesManyConcatenate bAll = new JointStatesManyConcatenate(
+				BEFORE_CONCAT, this, universe, bpihdSizes);
+
+		// Take the value of each state and vote for an action
+		if (proportionalQl)
+			new ProportionalVotes(ACTION_SELECTION_STR, this, bAll.getSize());
+		else
+			new WTAVotes(ACTION_SELECTION_STR, this, bAll.getSize());
 
 		// Create taxic driver to override in case of flashing
 		new GeneralTaxicFoodFinderSchema(FOOD_FINDER_STR, this, robot,
@@ -157,13 +169,11 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 				wallFollowingVal);
 
 		// Get votes from QL and other behaviors and perform an action
-		// One vote per layer + taxic + wf
+		// One vote per layer (one now) + taxic + wf
 		if (deterministic) {
-			new NoExploration(ACTION_PERFORMER_STR, this, numPCLayers
-					* numHDLayers + 2, robot, universe);
+			new NoExploration(ACTION_PERFORMER_STR, this, 1+2, robot, universe);
 		} else {
-			new ProportionalExplorer(ACTION_PERFORMER_STR, this, numPCLayers
-					* numHDLayers + 2, robot, universe);
+			new ProportionalExplorer(ACTION_PERFORMER_STR, this, 1 + 2, robot, universe);
 		}
 
 		new Reward(REWARD_STR, this, universe, foodReward, nonFoodReward);
@@ -181,9 +191,9 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer(
 					AFTER_STATE_STR + i, this, universe, radius);
 			afterPcls.add(pcl);
-//			JointStates placeIntention = new JointStates(
-//					AFTER_PLACE_INTENTION_STR + i, this, universe,
-//					pcl.getSize(), numIntentions);
+			// JointStates placeIntention = new JointStates(
+			// AFTER_PLACE_INTENTION_STR + i, this, universe,
+			// pcl.getSize(), numIntentions);
 			radius += (maxRadius - minRadius) / (numPCLayers - 1);
 		}
 
@@ -195,28 +205,31 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 			numHDCells += stepHDCellsPerLayer;
 		}
 
+		List<Integer> apihdSizes = new LinkedList<Integer>();
 		for (int i = 0; i < numPCLayers; i++)
 			for (int j = 0; j < numHDLayers; j++) {
-//				JointStates pihd = new JointStates(AFTER_PIHD
-//						+ (i * numHDLayers + j), this, universe, afterPcls.get(
-//						i).getSize()
-//						* numIntentions, afterHDs.get(j).getSize());
+				// JointStates pihd = new JointStates(AFTER_PIHD
+				// + (i * numHDLayers + j), this, universe, afterPcls.get(
+				// i).getSize()
+				// * numIntentions, afterHDs.get(j).getSize());
 				List<Integer> statesSizes = new LinkedList<Integer>();
 				statesSizes.add(numIntentions);
 				statesSizes.add(afterHDs.get(j).getSize());
 				statesSizes.add(afterPcls.get(i).getSize());
-				JointStatesMany jStates = new JointStatesMany(AFTER_PIHD
-						+ (i * numHDLayers + j), this, universe, statesSizes);
-				if (proportionalQl)
-					new MultiStateProportionalQL(
-							QL_STR + (i * numHDLayers + j), this,
-							jStates.getSize(), numActions, discountFactor, alpha,
-							initialValue);
-				else
-					new SingleStateQL(QL_STR + (i * numHDLayers + j), this,
-							jStates.getSize(), numActions, discountFactor, alpha,
-							initialValue);
+				JointStatesManyMultiply jStates = new JointStatesManyMultiply(
+						AFTER_PIHD + (i * numHDLayers + j), this, universe,
+						statesSizes);
+				apihdSizes.add(jStates.getSize());
+
 			}
+		new JointStatesManyConcatenate(AFTER_CONCAT, this, universe, apihdSizes);
+
+		if (proportionalQl)
+			new MultiStateProportionalQL(QL_STR, this, bAll.getSize(),
+					numActions, discountFactor, alpha, initialValue);
+		else
+			new SingleStateQL(QL_STR, this, bAll.getSize(), numActions,
+					discountFactor, alpha, initialValue);
 
 	}
 
@@ -230,13 +243,15 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		nslConnect(getChild(BEFORE_ANY_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(FOOD_FINDER_STR), "goalFeeder");
 		nslConnect(getChild(FOOD_FINDER_STR), "votes",
-				getChild(ACTION_PERFORMER_STR), "votes" + numPCLayers
-						* numHDLayers);
+				getChild(ACTION_PERFORMER_STR), "votes" + 1);
 		nslConnect(getChild(WALLFW_STR), "votes",
-				getChild(ACTION_PERFORMER_STR), "votes"
-						+ (numPCLayers * numHDLayers + 1));
+				getChild(ACTION_PERFORMER_STR), "votes" + (1 + 1));
 		nslConnect(getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(BEFORE_INTENTION_STR), "goalFeeder");
+		nslConnect(getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
+				getChild(AFTER_ACTIVE_GOAL_DECIDER_STR), "goalFeeder");
+		nslConnect(getChild(AFTER_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
+				getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder");
 		nslConnect(getChild(AFTER_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(AFTER_INTENTION_STR), "goalFeeder");
 		nslConnect(getChild(BEFORE_INTENTION_STR), "goalFeeder",
@@ -251,6 +266,9 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 						getChild(BEFORE_PIHD + (i * numHDLayers + j)), "state1");
 				nslConnect(getChild(BEFORE_HD_LAYER_STR + j), "activation",
 						getChild(BEFORE_PIHD + (i * numHDLayers + j)), "state2");
+				nslConnect(getChild(BEFORE_PIHD + (i * numHDLayers + j)),
+						"jointState", getChild(BEFORE_CONCAT), "state"
+								+ (i * numHDLayers + j));
 
 				nslConnect(getChild(AFTER_STATE_STR + i), "activation",
 						getChild(AFTER_PIHD + (i * numHDLayers + j)), "state3");
@@ -258,33 +276,26 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 						getChild(AFTER_PIHD + (i * numHDLayers + j)), "state1");
 				nslConnect(getChild(AFTER_HD_LAYER_STR + j), "activation",
 						getChild(AFTER_PIHD + (i * numHDLayers + j)), "state2");
-		
+				nslConnect(getChild(AFTER_PIHD + (i * numHDLayers + j)),
+						"jointState", getChild(AFTER_CONCAT), "state"
+								+ (i * numHDLayers + j));
+
 			}
 
 		// Connect the joint states to the QL system
-		for (int i = 0; i < numPCLayers; i++)
-			for (int j = 0; j < numHDLayers; j++) {
-				nslConnect(getChild(BEFORE_PIHD + (i * numHDLayers + j)),
-						"jointState", getChild(ACTION_SELECTION_STR
-								+ (i * numHDLayers + j)), "states");
-				nslConnect(getChild(QL_STR + (i * numHDLayers + j)), "value",
-						getChild(ACTION_SELECTION_STR + (i * numHDLayers + j)),
-						"value");
-				nslConnect(getChild(ACTION_SELECTION_STR
-						+ (i * numHDLayers + j)), "votes",
-						getChild(ACTION_PERFORMER_STR), "votes"
-								+ (i * numHDLayers + j));
-				nslConnect(getChild(ACTION_PERFORMER_STR), "takenAction",
-						getChild(QL_STR + (i * numHDLayers + j)), "takenAction");
-				nslConnect(getChild(REWARD_STR), "reward", getChild(QL_STR
-						+ (i * numHDLayers + j)), "reward");
-				nslConnect(getChild(BEFORE_PIHD + (i * numHDLayers + j)),
-						"jointState", getChild(QL_STR + (i * numHDLayers + j)),
-						"statesBefore");
-				nslConnect(getChild(AFTER_PIHD + (i * numHDLayers + j)),
-						"jointState", getChild(QL_STR + (i * numHDLayers + j)),
-						"statesAfter");
-			}
+		nslConnect(getChild(BEFORE_CONCAT), "jointState",
+				getChild(ACTION_SELECTION_STR), "states");
+		nslConnect(getChild(QL_STR), "value", getChild(ACTION_SELECTION_STR),
+				"value");
+		nslConnect(getChild(ACTION_SELECTION_STR), "votes",
+				getChild(ACTION_PERFORMER_STR), "votes" + 0);
+		nslConnect(getChild(ACTION_PERFORMER_STR), "takenAction",
+				getChild(QL_STR), "takenAction");
+		nslConnect(getChild(REWARD_STR), "reward", getChild(QL_STR), "reward");
+		nslConnect(getChild(BEFORE_CONCAT), "jointState", getChild(QL_STR),
+				"statesBefore");
+		nslConnect(getChild(AFTER_CONCAT), "jointState", getChild(QL_STR),
+				"statesAfter");
 
 	}
 

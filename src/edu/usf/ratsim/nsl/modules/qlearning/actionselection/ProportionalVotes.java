@@ -6,6 +6,11 @@ import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.support.Utiles;
 
+/**
+ * Class to set the votes for actions depending both in the state activation and a value function.
+ * @author ludo
+ *
+ */
 public class ProportionalVotes extends NslModule {
 
 	public NslDoutFloat1 actionVote;
