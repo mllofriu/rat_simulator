@@ -3,6 +3,8 @@ package edu.usf.ratsim.nsl.modules;
 import java.util.List;
 import java.util.Random;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
 import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
@@ -42,7 +44,9 @@ public class FlashingActiveGoalDecider extends NslModule {
 			if (universe.hasRobotFoundFood()) {
 				List<Integer> active = universe.getActiveFeeders();
 				// Dont pick the same goal twice
-				active.remove(new Integer(goalFeeder.get()));
+//				active.remove(new Integer(goalFeeder.get()));
+				// Instead of removing the desired feeder, remove the one actually found
+				active.remove(new Integer(universe.getFeedingFeeder()));
 				if (!active.isEmpty()) {
 					goalFeeder.set(active.get(r.nextInt(active.size())));
 				}

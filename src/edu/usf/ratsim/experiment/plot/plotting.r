@@ -205,5 +205,5 @@ invisible(llply(names(splitPath), function(x) plotPathOnMaze(x,
 # for (i in 2:dim(recallPath)[1]) {
 #   + plotPathOnMaze('', recallPath[1:i,], maze)
 #   + 
-# ani.options(outdir = paste(getwd(),'/plots/path/', sep=''))
-# llply(names(splitPath), function(x) saveMovie(incrementalPath(splitPath[[x]], maze), interval = .2, movie.name = paste(x,'pathAnimation.gif', sep=''), ani.width=500, ani.height = 500,))
+ani.options(outdir = paste(getwd(),'/plots/path/', sep=''))
+llply(names(splitPath), function(x) saveMovie(incrementalPath(splitPath[[x]], maze), interval = .2, movie.name = paste(x,'pathAnimation.gif', sep=''), ani.width=500, ani.height = 500,))
