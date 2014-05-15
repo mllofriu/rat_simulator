@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<!-- Just a test of new format -->
+
+<experiment>
+	<!--Robot startin points -->
+	<point>
+        <name>S</name>
+        <xp>0</xp>
+        <yp>0</yp>
+        <zp>0.35</zp>
+        <rot>0</rot>
+    </point>
+    <point>
+        <name>W1</name>
+        <xp>0.05</xp>
+        <yp>0</yp>
+        <zp>0.2</zp>
+        <rot>0</rot>
+    </point>
+    <point>
+        <name>W2</name>
+        <xp>0.05</xp>
+        <yp>0</yp>
+        <zp>-.2</zp>
+        <rot>0</rot>
+    </point>
+
+	<maze>/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
+
+	<!--Subject groups -->
+    <group>
+        <name>oneLayer</name>
+        <numMembers>1</numMembers>
+        <model>
+            <name>MultiScaleMultiIntentionCooperativeModel</name>
+            <params>
+                <numPCLayers>5</numPCLayers>
+                <minRadius>.05</minRadius>
+                <maxRadius>.25</maxRadius>
+                <numHDLayers>8</numHDLayers>
+                <minHDCellsPerLayer>1</minHDCellsPerLayer>
+                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <numIntentions>8</numIntentions>
+                <deterministicActionSelection>true</deterministicActionSelection>
+                <foodReward>1</foodReward>
+                <nonFoodReward>1</nonFoodReward>
+                <discountFactor>.95</discountFactor>
+                <alpha>.8</alpha>
+                <initialValue>0</initialValue>
+                <flashingReward>1000</flashingReward>
+                <nonFlashingReward>0</nonFlashingReward>
+                <wallFollowingVal>-10E200</wallFollowingVal>
+                <proportionalQL>true</proportionalQL>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>3</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
+    </group>
+		
+
+	<!--Experiment Trials -->
+	<!-- 8 training trials -->
+	<trial>
+		<name>training</name>
+		<reps>1</reps>
+		<groups>
+			<group>oneLayer</group>
+		</groups>
+		<initialTasks>
+			<task>
+				<name>PlaceRobotInitiallyTask</name>
+				<params>
+					<initialPosition>S</initialPosition>
+				</params>
+			</task>
+			<!-- <task> <name>ActivateFeeders</name> <params> </params> </task> -->
+			<task>
+				<name>FlashFeeder</name>
+			</task>
+		</initialTasks>
+		<afterCycleTasks>
+			<task>
+				<name>FlashFeeder</name>
+			</task>
+			<!-- <task>
+				<name>UnflashFeeder</name>
+			</task> -->
+		</afterCycleTasks>
+		<afterTrialTasks>
+		</afterTrialTasks>
+		<stopConditions>
+			<stopCondition>
+				<name>FoundNFood</name>
+				<params>
+					<n>1000</n>
+				</params>
+			</stopCondition>
+		</stopConditions>
+		<afterCycleLoggers>
+			<logger>
+				<name>PositionLogger</name>
+			</logger>
+
+
+		</afterCycleLoggers>
+		<afterTrialLoggers>
+			<!-- <logger>
+				<name>PolicyDumperWithIntention</name>
+				<params>
+					<numIntentions>8</numIntentions>
+				</params>
+			</logger> -->
+		</afterTrialLoggers>
+	</trial>
+
+	<!-- 4 testing trials -->
+	<trial>
+		<name>recall</name>
+		<reps>1</reps>
+		<groups>
+			<group>oneLayer</group>
+		</groups>
+		<initialTasks>
+			<task>
+				<name>PlaceRobotInitiallyTask</name>
+				<params>
+					<initialPosition>S</initialPosition>
+				</params>
+			</task>
+			<task>
+                <name>ResetModelTask</name>
+                <params>
+                </params>
+            </task>
+            <task>
+                <name>UnflashFeeder</name>
+            </task>
+			<task>
+				<name>ActivateFeeders</name>
+				<params>
+				</params>
+			</task>
+			<!-- <task>
+                <name>ClearWalls</name>
+                <params>
+                </params>
+            </task>
+           <task>
+                <name>PlaceWall</name>
+                <params>
+                    <x1>W1</x1>
+                    <x2>W2</x2>
+                </params>
+            </task>   -->
+
+		</initialTasks>
+		<afterCycleTasks>
+			<task>
+				<name>FeederTemporalDeactivate</name>
+			</task>
+		</afterCycleTasks>
+		<afterTrialTasks>
+		</afterTrialTasks>
+		<stopConditions>
+			<stopCondition>
+				<name>FoundNFood</name>
+				<params>
+					<n>15</n>
+				</params>
+			</stopCondition>
+			<stopCondition>
+                <name>Time</name>
+                <params>
+                    <time>10000</time>
+                </params>
+            </stopCondition>
+		</stopConditions>
+		<afterCycleLoggers>
+			<logger>
+				<name>PositionLogger</name>
+			</logger>
+		</afterCycleLoggers>
+		<afterTrialLoggers>
+			<!-- <logger>
+				<name>PolicyDumperWithIntention</name>
+				<params>
+					<numIntentions>8</numIntentions>
+				</params>
+			</logger> -->
+		</afterTrialLoggers>
+	</trial>
+
+
+
+</experiment>
