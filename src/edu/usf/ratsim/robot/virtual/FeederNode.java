@@ -20,12 +20,15 @@ public class FeederNode extends ExpUniverseNode {
 	 */
 	private boolean active;
 	/**
-	 * Determines if the feeder is calling the animals atention throughout flashing
+	 * Determines if the feeder is calling the animals atention throughout
+	 * flashing
 	 */
 	private boolean flashing;
 	private Color3f flashingColor;
-	private Color3f color;
+	private Color3f normalColor;
+	private Color3f wantedColor;
 	private Appearance app;
+	private boolean wanted;
 
 	class FlashThread implements Runnable {
 
@@ -36,8 +39,13 @@ public class FeederNode extends ExpUniverseNode {
 						app.setColoringAttributes(new ColoringAttributes(
 								flashingColor, 1));
 						Thread.sleep(50);
-						app.setColoringAttributes(new ColoringAttributes(
-								color, 1));
+						if (!wanted)
+							app.setColoringAttributes(new ColoringAttributes(
+									normalColor, 1));
+						else {
+							app.setColoringAttributes(new ColoringAttributes(
+									wantedColor, 1));
+						}
 						if (flashing) {
 							Thread.sleep(50);
 						}
@@ -62,13 +70,14 @@ public class FeederNode extends ExpUniverseNode {
 	public FeederNode(Node node) {
 		active = false;
 		flashing = false;
+		wanted = false;
 
 		Map<String, Float> values = readValues(node);
 
-		color = new Color3f(values.get("cr"), values.get("cg"),
+		normalColor = new Color3f(values.get("cr"), values.get("cg"),
 				values.get("cb"));
-		flashingColor = new Color3f(255 - values.get("cr"),
-				255 - values.get("cg"), 255 - values.get("cb"));
+		flashingColor = new Color3f(255, 255, 255);
+		wantedColor = new Color3f(255, 50, 0);
 		float xp = values.get("xp");
 		float yp = values.get("yp");
 		float zp = values.get("zp");
@@ -76,7 +85,7 @@ public class FeederNode extends ExpUniverseNode {
 		float h = values.get("h");
 
 		app = new Appearance();
-		app.setColoringAttributes(new ColoringAttributes(color, 1));
+		app.setColoringAttributes(new ColoringAttributes(normalColor, 1));
 		app.setCapability(Appearance.ALLOW_COLORING_ATTRIBUTES_WRITE);
 		Primitive vol = new Cylinder(r, h, app);
 		addVolume(null, vol, xp, yp, zp);
@@ -92,7 +101,18 @@ public class FeederNode extends ExpUniverseNode {
 
 	public void setActive(boolean active) {
 		this.active = active;
-//		flashing = active;
+		// flashing = active;
+	}
+
+	public void setWanted(boolean wanted) {
+		this.wanted = wanted;
+		// When flashing, just let the node do the work
+		if (!flashing)
+			if (!wanted)
+				app.setColoringAttributes(new ColoringAttributes(normalColor, 1));
+			else {
+				app.setColoringAttributes(new ColoringAttributes(wantedColor, 1));
+			}
 	}
 
 	public boolean isFlashing() {

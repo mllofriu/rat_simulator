@@ -22,8 +22,8 @@ public class ArtificialPlaceCell {
 
 	public float getActivation(Point3f currLocation) {
 //		return 1 / center.distance(currLocation);
-//		return (float) Math.exp(-center.distance(currLocation) / width);
-		return Utiles.gaussian(center.distance(currLocation), width);
+		return (float) Math.exp(-center.distance(currLocation) / width);
+//		return Utiles.gaussian(center.distance(currLocation), width);
 //		return 0;
 	}
 
