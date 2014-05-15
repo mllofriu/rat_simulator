@@ -7,6 +7,8 @@ import java.util.List;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
+import edu.usf.ratsim.robot.virtual.FeederNode;
+
 public interface ExperimentUniverse {
 
 	public Point3f getFoodPosition(int i);
@@ -56,5 +58,9 @@ public interface ExperimentUniverse {
 	public boolean hasRobotFoundFeeder(int i);
 
 	public boolean isRobotParallelToWall();
+	
+	public void setWantedFeeder(int feeder, boolean wanted);
+	
+	public void clearWantedFeeders();
 
 }
