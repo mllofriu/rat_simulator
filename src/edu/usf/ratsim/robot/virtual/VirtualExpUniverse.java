@@ -417,4 +417,12 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		return affordances;
 	}
 
+	public void setWantedFeeder(int feeder, boolean wanted){
+		feeders.get(feeder).setWanted(wanted);
+	}
+	
+	public void clearWantedFeeders(){
+		for(FeederNode f : feeders)
+			f.setWanted(false);
+	}
 }

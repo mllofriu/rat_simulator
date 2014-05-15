@@ -37,8 +37,8 @@ public class ArtificialPlaceCellLayer extends NslModule {
 				// Add a cell with center x,y
 				cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y), radius));
 				// phased out layer
-				cells.add(new ArtificialPlaceCell(new Point3f(x + radius, 0, y
-						+ radius), radius));
+//				cells.add(new ArtificialPlaceCell(new Point3f(x + radius, 0, y
+//						+ radius), radius));
 			}
 		}
 
