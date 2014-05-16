@@ -47,7 +47,7 @@ public class NoExploration extends NslModule {
 			}
 			// System.out.println();
 		}
-
+//
 //		System.out.print("Values\t");
 //		for (int angle = 0; angle < Utiles.numActions; angle++)
 //			System.out.print(overallValues[angle] + "\t\t");
