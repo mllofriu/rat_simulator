@@ -126,4 +126,8 @@ public class FeederNode extends ExpUniverseNode {
 	public Vector3f getPosition() {
 		return new Vector3f(position);
 	}
+
+	public boolean isWanted() {
+		return wanted;
+	}
 }
