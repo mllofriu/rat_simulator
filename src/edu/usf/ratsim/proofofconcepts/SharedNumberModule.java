@@ -1,7 +1,6 @@
 package edu.usf.ratsim.proofofconcepts;
 
 import nslj.src.lang.NslDoutInt0;
-import nslj.src.lang.NslInt0;
 import nslj.src.lang.NslModule;
 
 public class SharedNumberModule  extends NslModule {
