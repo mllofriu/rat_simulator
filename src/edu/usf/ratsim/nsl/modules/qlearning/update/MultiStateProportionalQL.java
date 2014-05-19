@@ -79,15 +79,15 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 		// }
 
 		// Calculate weighted max expected reward batch
-//		float maxExpectedR = Float.NEGATIVE_INFINITY;
-		float maxExpectedR = 0;
+		float maxExpectedR = Float.NEGATIVE_INFINITY;
+//		float maxExpectedR = 0;
 		for (int stateAfter = 0; stateAfter < numStates; stateAfter++) {
-			if (a != -1 && statesAfter.get(stateAfter) > EPS) {
+			if (statesAfter.get(stateAfter) > EPS) {
 				float weightedMaxExpRet = getMaxExpectedReward(value,
 						stateAfter) * statesAfter.get(stateAfter);
-//				if (weightedMaxExpRet > maxExpectedR)
-//					maxExpectedR = weightedMaxExpRet;
-				maxExpectedR += weightedMaxExpRet;
+				if (weightedMaxExpRet > maxExpectedR)
+					maxExpectedR = weightedMaxExpRet;
+//				maxExpectedR += weightedMaxExpRet;
 			}
 		}
 
