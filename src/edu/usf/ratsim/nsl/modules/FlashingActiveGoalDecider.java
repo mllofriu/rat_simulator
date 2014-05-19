@@ -3,8 +3,6 @@ package edu.usf.ratsim.nsl.modules;
 import java.util.List;
 import java.util.Random;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
-
 import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;

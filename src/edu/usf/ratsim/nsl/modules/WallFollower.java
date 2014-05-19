@@ -2,13 +2,10 @@ package edu.usf.ratsim.nsl.modules;
 
 import java.util.Random;
 
-import javax.vecmath.Quat4f;
-
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
-import edu.usf.ratsim.support.Utiles;
 
 /**
  * Sets the dopaminergic votes for both a flashing feeder and a non flashing
