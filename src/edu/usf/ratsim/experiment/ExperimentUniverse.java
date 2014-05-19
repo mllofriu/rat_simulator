@@ -7,8 +7,6 @@ import java.util.List;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
-import edu.usf.ratsim.robot.virtual.FeederNode;
-
 public interface ExperimentUniverse {
 
 	public Point3f getFoodPosition(int i);
