@@ -425,4 +425,16 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		for(FeederNode f : feeders)
 			f.setWanted(false);
 	}
+
+	@Override
+	public int getWantedFeeder() {
+		int wantedFeeder = -1;
+		for (int i = 0 ; i < feeders.size(); i++)
+			if (feeders.get(i).isWanted()){
+				wantedFeeder = i;
+				break;
+			}
+		
+		return wantedFeeder;
+	}
 }

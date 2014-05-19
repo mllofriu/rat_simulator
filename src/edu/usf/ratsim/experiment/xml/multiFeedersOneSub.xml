@@ -44,7 +44,7 @@
 				<deterministicActionSelection>true</deterministicActionSelection>
 				<foodReward>1</foodReward>
 				<nonFoodReward>-.01</nonFoodReward>
-				<discountFactor>.95</discountFactor>
+				<discountFactor>.50</discountFactor>
 				<alpha>.8</alpha>
 				<initialValue>0</initialValue>
 				<flashingReward>250</flashingReward>
@@ -96,7 +96,7 @@
 			<stopCondition>
 				<name>FoundNFood</name>
 				<params>
-					<n>1000</n>
+					<n>2</n>
 				</params>
 			</stopCondition>
 		</stopConditions>
@@ -104,6 +104,9 @@
 			<logger>
 				<name>PositionLogger</name>
 			</logger>
+			<logger>
+                <name>WantedFeederLogger</name>
+            </logger>
 
 
 		</afterCycleLoggers>
@@ -165,7 +168,7 @@
 			<stopCondition>
 				<name>FoundNFood</name>
 				<params>
-					<n>15</n>
+					<n>2</n>
 				</params>
 			</stopCondition>
 			<stopCondition>
@@ -179,6 +182,9 @@
 			<logger>
 				<name>PositionLogger</name>
 			</logger>
+			<logger>
+                <name>WantedFeederLogger</name>
+            </logger>
 		</afterCycleLoggers>
 		<afterTrialLoggers>
 			<!-- <logger> <name>PolicyDumperWithIntention</name> <params> <numIntentions>8</numIntentions> 
