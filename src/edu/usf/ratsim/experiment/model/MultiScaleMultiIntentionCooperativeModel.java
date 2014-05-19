@@ -158,7 +158,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		else
 			new WTAVotes(ACTION_SELECTION_STR, this, bAll.getSize());
 
-		// Create taxic driver to override in case of flashing
+		// Create taxic driver
 		new GeneralTaxicFoodFinderSchema(FOOD_FINDER_STR, this, robot,
 				universe, numActions, flashingReward, nonFlashingReward);
 

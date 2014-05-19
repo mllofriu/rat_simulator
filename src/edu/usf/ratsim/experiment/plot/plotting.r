@@ -30,7 +30,7 @@ circleFun <- function(center=c(0,0), diameter=1, npoints=100, start=0, end=2, fi
   return(df)
 }
 
-mazePlot <- function(mazeFile){
+mazePlot <- function(mazeFile, wantedFeeder = -1){
   # Same as xmlParse()
   doc <- xmlParseDoc(mazeFile)
   root <- xmlRoot(doc)
@@ -51,7 +51,12 @@ mazePlot <- function(mazeFile){
     # y coordinate is -z
     y <- - as.numeric(xmlGetAttr(f, "zp"))
     dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, TRUE)
-    p <- geom_polygon(data=dat, aes(x,y), color="grey", fill="grey")
+    #print (paste(wantedFeeder," ", as.numeric(xmlGetAttr(f, "id"))))
+    if (wantedFeeder == as.numeric(xmlGetAttr(f, "id")) ){
+      p <- geom_polygon(data=dat, aes(x,y), color="green", fill="green")
+     } else {
+      p <- geom_polygon(data=dat, aes(x,y), color="grey", fill="grey")
+     } 
   })
   
   
@@ -102,7 +107,7 @@ policyDotsPlot <- function(policyData, p){
   }
 }
 
-plotPathOnMaze <- function (name, pathData, mazeFile){
+plotPathOnMaze <- function (name, pathData, maze){
   # Get the individual components of the plot
   p <- ggplot()
   p <- p + maze
@@ -160,9 +165,10 @@ plotArrivalTime <- function(pathData){
                                ".pdf", sep=''), width=10, height=10)
 }
 
-incrementalPath <- function(pathData, maze)
+incrementalPath <- function(pathData, feederData)
 {
   for (i in seq(2, dim(pathData)[1], dim(pathData)[1]/100)) { 
+    maze <- mazePlot(mazeFile, feederData[i,"wantedFeeder"])
     plotPathOnMaze('', pathData[1:i,], maze)
   }
 }
@@ -172,12 +178,15 @@ mazeFile <- "maze.xml"
 maze <- mazePlot(mazeFile)
 
 pathFile = 'position.txt'
+feedersFile = 'wantedFeeder.txt'
 # policyFile = 'policy.txt'
 
 # policyData <- read.csv(policyFile, sep='\t')
 pathData <- read.csv(pathFile, sep='\t')
+feederData <- read.csv(feedersFile, sep='\t')
 
 splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+splitFeeders <- split(feederData, feederData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 # splitPol <- split(policyData, policyData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 
 # One worker per plot
@@ -206,4 +215,4 @@ invisible(llply(names(splitPath), function(x) plotPathOnMaze(x,
 #   + plotPathOnMaze('', recallPath[1:i,], maze)
 #   + 
 ani.options(outdir = paste(getwd(),'/plots/path/', sep=''))
-llply(names(splitPath), function(x) saveMovie(incrementalPath(splitPath[[x]], maze), interval = .2, movie.name = paste(x,'pathAnimation.gif', sep=''), ani.width=500, ani.height = 500,))
+llply(names(splitPath), function(x) saveMovie(incrementalPath(splitPath[[x]], splitFeeders[[x]]), interval = .2, movie.name = paste(x,'pathAnimation.gif', sep=''), ani.width=500, ani.height = 500,))

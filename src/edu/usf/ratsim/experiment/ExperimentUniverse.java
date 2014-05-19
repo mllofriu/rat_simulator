@@ -61,4 +61,6 @@ public interface ExperimentUniverse {
 	
 	public void clearWantedFeeders();
 
+	public int getWantedFeeder();
+
 }
