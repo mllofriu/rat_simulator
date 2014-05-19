@@ -6,7 +6,6 @@ import java.util.List;
 
 import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.Trial;
-import edu.usf.ratsim.experiment.model.MultiScaleModel;
 import edu.usf.ratsim.experiment.model.RLRatModel;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.support.ElementWrapper;
@@ -34,10 +33,10 @@ public class LoggerFactory {
 						.getModel()).getActionPerformer();
 				res.add(new PositionLogger(t.getName(), t.getGroup(), t
 						.getSubjectName(), t.getRep(), p));
-			} else if (loggerName.equals("PolicyDumper")) {
-				res.add(new PolicyDumper(((MultiScaleModel) t.getSubject()
-						.getModel()), t.getName(), t.getGroup(), t
-						.getSubjectName(), t.getRep()));
+//			} else if (loggerName.equals("PolicyDumper")) {
+//				res.add(new PolicyDumper(((MultiScaleModel) t.getSubject()
+//						.getModel()), t.getName(), t.getGroup(), t
+//						.getSubjectName(), t.getRep()));
 			} else if (loggerName.equals("PolicyDumperWithIntention")) {
 				res.add(new PolicyDumperWithIntention(
 						((RLRatModel) t.getSubject()
