@@ -4,8 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import javax.vecmath.Quat4f;
-
 import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;

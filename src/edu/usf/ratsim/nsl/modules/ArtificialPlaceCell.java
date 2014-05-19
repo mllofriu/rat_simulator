@@ -2,10 +2,6 @@ package edu.usf.ratsim.nsl.modules;
 
 import javax.vecmath.Point3f;
 
-import com.sun.org.apache.xml.internal.serializer.utils.Utils;
-
-import edu.usf.ratsim.support.Utiles;
-
 public class ArtificialPlaceCell {
 
 	private Point3f center;

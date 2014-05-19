@@ -1,22 +1,11 @@
 package edu.usf.ratsim.proofofconcepts;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.experiment.NslSequentialScheduler;
-import edu.usf.ratsim.experiment.model.ModelFactory;
-import edu.usf.ratsim.experiment.subject.initializer.SubInitializerFactory;
-import edu.usf.ratsim.experiment.subject.initializer.SubjectInitializer;
-import edu.usf.ratsim.robot.IRobot;
-import edu.usf.ratsim.support.ElementWrapper;
 import nslj.src.lang.NslHierarchy;
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
 import nslj.src.system.NslInterpreter;
 import nslj.src.system.NslSystem;
+import edu.usf.ratsim.experiment.NslSequentialScheduler;
 
 public class SharedNumbersModel extends NslModel {
 

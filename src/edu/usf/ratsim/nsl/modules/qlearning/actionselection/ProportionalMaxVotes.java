@@ -1,7 +1,5 @@
 package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
-import com.sun.jdi.FloatType;
-
 import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDinFloat2;
 import nslj.src.lang.NslDoutFloat1;

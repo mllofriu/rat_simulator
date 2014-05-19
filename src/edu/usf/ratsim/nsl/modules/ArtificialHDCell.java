@@ -1,6 +1,5 @@
 package edu.usf.ratsim.nsl.modules;
 
-import edu.usf.ratsim.support.Utiles;
 
 public class ArtificialHDCell {
 
