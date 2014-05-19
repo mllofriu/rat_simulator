@@ -44,7 +44,7 @@
 				<deterministicActionSelection>true</deterministicActionSelection>
 				<foodReward>1</foodReward>
 				<nonFoodReward>-.01</nonFoodReward>
-				<discountFactor>.95</discountFactor>
+				<discountFactor>#DISCOUNT</discountFactor>
 				<alpha>.8</alpha>
 				<initialValue>0</initialValue>
 				<flashingReward>250</flashingReward>
