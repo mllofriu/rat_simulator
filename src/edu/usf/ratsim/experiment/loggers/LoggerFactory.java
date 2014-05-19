@@ -37,6 +37,13 @@ public class LoggerFactory {
 //				res.add(new PolicyDumper(((MultiScaleModel) t.getSubject()
 //						.getModel()), t.getName(), t.getGroup(), t
 //						.getSubjectName(), t.getRep()));
+			} else if (loggerName.equals("WantedFeederLogger")) {
+				res.add(new WantedFeederLogger(t.getName(), t.getGroup(), t
+						.getSubjectName(), t.getRep()));
+//			} else if (loggerName.equals("PolicyDumper")) {
+//				res.add(new PolicyDumper(((MultiScaleModel) t.getSubject()
+//						.getModel()), t.getName(), t.getGroup(), t
+//						.getSubjectName(), t.getRep()));
 			} else if (loggerName.equals("PolicyDumperWithIntention")) {
 				res.add(new PolicyDumperWithIntention(
 						((RLRatModel) t.getSubject()
