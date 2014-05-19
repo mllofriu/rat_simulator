@@ -437,4 +437,9 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		
 		return wantedFeeder;
 	}
+
+	@Override
+	public List<WallNode> getWalls() {
+		return wallNodes;
+	}
 }

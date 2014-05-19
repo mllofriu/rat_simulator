@@ -154,17 +154,17 @@ public class Trial implements Runnable {
 
 	public void loadAfterCycleTasks(ElementWrapper elementWrapper,
 			Hashtable<String, Point4f> points, NslModel nslModel) {
-		afterCycleTasks = TaskFactory.createTasks(elementWrapper, points, nslModel);
+		afterCycleTasks = TaskFactory.createTasks(elementWrapper, points, this);
 	}
 
 	public void loadAfterTrialTasks(ElementWrapper elementWrapper,
 			Hashtable<String, Point4f> points, NslModel nslModel) {
-		afterTrialTasks = TaskFactory.createTasks(elementWrapper, points, nslModel);
+		afterTrialTasks = TaskFactory.createTasks(elementWrapper, points, this);
 	}
 
 	public void loadInitialTasks(ElementWrapper elementWrapper,
 			Hashtable<String, Point4f> points, NslModel nslModel) {
-		initialTasks = TaskFactory.createTasks(elementWrapper, points, nslModel);
+		initialTasks = TaskFactory.createTasks(elementWrapper, points, this);
 	}
 
 	public void loadAfterCycleLoggers(ElementWrapper elementWrapper) {
