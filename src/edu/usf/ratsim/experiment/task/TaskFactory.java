@@ -9,6 +9,7 @@ import javax.vecmath.Point4f;
 
 import nslj.src.lang.NslModel;
 import edu.usf.ratsim.experiment.ExperimentTask;
+import edu.usf.ratsim.experiment.Trial;
 import edu.usf.ratsim.support.ElementWrapper;
 
 public class TaskFactory {
@@ -18,7 +19,7 @@ public class TaskFactory {
 	private static final String STR_TASK_PARAMS = "params";
 
 	public static Collection<ExperimentTask> createTasks(ElementWrapper elementWrapper,
-			Map<String, Point4f> points, NslModel model) {
+			Map<String, Point4f> points, Trial t) {
 		Collection<ExperimentTask> res = new LinkedList<ExperimentTask>();
 
 		List<ElementWrapper> taskList = elementWrapper.getChildren(STR_TASK);

@@ -96,7 +96,7 @@
 			<stopCondition>
 				<name>FoundNFood</name>
 				<params>
-					<n>2</n>
+					<n>1000</n>
 				</params>
 			</stopCondition>
 		</stopConditions>
@@ -105,8 +105,8 @@
 				<name>PositionLogger</name>
 			</logger>
 			<logger>
-                <name>WantedFeederLogger</name>
-            </logger>
+				<name>WantedFeederLogger</name>
+			</logger>
 
 
 		</afterCycleLoggers>
@@ -168,7 +168,7 @@
 			<stopCondition>
 				<name>FoundNFood</name>
 				<params>
-					<n>2</n>
+					<n>15</n>
 				</params>
 			</stopCondition>
 			<stopCondition>
@@ -183,12 +183,15 @@
 				<name>PositionLogger</name>
 			</logger>
 			<logger>
-                <name>WantedFeederLogger</name>
-            </logger>
+				<name>WantedFeederLogger</name>
+			</logger>
 		</afterCycleLoggers>
 		<afterTrialLoggers>
 			<!-- <logger> <name>PolicyDumperWithIntention</name> <params> <numIntentions>8</numIntentions> 
 				</params> </logger> -->
+			<logger>
+				<name>WallLogger</name>
+			</logger>
 		</afterTrialLoggers>
 	</trial>
 

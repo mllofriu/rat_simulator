@@ -107,7 +107,17 @@ policyDotsPlot <- function(policyData, p){
   }
 }
 
-plotPathOnMaze <- function (name, pathData, maze){
+wallPlot <- function(wallData,p){
+
+  if (!is.null(wallData)){
+    
+    p + geom_segment(data=wallData, aes(x,y,xend=xend,yend=yend),  col="black", cex=2)
+  } else {
+    p
+  }
+}
+
+plotPathOnMaze <- function (name, pathData, wallData, maze){
   # Get the individual components of the plot
   p <- ggplot()
   p <- p + maze
@@ -115,6 +125,10 @@ plotPathOnMaze <- function (name, pathData, maze){
   #  p <- ratPathPointsPlot(pathData, p)
   p <- ratStartPointPlot(pathData, p)
   p <- ratEndPointPlot(pathData, p)
+
+  
+  p <- wallPlot(wallData, p)
+
   # Some aesthetic stuff
   p <- mazePlotTheme(p)
   #   list(p, paste("plots/path",name,".jpg", sep=''))
@@ -131,8 +145,8 @@ plotPathOnMaze <- function (name, pathData, maze){
   #   saveRDS(p, paste("plots/path/",name,".obj", sep=''))
 }
 
-plotPolicyOnMaze <- function(name, pathData, policyData, maze){  
-  #  Take out points outside the circle
+plotPolicyOnMaze <- function(name, pathData, policyData, wallData, maze){  
+  #  Take out points outside the circlle
   eps = .01
   policyData <- policyData[(policyData['x']^2 + policyData['y']^2 < .5^2 - eps),] 
   
@@ -165,32 +179,34 @@ plotArrivalTime <- function(pathData){
                                ".pdf", sep=''), width=10, height=10)
 }
 
-incrementalPath <- function(pathData, feederData)
+incrementalPath <- function(pathData, feederData, wallData)
 {
   for (i in seq(2, dim(pathData)[1], dim(pathData)[1]/100)) { 
     maze <- mazePlot(mazeFile, feederData[i,"wantedFeeder"])
-    plotPathOnMaze('', pathData[1:i,], maze)
+    plotPathOnMaze('', pathData[1:i,],wallData, maze)
   }
 }
 
+
+
 mazeFile <- "maze.xml"
-
-maze <- mazePlot(mazeFile)
-
 pathFile = 'position.txt'
 feedersFile = 'wantedFeeder.txt'
+wallsFile = 'walls.txt'
 # policyFile = 'policy.txt'
 
 # policyData <- read.csv(policyFile, sep='\t')
 pathData <- read.csv(pathFile, sep='\t')
 feederData <- read.csv(feedersFile, sep='\t')
+wallData <- read.csv(wallsFile, sep='\t')
 
 splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 splitFeeders <- split(feederData, feederData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 # splitPol <- split(policyData, policyData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 
 # One worker per plot
-registerDoParallel()
+#registerDoParallel()
 
 #Plot arrival times as a function of repetition number
 ddply(pathData, .(trial), plotArrivalTime)
@@ -207,12 +223,16 @@ ddply(pathData, .(trial), plotArrivalTime)
 #                                                              maze))
 # }, .parallel = TRUE))
 
+
+maze <- mazePlot(mazeFile)
+
 # # Plot just path
+
 invisible(llply(names(splitPath), function(x) plotPathOnMaze(x,
-                                                             splitPath[[x]], maze), .parallel = TRUE))
+                                                             splitPath[[x]], splitWalls[[x]], maze), .parallel = FALSE))
 
 # for (i in 2:dim(recallPath)[1]) {
 #   + plotPathOnMaze('', recallPath[1:i,], maze)
 #   + 
 ani.options(outdir = paste(getwd(),'/plots/path/', sep=''))
-llply(names(splitPath), function(x) saveMovie(incrementalPath(splitPath[[x]], splitFeeders[[x]]), interval = .2, movie.name = paste(x,'pathAnimation.gif', sep=''), ani.width=500, ani.height = 500,))
+invisible(llply(names(splitPath), function(x) saveMovie(incrementalPath(splitPath[[x]], splitFeeders[[x]], splitWalls[[x]]), interval = .2, movie.name = paste(x,'pathAnimation.gif', sep=''), ani.width=500, ani.height = 500,)))

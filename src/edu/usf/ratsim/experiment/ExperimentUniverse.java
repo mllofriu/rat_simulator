@@ -7,6 +7,8 @@ import java.util.List;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
+import edu.usf.ratsim.robot.virtual.WallNode;
+
 public interface ExperimentUniverse {
 
 	public Point3f getFoodPosition(int i);
@@ -62,5 +64,7 @@ public interface ExperimentUniverse {
 	public void clearWantedFeeders();
 
 	public int getWantedFeeder();
+
+	public List<WallNode> getWalls();
 
 }

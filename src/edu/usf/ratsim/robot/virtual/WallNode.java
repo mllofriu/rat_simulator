@@ -14,12 +14,12 @@ import com.vividsolutions.jts.geom.LineSegment;
 public class WallNode extends ExpUniverseNode {
 
 	final float RADIO = 0.005f;
-	private float x1;
-	private float y1;
-	private float z1;
-	private float x2;
-	private float y2;
-	private float z2;
+	public float x1;
+	public float y1;
+	public float z1;
+	public float x2;
+	public float y2;
+	public float z2;
 	
 	public  LineSegment segment;
 
@@ -51,6 +51,14 @@ public class WallNode extends ExpUniverseNode {
 	public WallNode(float x1, float y1, float z1, float x2, float y2, float z2,
 			float h) {
 		Color3f color = new Color3f(1, 0, 0);
+		
+		
+		this.x1 = x1;
+		this.x2 = x2;
+		this.y1 = y1;
+		this.y2 = y2;
+		this.z1 = z1;
+		this.z2 = z2;
 
 		float wallLength = new Point3f(x1, y1, z1).distance(new Point3f(x2, y2,
 				z2));
