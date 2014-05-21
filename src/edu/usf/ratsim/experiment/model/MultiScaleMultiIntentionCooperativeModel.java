@@ -330,4 +330,11 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		anyGoalDecider.newTrial();
 	}
 
+	public void deactivatePCL(List<Integer> feedersToDeactivate) {
+		for (Integer layer : feedersToDeactivate){
+			beforePcls.get(layer).deactivate();
+			afterPcls.get(layer).deactivate();
+		}
+	}
+
 }

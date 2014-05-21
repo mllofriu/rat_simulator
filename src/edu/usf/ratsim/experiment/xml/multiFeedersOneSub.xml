@@ -149,12 +149,17 @@
 				</params>
 			</task>
 			<task>
-				<name>PlaceWall</name>
+				<name>PlaceRandomWalls</name>
 				<params>
-					<x1>W1</x1>
-					<x2>W2</x2>
+					<number>5</number>
+					<length>.10</length>
 				</params>
 			</task>
+			<!-- <task> <name>PlaceWall</name> <params> <x1>W1</x1> <x2>W2</x2> </params> 
+				</task> -->
+
+			<!-- <task> <name>DeactivatePCL</name> <params> <layers>1,2,3,4</layers> 
+				</params> </task> -->
 
 		</initialTasks>
 		<afterCycleTasks>
