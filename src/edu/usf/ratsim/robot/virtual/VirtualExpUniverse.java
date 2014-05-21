@@ -442,4 +442,23 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	public List<WallNode> getWalls() {
 		return wallNodes;
 	}
+
+	@Override
+	public boolean wallIntersectsOtherWalls(LineSegment wall) {
+		boolean intersects = false;
+		for (WallNode w : wallNodes)
+			intersects = intersects || w.intersects(wall);
+		
+		return intersects;
+	}
+
+	@Override
+	public float shortestDistanceToWalls(LineSegment wall) {
+		float shortestDistance = Float.MAX_VALUE;
+		for (WallNode w : wallNodes)
+			if (w.distanceTo(wall) < shortestDistance)
+				shortestDistance = w.distanceTo(wall);
+		
+		return shortestDistance;
+	}
 }

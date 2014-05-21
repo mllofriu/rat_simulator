@@ -71,4 +71,12 @@ public class WallNode extends ExpUniverseNode {
 		segment = new LineSegment(new Coordinate(x1, z1), new Coordinate(x2, z2));
 
 	}
+
+	public boolean intersects(LineSegment wall) {
+		return segment.intersection(wall) != null;
+	}
+
+	public float distanceTo(LineSegment wall) {
+		return (float) segment.distance(wall);
+	}
 }

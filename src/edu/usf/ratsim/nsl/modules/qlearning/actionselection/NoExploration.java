@@ -29,7 +29,7 @@ public class NoExploration extends NslModule {
 		votes = new NslDinFloat1[numVotes];
 		for (int i = 0; i < numVotes; i++)
 			votes[i] = new NslDinFloat1(this, "votes" + i, Utiles.numActions);
-		
+
 		takenAction = new NslDoutInt0(this, "takenAction");
 
 	}
@@ -42,16 +42,17 @@ public class NoExploration extends NslModule {
 		// System.out.println("Values");
 		for (NslDinFloat1 layerVal : votes) {
 			for (int angle = 0; angle < layerVal.getSize(); angle++) {
-				// System.out.print(layerVal.get(angle) + " ");
 				overallValues[angle] += layerVal.get(angle);
+//				System.out.print(layerVal.get(angle) + "\t\t");
 			}
-			// System.out.println();
+//			System.out.println();
 		}
-//
-//		System.out.print("Values\t");
-//		for (int angle = 0; angle < Utiles.numActions; angle++)
-//			System.out.print(overallValues[angle] + "\t\t");
 //		System.out.println();
+		//
+		// System.out.print("Values\t");
+		// for (int angle = 0; angle < Utiles.numActions; angle++)
+		// System.out.print(overallValues[angle] + "\t\t");
+		// System.out.println();
 		//
 		float maxVal = Float.MIN_VALUE;
 		for (int angle = 0; angle < overallValues.length; angle++)
@@ -86,11 +87,11 @@ public class NoExploration extends NslModule {
 
 		// Rotate the robot the desired angle
 		robot.rotate(Utiles.getAction(actions.get(action).getAction()));
-		
+
 		// Publish the taken action
 		takenAction.set(actions.get(action).getAction());
-//		System.out.println(takenAction.get());
-		
+		// System.out.println(takenAction.get());
+
 		aff = robot.getAffordances();
 		if (aff[Utiles.discretizeAction(0)])
 			robot.forward();
