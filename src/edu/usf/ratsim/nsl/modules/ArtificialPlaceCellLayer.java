@@ -18,17 +18,20 @@ public class ArtificialPlaceCellLayer extends NslModule {
 
 	private ExperimentUniverse universe;
 
+	private boolean active;
+
 	public ArtificialPlaceCellLayer(String nslName, NslModule nslParent,
 			ExperimentUniverse universe, float radius) {
 		super(nslName, nslParent);
+
+		active = true;
+
 		// Get some parameters from configuration
 		Rectangle2D.Float rect = universe.getBoundingRectangle();
 		float maxX = (float) rect.getMaxX();
 		float maxY = (float) rect.getMaxY();
 		float minX = (float) rect.getMinX();
 		float minY = (float) rect.getMinY();
-		
-		
 
 		// Compute number of cells
 		cells = new LinkedList<ArtificialPlaceCell>();
@@ -37,8 +40,9 @@ public class ArtificialPlaceCellLayer extends NslModule {
 				// Add a cell with center x,y
 				cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y), radius));
 				// phased out layer
-//				cells.add(new ArtificialPlaceCell(new Point3f(x + radius, 0, y
-//						+ radius), radius));
+				// cells.add(new ArtificialPlaceCell(new Point3f(x + radius, 0,
+				// y
+				// + radius), radius));
 			}
 		}
 
@@ -49,10 +53,15 @@ public class ArtificialPlaceCellLayer extends NslModule {
 	}
 
 	public void simRun() {
-		int i = 0;
-		for (ArtificialPlaceCell pCell : cells) {
-			activation.set(i, pCell.getActivation(universe.getRobotPosition()));
-			i++;
+		if (active) {
+			int i = 0;
+			for (ArtificialPlaceCell pCell : cells) {
+				activation.set(i,
+						pCell.getActivation(universe.getRobotPosition()));
+				i++;
+			}
+		} else {
+			activation.set(0);
 		}
 	}
 
@@ -72,6 +81,10 @@ public class ArtificialPlaceCellLayer extends NslModule {
 
 	public List<ArtificialPlaceCell> getCells() {
 		return cells;
+	}
+
+	public void deactivate() {
+		active = false;
 	}
 
 }
