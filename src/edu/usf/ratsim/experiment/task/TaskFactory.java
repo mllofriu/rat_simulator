@@ -31,6 +31,8 @@ public class TaskFactory {
 				res.add(new PlaceRobotInitallyTask(taskParams, points));
 			}else if (taskName.equals("ResetModelTask")) {
 				res.add(new ResetModelTaks());
+			}else if (taskName.equals("DeactivatePCL")) {
+				res.add(new DeactivatePCLTaks(taskParams));
 //			} else if (taskName.equals("PolicyValueUpdater")) {
 //				res.add(new PolicyValueUpdater(model));
 			} else if (taskName.equals("ActivateFeeders")) {
@@ -43,6 +45,8 @@ public class TaskFactory {
 				res.add(new UnflashFeeder());
 			} else if (taskName.equals("PlaceWall")) {
 				res.add(new PlaceWallTask(taskParams, points));
+			} else if (taskName.equals("PlaceRandomWalls")) {
+				res.add(new PlaceRandomWallsTask(taskParams));
 			} else if (taskName.equals("ClearWalls")) {
 				res.add(new ClearWallsTask());
 			} else {

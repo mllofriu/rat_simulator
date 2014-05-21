@@ -1,0 +1,6 @@
+trial	group	subject	repetition	x	y	xend	yend
+recall	oneLayer	oneLayer - rat 1	0	0.13172111	0.08257127	0.043085903	0.036270067
+recall	oneLayer	oneLayer - rat 1	0	0.23277777	-0.025790185	0.14239798	-0.06858614
+recall	oneLayer	oneLayer - rat 1	0	-0.09662017	0.20069969	0.001238592	0.18011664
+recall	oneLayer	oneLayer - rat 1	0	-0.23211798	0.117485315	-0.33166796	0.1080091
+recall	oneLayer	oneLayer - rat 1	0	0.21648368	0.20926324	0.11818816	0.19087872

@@ -7,6 +7,8 @@ import java.util.List;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
+import com.vividsolutions.jts.geom.LineSegment;
+
 import edu.usf.ratsim.robot.virtual.WallNode;
 
 public interface ExperimentUniverse {
@@ -66,5 +68,9 @@ public interface ExperimentUniverse {
 	public int getWantedFeeder();
 
 	public List<WallNode> getWalls();
+
+	public boolean wallIntersectsOtherWalls(LineSegment wall);
+
+	public float shortestDistanceToWalls(LineSegment wall);
 
 }
