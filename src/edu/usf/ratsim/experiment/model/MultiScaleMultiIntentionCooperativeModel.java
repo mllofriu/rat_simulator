@@ -17,11 +17,11 @@ import edu.usf.ratsim.nsl.modules.Intention;
 import edu.usf.ratsim.nsl.modules.JointStatesManyConcatenate;
 import edu.usf.ratsim.nsl.modules.JointStatesManyMultiply;
 import edu.usf.ratsim.nsl.modules.PlaceIntention;
-import edu.usf.ratsim.nsl.modules.WallFollower;
+import edu.usf.ratsim.nsl.modules.WallAvoider;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.NoExploration;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalVotes;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalMaxVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQL;
 import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
@@ -47,7 +47,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private static final String AFTER_ANY_GOAL_DECIDER_STR = "AANYGD";
 	private static final String AFTER_PLACE_INTENTION_STR = "API";
 	private static final String BEFORE_PLACE_INTENTION_STR = "BPI";
-	private static final String WALLFW_STR = "WF";
+	private static final String WALLAVOID_STR = "WALL_AVOID";
 	private static final String BEFORE_INTENTION_STR = "BINT";
 	private static final String AFTER_INTENTION_STR = "AINT";
 	private static final String BEFORE_HD_LAYER_STR = "BHDL";
@@ -90,7 +90,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		int numIntentions = params.getChildInt("numIntentions");
 		float flashingReward = params.getChildFloat("flashingReward");
 		float nonFlashingReward = params.getChildFloat("nonFlashingReward");
-		float wallFollowingVal = params.getChildFloat("wallFollowingVal");
+		float wallFollowingVal = params.getChildFloat("wallAvoidingVal");
 		boolean deterministic = params
 				.getChildBoolean("deterministicActionSelection");
 		boolean proportionalQl = params.getChildBoolean("proportionalQL");
@@ -154,7 +154,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 
 		// Take the value of each state and vote for an action
 		if (proportionalQl)
-			new ProportionalVotes(ACTION_SELECTION_STR, this, bAll.getSize());
+			new ProportionalMaxVotes(ACTION_SELECTION_STR, this, bAll.getSize());
 		else
 			new WTAVotes(ACTION_SELECTION_STR, this, bAll.getSize());
 
@@ -163,7 +163,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 				universe, numActions, flashingReward, nonFlashingReward);
 
 		// Wall following for obst. avoidance
-		new WallFollower(WALLFW_STR, this, robot, universe, numActions,
+		new WallAvoider(WALLAVOID_STR, this, robot, universe, numActions,
 				wallFollowingVal);
 
 		// Get votes from QL and other behaviors and perform an action
@@ -242,7 +242,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 				getChild(FOOD_FINDER_STR), "goalFeeder");
 		nslConnect(getChild(FOOD_FINDER_STR), "votes",
 				getChild(ACTION_PERFORMER_STR), "votes" + 1);
-		nslConnect(getChild(WALLFW_STR), "votes",
+		nslConnect(getChild(WALLAVOID_STR), "votes",
 				getChild(ACTION_PERFORMER_STR), "votes" + (1 + 1));
 		nslConnect(getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(BEFORE_INTENTION_STR), "goalFeeder");

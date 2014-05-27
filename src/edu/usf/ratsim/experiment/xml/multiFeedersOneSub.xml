@@ -34,8 +34,8 @@
 		<model>
 			<name>MultiScaleMultiIntentionCooperativeModel</name>
 			<params>
-				<numPCLayers>5</numPCLayers>
-				<minRadius>.05</minRadius>
+				<numPCLayers>3</numPCLayers>
+				<minRadius>.2</minRadius>
 				<maxRadius>.25</maxRadius>
 				<numHDLayers>8</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
@@ -47,9 +47,9 @@
 				<discountFactor>.50</discountFactor>
 				<alpha>.8</alpha>
 				<initialValue>0</initialValue>
-				<flashingReward>250</flashingReward>
+				<flashingReward>2.5</flashingReward>
 				<nonFlashingReward>0</nonFlashingReward>
-				<wallFollowingVal>-10E200</wallFollowingVal>
+				<wallAvoidingVal>-10E200</wallAvoidingVal>
 				<proportionalQL>true</proportionalQL>
 			</params>
 		</model>
