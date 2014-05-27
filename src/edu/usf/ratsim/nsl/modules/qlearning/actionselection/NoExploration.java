@@ -49,10 +49,10 @@ public class NoExploration extends NslModule {
 		}
 //		System.out.println();
 		//
-		// System.out.print("Values\t");
-		// for (int angle = 0; angle < Utiles.numActions; angle++)
-		// System.out.print(overallValues[angle] + "\t\t");
-		// System.out.println();
+//		System.out.print("Values\t");
+//		for (int angle = 0; angle < Utiles.numActions; angle++)
+//			System.out.print(overallValues[angle] + "\t\t");
+//		System.out.println();
 		//
 		float maxVal = Float.MIN_VALUE;
 		for (int angle = 0; angle < overallValues.length; angle++)
@@ -86,14 +86,19 @@ public class NoExploration extends NslModule {
 		action = actions.size() - 1;
 
 		// Rotate the robot the desired angle
-		robot.rotate(Utiles.getAction(actions.get(action).getAction()));
+		float angle = Utiles.getAction(actions.get(action).getAction());
+//		if (angle != 0)
+			robot.rotate(angle);
+//		else {
+			aff = robot.getAffordances();
+			if (aff[Utiles.discretizeAction(0)])
+				robot.forward();
+//		}
 
 		// Publish the taken action
 		takenAction.set(actions.get(action).getAction());
 		// System.out.println(takenAction.get());
 
-		aff = robot.getAffordances();
-		if (aff[Utiles.discretizeAction(0)])
-			robot.forward();
+		
 	}
 }
