@@ -96,7 +96,7 @@
 			<stopCondition>
 				<name>FoundNFood</name>
 				<params>
-					<n>1000</n>
+					<n>10</n>
 				</params>
 			</stopCondition>
 		</stopConditions>
@@ -162,8 +162,9 @@
 				<name>DeactivatePCL</name>
 				<params>
 					<layers>1,2</layers>
+					<group>oneLayer</group>
 				</params>
-			</task> -->
+			</task>  -->
 
 		</initialTasks>
 		<afterCycleTasks>
