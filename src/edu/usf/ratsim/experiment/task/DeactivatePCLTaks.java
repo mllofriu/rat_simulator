@@ -13,6 +13,7 @@ import edu.usf.ratsim.support.ElementWrapper;
 public class DeactivatePCLTaks implements ExperimentTask {
 
 	List<Integer> feedersToDeactivate;
+	String group;
 
 	public DeactivatePCLTaks(ElementWrapper taskParams) {
 		feedersToDeactivate = new LinkedList<Integer>();
@@ -21,11 +22,14 @@ public class DeactivatePCLTaks implements ExperimentTask {
 		while (tokenizer.hasMoreElements()) {
 			feedersToDeactivate.add(Integer.parseInt(tokenizer.nextToken()));
 		}
+		
+		group = taskParams.getChildText("group");
 	}
 
 	public void perform(ExperimentUniverse univ, ExpSubject subject) {
-		((MultiScaleMultiIntentionCooperativeModel) subject.getModel())
-				.deactivatePCL(feedersToDeactivate);
+		if (subject.getGroup().equals(group))
+			((MultiScaleMultiIntentionCooperativeModel) subject.getModel())
+					.deactivatePCL(feedersToDeactivate);
 	}
 
 }
