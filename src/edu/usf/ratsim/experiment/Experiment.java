@@ -125,7 +125,7 @@ public class Experiment implements Runnable {
 				VirtualExpUniverse universe = new VirtualExpUniverse(mazeFile);
 				IRobot robot = RobotFactory.getRobot(
 						Configuration.getString("Reflexion.Robot"), universe);
-				sGroup.put(subName, new ExpSubject(subName, robot, universe,
+				sGroup.put(subName, new ExpSubject(subName, gName, robot, universe,
 						gNode));
 			}
 
