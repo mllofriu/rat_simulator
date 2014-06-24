@@ -27,10 +27,12 @@ public class ExpSubject {
 	private NslSystem system;
 	private ExperimentUniverse universe;
 	private Map<String, Object> properties;
+	private String group;
 
-	public ExpSubject(String name, IRobot robot, ExperimentUniverse universe,
+	public ExpSubject(String name, String group, IRobot robot, ExperimentUniverse universe,
 			ElementWrapper params) {
 		this.name = name;
+		this.group = group;
 		this.universe = universe;
 
 		properties = new HashMap<String, Object>();
@@ -110,5 +112,13 @@ public class ExpSubject {
 
 	public Object getProperty(String key) {
 		return properties.get(key);
+	}
+
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
 	}
 }
