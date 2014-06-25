@@ -3,6 +3,7 @@ package edu.usf.ratsim.experiment.task;
 import java.util.Random;
 
 import javax.vecmath.Point2f;
+import javax.vecmath.Tuple2f;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
@@ -14,10 +15,15 @@ import edu.usf.ratsim.support.ElementWrapper;
 
 public class PlaceRandomWallsTask implements ExperimentTask {
 
-	private final float OBSTACLE_ZONE_RADIUS = .35f;
+	private final float OBSTACLE_ZONE_RADIUS = .5f;
 
 	private static final String STR_NUMWALLS = "number";
 	private static final String STR_WALLLENGTH = "length";
+
+	private static final float MAX_LENGHT_BEFORE_BREAK = .3f;
+
+	private static final float MIN_DIST_BETWEEN_WALLS = .05f;
+	
 	private int numWalls;
 	private float length;
 
@@ -29,34 +35,85 @@ public class PlaceRandomWallsTask implements ExperimentTask {
 	public void perform(ExperimentUniverse univ, ExpSubject subject) {
 		Random random = new Random();
 
-		Point2f x1, x2;
 		for (int i = 0; i < numWalls; i++) {
-			
-			LineSegment wall;
-			do {
-				// Create the first point random
-				x1 = new Point2f();
-				x1.x = random.nextFloat() * 2 * (OBSTACLE_ZONE_RADIUS - length)
-						- (OBSTACLE_ZONE_RADIUS - length);
-				x1.y = random.nextFloat() * 2 * (OBSTACLE_ZONE_RADIUS - length)
-						- (OBSTACLE_ZONE_RADIUS - length);
-				// Deside on orientation
-				float orientation = (float) (random.nextFloat() * Math.PI);
-				// Translation of x1 acording to orientation
-				Point2f translation = new Point2f();
-				translation.x = (float) (length * Math.cos(orientation));
-				translation.y = (float) (length * Math.sin(orientation));
-				// Transport x1
-				translation.add(x1);
-				x2 = translation;
+			Point2f x1, x2, x3;
+			if (length > MAX_LENGHT_BEFORE_BREAK) {
+				LineSegment wall, wall2;
 
-				wall = new LineSegment(new Coordinate(x1.x, x1.y),
-						new Coordinate(x2.x, x2.y));
+				do {
 
-//			} while (univ.wallIntersectsOtherWalls(wall));
-			} while (univ.shortestDistanceToWalls(wall) < length);
-			
-			univ.addWall(x1.x, x1.y, x2.x, x2.y);
+					
+					// If the obstacle is too big, break it in two
+
+					x1 = new Point2f();
+					x1.x = random.nextFloat() * 2
+							* (OBSTACLE_ZONE_RADIUS)
+							- (OBSTACLE_ZONE_RADIUS);
+					x1.y = random.nextFloat() * 2
+							* (OBSTACLE_ZONE_RADIUS)
+							- (OBSTACLE_ZONE_RADIUS);
+					float orientation = (float) (random.nextFloat() * Math.PI);
+					
+					Point2f translation = new Point2f();
+					translation.x = (float) (length / 2 * Math.cos(orientation));
+					translation.y = (float) (length / 2 * Math.sin(orientation));
+					
+					x2 = new Point2f(x1);
+					x2.add(translation);
+					wall = new LineSegment(new Coordinate(x1.x, x1.y),
+							new Coordinate(x2.x, x2.y));
+
+					float breakAngle;
+					if (random.nextFloat() > .5)
+						breakAngle = (float) (Math.PI / 2);
+					else
+						breakAngle = (float) (Math.PI / 2);
+					x3 = new Point2f(x2);
+					translation.x = (float) (length / 2 * Math.cos(orientation
+							+ breakAngle));
+					translation.y = (float) (length / 2 * Math.sin(orientation
+							+ breakAngle));
+					x3.add(translation);
+					wall2 = new LineSegment(new Coordinate(x2.x, x2.y),
+							new Coordinate(x3.x, x3.y));
+
+				} while (!univ.wallInsidePool(wall) || !univ.wallInsidePool(wall2) || univ.shortestDistanceToWalls(wall) < MIN_DIST_BETWEEN_WALLS
+						|| univ.shortestDistanceToWalls(wall2) < MIN_DIST_BETWEEN_WALLS);
+
+				univ.addWall(x1.x, x1.y, x2.x, x2.y);
+
+				univ.addWall(x2.x, x2.y, x3.x, x3.y);
+			} else {
+
+				LineSegment wall = null;
+				do {
+					// Create the first point random
+					x1 = new Point2f();
+					x1.x = random.nextFloat() * 2
+							* (OBSTACLE_ZONE_RADIUS)
+							- (OBSTACLE_ZONE_RADIUS);
+					x1.y = random.nextFloat() * 2
+							* (OBSTACLE_ZONE_RADIUS)
+							- (OBSTACLE_ZONE_RADIUS);
+					// Deside on orientation
+					float orientation = (float) (random.nextFloat() * Math.PI);
+					// Translation of x1 acording to orientation
+					Point2f translation = new Point2f();
+					// If the obstacle is too big, break it in two
+
+					translation.x = (float) (length * Math.cos(orientation));
+					translation.y = (float) (length * Math.sin(orientation));
+					translation.add(x1);
+					x2 = translation;
+					wall = new LineSegment(new Coordinate(x1.x, x1.y),
+							new Coordinate(x2.x, x2.y));
+
+					// } while (univ.wallIntersectsOtherWalls(wall));
+				} while (!univ.wallInsidePool(wall) || univ.shortestDistanceToWalls(wall) < MIN_DIST_BETWEEN_WALLS);
+
+				univ.addWall(x1.x, x1.y, x2.x, x2.y);
+
+			}
 		}
 
 	}
