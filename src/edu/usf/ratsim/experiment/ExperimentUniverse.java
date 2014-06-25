@@ -73,4 +73,6 @@ public interface ExperimentUniverse {
 
 	public float shortestDistanceToWalls(LineSegment wall);
 
+	public boolean wallInsidePool(LineSegment wall2);
+
 }

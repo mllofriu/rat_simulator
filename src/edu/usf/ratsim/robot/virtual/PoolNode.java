@@ -7,6 +7,9 @@ import javax.vecmath.Point3f;
 
 import org.w3c.dom.Node;
 
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.LineSegment;
+
 public class PoolNode extends ExpUniverseNode {
 
 	final float RADIO = 0.005f;
@@ -41,5 +44,22 @@ public class PoolNode extends ExpUniverseNode {
 
 	public boolean isInside(Point3f point) {
 		return point.distance(new Point3f(xp, yp, zp)) < r;
+	}
+
+	public float distanceToWall(LineSegment wall) {
+		float minDistance = Float.MAX_VALUE;
+		double currentAngle = 0;
+		for (int iterCantCilindros = 0; iterCantCilindros < CANTIDAD_CILINDROS; iterCantCilindros++) {
+			Coordinate p = new Coordinate(xp
+					+ (float) (r * Math.sin(currentAngle)), zp
+					+ (float) (r * Math.cos(currentAngle)));
+			currentAngle = currentAngle + 360.0 / CANTIDAD_CILINDROS;
+			float distance = (float) wall.distance(p);
+			if (distance < minDistance)
+				minDistance = distance;
+		}
+		
+//		System.out.println(minDistance);
+		return minDistance;
 	}
 }

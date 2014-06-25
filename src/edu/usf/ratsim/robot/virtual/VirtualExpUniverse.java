@@ -371,9 +371,11 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	@Override
 	public boolean isRobotParallelToWall() {
 		boolean aff[] = getRobotAffordances();
-		
-		// If I cannot move to any of the perpendicular directions I am near a wall
-		return !aff[Utiles.discretizeAction(-90)] || !aff[Utiles.discretizeAction(90)];
+
+		// If I cannot move to any of the perpendicular directions I am near a
+		// wall
+		return !aff[Utiles.discretizeAction(-90)]
+				|| !aff[Utiles.discretizeAction(90)];
 	}
 
 	public boolean[] getRobotAffordances(int lookahead) {
@@ -387,7 +389,8 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			Coordinate initCoordinate = new Coordinate(p.x, p.z);
 			// A translation vector to calc affordances
 			Transform3D trans = new Transform3D();
-			trans.setTranslation(new Vector3f(VirtualRobot.STEP * lookahead, 0f, 0f));
+			trans.setTranslation(new Vector3f(VirtualRobot.STEP * lookahead,
+					0f, 0f));
 			// The rotatio of the action
 			Transform3D rot = new Transform3D();
 			rot.rotY(Utiles.getAction(action));
@@ -417,24 +420,24 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		return affordances;
 	}
 
-	public void setWantedFeeder(int feeder, boolean wanted){
+	public void setWantedFeeder(int feeder, boolean wanted) {
 		feeders.get(feeder).setWanted(wanted);
 	}
-	
-	public void clearWantedFeeders(){
-		for(FeederNode f : feeders)
+
+	public void clearWantedFeeders() {
+		for (FeederNode f : feeders)
 			f.setWanted(false);
 	}
 
 	@Override
 	public int getWantedFeeder() {
 		int wantedFeeder = -1;
-		for (int i = 0 ; i < feeders.size(); i++)
-			if (feeders.get(i).isWanted()){
+		for (int i = 0; i < feeders.size(); i++)
+			if (feeders.get(i).isWanted()) {
 				wantedFeeder = i;
 				break;
 			}
-		
+
 		return wantedFeeder;
 	}
 
@@ -448,7 +451,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		boolean intersects = false;
 		for (WallNode w : wallNodes)
 			intersects = intersects || w.intersects(wall);
-		
+
 		return intersects;
 	}
 
@@ -458,7 +461,17 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		for (WallNode w : wallNodes)
 			if (w.distanceTo(wall) < shortestDistance)
 				shortestDistance = w.distanceTo(wall);
-		
-		return shortestDistance;
+
+		float distanceToPool = pool.distanceToWall(wall);
+
+		return Math.min(shortestDistance, distanceToPool);
+	}
+
+	@Override
+	public boolean wallInsidePool(LineSegment wall2) {
+		return pool.isInside(new Point3f((float) wall2.p0.x, 0f,
+				(float) wall2.p0.y))
+				&& pool.isInside(new Point3f((float) wall2.p1.x, 0f,
+						(float) wall2.p1.y));
 	}
 }
