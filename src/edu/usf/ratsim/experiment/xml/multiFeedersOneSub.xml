@@ -96,7 +96,7 @@
 			<stopCondition>
 				<name>FoundNFood</name>
 				<params>
-					<n>1</n>
+					<n>1000</n>
 				</params>
 			</stopCondition>
 		</stopConditions>
@@ -151,8 +151,8 @@
 			<task>
 				<name>PlaceRandomWalls</name>
 				<params>
-					<number>20</number>
-					<length>.125</length>
+					<number>4</number>
+					<length>.5</length>
 				</params>
 			</task>
 			<!-- <task> <name>PlaceWall</name> <params> <x1>W1</x1> <x2>W2</x2> </params> 
