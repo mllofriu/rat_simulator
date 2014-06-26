@@ -8,6 +8,8 @@ import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
+import edu.usf.ratsim.support.Configuration;
+
 public class UniverseFrame extends java.awt.Frame {
 
 	private static final long serialVersionUID = -698020368303861261L;
@@ -44,25 +46,27 @@ public class UniverseFrame extends java.awt.Frame {
 				.getPreferredConfiguration();
 
 		// Wide view canvases
-		robotViewsCanvas = new Canvas3D[RobotNode.NUM_ROBOT_VIEWS];
-		for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++) {
-			robotViewsCanvas[i] = new Canvas3D(config);
-			robotViewsCanvas[i].setSize(80, 80);
-			world.getRobotViews()[i].addCanvas3D(robotViewsCanvas[i]);
-			wideViewPanel.add(robotViewsCanvas[i]);
+		if (Configuration.getBoolean("UniverseFrame.display")){
+			robotViewsCanvas = new Canvas3D[RobotNode.NUM_ROBOT_VIEWS];
+			for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++) {
+				robotViewsCanvas[i] = new Canvas3D(config);
+				robotViewsCanvas[i].setSize(80, 80);
+				world.getRobotViews()[i].addCanvas3D(robotViewsCanvas[i]);
+				wideViewPanel.add(robotViewsCanvas[i]);
+			}
+	
+			// Main robot view canvas
+			robotViewCanvas = new Canvas3D(config);
+			robotViewCanvas.setSize(240, 240);
+			world.getRobotViews()[RobotNode.NUM_ROBOT_VIEWS / 2]
+					.addCanvas3D(robotViewCanvas);
+			robotViewPanel.add(robotViewCanvas);
+			// Top view canvas
+			topViewCanvas = new Canvas3D(config);
+			world.getTopView().addCanvas3D(topViewCanvas);
+			topViewCanvas.setSize(240, 240);
+			topViewPanel.add(topViewCanvas);
 		}
-
-		// Main robot view canvas
-		robotViewCanvas = new Canvas3D(config);
-		robotViewCanvas.setSize(240, 240);
-		world.getRobotViews()[RobotNode.NUM_ROBOT_VIEWS / 2]
-				.addCanvas3D(robotViewCanvas);
-		robotViewPanel.add(robotViewCanvas);
-		// Top view canvas
-		topViewCanvas = new Canvas3D(config);
-		world.getTopView().addCanvas3D(topViewCanvas);
-		topViewCanvas.setSize(240, 240);
-		topViewPanel.add(topViewCanvas);
 
 	}
 
