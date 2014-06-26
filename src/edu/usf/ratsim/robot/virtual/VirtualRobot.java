@@ -83,18 +83,21 @@ public class VirtualRobot implements IRobot {
 		Canvas3D[] offScreenCanvas = universe.getRobotOffscreenCanvas();
 		ImageComponent2D[] offScreenImages = universe.getRobotOffscreenImages();
 
-		long time = System.currentTimeMillis();
-		// First schedulle all renderings
-		for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++) {
-			offScreenCanvas[i].renderOffScreenBuffer();
+		if (Configuration.getBoolean("UniverseFrame.display")){
+			long time = System.currentTimeMillis();
+			// First schedulle all renderings
+			for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++) {
+				offScreenCanvas[i].renderOffScreenBuffer();
+			}
+	
+			for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++) {
+				offScreenCanvas[i].waitForOffScreenRendering();
+				panoramica[i] = offScreenImages[i].getImage();
+			}
+			System.out.println((System.currentTimeMillis() - time));
 		}
 
-		for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++) {
-			offScreenCanvas[i].waitForOffScreenRendering();
-			panoramica[i] = offScreenImages[i].getImage();
-		}
-
-		System.out.println((System.currentTimeMillis() - time));
+		
 		return panoramica;
 	}
 
