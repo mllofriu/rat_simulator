@@ -22,6 +22,8 @@ import com.sun.j3d.utils.geometry.Cone;
 import com.sun.j3d.utils.geometry.Cylinder;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
+import edu.usf.ratsim.support.Configuration;
+
 public class RobotNode extends ExpUniverseNode {
 
 	public static final int NUM_ROBOT_VIEWS = 5;
@@ -106,24 +108,28 @@ public class RobotNode extends ExpUniverseNode {
 
 		// Add off-screen views
 		// Create off-screen canvas to see through the robots views
-		offScreenCanvas = new Canvas3D[NUM_ROBOT_VIEWS];
-		offScreenImages = new ImageComponent2D[NUM_ROBOT_VIEWS];
-		GraphicsConfiguration config = SimpleUniverse
-				.getPreferredConfiguration();
-		for (int i = 0; i < NUM_ROBOT_VIEWS; i++) {
-			offScreenCanvas[i] = new Canvas3D(config, true);
-			offScreenImages[i] = new ImageComponent2D(
-					ImageComponent2D.FORMAT_RGB, new BufferedImage(IMAGE_WIDTH,
-							IMAGE_HEIGHT, BufferedImage.TYPE_INT_RGB));
-			offScreenImages[i].setCapability(ImageComponent2D.ALLOW_IMAGE_READ);
-			robotViews[i].addCanvas3D(offScreenCanvas[i]);
-			offScreenCanvas[i].setOffScreenBuffer(offScreenImages[i]);
-			offScreenCanvas[i].getScreen3D().setPhysicalScreenWidth(
-					0.0254d / 90.0 * IMAGE_WIDTH);
-			offScreenCanvas[i].getScreen3D().setPhysicalScreenHeight(
-					0.0254d / 90.0 * IMAGE_HEIGHT);
-			offScreenCanvas[i].getScreen3D().setSize(
-					new Dimension(IMAGE_WIDTH, IMAGE_HEIGHT));
+		if (Configuration.getBoolean("UniverseFrame.display")) {
+			offScreenCanvas = new Canvas3D[NUM_ROBOT_VIEWS];
+			offScreenImages = new ImageComponent2D[NUM_ROBOT_VIEWS];
+			GraphicsConfiguration config = SimpleUniverse
+					.getPreferredConfiguration();
+			for (int i = 0; i < NUM_ROBOT_VIEWS; i++) {
+				offScreenCanvas[i] = new Canvas3D(config, true);
+				offScreenImages[i] = new ImageComponent2D(
+						ImageComponent2D.FORMAT_RGB, new BufferedImage(
+								IMAGE_WIDTH, IMAGE_HEIGHT,
+								BufferedImage.TYPE_INT_RGB));
+				offScreenImages[i]
+						.setCapability(ImageComponent2D.ALLOW_IMAGE_READ);
+				robotViews[i].addCanvas3D(offScreenCanvas[i]);
+				offScreenCanvas[i].setOffScreenBuffer(offScreenImages[i]);
+				offScreenCanvas[i].getScreen3D().setPhysicalScreenWidth(
+						0.0254d / 90.0 * IMAGE_WIDTH);
+				offScreenCanvas[i].getScreen3D().setPhysicalScreenHeight(
+						0.0254d / 90.0 * IMAGE_HEIGHT);
+				offScreenCanvas[i].getScreen3D().setSize(
+						new Dimension(IMAGE_WIDTH, IMAGE_HEIGHT));
+			}
 		}
 	}
 
