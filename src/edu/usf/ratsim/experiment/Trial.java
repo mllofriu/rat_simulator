@@ -57,12 +57,13 @@ public class Trial implements Runnable {
 	private Collection<ExperimentTask> initialTasks;
 	private Collection<ExperimentTask> afterCycleTasks;
 	private Collection<ExperimentTask> afterTrialTasks;
-	private ExperimentUniverse universe;
 	private Collection<ExperimentLogger> afterCycleloggers;
 	private Collection<ExperimentLogger> afterTrialloggers;
 	private ExpSubject subject;
 	private String rep;
 	private String group;
+	private ElementWrapper trialNode;
+	private Hashtable<String, Point4f> points;
 
 	public Trial(ElementWrapper trialNode, Hashtable<String, Point4f> points,
 			String group, ExpSubject subject, int rep) {
@@ -72,8 +73,14 @@ public class Trial implements Runnable {
 		this.rep = new Integer(rep).toString();
 		this.subject = subject;
 		this.group = group;
-		this.universe = subject.getUniverse();
+		this.trialNode = trialNode;
+		this.points = points;
 
+		
+	}
+
+	public void run() {
+		
 		// Load the trial tasks
 		loadInitialTasks(trialNode.getChild(STR_INITIAL_TASKS)
 				, points, subject.getModel());
@@ -83,15 +90,13 @@ public class Trial implements Runnable {
 				, points, subject.getModel());
 		// Load the stop conditions
 		loadConditions(trialNode.getChild(STR_STOP_CONDITIONS)
-				, points, subject.getModel(), universe);
+				, points, subject.getModel(), subject.getUniverse());
 		// Load loggers
 		loadAfterCycleLoggers(trialNode.getChild(
 				STR_CYCLE_LOGGERS));
 		loadAfterTrialLoggers(trialNode.getChild(
 				STR_TRIAL_LOGGERS));
-	}
-
-	public void run() {
+		
 		// Lock on the subject to ensure mutual exclusion for the same rat
 		// Assumes is fifo
 		synchronized (getSubject()) {
@@ -127,7 +132,7 @@ public class Trial implements Runnable {
 
 			// After trial tasks
 			for (ExperimentTask task : afterTrialTasks)
-				task.perform(universe, getSubject());
+				task.perform(subject.getUniverse(), getSubject());
 
 			// Close file handlers
 			for (ExperimentLogger logger : afterCycleloggers)
@@ -135,7 +140,7 @@ public class Trial implements Runnable {
 
 			// After trial loggers
 			for (ExperimentLogger logger : afterTrialloggers) {
-				logger.log(universe);
+				logger.log(subject.getUniverse());
 				logger.finalizeLog();
 			}
 
@@ -176,7 +181,7 @@ public class Trial implements Runnable {
 	}
 
 	public ExperimentUniverse getUniverse() {
-		return universe;
+		return subject.getUniverse();
 	}
 
 	public String getRep() {
