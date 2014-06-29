@@ -41,6 +41,10 @@ public class NslSequentialScheduler extends NslScheduler {
 			updateBuffers(child);
 		}
 	}
+	
+	public void setSystem(NslSystem system){
+		this.system = system;
+	}
 
 	public void stepCycle(int numSteps) {
 		// TODO Auto-generated method stub

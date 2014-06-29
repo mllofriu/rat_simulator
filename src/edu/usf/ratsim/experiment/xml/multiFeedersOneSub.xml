@@ -96,7 +96,7 @@
 			<stopCondition>
 				<name>FoundNFood</name>
 				<params>
-					<n>1000</n>
+					<n>1</n>
 				</params>
 			</stopCondition>
 		</stopConditions>
@@ -117,94 +117,7 @@
 	</trial>
 
 	<!-- 4 testing trials -->
-	<trial>
-		<name>recall</name>
-		<reps>1</reps>
-		<groups>
-			<group>oneLayer</group>
-		</groups>
-		<initialTasks>
-			<task>
-				<name>PlaceRobotInitiallyTask</name>
-				<params>
-					<initialPosition>S</initialPosition>
-				</params>
-			</task>
-			<task>
-				<name>ResetModelTask</name>
-				<params>
-				</params>
-			</task>
-			<task>
-				<name>UnflashFeeder</name>
-			</task>
-			<task>
-				<name>ActivateFeeders</name>
-				<params>
-				</params>
-			</task>
-			<task>
-				<name>ClearWalls</name>
-				<params>
-				</params>
-			</task>
-			<task>
-				<name>PlaceRandomWalls</name>
-				<params>
-					<number>4</number>
-					<length>.5</length>
-				</params>
-			</task>
-			<!-- <task> <name>PlaceWall</name> <params> <x1>W1</x1> <x2>W2</x2> </params> 
-				</task> -->
-
-			<!-- <task>
-				<name>DeactivatePCL</name>
-				<params>
-					<layers>1,2</layers>
-					<group>oneLayer</group>
-				</params>
-			</task>  -->
-
-		</initialTasks>
-		<afterCycleTasks>
-			<task>
-				<name>FeederTemporalDeactivate</name>
-			</task>
-		</afterCycleTasks>
-		<afterTrialTasks>
-		</afterTrialTasks>
-		<stopConditions>
-			<stopCondition>
-				<name>FoundNFood</name>
-				<params>
-					<n>15</n>
-				</params>
-			</stopCondition>
-			<stopCondition>
-				<name>Time</name>
-				<params>
-					<time>10000</time>
-				</params>
-			</stopCondition>
-		</stopConditions>
-		<afterCycleLoggers>
-			<logger>
-				<name>PositionLogger</name>
-			</logger>
-			<logger>
-				<name>WantedFeederLogger</name>
-			</logger>
-		</afterCycleLoggers>
-		<afterTrialLoggers>
-			<!-- <logger> <name>PolicyDumperWithIntention</name> <params> <numIntentions>8</numIntentions> 
-				</params> </logger> -->
-			<logger>
-				<name>WallLogger</name>
-			</logger>
-		</afterTrialLoggers>
-	</trial>
-
+	
 
 
 </experiment>
