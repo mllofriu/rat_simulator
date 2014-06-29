@@ -7,14 +7,20 @@ import java.util.Map;
 
 import nslj.src.lang.NslHierarchy;
 import nslj.src.lang.NslModel;
+import nslj.src.lang.NslModule;
 import nslj.src.system.NslInterpreter;
 import nslj.src.system.NslSystem;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.NslSequentialScheduler;
+import edu.usf.ratsim.experiment.model.DummyModel;
 import edu.usf.ratsim.experiment.model.ModelFactory;
+import edu.usf.ratsim.experiment.model.MultiScaleMultiIntentionCooperativeModel;
 import edu.usf.ratsim.experiment.subject.initializer.SubInitializerFactory;
 import edu.usf.ratsim.experiment.subject.initializer.SubjectInitializer;
 import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.robot.RobotFactory;
+import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
+import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.ElementWrapper;
 
 public class ExpSubject {
@@ -28,17 +34,30 @@ public class ExpSubject {
 	private ExperimentUniverse universe;
 	private Map<String, Object> properties;
 	private String group;
+	private ElementWrapper params;
+	private IRobot robot;
+	private boolean initialezed;
+	private String mazeFile;
 
-	public ExpSubject(String name, String group, IRobot robot, ExperimentUniverse universe,
-			ElementWrapper params) {
+	public ExpSubject(String name, String group, ElementWrapper params, String mazeFile) {
 		this.name = name;
 		this.group = group;
-		this.universe = universe;
-
+		
+		this.params = params;
+		
+		initialezed = false;
+		this.mazeFile = mazeFile;
+	}
+	
+	public void initModel() {
 		properties = new HashMap<String, Object>();
 
 		initNSL();
 
+		System.out.println("Initializing model for subject " + getName());
+		universe = new VirtualExpUniverse(mazeFile);
+		IRobot robot = RobotFactory.getRobot(
+		Configuration.getString("Reflexion.Robot"), universe);
 		model = ModelFactory.createModel(params.getChild(STR_MODEL), robot, universe);
 
 		// Load it into nsl
@@ -53,9 +72,11 @@ public class ExpSubject {
 
 		// init Run epochs
 		scheduler.initRun();
+		
+		initialezed = true;
 	}
 
-	private void initNSL() {
+	public void initNSL() {
 		system = new NslSystem(); // Create System
 		NslInterpreter interpreter = new NslInterpreter(system); // Create
 																	// Interpreter
@@ -121,4 +142,32 @@ public class ExpSubject {
 	public void setGroup(String group) {
 		this.group = group;
 	}
+
+	public boolean isInitialized() {
+		return initialezed;
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		// TODO Auto-generated method stub
+		super.finalize();
+		
+		scheduler.join();
+
+		scheduler.setSystem(null);
+		scheduler = null;
+		system.scheduler = null;
+		system.setInterpreter(null);
+		system = null;
+		NslHierarchy.system = null;
+		model = null;
+		universe = null;
+		robot = null;
+		
+//		initNSL();
+		
+		
+		System.out.println("Finalized subject");
+	}
+	
 }

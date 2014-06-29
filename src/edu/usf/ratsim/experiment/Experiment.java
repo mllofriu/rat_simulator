@@ -8,16 +8,19 @@ package edu.usf.ratsim.experiment;
  * Fecha: 11 de agosto de 2010
  */
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.vecmath.Point4f;
 
@@ -55,7 +58,8 @@ public class Experiment implements Runnable {
 	private static final String PLOTTING_SCRIPT = "/edu/usf/ratsim/experiment/plot/plotting.r";
 	private static final String PLOT_EXECUTER = "/edu/usf/ratsim/experiment/plot/plot.sh";
 	private static final String OBJ2PNG_SCRIPT = "/edu/usf/ratsim/experiment/plot/obj2png.r";
-//	private static final String EXPERIMENT_XML = "/edu/usf/ratsim/experiment/xml/multiFeedersOneSubSingleVsMultiConfModel.xml";
+	// private static final String EXPERIMENT_XML =
+	// "/edu/usf/ratsim/experiment/xml/multiFeedersOneSubSingleVsMultiConfModel.xml";
 	private static final String STR_NUM_MEMBERS = "numMembers";
 
 	private Map<ExpSubject, List<Trial>> trials;
@@ -122,11 +126,9 @@ public class Experiment implements Runnable {
 			Hashtable<String, ExpSubject> sGroup = new Hashtable<String, ExpSubject>();
 			for (int k = 1; k <= groupNumSubs; k++) {
 				String subName = gName + " - rat " + k;
-				VirtualExpUniverse universe = new VirtualExpUniverse(mazeFile);
-				IRobot robot = RobotFactory.getRobot(
-						Configuration.getString("Reflexion.Robot"), universe);
-				sGroup.put(subName, new ExpSubject(subName, gName, robot, universe,
-						gNode));
+				
+				sGroup.put(subName, new ExpSubject(subName, gName
+						, gNode, mazeFile));
 			}
 
 			groups.put(gName, sGroup);
@@ -140,55 +142,55 @@ public class Experiment implements Runnable {
 	}
 
 	public void execPlottingScripts() {
-		try {
-			// Copy the maze to the experiment's folder
-			FileUtils.copyURLToFile(getClass().getResource(mazeFile), new File(
-					getLogPath() + "/maze.xml"));
-			// Copy the plotting script to the experiment's folder
-			FileUtils.copyURLToFile(getClass().getResource(PLOTTING_SCRIPT),
-					new File(getLogPath() + "/plotting.r"));
-			FileUtils.copyURLToFile(getClass().getResource(OBJ2PNG_SCRIPT),
-					new File(getLogPath() + "/obj2png.r"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// Copy the plotting script to the experiment's folder
-		try {
-			FileUtils.copyURLToFile(getClass().getResource(PLOT_EXECUTER),
-					new File(getLogPath() + "/plot.sh"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// Execute the plotting script
-		try {
-			System.out.println("Executing plotting scripts");
-			Process plot = Runtime.getRuntime().exec("sh plot.sh", null,
-					new File(getLogPath()));
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-					plot.getInputStream()));
-			String line = null;
-			while ((line = in.readLine()) != null) {
-				System.out.println(line);
-			}
-
-			BufferedReader err = new BufferedReader(new InputStreamReader(
-					plot.getErrorStream()));
-			line = null;
-			while ((line = err.readLine()) != null) {
-				System.out.println(line);
-			}
-			plot.waitFor();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// try {
+		// // Copy the maze to the experiment's folder
+		// FileUtils.copyURLToFile(getClass().getResource(mazeFile), new File(
+		// getLogPath() + "/maze.xml"));
+		// // Copy the plotting script to the experiment's folder
+		// FileUtils.copyURLToFile(getClass().getResource(PLOTTING_SCRIPT),
+		// new File(getLogPath() + "/plotting.r"));
+		// FileUtils.copyURLToFile(getClass().getResource(OBJ2PNG_SCRIPT),
+		// new File(getLogPath() + "/obj2png.r"));
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		//
+		// // Copy the plotting script to the experiment's folder
+		// try {
+		// FileUtils.copyURLToFile(getClass().getResource(PLOT_EXECUTER),
+		// new File(getLogPath() + "/plot.sh"));
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		//
+		// // Execute the plotting script
+		// try {
+		// System.out.println("Executing plotting scripts");
+		// Process plot = Runtime.getRuntime().exec("sh plot.sh", null,
+		// new File(getLogPath()));
+		// BufferedReader in = new BufferedReader(new InputStreamReader(
+		// plot.getInputStream()));
+		// String line = null;
+		// while ((line = in.readLine()) != null) {
+		// System.out.println(line);
+		// }
+		//
+		// BufferedReader err = new BufferedReader(new InputStreamReader(
+		// plot.getErrorStream()));
+		// line = null;
+		// while ((line = err.readLine()) != null) {
+		// System.out.println(line);
+		// }
+		// plot.waitFor();
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (InterruptedException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 
 	}
 
@@ -215,8 +217,8 @@ public class Experiment implements Runnable {
 		// For each trial
 		for (ElementWrapper trialNode : trialNodes) {
 			// For each group
-			List<ElementWrapper> trialGroups = trialNode.getChild(STR_TRIALGROUPS)
-					.getChildren(STR_GROUP);
+			List<ElementWrapper> trialGroups = trialNode.getChild(
+					STR_TRIALGROUPS).getChildren(STR_GROUP);
 			for (ElementWrapper groupNode : trialGroups) {
 				String groupName = groupNode.getText();
 				// For each subject in the group
@@ -252,36 +254,50 @@ public class Experiment implements Runnable {
 	}
 
 	public void run() {
-		Thread[] ts = new Thread[trials.size()];
+		ExecutorService executor = Executors.newSingleThreadExecutor();
 
-		int i = 0;
-		for (Entry<String, Hashtable<String, ExpSubject>> subjects : groups
-				.entrySet())
-			for (final Entry<String, ExpSubject> entry : subjects.getValue()
-					.entrySet()) {
-				// Create a thread for each subject, executing all its
-				// experiments
-				// in order
-				ts[i] = new Thread(new Runnable() {
-
-					public void run() {
-						for (Trial trial : trials.get(entry.getValue()))
-							trial.run();
-					}
-				});
-				ts[i].start();
-				// ts[i].run();
-				i++;
-			}
-
-		for (Thread thread : ts) {
-			try {
-				thread.join();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		// Create threads
+		for (final Entry<String, Hashtable<String, ExpSubject>> groupSubjects : groups
+				.entrySet()) {
+			for (final Entry<String, ExpSubject> entry : groupSubjects
+					.getValue().entrySet()) {
+				executor.execute(new SubjectThread(entry.getValue(), trials.get(entry
+						.getValue())));
 			}
 		}
+
+		// Delete old reference to subjects to free memory when threads are done
+		groups.clear();
+		trials.clear();
+
+
+		try {
+			System.out.println("Waiting for threads");
+			executor.shutdown();
+			executor.awaitTermination(3600, TimeUnit.SECONDS);
+			System.out.println("Threads finished");
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// Wait for all threads
+//		for (i = 0; i < ts.length; i++) {
+//			ts[i].getSubject().initNSL();
+//			ts[i].setSubject(null);
+//			ts[i] = null;
+//		}
+
+		for (int j = 0; j < 1; j++)
+			System.gc();
+
+		// try {
+		// Thread.sleep(5000);
+		// } catch (InterruptedException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		//
+		// System.gc();
 
 		execPlottingScripts();
 	}
@@ -293,4 +309,33 @@ public class Experiment implements Runnable {
 		System.exit(0);
 	}
 
+}
+
+class SubjectThread extends Thread {
+
+	private List<Trial> trials;
+	private ExpSubject subject;
+
+	public SubjectThread(ExpSubject subject, List<Trial> trials) {
+		this.subject = subject;
+		this.trials = trials;
+	}
+
+	public void setSubject(ExpSubject subject) {
+		this.subject = subject;
+
+	}
+
+	public void run() {
+		subject.initModel();
+		for (Trial trial : trials)
+			trial.run();
+
+		trials.clear();
+		subject = null;
+	}
+
+	public ExpSubject getSubject() {
+		return subject;
+	}
 }

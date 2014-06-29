@@ -337,4 +337,14 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		}
 	}
 
+	@Override
+	protected void finalize() {
+		// TODO Auto-generated method stub
+		super.finalize();
+		
+		System.out.println("NsL model being finalized");
+	}
+	
+	
+
 }
