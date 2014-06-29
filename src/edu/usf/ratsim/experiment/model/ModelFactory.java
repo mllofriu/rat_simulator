@@ -7,7 +7,7 @@ import edu.usf.ratsim.support.ElementWrapper;
 
 public class ModelFactory {
 
-	public static NslModel createModel(ElementWrapper modelNode, IRobot robot,
+	public synchronized static NslModel createModel(ElementWrapper modelNode, IRobot robot,
 			ExperimentUniverse universe) {
 		String name = modelNode.getChildText("name");
 
