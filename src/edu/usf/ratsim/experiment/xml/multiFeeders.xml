@@ -288,7 +288,7 @@
         </initializers>
     </group>
     <group>
-        <name>DorsalLage</name>
+        <name>DorsalLar ge</name>
         <numMembers>16</numMembers>
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
