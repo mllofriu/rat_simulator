@@ -254,7 +254,8 @@ public class Experiment implements Runnable {
 	}
 
 	public void run() {
-		ExecutorService executor = Executors.newSingleThreadExecutor();
+//		ExecutorService executor = Executors.newSingleThreadExecutor();
+		ExecutorService executor = Executors.newFixedThreadPool(Configuration.getInt("Experiment.numThreads"));
 
 		// Create threads
 		for (final Entry<String, Hashtable<String, ExpSubject>> groupSubjects : groups

@@ -6,7 +6,6 @@ import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
-import edu.usf.ratsim.support.Utiles;
 
 /**
  * Sets the dopaminergic votes for both a flashing feeder and a non flashing
@@ -28,6 +27,7 @@ public class WallAvoider extends NslModule {
 	private boolean active;
 	private int direction;
 	private Random r;
+//	private int number;
 
 	public WallAvoider(String nslName, NslModule nslParent, IRobot robot,
 			ExperimentUniverse univ, int numActions, float wallFollowingValue) {
@@ -37,6 +37,8 @@ public class WallAvoider extends NslModule {
 		this.wallFollowingValue = wallFollowingValue;
 		this.currentValue = 0f;
 		active = false;
+		
+//		number = (new Random()).nextInt();
 
 		votes = new NslDoutFloat1(this, "votes", numActions);
 		r = new Random();
@@ -44,6 +46,8 @@ public class WallAvoider extends NslModule {
 	}
 
 	public void simRun() {
+//		System.out.println("Performing wall avoider " + number);
+		
 		votes.set(0);
 
 		boolean[] aff = robot.getAffordances(WALL_LOOKAHEAD);
