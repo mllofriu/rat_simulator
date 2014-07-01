@@ -75,4 +75,6 @@ public interface ExperimentUniverse {
 
 	public boolean wallInsidePool(LineSegment wall2);
 
+	public void dispose();
+
 }

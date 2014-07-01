@@ -1216,7 +1216,7 @@ nslPutInGraphicsList(n5);
   }
 
   protected void finalize() {
-    _missing_links.removeAllElements();
+//    _missing_links.removeAllElements();
     nslNullifyParent();
     _moduleChildren.removeAllElements();
     _inports.removeAllElements();
