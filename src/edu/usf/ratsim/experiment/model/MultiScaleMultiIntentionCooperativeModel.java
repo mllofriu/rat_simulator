@@ -340,9 +340,13 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	@Override
 	protected void finalize() {
 		// TODO Auto-generated method stub
-		super.finalize();
+		try{
+			super.finalize();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
 		
-		System.out.println("NsL model being finalized");
+//		System.out.println("NsL model being finalized");
 	}
 	
 	
