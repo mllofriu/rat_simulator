@@ -206,7 +206,8 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	public void addWall(float x1, float y1, float x2, float y2) {
 		WallNode w = new WallNode(x1, 0, y1, x2, 0, y2, 0.025f);
-		bg.addChild(w);
+		if (Configuration.getBoolean("UniverseFrame.display")) 
+			bg.addChild(w);
 		wallNodes.add(w);
 	}
 
