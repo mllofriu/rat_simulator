@@ -3,7 +3,7 @@ package edu.usf.ratsim.experiment;
 /*
  * Simulation.java
  * Este modulo levanta la configuracion completa del experimento a realizar.
- * Casos de habitucación, entrenamiento, prueba, parametros de configuracion del modelo, etc 
+ * Casos de habitucacin, entrenamiento, prueba, parametros de configuracion del modelo, etc 
  * Autor: Gonzalo Tejera
  * Fecha: 11 de agosto de 2010
  */
@@ -331,7 +331,10 @@ class SubjectThread extends Thread {
 
 		trials.clear();
 		subject.disposeInterp();
+		subject.destroyUniv();
 		subject = null;
+		
+//		System.gc();
 	}
 
 	public ExpSubject getSubject() {

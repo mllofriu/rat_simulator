@@ -29,11 +29,17 @@ public class FeederNode extends ExpUniverseNode {
 	private Color3f wantedColor;
 	private Appearance app;
 	private boolean wanted;
+	
+	private boolean terminated;
+	private Thread flashThread;
 
 	class FlashThread implements Runnable {
 
+		
+
 		public void run() {
-			while (true) {
+			terminated = false;
+			while (!terminated) {
 				if (flashing) {
 					try {
 						app.setColoringAttributes(new ColoringAttributes(
@@ -92,7 +98,8 @@ public class FeederNode extends ExpUniverseNode {
 
 		position = new Vector3f(xp, yp, zp);
 
-		new Thread(new FlashThread()).start();
+		flashThread = new Thread(new FlashThread());
+		flashThread.start();
 	}
 
 	public boolean isActive() {
@@ -129,5 +136,17 @@ public class FeederNode extends ExpUniverseNode {
 
 	public boolean isWanted() {
 		return wanted;
+	}
+	
+	public void terminate(){
+		terminated = true;
+		try {
+			flashThread.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		flashThread = null;
 	}
 }
