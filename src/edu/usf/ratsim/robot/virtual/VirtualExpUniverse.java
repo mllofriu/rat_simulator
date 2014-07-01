@@ -41,6 +41,14 @@ import edu.usf.ratsim.support.XMLDocReader;
 public class VirtualExpUniverse extends VirtualUniverse implements
 		ExperimentUniverse {
 
+	@Override
+	protected void finalize() throws Throwable {
+		// TODO Auto-generated method stub
+		super.finalize();
+
+//		System.out.println("Finalizing Virtual Universe");
+	}
+
 	private static final float CLOSE_TO_FOOD_THRS = Configuration
 			.getFloat("VirtualUniverse.closeToFood");
 
@@ -61,101 +69,139 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	public VirtualExpUniverse(String mazeResource) {
 		super();
 
-		Locale l = new Locale(this);
+		if (Configuration.getBoolean("UniverseFrame.display")) {
+			Locale l = new Locale(this);
 
-		bg = new BranchGroup();
-		bg.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
-		bg.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
-		l.addBranchGraph(bg);
+			bg = new BranchGroup();
+			bg.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
+			bg.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
+			l.addBranchGraph(bg);
 
-		try {
-			FileUtils.copyURLToFile(getClass().getResource(mazeResource),
-					new File("/tmp/maze.xml"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			try {
+				FileUtils.copyURLToFile(getClass().getResource(mazeResource),
+						new File("/tmp/maze.xml"));
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Document doc = XMLDocReader.readDocument("/tmp/maze.xml");
+
+			// Build the group
+			NodeList list;
+			org.w3c.dom.Node params;
+
+			// Bounding rectangle
+			boundingRect = new BoundingRectNode(doc.getElementsByTagName(
+					"boundingRect").item(0));
+
+			// Spheres
+			list = doc.getElementsByTagName("sphere");
+			for (int i = 0; i < list.getLength(); i++) {
+				bg.addChild(new SphereNode(list.item(i)));
+			}
+
+			// Morris tanks
+			list = doc.getElementsByTagName("pool");
+			pool = new PoolNode(list.item(0));
+			bg.addChild(pool);
+
+			// Cylinders
+			list = doc.getElementsByTagName("cylinder");
+			for (int i = 0; i < list.getLength(); i++) {
+				bg.addChild(new CylinderNode(list.item(i)));
+			}
+
+			// Boxes
+			list = doc.getElementsByTagName("box");
+			for (int i = 0; i < list.getLength(); i++) {
+				bg.addChild(new BoxNode(list.item(i)));
+			}
+
+			// Floor
+			list = doc.getElementsByTagName("floor");
+			params = list.item(0);
+			bg.addChild(new CylinderNode(params));
+
+			// Top view
+			list = doc.getElementsByTagName("topview");
+			params = list.item(0);
+			ViewNode vn = new ViewNode(params);
+			topView = vn.getView();
+			bg.addChild(vn);
+
+			// Robot
+			list = doc.getElementsByTagName("robotview");
+			params = list.item(0);
+			robot = new RobotNode(params);
+			bg.addChild(robot);
+
+			// food
+			list = doc.getElementsByTagName("feeder");
+			feeders = new LinkedList<FeederNode>();
+			for (int i = 0; i < list.getLength(); i++) {
+				params = list.item(i);
+				FeederNode feeder = new FeederNode(params);
+				feeders.add(feeder);
+				bg.addChild(feeder);
+			}
+
+			bg.addChild(new DirectionalLightNode(new Vector3f(0f, 0f, -5),
+					new Color3f(1f, 1f, 1f)));
+			bg.addChild(new DirectionalLightNode(new Vector3f(0f, 0f, 5),
+					new Color3f(.5f, .5f, .5f)));
+			bg.addChild(new DirectionalLightNode(new Vector3f(0f, -5f, -5),
+					new Color3f(.5f, .5f, .5f)));
+			bg.addChild(new DirectionalLightNode(new Vector3f(0f, 5f, -5),
+					new Color3f(.5f, .5f, .5f)));
+			bg.addChild(new DirectionalLightNode(new Vector3f(0f, -5f, 5),
+					new Color3f(.5f, .5f, .5f)));
+			bg.addChild(new DirectionalLightNode(new Vector3f(0f, 5f, 5),
+					new Color3f(.5f, .5f, .5f)));
+			bg.addChild(new DirectionalLightNode(new Vector3f(0f, -5, 0),
+					new Color3f(1f, 1f, 1f)));
+
+			// bg.addChild(new WallNode(-0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f,
+			// 0.025f));
+
+			// addWall(-0.2f, 0.0f, 0.2f, 0.0f);
+			// bg.compile();
+		} else { 
+			// Just initialize the nodes we need 
+			NodeList list;
+			org.w3c.dom.Node params;
+			
+			Document doc;
+			synchronized (VirtualExpUniverse.class){
+				try {
+					FileUtils.copyURLToFile(getClass().getResource(mazeResource),
+							new File("/tmp/maze.xml"));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				doc = XMLDocReader.readDocument("/tmp/maze.xml");
+			}
+			
+			boundingRect = new BoundingRectNode(doc.getElementsByTagName(
+					"boundingRect").item(0));
+			
+			list = doc.getElementsByTagName("robotview");
+			params = list.item(0);
+			robot = new RobotNode(params);
+			
+			list = doc.getElementsByTagName("pool");
+			pool = new PoolNode(list.item(0));
+			
+			list = doc.getElementsByTagName("feeder");
+			feeders = new LinkedList<FeederNode>();
+			for (int i = 0; i < list.getLength(); i++) {
+				params = list.item(i);
+				FeederNode feeder = new FeederNode(params);
+				feeders.add(feeder);
+			}
 		}
-		Document doc = XMLDocReader.readDocument("/tmp/maze.xml");
 
-		// Build the group
-		NodeList list;
-		org.w3c.dom.Node params;
-
-		// Bounding rectangle
-		boundingRect = new BoundingRectNode(doc.getElementsByTagName(
-				"boundingRect").item(0));
-
-		// Spheres
-		list = doc.getElementsByTagName("sphere");
-		for (int i = 0; i < list.getLength(); i++) {
-			bg.addChild(new SphereNode(list.item(i)));
-		}
-
-		// Morris tanks
-		list = doc.getElementsByTagName("pool");
-		pool = new PoolNode(list.item(0));
-		bg.addChild(pool);
-
-		// Cylinders
-		list = doc.getElementsByTagName("cylinder");
-		for (int i = 0; i < list.getLength(); i++) {
-			bg.addChild(new CylinderNode(list.item(i)));
-		}
-
-		// Boxes
-		list = doc.getElementsByTagName("box");
-		for (int i = 0; i < list.getLength(); i++) {
-			bg.addChild(new BoxNode(list.item(i)));
-		}
-
-		// Floor
-		list = doc.getElementsByTagName("floor");
-		params = list.item(0);
-		bg.addChild(new CylinderNode(params));
-
-		// Top view
-		list = doc.getElementsByTagName("topview");
-		params = list.item(0);
-		ViewNode vn = new ViewNode(params);
-		topView = vn.getView();
-		bg.addChild(vn);
-
-		// Robot
-		list = doc.getElementsByTagName("robotview");
-		params = list.item(0);
-		robot = new RobotNode(params);
-		bg.addChild(robot);
-
-		// food
-		list = doc.getElementsByTagName("feeder");
-		feeders = new LinkedList<FeederNode>();
-		for (int i = 0; i < list.getLength(); i++) {
-			params = list.item(i);
-			FeederNode feeder = new FeederNode(params);
-			feeders.add(feeder);
-			bg.addChild(feeder);
-		}
-
-		bg.addChild(new DirectionalLightNode(new Vector3f(0f, 0f, -5),
-				new Color3f(1f, 1f, 1f)));
-		bg.addChild(new DirectionalLightNode(new Vector3f(0f, 0f, 5),
-				new Color3f(.5f, .5f, .5f)));
-		bg.addChild(new DirectionalLightNode(new Vector3f(0f, -5f, -5),
-				new Color3f(.5f, .5f, .5f)));
-		bg.addChild(new DirectionalLightNode(new Vector3f(0f, 5f, -5),
-				new Color3f(.5f, .5f, .5f)));
-		bg.addChild(new DirectionalLightNode(new Vector3f(0f, -5f, 5),
-				new Color3f(.5f, .5f, .5f)));
-		bg.addChild(new DirectionalLightNode(new Vector3f(0f, 5f, 5),
-				new Color3f(.5f, .5f, .5f)));
-		bg.addChild(new DirectionalLightNode(new Vector3f(0f, -5, 0),
-				new Color3f(1f, 1f, 1f)));
-
-		// bg.addChild(new WallNode(-0.2f, 0.0f, 0.0f, 0.2f, 0.0f, 0.0f,
-		// 0.025f));
 		wallNodes = new LinkedList<WallNode>();
-		// addWall(-0.2f, 0.0f, 0.2f, 0.0f);
-		// bg.compile();
 	}
 
 	public void addWall(float x1, float y1, float x2, float y2) {
@@ -473,5 +519,11 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 				(float) wall2.p0.y))
 				&& pool.isInside(new Point3f((float) wall2.p1.x, 0f,
 						(float) wall2.p1.y));
+	}
+
+	@Override
+	public void dispose() {
+		for (FeederNode f : feeders)
+			f.terminate();
 	}
 }

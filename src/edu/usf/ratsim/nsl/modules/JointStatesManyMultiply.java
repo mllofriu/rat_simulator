@@ -78,6 +78,14 @@ public class JointStatesManyMultiply extends NslModule {
 		}
 	}
 
+	@Override
+	protected void finalize() {
+		// TODO Auto-generated method stub
+		super.finalize();
+		
+//		System.out.println("Finalized JointStates");
+	}
+
 	public int getSize() {
 		return jointState.getSize();
 	}

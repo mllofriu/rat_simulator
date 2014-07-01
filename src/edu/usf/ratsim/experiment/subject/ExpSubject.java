@@ -5,18 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import tcl.lang.Interp;
 import nslj.src.lang.NslHierarchy;
 import nslj.src.lang.NslModel;
-import nslj.src.lang.NslModule;
-import nslj.src.nsls.struct.Executive;
 import nslj.src.system.NslInterpreter;
 import nslj.src.system.NslSystem;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.NslSequentialScheduler;
-import edu.usf.ratsim.experiment.model.DummyModel;
 import edu.usf.ratsim.experiment.model.ModelFactory;
-import edu.usf.ratsim.experiment.model.MultiScaleMultiIntentionCooperativeModel;
 import edu.usf.ratsim.experiment.subject.initializer.SubInitializerFactory;
 import edu.usf.ratsim.experiment.subject.initializer.SubjectInitializer;
 import edu.usf.ratsim.robot.IRobot;
@@ -41,7 +36,6 @@ public class ExpSubject {
 	private boolean initialezed;
 	private String mazeFile;
 	private NslInterpreter interpreter;
-	private Interp tclInterp;
 
 	public ExpSubject(String name, String group, ElementWrapper params, String mazeFile) {
 		this.name = name;
@@ -58,7 +52,7 @@ public class ExpSubject {
 
 		initNSL();
 
-		System.out.println("Initializing model for subject " + getName());
+//		System.out.println("Initializing model for subject " + getName());
 		universe = new VirtualExpUniverse(mazeFile);
 		IRobot robot = RobotFactory.getRobot(
 		Configuration.getString("Reflexion.Robot"), universe);
@@ -84,7 +78,6 @@ public class ExpSubject {
 		system = new NslSystem(); // Create System
 		
 		interpreter = new NslInterpreter(system); // Create
-		tclInterp = Executive.interp;
 																	// Interpreter
 		// scheduler = new NslMultiClockScheduler(system); // Create Scheduler
 		scheduler = new NslSequentialScheduler(system); // Create Scheduler
@@ -154,7 +147,11 @@ public class ExpSubject {
 	}
 	
 	public void disposeInterp(){
-		tclInterp.dispose();
+		try {
+			interpreter.executive.disposeInterpreter();
+		} catch (Exception e){
+			System.err.println("Exception when trying to dispose TCL interpreter");
+		}
 	}
 
 	@Override
@@ -170,16 +167,21 @@ public class ExpSubject {
 //		system.setInterpreter(null);
 //		system = null;
 //		NslHierarchy.system = null;
-//		model = null;
-//		universe = null;
-//		robot = null;
+		model = null;
+		universe = null;
+		robot = null;
 		
 //		initNSL();
 		
 		
 		
 		
-		System.out.println("Finalized subject");
+//		System.out.println("Finalized subject");
+	}
+
+	public void destroyUniv() {
+		universe.dispose();
+		universe = null;
 	}
 	
 }
