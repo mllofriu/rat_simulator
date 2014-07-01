@@ -158,6 +158,9 @@
             <logger>
                 <name>PolicyDumper</name>
             </logger>
+            <logger>
+                <name>WallLogger</name>
+            </logger>
         </afterTrialLoggers>
     </trial>
 
