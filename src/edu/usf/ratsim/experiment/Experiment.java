@@ -272,7 +272,7 @@ public class Experiment implements Runnable {
 		try {
 			System.out.println("Waiting for threads");
 			executor.shutdown();
-			executor.awaitTermination(3600, TimeUnit.SECONDS);
+			executor.awaitTermination(1, TimeUnit.DAYS);
 			System.out.println("Threads finished");
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -285,8 +285,8 @@ public class Experiment implements Runnable {
 //			ts[i] = null;
 //		}
 
-		for (int j = 0; j < 1; j++)
-			System.gc();
+//		for (int j = 0; j < 1; j++)
+//			System.gc();
 
 		// try {
 		// Thread.sleep(5000);
@@ -330,6 +330,7 @@ class SubjectThread extends Thread {
 			trial.run();
 
 		trials.clear();
+		subject.disposeInterp();
 		subject = null;
 	}
 
