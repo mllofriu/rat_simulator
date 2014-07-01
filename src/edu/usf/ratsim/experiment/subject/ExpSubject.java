@@ -5,9 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import tcl.lang.Interp;
 import nslj.src.lang.NslHierarchy;
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
+import nslj.src.nsls.struct.Executive;
 import nslj.src.system.NslInterpreter;
 import nslj.src.system.NslSystem;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
@@ -38,6 +40,8 @@ public class ExpSubject {
 	private IRobot robot;
 	private boolean initialezed;
 	private String mazeFile;
+	private NslInterpreter interpreter;
+	private Interp tclInterp;
 
 	public ExpSubject(String name, String group, ElementWrapper params, String mazeFile) {
 		this.name = name;
@@ -78,7 +82,9 @@ public class ExpSubject {
 
 	public void initNSL() {
 		system = new NslSystem(); // Create System
-		NslInterpreter interpreter = new NslInterpreter(system); // Create
+		
+		interpreter = new NslInterpreter(system); // Create
+		tclInterp = Executive.interp;
 																	// Interpreter
 		// scheduler = new NslMultiClockScheduler(system); // Create Scheduler
 		scheduler = new NslSequentialScheduler(system); // Create Scheduler
@@ -146,25 +152,31 @@ public class ExpSubject {
 	public boolean isInitialized() {
 		return initialezed;
 	}
+	
+	public void disposeInterp(){
+		tclInterp.dispose();
+	}
 
 	@Override
 	protected void finalize() throws Throwable {
 		// TODO Auto-generated method stub
 		super.finalize();
 		
-		scheduler.join();
-
-		scheduler.setSystem(null);
-		scheduler = null;
-		system.scheduler = null;
-		system.setInterpreter(null);
-		system = null;
-		NslHierarchy.system = null;
-		model = null;
-		universe = null;
-		robot = null;
+//		scheduler.join();
+//
+//		scheduler.setSystem(null);
+//		scheduler = null;
+//		system.scheduler = null;
+//		system.setInterpreter(null);
+//		system = null;
+//		NslHierarchy.system = null;
+//		model = null;
+//		universe = null;
+//		robot = null;
 		
 //		initNSL();
+		
+		
 		
 		
 		System.out.println("Finalized subject");
