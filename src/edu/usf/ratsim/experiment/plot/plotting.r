@@ -173,7 +173,7 @@ plotArrivalTime <- function(pathData){
   runTimes <- ddply(pathData, .(group, subject, repetition), summarise, runTime = length(x))
   summarizedRunTimes <- ddply(runTimes, .(group, repetition), summarise, sdRT = sd(runTime)/sqrt(length(runTime)), mRT = mean(runTime))
   print(summarizedRunTimes)
-  p <- ggplot(summarizedRunTimes, aes(x=repetition, y=mRT)) + geom_errorbar(aes(ymin=mRT-sdRT, ymax=mRT+sdRT, color=group), width=.3) + geom_point(aes(color=group))
+  p <- ggplot(summarizedRunTimes, aes(x=group, y=mRT)) + geom_errorbar(aes(ymin=mRT-sdRT, ymax=mRT+sdRT, color=group), width=.3) + geom_point(aes(color=group))
   #   print(p)
   ggsave(plot=p,filename=paste("plots/runtime/",pathData[[1,'trial']],
                                ".pdf", sep=''), width=10, height=10)
