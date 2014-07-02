@@ -17,7 +17,7 @@
     <!--Subject groups -->
     <group>
         <name>ControlNoObs</name>
-        <numMembers>16</numMembers>
+        <numMembers>64</numMembers>
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
@@ -51,7 +51,7 @@
     </group>
     <group>
         <name>ControlSmall</name>
-        <numMembers>16</numMembers>
+        <numMembers>64</numMembers>
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
@@ -85,7 +85,7 @@
     </group>
     <group>
         <name>ControlLarge</name>
-        <numMembers>16</numMembers>
+        <numMembers>64</numMembers>
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
@@ -119,7 +119,7 @@
     </group>
     <group>
         <name>VentralNoObs</name>
-        <numMembers>16</numMembers>
+        <numMembers>64</numMembers>
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
@@ -153,7 +153,7 @@
     </group>
     <group>
         <name>VentralSmall</name>
-        <numMembers>16</numMembers>
+        <numMembers>64</numMembers>
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
@@ -187,7 +187,7 @@
     </group>
     <group>
         <name>VentralLarge</name>
-        <numMembers>16</numMembers>
+        <numMembers>64</numMembers>
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
@@ -221,7 +221,7 @@
     </group>
     <group>
         <name>DorsalNoObs</name>
-        <numMembers>16</numMembers>
+        <numMembers>64</numMembers>
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
@@ -255,7 +255,7 @@
     </group>
     <group>
         <name>DorsalSmall</name>
-        <numMembers>16</numMembers>
+        <numMembers>64</numMembers>
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
@@ -289,7 +289,7 @@
     </group>
     <group>
         <name>DorsalLarge</name>
-        <numMembers>16</numMembers>
+        <numMembers>64</numMembers>
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
