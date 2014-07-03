@@ -52,9 +52,6 @@ public class Experiment implements Runnable {
 	private final String STR_Z_POSITION = "zp";
 	private final String STR_ANGLE = "rot";
 
-	private static final String PLOTTING_SCRIPT = "/edu/usf/ratsim/experiment/plot/plotting.r";
-	private static final String PLOT_EXECUTER = "/edu/usf/ratsim/experiment/plot/plot.sh";
-	private static final String OBJ2PNG_SCRIPT = "/edu/usf/ratsim/experiment/plot/obj2png.r";
 	// private static final String EXPERIMENT_XML =
 	// "/edu/usf/ratsim/experiment/xml/multiFeedersOneSubSingleVsMultiConfModel.xml";
 	private static final String STR_NUM_MEMBERS = "numMembers";
@@ -64,25 +61,37 @@ public class Experiment implements Runnable {
 	private String mazeFile;
 	private Hashtable<String, Hashtable<String, ExpSubject>> groups;
 
-	public Experiment(String filename) {
-		logPath = computeLogPath();
+	public Experiment(String filename, String logPath, String individual) {
+		System.out.println("Starting " + logPath);
+		
+		// If there is no log path, compute it
+		if (logPath == null) {
+			logPath = computeLogPath();
+
+			// No individual specific execution
+			Configuration.setProperty("Log.INDIVIDUAL", "");
+		} else {
+			logPath = logPath + File.separator + individual+ File.separator;
+			// No individual specific execution
+			Configuration.setProperty("Log.INDIVIDUAL", individual);
+		}
+		
+		// Set the log path in the global configuration class for the rest to
+		// know
+		Configuration.setProperty("Log.DIRECTORY",logPath);
+		
 		File file = new File(logPath);
 		file.mkdirs();
 
-		System.out.println("Starting " + logPath);
-
-		// Set the log path in the global configuration class for the rest to
-		// know
-		Configuration.setProperty("Log.DIRECTORY", logPath);
-
 		// Read experiments from xml file
 		try {
-			FileUtils.copyURLToFile(getClass().getResource(filename), new File(
-					logPath + "experiment.xml"));
+			FileUtils.copyURLToFile(getClass().getResource(filename),
+					new File(logPath + "experiment.xml"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 		Document doc = XMLDocReader.readDocument(logPath + "experiment.xml");
 
 		ElementWrapper root = new ElementWrapper(doc.getDocumentElement());
@@ -104,6 +113,14 @@ public class Experiment implements Runnable {
 
 		// Set the maze to execute
 		mazeFile = root.getChildText(STR_MAZE);
+		// Copy the maze to the experiment's folder
+		try {
+			FileUtils.copyURLToFile(getClass().getResource(mazeFile), new File(
+					logPath + "/maze.xml"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// subjects = loadSubjects(doc);
 		groups = loadGroups(root);
@@ -123,9 +140,9 @@ public class Experiment implements Runnable {
 			Hashtable<String, ExpSubject> sGroup = new Hashtable<String, ExpSubject>();
 			for (int k = 1; k <= groupNumSubs; k++) {
 				String subName = gName + " - rat " + k;
-				
-				sGroup.put(subName, new ExpSubject(subName, gName
-						, gNode, mazeFile));
+
+				sGroup.put(subName, new ExpSubject(subName, gName, gNode,
+						mazeFile));
 			}
 
 			groups.put(gName, sGroup);
@@ -138,58 +155,7 @@ public class Experiment implements Runnable {
 		return logPath;
 	}
 
-	public void execPlottingScripts() {
-		 try {
-		 // Copy the maze to the experiment's folder
-		 FileUtils.copyURLToFile(getClass().getResource(mazeFile), new File(
-		 getLogPath() + "/maze.xml"));
-		 // Copy the plotting script to the experiment's folder
-		 FileUtils.copyURLToFile(getClass().getResource(PLOTTING_SCRIPT),
-		 new File(getLogPath() + "/plotting.r"));
-		 FileUtils.copyURLToFile(getClass().getResource(OBJ2PNG_SCRIPT),
-		 new File(getLogPath() + "/obj2png.r"));
-		 } catch (IOException e) {
-		 // TODO Auto-generated catch block
-		 e.printStackTrace();
-		 }
-		
-		 // Copy the plotting script to the experiment's folder
-		 try {
-		 FileUtils.copyURLToFile(getClass().getResource(PLOT_EXECUTER),
-		 new File(getLogPath() + "/plot.sh"));
-		 } catch (IOException e) {
-		 // TODO Auto-generated catch block
-		 e.printStackTrace();
-		 }
-		
-		 // Execute the plotting script
-		 try {
-		 System.out.println("Executing plotting scripts");
-		 Process plot = Runtime.getRuntime().exec("sh plot.sh", null,
-		 new File(getLogPath()));
-			BufferedReader in = new BufferedReader(new InputStreamReader(
-		 plot.getInputStream()));
-		 String line = null;
-		 while ((line = in.readLine()) != null) {
-		 System.out.println(line);
-		 }
-		
-		 BufferedReader err = new BufferedReader(new InputStreamReader(
-		 plot.getErrorStream()));
-		 line = null;
-		 while ((line = err.readLine()) != null) {
-		 System.out.println(line);
-		 }
-		 plot.waitFor();
-		 } catch (IOException e) {
-		 // TODO Auto-generated catch block
-		 e.printStackTrace();
-		 } catch (InterruptedException e) {
-		 // TODO Auto-generated catch block
-		 e.printStackTrace();
-		 }
-
-	}
+	
 
 	private String computeLogPath() {
 		// Setup the logPath to be the log directory + name of the experiment
@@ -251,59 +217,79 @@ public class Experiment implements Runnable {
 	}
 
 	public void run() {
-//		ExecutorService executor = Executors.newSingleThreadExecutor();
-		ExecutorService executor = Executors.newFixedThreadPool(Configuration.getInt("Experiment.numThreads"));
+		// If no specified individual - execute all
+		if (Configuration.getString("Log.INDIVIDUAL").equals("")) {
+			// ExecutorService executor = Executors.newSingleThreadExecutor();
+			ExecutorService executor = Executors
+					.newFixedThreadPool(Configuration
+							.getInt("Experiment.numThreads"));
 
-		// Create threads
-		for (final Entry<String, Hashtable<String, ExpSubject>> groupSubjects : groups
-				.entrySet()) {
-			for (final Entry<String, ExpSubject> entry : groupSubjects
-					.getValue().entrySet()) {
-				executor.execute(new SubjectThread(entry.getValue(), trials.get(entry
-						.getValue())));
+			// Create threads
+			for (final Entry<String, Hashtable<String, ExpSubject>> groupSubjects : groups
+					.entrySet()) {
+				for (final Entry<String, ExpSubject> entry : groupSubjects
+						.getValue().entrySet()) {
+					executor.execute(new SubjectThread(entry.getValue(), trials
+							.get(entry.getValue())));
+				}
+			}
+
+			// Delete old reference to subjects to free memory when threads are
+			// done
+			groups.clear();
+			trials.clear();
+
+			try {
+				System.out.println("Waiting for threads");
+				executor.shutdown();
+				executor.awaitTermination(1, TimeUnit.DAYS);
+				System.out.println("Threads finished");
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+//			execPlottingScripts();
+		} else {
+			int i = 0;
+			int individualNum = Integer.parseInt(Configuration
+					.getString("Log.INDIVIDUAL"));
+			for (final Entry<String, Hashtable<String, ExpSubject>> groupSubjects : groups
+					.entrySet()) {
+				for (final Entry<String, ExpSubject> entry : groupSubjects
+						.getValue().entrySet()) {
+					if (i == individualNum){
+						System.out.println("Running " + entry.getValue().getName());
+						new SubjectThread(entry.getValue(), trials.get(entry
+								.getValue())).run();
+					}
+						
+					i++;
+				}
 			}
 		}
 
-		// Delete old reference to subjects to free memory when threads are done
-		groups.clear();
-		trials.clear();
-
-
-		try {
-			System.out.println("Waiting for threads");
-			executor.shutdown();
-			executor.awaitTermination(1, TimeUnit.DAYS);
-			System.out.println("Threads finished");
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// Wait for all threads
-//		for (i = 0; i < ts.length; i++) {
-//			ts[i].getSubject().initNSL();
-//			ts[i].setSubject(null);
-//			ts[i] = null;
-//		}
-
-//		for (int j = 0; j < 1; j++)
-//			System.gc();
-
-		// try {
-		// Thread.sleep(5000);
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		//
-		// System.gc();
-
-		execPlottingScripts();
 	}
 
 	public static void main(String[] args) {
 		if (args.length < 1)
 			System.out.println("Missing experiment xml argument");
-		new Experiment(args[0]).run();
+
+		Experiment e;
+		// More than one parameter means that we have to run only one (the
+		// specified) inidividual
+		if (args.length == 1) {
+			e = new Experiment(args[0], null, null);
+		} else {
+			e = new Experiment(
+					args[0],
+					Configuration.getString("Log.DIRECTORY")
+							+ File.separator + args[1] + File.separator,
+					args[2]);
+		}
+
+		e.run();
+
 		System.exit(0);
 	}
 
@@ -333,8 +319,8 @@ class SubjectThread extends Thread {
 		subject.disposeInterp();
 		subject.destroyUniv();
 		subject = null;
-		
-//		System.gc();
+
+		// System.gc();
 	}
 
 	public ExpSubject getSubject() {
