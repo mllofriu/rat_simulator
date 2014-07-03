@@ -170,8 +170,8 @@ plotPolicyOnMaze <- function(name, pathData, policyData, wallData, maze){
 }
 
 saveArrivalTime <- function(pathData){
-  runTimes <- ddply(pathData, .(group, subject, repetition), summarise, runTime = length(x))
-  summarizedRunTimes <- ddply(runTimes, .(group, repetition), summarise, sdRT = sd(runTime)/sqrt(length(runTime)), mRT = mean(runTime))
+  runTimes <- ddply(pathData, .(trial, group, subject, repetition), summarise, runTime = length(x))
+  summarizedRunTimes <- ddply(runTimes, .(trial, group, repetition), summarise, sdRT = sd(runTime)/sqrt(length(runTime)), mRT = mean(runTime))
   write.csv(summarizedRunTimes, "summary.csv")
   #   print(summarizedRunTimes)
 #   p <- ggplot(summarizedRunTimes, aes(x=group, y=mRT)) + geom_errorbar(aes(ymin=mRT-sdRT, ymax=mRT+sdRT, color=group), width=.3) + geom_point(aes(color=group))
@@ -213,7 +213,7 @@ splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetitio
 #ddply(pathData, .(trial), plotArrivalTime)
 
 #Save arrival times as a function of repetition number
-ddply(pathData, .(trial), saveArrivalTime)
+saveArrivalTime(pathData)
 
 # Saving image non-parallel:
 # invisible(llply(names(splitPol), function(x){
