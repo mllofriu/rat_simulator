@@ -7,6 +7,8 @@ import javax.vecmath.Point4f;
 
 import nslj.src.lang.NslModel;
 import edu.usf.ratsim.experiment.loggers.LoggerFactory;
+import edu.usf.ratsim.experiment.plot.ExperimentPlotter;
+import edu.usf.ratsim.experiment.plot.PlottingFactory;
 import edu.usf.ratsim.experiment.stopcondition.ConditionFactory;
 import edu.usf.ratsim.experiment.stopcondition.StopCondition;
 import edu.usf.ratsim.experiment.subject.ExpSubject;
@@ -51,6 +53,7 @@ public class Trial implements Runnable {
 	private static final String STR_STOP_CONDITIONS = "stopConditions";
 	private static final String STR_CYCLE_LOGGERS = "afterCycleLoggers";
 	private static final String STR_TRIAL_LOGGERS = "afterTrialLoggers";
+	private static final String STR_PLOTTING_STR = "plotters";
 
 	private String name;
 	private Collection<StopCondition> stopConds;
@@ -64,6 +67,7 @@ public class Trial implements Runnable {
 	private String group;
 	private ElementWrapper trialNode;
 	private Hashtable<String, Point4f> points;
+	private Collection<ExperimentPlotter> plotters;
 
 	public Trial(ElementWrapper trialNode, Hashtable<String, Point4f> points,
 			String group, ExpSubject subject, int rep) {
@@ -146,8 +150,21 @@ public class Trial implements Runnable {
 
 			System.out.println("Trial " + getName() + " " + group + " "
 					+ getSubjectName() + " " + getRep() + " finished.");
+			
+			// Load plotters
+			if (trialNode.getChild(STR_PLOTTING_STR) != null)
+				loadPlottingTasks(trialNode.getChild(STR_PLOTTING_STR)
+						, points, subject.getModel());
+			for (ExperimentPlotter p : plotters)
+				p.plot();
 		}
 
+	}
+
+	private void loadPlottingTasks(ElementWrapper elementWrapper,
+			Hashtable<String, Point4f> points2, NslModel model) {
+		plotters = PlottingFactory.createPlottingTasks(elementWrapper);
+		
 	}
 
 	public void loadConditions(ElementWrapper elementWrapper,

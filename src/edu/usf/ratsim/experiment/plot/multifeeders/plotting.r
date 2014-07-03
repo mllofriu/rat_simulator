@@ -169,14 +169,15 @@ plotPolicyOnMaze <- function(name, pathData, policyData, wallData, maze){
   #   saveRDS(p, paste("plots/policy/",name,".obj", sep=''))
 }
 
-plotArrivalTime <- function(pathData){
+saveArrivalTime <- function(pathData){
   runTimes <- ddply(pathData, .(group, subject, repetition), summarise, runTime = length(x))
   summarizedRunTimes <- ddply(runTimes, .(group, repetition), summarise, sdRT = sd(runTime)/sqrt(length(runTime)), mRT = mean(runTime))
-  print(summarizedRunTimes)
-  p <- ggplot(summarizedRunTimes, aes(x=group, y=mRT)) + geom_errorbar(aes(ymin=mRT-sdRT, ymax=mRT+sdRT, color=group), width=.3) + geom_point(aes(color=group))
-  #   print(p)
-  ggsave(plot=p,filename=paste("plots/runtime/",pathData[[1,'trial']],
-                               ".pdf", sep=''), width=10, height=10)
+  write.csv(summarizedRunTimes, "summary.csv")
+  #   print(summarizedRunTimes)
+#   p <- ggplot(summarizedRunTimes, aes(x=group, y=mRT)) + geom_errorbar(aes(ymin=mRT-sdRT, ymax=mRT+sdRT, color=group), width=.3) + geom_point(aes(color=group))
+#   #   print(p)
+#   ggsave(plot=p,filename=paste("plots/runtime/",pathData[[1,'trial']],
+#                                ".pdf", sep=''), width=10, height=10)
 }
 
 incrementalPath <- function(pathData, feederData, wallData)
@@ -209,7 +210,10 @@ splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetitio
 #registerDoParallel()
 
 #Plot arrival times as a function of repetition number
-ddply(pathData, .(trial), plotArrivalTime)
+#ddply(pathData, .(trial), plotArrivalTime)
+
+#Save arrival times as a function of repetition number
+ddply(pathData, .(trial), saveArrivalTime)
 
 # Saving image non-parallel:
 # invisible(llply(names(splitPol), function(x){
