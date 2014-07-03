@@ -30,7 +30,7 @@
 	<!--Subject groups -->
 	<group>
 		<name>oneLayer</name>
-		<numMembers>1</numMembers>
+		<numMembers>2</numMembers>
 		<model>
 			<name>MultiScaleMultiIntentionCooperativeModel</name>
 			<params>
@@ -113,7 +113,16 @@
 		<afterTrialLoggers>
 			<!-- <logger> <name>PolicyDumperWithIntention</name> <params> <numIntentions>8</numIntentions> 
 				</params> </logger> -->
+			<logger>
+                <name>WallLogger</name>
+            </logger>
 		</afterTrialLoggers>
+		<plotters>
+			<plotter>
+				<name>MutliFeedersPlotter</name>
+				<params></params>
+			</plotter>
+		</plotters>
 	</trial>
 
 	<!-- 4 testing trials -->
