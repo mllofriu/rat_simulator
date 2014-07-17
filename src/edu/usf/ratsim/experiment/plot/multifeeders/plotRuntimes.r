@@ -10,7 +10,7 @@
 
 plotArrival <- function(pathData){
   print (pathData)
-  summarizedRunTimes <- ddply(pathData, .(group), summarise, sdRT = sd(mRT)/sqrt(length(mRT)), mRT = mean(mRT))
+  summarizedRunTimes <- ddply(pathData, .(group), summarise, sdRT = sd(runtime)/sqrt(length(runtime)), mRT = mean(runtime))
   print(summarizedRunTimes)
   p <- ggplot(summarizedRunTimes, aes(x=group, y=mRT)) + geom_errorbar(aes(ymin=mRT-sdRT, ymax=mRT+sdRT, color=group), width=.3) + geom_point(aes(color=group))
 #   print(p)
@@ -23,7 +23,7 @@ files <- list.files('.', 'summary.csv', recursive=T)
 runtimeFrames<-lapply(files,read.csv)
  
 # Adapt from previous format
-runtimeFrames<-lapply(runtimeFrames, function(x) x[-5])
+#runtimeFrames<-lapply(runtimeFrames, function(x) x[-5])
 runtimes<-Reduce(function(x,y) merge (x,y, all=T), runtimeFrames)
 
 ddply(runtimes, .(trial), plotArrival)
