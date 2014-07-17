@@ -171,7 +171,7 @@ plotPolicyOnMaze <- function(name, pathData, policyData, wallData, maze){
 
 saveArrivalTime <- function(pathData){
   runTimes <- ddply(pathData, .(trial, group, subject, repetition), summarise, runTime = length(x))
-  summarizedRunTimes <- ddply(runTimes, .(trial, group, repetition), summarise, sdRT = sd(runTime)/sqrt(length(runTime)), mRT = mean(runTime))
+  summarizedRunTimes <- ddply(runTimes, .(trial, group, repetition), summarise, runtime = mean(runTime))
   write.csv(summarizedRunTimes, "summary.csv")
   #   print(summarizedRunTimes)
 #   p <- ggplot(summarizedRunTimes, aes(x=group, y=mRT)) + geom_errorbar(aes(ymin=mRT-sdRT, ymax=mRT+sdRT, color=group), width=.3) + geom_point(aes(color=group))
