@@ -251,7 +251,7 @@ public class Experiment implements Runnable {
 
 //			execPlottingScripts();
 		} else {
-			int i = 0;
+			int i = 1;
 			int individualNum = Integer.parseInt(Configuration
 					.getString("Log.INDIVIDUAL"));
 			for (final Entry<String, Hashtable<String, ExpSubject>> groupSubjects : groups
