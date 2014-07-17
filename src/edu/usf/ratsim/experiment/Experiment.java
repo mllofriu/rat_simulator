@@ -62,7 +62,7 @@ public class Experiment implements Runnable {
 	private Hashtable<String, Hashtable<String, ExpSubject>> groups;
 
 	public Experiment(String filename, String logPath, String individual) {
-		System.out.println("Starting " + logPath);
+		System.out.println("Starting individual " + individual + " in log " + logPath);
 		
 		// If there is no log path, compute it
 		if (logPath == null) {
