@@ -381,6 +381,9 @@
             <!-- <logger> <name>PolicyDumperWithIntention</name> <params> <numIntentions>8</numIntentions> 
                 </params> </logger> -->
         </afterTrialLoggers>
+        <plotters>
+		</plotters>
+
     </trial>
 
     <trial>
@@ -471,6 +474,12 @@
                 <name>WallLogger</name>
             </logger>
         </afterTrialLoggers>
+		<plotters>
+			<plotter>
+				<name>MutliFeedersPlotter</name>
+				<params></params>
+			</plotter>
+		</plotters>
     </trial>
     <trial>
         <name>Recall Small</name>
@@ -567,6 +576,13 @@
                 <name>WallLogger</name>
             </logger>
         </afterTrialLoggers>
+        <plotters>
+			<plotter>
+				<name>MutliFeedersPlotter</name>
+				<params></params>
+			</plotter>
+		</plotters>
+
     </trial>
     <trial>
         <name>Recall Large</name>
@@ -663,6 +679,13 @@
                 <name>WallLogger</name>
             </logger>
         </afterTrialLoggers>
+		<plotters>
+			<plotter>
+				<name>MutliFeedersPlotter</name>
+				<params></params>
+			</plotter>
+		</plotters>
+
     </trial>
 
 
