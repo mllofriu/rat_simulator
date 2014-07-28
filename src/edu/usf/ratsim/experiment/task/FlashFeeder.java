@@ -25,7 +25,8 @@ public class FlashFeeder implements ExperimentTask {
 			univ.setFlashingFeeder(feeder, true);
 			univ.setActiveFeeder(feeder, true);
 		} else if (!univ.getFlashingFeeders().isEmpty()
-				&& univ.hasRobotFoundFeeder(univ.getFlashingFeeders().get(0))) {
+				&& univ.hasRobotFoundFeeder(univ.getFlashingFeeders().get(0))
+				&& univ.hasRobotAte()) {
 			int flashingFeeder = univ.getFlashingFeeders().get(0);
 			univ.setFlashingFeeder(flashingFeeder, false);
 			univ.setActiveFeeder(flashingFeeder, false);

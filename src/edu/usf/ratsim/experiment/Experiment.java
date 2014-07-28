@@ -100,7 +100,7 @@ public class Experiment implements Runnable {
 		try {
 			FileUtils.copyURLToFile(
 					getClass().getResource(Configuration.PROP_FILE), new File(
-							getLogPath() + File.separator
+							logPath + File.separator
 									+ Configuration.PROP_FILE));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -77,4 +77,11 @@ public interface ExperimentUniverse {
 
 	public void dispose();
 
+	public void robotEat();
+	
+	public void clearRobotAte();
+
+	public boolean hasRobotAte();
+
+	public boolean hasRobotTriedToEat();
 }

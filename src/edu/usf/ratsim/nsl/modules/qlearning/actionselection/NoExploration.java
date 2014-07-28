@@ -39,20 +39,20 @@ public class NoExploration extends NslModule {
 		for (int i = 0; i < overallValues.length; i++)
 			overallValues[i] = 0;
 		// Add each contribution
-		// System.out.println("Values");
+		System.out.println("Values");
 		for (NslDinFloat1 layerVal : votes) {
 			for (int angle = 0; angle < layerVal.getSize(); angle++) {
 				overallValues[angle] += layerVal.get(angle);
-//				System.out.print(layerVal.get(angle) + "\t\t");
+				System.out.print(layerVal.get(angle) + "\t\t");
 			}
-//			System.out.println();
+			System.out.println();
 		}
-//		System.out.println();
+		System.out.println();
 		//
-//		System.out.print("Values\t");
-//		for (int angle = 0; angle < Utiles.numActions; angle++)
-//			System.out.print(overallValues[angle] + "\t\t");
-//		System.out.println();
+		// System.out.print("Values\t");
+		// for (int angle = 0; angle < Utiles.numActions; angle++)
+		// System.out.print(overallValues[angle] + "\t\t");
+		// System.out.println();
 		//
 		float maxVal = Float.MIN_VALUE;
 		for (int angle = 0; angle < overallValues.length; angle++)
@@ -85,20 +85,35 @@ public class NoExploration extends NslModule {
 		Collections.sort(actions);
 		action = actions.size() - 1;
 
+		if (actions.get(action).getAction() == Utiles.eatAction
+				&& actions.get(action).getValue() < 0)
+			action = action - 1;
+
 		// Rotate the robot the desired angle
-		float angle = Utiles.getAction(actions.get(action).getAction());
-//		if (angle != 0)
-			robot.rotate(angle);
-//		else {
+		if (actions.get(action).getAction() == Utiles.eatAction) {
+			System.out.println("Eating");
+			robot.eat();
+		} else {
+			float angle = Utiles
+					.getActionAngle(actions.get(action).getAction());
 			aff = robot.getAffordances();
-			if (aff[Utiles.discretizeAction(0)])
-				robot.forward();
-//		}
+			// If going forward and no affordance - rotate
+			if (angle == 0 && !aff[Utiles.discretizeAction(0)])
+				angle = Utiles.getActionAngle(0);
+
+			do {
+				robot.rotate(angle);
+				aff = robot.getAffordances();
+			} while (!aff[Utiles.discretizeAction(0)]);
+
+			// else {
+			robot.forward();
+			// }
+		}
 
 		// Publish the taken action
 		takenAction.set(actions.get(action).getAction());
 		// System.out.println(takenAction.get());
 
-		
 	}
 }

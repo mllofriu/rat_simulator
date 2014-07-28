@@ -11,7 +11,7 @@ public class FoundFoodStopCond implements StopCondition {
 	}
 
 	public boolean experimentFinished() {
-		return uni.hasRobotFoundFood();
+		return uni.hasRobotFoundFood() && uni.hasRobotAte();
 	}
 
 }
