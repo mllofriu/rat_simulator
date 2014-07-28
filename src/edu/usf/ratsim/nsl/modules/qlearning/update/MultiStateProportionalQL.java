@@ -30,6 +30,7 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 	private NslDinInt0 takenAction;
 	private NslDoutFloat2 value;
 	private NslDinFloat1 statesBefore;
+	private NslDinFloat1 actionExpectedValues;
 
 	private float alpha;
 	private float discountFactor;
@@ -52,6 +53,8 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 
 		value = new NslDoutFloat2(this, "value", numStates, numActions);
 		value.set(initialValue);
+		
+		actionExpectedValues = new NslDinFloat1(this, "expectedValues", numActions);
 		// for (int s = 0; s < numStates; s++)
 		// for (int a = 0; a < numActions; a++)
 		// value.set(s,a,initialValue);
@@ -101,7 +104,10 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 
 	private void updateLastAction(int sBefore, int a, float maxERNextState) {
 
-		float actionValue = value.get(sBefore, a);
+//		float actionValue = value.get(sBefore, a);
+		// Get the value expected return from the sum of all votes
+		float actionValue = actionExpectedValues.get(a);
+		
 		// Weight by the activity of both states
 		// Q(s,a) = A(s) * [Q(s,a) + 
 		//	alpha ( reward + gamma * sum_s' max_a' A(s')*Q(s',a') - Q(s,a)]
