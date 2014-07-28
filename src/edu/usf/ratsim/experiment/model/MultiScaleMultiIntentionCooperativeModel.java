@@ -238,18 +238,26 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	}
 
 	public void makeConn() {
+		// Connect anygoal to taxic bh
 		nslConnect(getChild(BEFORE_ANY_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(FOOD_FINDER_STR), "goalFeeder");
 		nslConnect(getChild(FOOD_FINDER_STR), "votes",
 				getChild(ACTION_PERFORMER_STR), "votes" + 1);
 		nslConnect(getChild(WALLAVOID_STR), "votes",
 				getChild(ACTION_PERFORMER_STR), "votes" + (1 + 1));
+		// Connect active goal to intention
 		nslConnect(getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(BEFORE_INTENTION_STR), "goalFeeder");
+		// Mantain the same goal before and after
+		nslConnect(getChild(BEFORE_ANY_GOAL_DECIDER_STR), "goalFeeder",
+				getChild(AFTER_ANY_GOAL_DECIDER_STR), "goalFeeder");
+		nslConnect(getChild(AFTER_ANY_GOAL_DECIDER_STR), "goalFeeder",
+				getChild(BEFORE_ANY_GOAL_DECIDER_STR), "goalFeeder");
 		nslConnect(getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(AFTER_ACTIVE_GOAL_DECIDER_STR), "goalFeeder");
 		nslConnect(getChild(AFTER_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder");
+		// Connect active goal to intention
 		nslConnect(getChild(AFTER_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(AFTER_INTENTION_STR), "goalFeeder");
 		nslConnect(getChild(BEFORE_INTENTION_STR), "goalFeeder",

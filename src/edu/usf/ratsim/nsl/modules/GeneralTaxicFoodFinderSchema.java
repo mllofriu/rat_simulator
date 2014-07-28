@@ -42,24 +42,33 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 		votes.set(0);
 //		System.out.println(goalFeeder.get());
 		if (goalFeeder.get() != -1) {
-			// Get angle to food
-			Point3f rPos = univ.getRobotPosition();
-			Point3f fPos = univ.getFoodPosition(goalFeeder.get());
-
-			// Get the vector food - robot
-			Vector3f vToFood = Utiles.vectorToPoint(rPos, fPos);
-
-			// Build quat4d for angle to food
-			// Use (1,0,0) to get absolute orientation
-			Quat4f rotToFood = Utiles
-					.rotToPoint(new Vector3f(1, 0, 0), vToFood);
-
-			Quat4f currRot = univ.getRobotOrientation();
-			int action = Utiles.bestActionToRot(rotToFood, currRot);
-			if (univ.getFlashingFeeders().contains(goalFeeder.get()))
-				votes.set(action, rewardFlashing);
-			else 
-				votes.set(action, rewardNonFlashing);
+			if (univ.isRobotCloseToFeeder(goalFeeder.get())){
+				if (univ.getFlashingFeeders().contains(goalFeeder.get()))
+					votes.set(Utiles.eatAction, rewardFlashing);
+				else 
+					votes.set(Utiles.eatAction, rewardNonFlashing);
+				System.out.println("Setting votes to eat");
+			} else {
+//				votes.set(Utiles.eatAction, Float.NEGATIVE_INFINITY);
+				// Get angle to food
+				Point3f rPos = univ.getRobotPosition();
+				Point3f fPos = univ.getFoodPosition(goalFeeder.get());
+	
+				// Get the vector food - robot
+				Vector3f vToFood = Utiles.vectorToPoint(rPos, fPos);
+	
+				// Build quat4d for angle to food
+				// Use (1,0,0) to get absolute orientation
+				Quat4f rotToFood = Utiles
+						.rotToPoint(new Vector3f(1, 0, 0), vToFood);
+	
+				Quat4f currRot = univ.getRobotOrientation();
+				int action = Utiles.bestActionToRot(rotToFood, currRot);
+				if (univ.getFlashingFeeders().contains(goalFeeder.get()))
+					votes.set(action, rewardFlashing);
+				else 
+					votes.set(action, rewardNonFlashing);
+			}
 			
 		}
 	}

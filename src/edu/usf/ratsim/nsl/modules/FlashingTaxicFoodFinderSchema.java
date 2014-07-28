@@ -38,38 +38,46 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 		votes.set(0);
 		if (goalFeeder.get() != -1
 				&& univ.getFlashingFeeders().contains(goalFeeder.get())) {
-			// Get angle to food
-			Point3f rPos = univ.getRobotPosition();
-			Point3f fPos = univ.getFoodPosition(goalFeeder.get());
-			Quat4f rRot = univ.getRobotOrientation();
 
-			// Get the vector food - robot
-			Vector3f vToFood = Utiles.vectorToPoint(rPos, fPos);
+			System.out.println("Should I eat?");
+			if (univ.isRobotCloseToFeeder(goalFeeder.get())){
+				votes.set(Utiles.eatAction, maxReward);
+				System.out.println("Setting votes to eat");
+			} else {
+				// Get angle to food
+				Point3f rPos = univ.getRobotPosition();
+				Point3f fPos = univ.getFoodPosition(goalFeeder.get());
+				Quat4f rRot = univ.getRobotOrientation();
 
-			// Build quat4d for angle to food
-			// Use (1,0,0) to get absolute orientation
-			Quat4f rotToFood = Utiles
-					.rotToPoint(new Vector3f(1, 0, 0), vToFood);
+				// Get the vector food - robot
+				Vector3f vToFood = Utiles.vectorToPoint(rPos, fPos);
 
-			// Get affordances
-//			boolean[] affordances;
+				// Build quat4d for angle to food
+				// Use (1,0,0) to get absolute orientation
+				Quat4f rotToFood = Utiles.rotToPoint(new Vector3f(1, 0, 0),
+						vToFood);
 
-			// Get best action to food
-//			int action = Utiles.bestActionToRot(rotToFood, rRot);
+				// Get affordances
+				// boolean[] affordances;
 
-//			System.out.println(goalFeeder.get() + " " + Utiles.discretizeAngle(new Vector3f(1, 0, 0).angle(vToFood)));
-			
-			votes.set(Utiles.discretizeAngle(rotToFood), maxReward);
-			
-//			if (action == -1)
-//				System.out.println("No affordances available");
-//			else {
-//				robot.rotate(Utiles.actions[action]);
-//				affordances = robot.getAffordances();
-//				if (affordances[Utiles.discretizeAction(0)])
-//					robot.forward();
-//			}
+				// Get best action to food
+				// int action = Utiles.bestActionToRot(rotToFood, rRot);
 
+				// System.out.println(goalFeeder.get() + " " +
+				// Utiles.discretizeAngle(new Vector3f(1, 0,
+				// 0).angle(vToFood)));
+
+				votes.set(Utiles.discretizeAngle(rotToFood), maxReward);
+
+				// if (action == -1)
+				// System.out.println("No affordances available");
+				// else {
+				// robot.rotate(Utiles.actions[action]);
+				// affordances = robot.getAffordances();
+				// if (affordances[Utiles.discretizeAction(0)])
+				// robot.forward();
+				// }
+			}
 		}
 	}
 }
