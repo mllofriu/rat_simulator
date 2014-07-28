@@ -30,7 +30,7 @@ public class Explorer extends NslModule {
 			action = action > Utiles.numActions ? Utiles.numActions - 1
 					: action;
 			// Rotate the robot to the desired action
-			robot.rotate(Utiles.getAction(action));
+			robot.rotate(Utiles.getActionAngle(action));
 			// Re-calculate affordances
 			affordances = robot.getAffordances();
 		} while (!affordances[Utiles.discretizeAction(0)]);

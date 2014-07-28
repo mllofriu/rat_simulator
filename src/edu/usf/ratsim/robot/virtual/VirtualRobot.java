@@ -123,4 +123,9 @@ public class VirtualRobot implements IRobot {
 		return universe.getRobotAffordances(lookahead);
 	}
 
+	@Override
+	public void eat() {
+		universe.robotEat();
+	}
+
 }

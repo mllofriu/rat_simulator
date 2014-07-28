@@ -26,6 +26,11 @@ public interface IRobot {
 	 *            turns.
 	 */
 	public abstract void rotate(float degrees);
+	
+	/**
+	 * Makes the robot eat food
+	 */
+	public abstract void eat();
 
 	/**
 	 * Returns possible actions to perform
