@@ -66,8 +66,15 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	private List<WallNode> wallNodes;
 
+	private boolean robotAte;
+
+	private boolean robotTriedToEat;
+
 	public VirtualExpUniverse(String mazeResource) {
 		super();
+		
+		robotAte = false;
+		robotTriedToEat = false;
 
 		if (Configuration.getBoolean("UniverseFrame.display")) {
 			Locale l = new Locale(this);
@@ -440,7 +447,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 					0f, 0f));
 			// The rotatio of the action
 			Transform3D rot = new Transform3D();
-			rot.rotY(Utiles.getAction(action));
+			rot.rotY(Utiles.getActionAngle(action));
 			// Apply hipotetical transformations
 			rPos.mul(rot);
 			rPos.mul(trans);
@@ -526,5 +533,27 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	public void dispose() {
 		for (FeederNode f : feeders)
 			f.terminate();
+	}
+
+	public void robotEat() {
+		robotTriedToEat = true;
+		if(getFeedingFeeder() != -1){
+			robotAte = true;
+		}
+	}
+	
+	public void clearRobotAte() {
+		robotAte = false;
+		robotTriedToEat = false;
+	}
+
+	@Override
+	public boolean hasRobotAte() {
+		return robotAte;
+	}
+
+	@Override
+	public boolean hasRobotTriedToEat() {
+		return robotTriedToEat;
 	}
 }

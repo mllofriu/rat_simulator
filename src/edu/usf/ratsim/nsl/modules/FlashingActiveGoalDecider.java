@@ -39,7 +39,7 @@ public class FlashingActiveGoalDecider extends NslModule {
 		if (!universe.getFlashingFeeders().isEmpty()) {
 			goalFeeder.set(universe.getFlashingFeeders().get(0));
 		} else {
-			if (universe.hasRobotFoundFood()) {
+			if (universe.hasRobotAte() || universe.hasRobotTriedToEat()) {
 				List<Integer> active = universe.getActiveFeeders();
 				// Dont pick the same goal twice
 //				active.remove(new Integer(goalFeeder.get()));

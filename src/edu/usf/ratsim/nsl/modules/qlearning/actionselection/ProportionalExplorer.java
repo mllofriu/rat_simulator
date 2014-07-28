@@ -104,14 +104,22 @@ public class ProportionalExplorer extends NslModule {
 		} while (nextRVal >= 0 && action < actions.size() - 1);
 
 		// Try the selected action
-		robot.rotate(Utiles.getAction(actions.get(action).getAction()));
-		boolean[] aff = robot.getAffordances();
-		// Random if there was no affordable positive value action
-		// lastActionRandom = actions.get(action).getValue() <=
-		// EXPLORATORY_VARIANCE;
-//		actions.remove(action);
-		// } while (!aff[Utiles.discretizeAction(0)]);
-
+		if (actions.get(action).getAction() == Utiles.eatAction){
+			System.out.println("Eating");
+			robot.eat();
+		} else {
+			robot.rotate(Utiles.getActionAngle(actions.get(action).getAction()));
+			boolean[] aff = robot.getAffordances();
+			// Random if there was no affordable positive value action
+			// lastActionRandom = actions.get(action).getValue() <=
+			// EXPLORATORY_VARIANCE;
+	//		actions.remove(action);
+			// } while (!aff[Utiles.discretizeAction(0)]);
+	
+			
+			if (aff[Utiles.discretizeAction(0)])
+				robot.forward();
+		}
 		// Publish the taken action
 		takenAction.set(actions.get(action).getAction());
 
@@ -124,8 +132,7 @@ public class ProportionalExplorer extends NslModule {
 		// }
 		// aff = robot.getAffordances();
 		// }
-		if (aff[Utiles.discretizeAction(0)])
-			robot.forward();
+
 	}
 
 	public boolean wasLastActionRandom() {

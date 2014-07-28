@@ -26,7 +26,9 @@ public class Utiles {
 	public static final float actionInterval = (float) (Math.PI / 8);
 	private static final float actionMin = (float) (-Math.PI / 8);
 	// private static final float actionMin = (float) 0;
-	public static final int numActions = 3;
+	public static final int numRotations = 3;
+	public static final int numActions = numRotations + 1;
+	public static int eatAction = numRotations;
 	// private static final float actionMax = (float) (Math.PI/8);
 
 	private static final float angleInterval = (float) (Math.PI / 8);
@@ -34,9 +36,15 @@ public class Utiles {
 	public static final int numAngles = 16;
 	// private static final float angleMax = (float) (2* Math.PI -
 	// angleInterval);
-	private static final float EPS_STRAIGHT = actionInterval;;
+	private static final float EPS_STRAIGHT = actionInterval;
 
-	public static float getAction(int index) {
+
+	/**
+	 * Gets the angle rotation for an action
+	 * @param index
+	 * @return
+	 */
+	public static float getActionAngle(int index) {
 		float angle = actionMin;
 		int i = 0;
 		while (i < index) {
@@ -139,9 +147,9 @@ public class Utiles {
 
 		int action = -1;
 		float angleDifference = (float) (Math.PI * 2);
-		for (int i = 0; i < numActions; i++) {
+		for (int i = 0; i < numRotations; i++) {
 			// Make rotation for this action
-			Quat4f rotAction = angleToRot(getAction(i));
+			Quat4f rotAction = angleToRot(getActionAngle(i));
 			// Invert
 			rotAction.inverse();
 			// Compose rotToMake and inverse of action.
@@ -202,9 +210,9 @@ public class Utiles {
 
 		int action = -1;
 		float angleDifference = (float) (Math.PI * 2);
-		for (int i = 0; i < numActions; i++) {
+		for (int i = 0; i < numRotations; i++) {
 			// Make rotation for this action
-			Quat4f rotAction = angleToRot(getAction(i));
+			Quat4f rotAction = angleToRot(getActionAngle(i));
 			// Invert
 			rotAction.inverse();
 			// Compose rotToMake and inverse of action.
@@ -232,7 +240,7 @@ public class Utiles {
 	// }
 
 	public static double actionDistance(int a1, int a2) {
-		return Math.min(Math.abs(a1 - a2), Math.abs(numActions - a2 + a1));
+		return Math.min(Math.abs(a1 - a2), Math.abs(numRotations - a2 + a1));
 	}
 
 	public static int discretizeAngle(Quat4f allotRot) {

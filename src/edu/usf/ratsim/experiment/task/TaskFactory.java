@@ -49,6 +49,8 @@ public class TaskFactory {
 				res.add(new PlaceRandomWallsTask(taskParams));
 			} else if (taskName.equals("ClearWalls")) {
 				res.add(new ClearWallsTask());
+			} else if (taskName.equals("ResetRobotAte")) {
+				res.add(new ResetRobotAte());
 			} else {
 				throw new RuntimeException("Task " + taskName
 						+ " not implemented.");
