@@ -16,6 +16,7 @@ import edu.usf.ratsim.nsl.modules.GeneralTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.Intention;
 import edu.usf.ratsim.nsl.modules.JointStatesManyConcatenate;
 import edu.usf.ratsim.nsl.modules.JointStatesManyMultiply;
+import edu.usf.ratsim.nsl.modules.JointStatesManySum;
 import edu.usf.ratsim.nsl.modules.PlaceIntention;
 import edu.usf.ratsim.nsl.modules.WallAvoider;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
@@ -56,6 +57,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private static final String BEFORE_PIHD = "BPIHD";
 	private static final String BEFORE_CONCAT = "BALL";
 	private static final String AFTER_CONCAT = "AALL";
+	private static final String JOINT_VOTES = "JVOTES";
 	private List<ArtificialPlaceCellLayer> beforePcls;
 	private List<PolicyDumper> qLUpdVal;
 	// private ProportionalExplorer actionPerformerVote;
@@ -165,6 +167,9 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		// Wall following for obst. avoidance
 		new WallAvoider(WALLAVOID_STR, this, robot, universe, numActions,
 				wallFollowingVal);
+		
+		// Three joint states - QL Votes, Taxic, WallAvoider
+		new JointStatesManySum(JOINT_VOTES, this, universe, 3, numActions);
 
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf
@@ -241,10 +246,11 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		// Connect anygoal to taxic bh
 		nslConnect(getChild(BEFORE_ANY_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(FOOD_FINDER_STR), "goalFeeder");
+		// Connect taxic behaviors to vote_adder
 		nslConnect(getChild(FOOD_FINDER_STR), "votes",
-				getChild(ACTION_PERFORMER_STR), "votes" + 1);
+				getChild(JOINT_VOTES), "state" + 0);
 		nslConnect(getChild(WALLAVOID_STR), "votes",
-				getChild(ACTION_PERFORMER_STR), "votes" + (1 + 1));
+				getChild(JOINT_VOTES), "state" + 1);
 		// Connect active goal to intention
 		nslConnect(getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(BEFORE_INTENTION_STR), "goalFeeder");
@@ -294,9 +300,13 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		nslConnect(getChild(QL_STR), "value", getChild(ACTION_SELECTION_STR),
 				"value");
 		nslConnect(getChild(ACTION_SELECTION_STR), "votes",
-				getChild(ACTION_PERFORMER_STR), "votes" + 0);
+				getChild(JOINT_VOTES), "state" + 2);
+		nslConnect(getChild(JOINT_VOTES), "jointState",
+				getChild(ACTION_PERFORMER_STR), "votes");
 		nslConnect(getChild(ACTION_PERFORMER_STR), "takenAction",
 				getChild(QL_STR), "takenAction");
+		nslConnect(getChild(JOINT_VOTES), "jointState",
+				getChild(QL_STR), "expectedValues");
 		nslConnect(getChild(REWARD_STR), "reward", getChild(QL_STR), "reward");
 		nslConnect(getChild(BEFORE_CONCAT), "jointState", getChild(QL_STR),
 				"statesBefore");
