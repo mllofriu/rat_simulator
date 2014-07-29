@@ -47,7 +47,7 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 					votes.set(Utiles.eatAction, rewardFlashing);
 				else 
 					votes.set(Utiles.eatAction, rewardNonFlashing);
-				System.out.println("Setting votes to eat");
+//				System.out.println("Setting votes to eat");
 			} else {
 //				votes.set(Utiles.eatAction, Float.NEGATIVE_INFINITY);
 				// Get angle to food

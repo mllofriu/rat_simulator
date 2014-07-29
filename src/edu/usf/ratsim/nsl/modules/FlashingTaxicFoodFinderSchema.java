@@ -42,7 +42,7 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 			System.out.println("Should I eat?");
 			if (univ.isRobotCloseToFeeder(goalFeeder.get())){
 				votes.set(Utiles.eatAction, maxReward);
-				System.out.println("Setting votes to eat");
+//				System.out.println("Setting votes to eat");
 			} else {
 				// Get angle to food
 				Point3f rPos = univ.getRobotPosition();
