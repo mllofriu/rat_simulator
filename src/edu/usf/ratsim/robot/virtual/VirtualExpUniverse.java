@@ -46,7 +46,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		// TODO Auto-generated method stub
 		super.finalize();
 
-//		System.out.println("Finalizing Virtual Universe");
+		// System.out.println("Finalizing Virtual Universe");
 	}
 
 	private static final float CLOSE_TO_FOOD_THRS = Configuration
@@ -72,7 +72,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	public VirtualExpUniverse(String mazeResource) {
 		super();
-		
+
 		robotAte = false;
 		robotTriedToEat = false;
 
@@ -172,33 +172,34 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 			// addWall(-0.2f, 0.0f, 0.2f, 0.0f);
 			// bg.compile();
-		} else { 
-			// Just initialize the nodes we need 
+		} else {
+			// Just initialize the nodes we need
 			NodeList list;
 			org.w3c.dom.Node params;
-			
+
 			Document doc;
-			synchronized (VirtualExpUniverse.class){
+			synchronized (VirtualExpUniverse.class) {
 				try {
-					FileUtils.copyURLToFile(getClass().getResource(mazeResource),
-							new File("/tmp/maze.xml"));
+					FileUtils.copyURLToFile(getClass()
+							.getResource(mazeResource), new File(
+							"/tmp/maze.xml"));
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				doc = XMLDocReader.readDocument("/tmp/maze.xml");
 			}
-			
+
 			boundingRect = new BoundingRectNode(doc.getElementsByTagName(
 					"boundingRect").item(0));
-			
+
 			list = doc.getElementsByTagName("robotview");
 			params = list.item(0);
 			robot = new RobotNode(params);
-			
+
 			list = doc.getElementsByTagName("pool");
 			pool = new PoolNode(list.item(0));
-			
+
 			list = doc.getElementsByTagName("feeder");
 			feeders = new LinkedList<FeederNode>();
 			for (int i = 0; i < list.getLength(); i++) {
@@ -213,7 +214,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	public void addWall(float x1, float y1, float x2, float y2) {
 		WallNode w = new WallNode(x1, 0, y1, x2, 0, y2, 0.025f);
-		if (Configuration.getBoolean("UniverseFrame.display")) 
+		if (Configuration.getBoolean("UniverseFrame.display"))
 			bg.addChild(w);
 		wallNodes.add(w);
 	}
@@ -398,10 +399,19 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	public int getFeedingFeeder() {
 		Point3f robotPos = getRobotPosition();
 		for (int i = 0; i < feeders.size(); i++) {
-			if (feeders.get(i).isActive()
-					&& robotPos.distance(new Point3f(feeders.get(i)
-							.getPosition())) < CLOSE_TO_FOOD_THRS)
-				return i;
+			if (feeders.get(i).isActive())
+				if (robotPos
+						.distance(new Point3f(feeders.get(i).getPosition())) < CLOSE_TO_FOOD_THRS)
+					return i;
+			// else
+			// System.out.println("Robot to far away: "
+			// + robotPos.distance(new Point3f(feeders.get(i)
+			// .getPosition())));
+			// else
+			// System.out.println("Feeder not active at distance "
+			// + robotPos.distance(new Point3f(feeders.get(i)
+			// .getPosition())));
+
 		}
 		return -1;
 	}
@@ -536,12 +546,25 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	}
 
 	public void robotEat() {
-		robotTriedToEat = true;
-		if(getFeedingFeeder() != -1){
+		int feedingFeeder = -1;
+		
+		Point3f robotPos = getRobotPosition();
+		for (int i = 0; i < feeders.size(); i++) {
+			if (robotPos.distance(new Point3f(feeders.get(i).getPosition())) < CLOSE_TO_FOOD_THRS)
+				if (feeders.get(i).isActive())
+					feedingFeeder = i;
+				else
+					robotTriedToEat = true;
+		}
+
+		if (feedingFeeder != -1) {
+			System.out.println("Robot ate");
 			robotAte = true;
+		} else {
+//			System.out.println("Tried to eat but not close to active feeder");
 		}
 	}
-	
+
 	public void clearRobotAte() {
 		robotAte = false;
 		robotTriedToEat = false;

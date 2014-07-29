@@ -1,5 +1,6 @@
 package edu.usf.ratsim.experiment;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Hashtable;
 
@@ -84,6 +85,14 @@ public class Trial implements Runnable {
 	}
 
 	public void run() {
+		// Lock before starting
+		try {
+			System.out.println("Press enter to continue");
+			System.in.read();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 		// Load the trial tasks
 		loadInitialTasks(trialNode.getChild(STR_INITIAL_TASKS)
