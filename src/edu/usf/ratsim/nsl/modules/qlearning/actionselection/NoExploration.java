@@ -89,7 +89,7 @@ public class NoExploration extends NslModule {
 
 		// Rotate the robot the desired angle
 		if (actions.get(action).getAction() == Utiles.eatAction) {
-			System.out.println("Eating");
+			System.out.println("Trying to eat");
 			robot.eat();
 		} else {
 			float angle = Utiles

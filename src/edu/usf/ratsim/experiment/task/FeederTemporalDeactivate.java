@@ -13,7 +13,7 @@ public class FeederTemporalDeactivate implements ExperimentTask {
 	}
 
 	public void perform(ExperimentUniverse univ, ExpSubject subject) {
-		if(univ.hasRobotFoundFood()){
+		if(univ.hasRobotAte()){
 			// If one is sleeping, reactivate
 			if (sleepingFeeder != -1)
 				univ.setActiveFeeder(sleepingFeeder, true);
