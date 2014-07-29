@@ -48,7 +48,7 @@
 				<alpha>.8</alpha>
 				<initialValue>0</initialValue>
 				<flashingReward>1</flashingReward>
-				<nonFlashingReward>1</nonFlashingReward>
+				<nonFlashingReward>.01</nonFlashingReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
 				<proportionalQL>true</proportionalQL>
 			</params>
@@ -92,9 +92,7 @@
 			<task>
 				<name>ResetRobotAte</name>
 			</task>
-			<task>
-                <name>ResetRobotAte</name>
-            </task>
+
 			<!-- <task> <name>UnflashFeeder</name> </task> -->
 		</afterCycleTasks>
 		<afterTrialTasks>
