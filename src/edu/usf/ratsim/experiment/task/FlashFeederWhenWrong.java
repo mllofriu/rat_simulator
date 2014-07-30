@@ -7,14 +7,16 @@ import java.util.Random;
 import edu.usf.ratsim.experiment.ExperimentTask;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.subject.ExpSubject;
+import edu.usf.ratsim.support.ElementWrapper;
 
 public class FlashFeederWhenWrong implements ExperimentTask {
 
-	private static final int STEPS_THRS = 100;
+	private int timeout;
 	private int stepsSinceLastAte;
 	private Random r;
 
-	public FlashFeederWhenWrong() {
+	public FlashFeederWhenWrong(ElementWrapper taskParams) {
+		timeout = taskParams.getChildInt("timeout");
 		stepsSinceLastAte = 0;
 		r = new Random();
 	}
@@ -55,7 +57,7 @@ public class FlashFeederWhenWrong implements ExperimentTask {
 		} else
 			stepsSinceLastAte++;
 
-		if (stepsSinceLastAte > STEPS_THRS
+		if (stepsSinceLastAte > timeout
 				&& univ.getFlashingFeeders().isEmpty()) {
 			List<Integer> active = univ.getActiveFeeders();
 			active = new LinkedList<Integer>(active);
