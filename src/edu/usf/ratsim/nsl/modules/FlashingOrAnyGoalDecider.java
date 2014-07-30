@@ -20,6 +20,7 @@ public class FlashingOrAnyGoalDecider extends NslModule {
 	// Keep the goal as a static variable to be able to pass among iterations
 	public static int currentGoal;
 	private Random r;
+	private static int lastFeeder;
 	
 
 	public FlashingOrAnyGoalDecider(String nslName, NslModule nslParent,
@@ -36,7 +37,7 @@ public class FlashingOrAnyGoalDecider extends NslModule {
 //		List<Integer> feeders = universe.getFeeders();
 //		currentGoal = feeders.get(r.nextInt(feeders.size()));
 
-		
+		lastFeeder = -1;
 	}
 
 	public void simRun() {
@@ -51,14 +52,19 @@ public class FlashingOrAnyGoalDecider extends NslModule {
 			currentGoal = universe.getFlashingFeeders().get(0);
 		} else {
 			if (universe.hasRobotAte() || universe.hasRobotTriedToEat()) {
-//				System.out.println("Changin goal in "  + nslGetName());
-				List<Integer> feeders = universe.getFeeders();
-				// Dont pick the same goal twice
-				feeders.remove(new Integer(currentGoal));
-				if (!feeders.isEmpty()) {
-					currentGoal = feeders.get(r.nextInt(feeders.size()));
-				}
+				lastFeeder = currentGoal;
+				
+////			System.out.println("Changin goal in "  + nslGetName());
+//			List<Integer> feeders = universe.getFeeders();
+//			// Dont pick the same goal twice
+//			feeders.remove(new Integer(currentGoal));
+//			if (!feeders.isEmpty()) {
+//				currentGoal = feeders.get(r.nextInt(feeders.size()));
+//			}
 			}
+			
+			currentGoal = universe.getFeedingInFrontOfRobot(lastFeeder);
+			
 		}
 
 		goalFeeder.set(currentGoal);
