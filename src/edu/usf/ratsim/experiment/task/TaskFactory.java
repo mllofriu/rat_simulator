@@ -40,7 +40,7 @@ public class TaskFactory {
 			}else if (taskName.equals("FlashFeeder")) {
 				res.add(new FlashFeeder());
 			}else if (taskName.equals("FlashFeederWhenWrong")) {
-				res.add(new FlashFeederWhenWrong());
+				res.add(new FlashFeederWhenWrong(taskParams));
 			} else if (taskName.equals("FeederTemporalDeactivate")) {
 				res.add(new FeederTemporalDeactivate());
 			} else if (taskName.equals("UnflashFeeder")) {

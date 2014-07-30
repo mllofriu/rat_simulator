@@ -101,7 +101,7 @@
 			<stopCondition>
 				<name>FoundNFood</name>
 				<params>
-					<n>10</n>
+					<n>100</n>
 				</params>
 			</stopCondition>
 		</stopConditions>
@@ -164,6 +164,9 @@
 		<afterCycleTasks>
 			<task>
 				<name>FlashFeederWhenWrong</name>
+				<params>
+					<timeout>200</timeout>
+				</params>
 			</task>
 			<task>
                 <name>FeederTemporalDeactivate</name>
@@ -176,7 +179,7 @@
 		</afterTrialTasks>
 		<stopConditions>
 			<stopCondition>
-				<name>FoundNFood</name>
+				<name>FoundNFoodNoMistakes</name>
 				<params>
 					<n>15</n>
 				</params>
