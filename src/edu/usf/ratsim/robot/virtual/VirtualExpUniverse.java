@@ -547,7 +547,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	public void robotEat() {
 		int feedingFeeder = -1;
-		
+
 		Point3f robotPos = getRobotPosition();
 		for (int i = 0; i < feeders.size(); i++) {
 			if (robotPos.distance(new Point3f(feeders.get(i).getPosition())) < CLOSE_TO_FOOD_THRS)
@@ -561,7 +561,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			System.out.println("Robot ate");
 			robotAte = true;
 		} else {
-//			System.out.println("Tried to eat but not close to active feeder");
+			// System.out.println("Tried to eat but not close to active feeder");
 		}
 	}
 
@@ -578,5 +578,22 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	@Override
 	public boolean hasRobotTriedToEat() {
 		return robotTriedToEat;
+	}
+
+	@Override
+	public int getFeedingInFrontOfRobot(int excludeFeeder) {
+		float minAngle = Float.MAX_VALUE;
+		FeederNode bestNode = feeders.get(0);
+		for (FeederNode fn : feeders)
+			if (feeders.indexOf(fn) != excludeFeeder
+					&& Math.abs(Utiles.angleToPointWithOrientation(
+							getRobotOrientation(), getRobotPosition(),
+							new Point3f(fn.getPosition()))) < minAngle) {
+				minAngle = Math.abs(Utiles.angleToPointWithOrientation(
+						getRobotOrientation(), getRobotPosition(), new Point3f(
+								fn.getPosition())));
+				bestNode = fn;
+			}
+		return feeders.indexOf(bestNode);
 	}
 }

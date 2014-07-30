@@ -11,6 +11,7 @@ public class FlashingActiveGoalDecider extends NslModule {
 
 	private ExperimentUniverse universe;
 	public NslDoutInt0 goalFeeder;
+	public static int currentGoal;
 	private Random r;
 
 	public FlashingActiveGoalDecider(String nslName, NslModule nslParent,
@@ -23,9 +24,10 @@ public class FlashingActiveGoalDecider extends NslModule {
 		r = new Random();
 		// Initialize a goal
 		List<Integer> active = universe.getActiveFeeders();
-		// Dont pick the same goal twice
 		if (!active.isEmpty()) {
-			goalFeeder.set(active.get(r.nextInt(active.size())));
+//			goalFeeder.set(active.get(r.nextInt(active.size())));
+			currentGoal = 0;
+			goalFeeder.set(currentGoal);
 		}
 
 	}
@@ -36,20 +38,23 @@ public class FlashingActiveGoalDecider extends NslModule {
 			goalFeeder.set(universe.getActiveFeeders().get(
 					r.nextInt(universe.getActiveFeeders().size())));
 
-		if (!universe.getFlashingFeeders().isEmpty()) {
-			goalFeeder.set(universe.getFlashingFeeders().get(0));
-		} else {
+//		if (!universe.getFlashingFeeders().isEmpty()) {
+//			goalFeeder.set(universe.getFlashingFeeders().get(0));
+//		} else {
 			if (universe.hasRobotAte() /*|| universe.hasRobotTriedToEat()*/) {
-				List<Integer> active = universe.getActiveFeeders();
-				// Dont pick the same goal twice
-//				active.remove(new Integer(goalFeeder.get()));
-				// Instead of removing the desired feeder, remove the one actually found
-				active.remove(new Integer(universe.getFeedingFeeder()));
-				if (!active.isEmpty()) {
-					goalFeeder.set(active.get(r.nextInt(active.size())));
-				}
+//				List<Integer> active = universe.getActiveFeeders();
+//				// Dont pick the same goal twice
+////				active.remove(new Integer(goalFeeder.get()));
+//				// Instead of removing the desired feeder, remove the one actually found
+//				active.remove(new Integer(universe.getFeedingFeeder()));
+//				if (!active.isEmpty()) {
+//					goalFeeder.set(active.get(r.nextInt(active.size())));
+//				}
+				currentGoal = universe.getFeedingFeeder();
+				goalFeeder.set(currentGoal);
 			}
-		}
+			
+//		}
 
 		universe.clearWantedFeeders();
 		universe.setWantedFeeder(goalFeeder.get(), true);
