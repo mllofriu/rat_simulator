@@ -31,6 +31,8 @@ public class ConditionFactory {
 				res.add(new FoundFoodStopCond(universe));
 			} else if (condName.equals("FoundNFood")) {
 				res.add(new FoundNFoodStopCond(universe, condParams));
+			} else if (condName.equals("FoundNFoodNoMistakes")) {
+				res.add(new FoundNFoodNoMistakesStopCond(universe, condParams));
 			} else if (condName.equals("Time")) {
 				res.add(new TimeStop(condParams));
 			} else {
