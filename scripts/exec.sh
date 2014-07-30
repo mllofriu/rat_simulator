@@ -16,7 +16,7 @@ JAVA=java
 #JAVA=/etc/alternatives/java_sdk_1.7.0/bin/java
 #sh scripts/compile.sh
 
-export PATH=$PATH:/work/R-3.1.1/bin
+export PATH=/work/R-3.1.1/bin:$PATH
 
 Xvfb :$numIndividuals -screen 2 1600x1200x16 +extension GLX &
 xvfb_pid=$!
