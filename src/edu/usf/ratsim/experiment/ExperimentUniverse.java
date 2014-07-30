@@ -84,4 +84,6 @@ public interface ExperimentUniverse {
 	public boolean hasRobotAte();
 
 	public boolean hasRobotTriedToEat();
+
+	int getFeedingInFrontOfRobot(int excludeFeeder);
 }
