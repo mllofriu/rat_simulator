@@ -42,13 +42,13 @@
 				<stepHDCellsPerLayer>16</stepHDCellsPerLayer>
 				<numIntentions>8</numIntentions>
 				<deterministicActionSelection>true</deterministicActionSelection>
-				<foodReward>10</foodReward>
+				<foodReward>1</foodReward>
 				<nonFoodReward>-.01</nonFoodReward>
 				<discountFactor>.50</discountFactor>
 				<alpha>.8</alpha>
 				<initialValue>0</initialValue>
 				<flashingReward>1</flashingReward>
-				<nonFlashingReward>.01</nonFlashingReward>
+				<nonFlashingReward>1</nonFlashingReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
 				<proportionalQL>true</proportionalQL>
 			</params>
@@ -101,7 +101,7 @@
 			<stopCondition>
 				<name>FoundNFood</name>
 				<params>
-					<n>1000</n>
+					<n>10</n>
 				</params>
 			</stopCondition>
 		</stopConditions>
@@ -162,6 +162,9 @@
             </task>
 		</initialTasks>
 		<afterCycleTasks>
+			<task>
+				<name>FlashFeederWhenWrong</name>
+			</task>
 			<task>
                 <name>FeederTemporalDeactivate</name>
             </task>

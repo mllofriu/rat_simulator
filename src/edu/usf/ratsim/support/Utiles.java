@@ -124,6 +124,14 @@ public class Utiles {
 
 		return res;
 	}
+	
+	public static float angleToPointWithOrientation(Quat4f orientation, Point3f from, Point3f to)
+	{
+		Quat4f rotTo = rotToPoint(new Vector3f(1,0,0), vectorToPoint(from,to));
+		rotTo.inverse();
+		rotTo.mul(orientation);
+		return rotToAngle(rotTo);
+	}
 
 	public static Vector3f vectorToPoint(Point3f from, Point3f to) {
 		to.sub(from);

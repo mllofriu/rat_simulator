@@ -36,19 +36,19 @@ public class JointStatesManySum extends NslModule {
 
 		int jointStatesSize = jointState.getSize();
 
-		System.out.println("Values");
+//		System.out.println("Values");
 		for (int i = 0; i < states.size(); i++) {
 			// Add up all states values
 			for (int j = 0; j < jointStatesSize; j++) {
-				System.out.print(states.get(i).get(j) + "\t\t");
+//				System.out.print(states.get(i).get(j) + "\t\t");
 				jointState.set(j, jointState.get(j) + states.get(i).get(j));
 			}
 			
-			System.out.println();
+//			System.out.println();
 		}
 		// Go over all states in joint state
 
-		System.out.println();
+//		System.out.println();
 	}
 
 	@Override
