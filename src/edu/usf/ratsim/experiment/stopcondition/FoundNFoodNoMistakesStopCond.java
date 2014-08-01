@@ -20,6 +20,7 @@ public class FoundNFoodNoMistakesStopCond implements StopCondition {
 	}
 
 	public boolean experimentFinished() {
+		
 		if (uni.hasRobotFoundFood() && uni.hasRobotAte())
 			found--;
 		// If made a mistake but is the first one, dont reinitialize
@@ -33,6 +34,8 @@ public class FoundNFoodNoMistakesStopCond implements StopCondition {
 			found = n;
 			hasMadeMistake = false;
 		}
+		
+		System.out.println("Feeders to go: " + found);
 		return found <= 0;
 	}
 

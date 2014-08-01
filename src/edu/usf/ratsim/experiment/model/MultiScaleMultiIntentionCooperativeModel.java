@@ -22,7 +22,7 @@ import edu.usf.ratsim.nsl.modules.WallAvoider;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.NoExploration;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalMaxVotes;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQL;
 import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
@@ -34,7 +34,8 @@ import edu.usf.ratsim.support.Utiles;
 // TODO: works but does not learn in this version
 public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		implements RLRatModel {
-	private static final String ACTION_SELECTION_STR = "ASL";
+	private static final String BEFORE_ACTION_SELECTION_STR = "BASL";
+	private static final String AFTER_ACTION_SELECTION_STR = "AASL";
 	private static final String ACTION_PERFORMER_STR = "AP";
 	private static final String FOOD_FINDER_STR = "TD";
 	private static final String BEFORE_STATE_STR = "BeforePCL";
@@ -156,9 +157,9 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 
 		// Take the value of each state and vote for an action
 		if (proportionalQl)
-			new ProportionalMaxVotes(ACTION_SELECTION_STR, this, bAll.getSize());
+			new ProportionalVotes(BEFORE_ACTION_SELECTION_STR, this, bAll.getSize());
 		else
-			new WTAVotes(ACTION_SELECTION_STR, this, bAll.getSize());
+			new WTAVotes(BEFORE_ACTION_SELECTION_STR, this, bAll.getSize());
 
 		// Create taxic driver
 		new GeneralTaxicFoodFinderSchema(FOOD_FINDER_STR, this, robot,
@@ -227,6 +228,12 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 			}
 		new JointStatesManyConcatenate(AFTER_CONCAT, this, universe, apihdSizes);
 
+		// Take the value of each state and vote for an action
+		if (proportionalQl)
+			new ProportionalVotes(AFTER_ACTION_SELECTION_STR, this, bAll.getSize());
+		else
+			new WTAVotes(AFTER_ACTION_SELECTION_STR, this, bAll.getSize());
+		
 		if (proportionalQl)
 			new MultiStateProportionalQL(QL_STR, this, bAll.getSize(),
 					numActions, discountFactor, alpha, initialValue);
@@ -296,22 +303,28 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 
 		// Connect the joint states to the QL system
 		nslConnect(getChild(BEFORE_CONCAT), "jointState",
-				getChild(ACTION_SELECTION_STR), "states");
-		nslConnect(getChild(QL_STR), "value", getChild(ACTION_SELECTION_STR),
+				getChild(BEFORE_ACTION_SELECTION_STR), "states");
+		nslConnect(getChild(AFTER_CONCAT), "jointState",
+				getChild(AFTER_ACTION_SELECTION_STR), "states");
+		nslConnect(getChild(QL_STR), "value", getChild(BEFORE_ACTION_SELECTION_STR),
 				"value");
-		nslConnect(getChild(ACTION_SELECTION_STR), "votes",
+		nslConnect(getChild(QL_STR), "value", getChild(AFTER_ACTION_SELECTION_STR),
+				"value");
+		nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes",
 				getChild(JOINT_VOTES), "state" + 2);
 		nslConnect(getChild(JOINT_VOTES), "jointState",
 				getChild(ACTION_PERFORMER_STR), "votes");
 		nslConnect(getChild(ACTION_PERFORMER_STR), "takenAction",
 				getChild(QL_STR), "takenAction");
-		nslConnect(getChild(JOINT_VOTES), "jointState",
-				getChild(QL_STR), "expectedValues");
+		nslConnect(getChild(FOOD_FINDER_STR), "votes",
+				getChild(QL_STR), "taxonExpectedValues");
 		nslConnect(getChild(REWARD_STR), "reward", getChild(QL_STR), "reward");
 		nslConnect(getChild(BEFORE_CONCAT), "jointState", getChild(QL_STR),
 				"statesBefore");
 		nslConnect(getChild(AFTER_CONCAT), "jointState", getChild(QL_STR),
 				"statesAfter");
+		nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes", getChild(QL_STR),
+				"actionVotesAfter");
 
 	}
 
