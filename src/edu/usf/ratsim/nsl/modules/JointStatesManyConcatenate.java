@@ -32,7 +32,8 @@ public class JointStatesManyConcatenate extends NslModule {
 	public void simRun() {
 //		jointState.set(0);
 
-		// Just copy the states one after the other
+//		System.out.println("sum " + sum);
+		// Normalized 
 		int i = 0;
 		for (NslDinFloat1 state : states){
 			for (int j = 0; j < state.getSize(); j++){
