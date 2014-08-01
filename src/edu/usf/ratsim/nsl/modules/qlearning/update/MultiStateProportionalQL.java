@@ -23,19 +23,21 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 
 	private static final String DUMP_FILENAME = "policy.txt";
 
-	private static final float EPS = 0.01f;
+	private static final float EPS = 0.0f;
 
 	private static PrintWriter writer;
 	private NslDinFloat0 reward;
 	private NslDinInt0 takenAction;
 	private NslDoutFloat2 value;
 	private NslDinFloat1 statesBefore;
-	private NslDinFloat1 actionExpectedValues;
+	private NslDinFloat1 taxonExpectedValues;
 
 	private float alpha;
 	private float discountFactor;
 	private NslDinFloat1 statesAfter;
 	private int numStates;
+
+	private NslDinFloat1 actionVotesAfter;
 
 	public MultiStateProportionalQL(String nslMain, NslModule nslParent,
 			int numStates, int numActions, float discountFactor, float alpha,
@@ -53,8 +55,11 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 
 		value = new NslDoutFloat2(this, "value", numStates, numActions);
 		value.set(initialValue);
-		
-		actionExpectedValues = new NslDinFloat1(this, "expectedValues", numActions);
+
+		taxonExpectedValues = new NslDinFloat1(this, "taxonExpectedValues",
+				numActions);
+		actionVotesAfter = new NslDinFloat1(this, "actionVotesAfter",
+				numActions);
 		// for (int s = 0; s < numStates; s++)
 		// for (int a = 0; a < numActions; a++)
 		// value.set(s,a,initialValue);
@@ -82,39 +87,56 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 		// }
 
 		// Calculate weighted max expected reward batch
+//		float maxExpectedR = Float.NEGATIVE_INFINITY;
+//		// float maxExpectedR = 0;
+//		for (int stateAfter = 0; stateAfter < numStates; stateAfter++) {
+//			if (statesAfter.get(stateAfter) > EPS) {
+//				float weightedMaxExpRet = getMaxExpectedReward(value,
+//						stateAfter) * statesAfter.get(stateAfter);
+//				if (weightedMaxExpRet > maxExpectedR)
+//					maxExpectedR = weightedMaxExpRet;
+//				// maxExpectedR += weightedMaxExpRet;
+//			}
+//		}
+		
+		// Maximize the action value after the movement
 		float maxExpectedR = Float.NEGATIVE_INFINITY;
-//		float maxExpectedR = 0;
-		for (int stateAfter = 0; stateAfter < numStates; stateAfter++) {
-			if (statesAfter.get(stateAfter) > EPS) {
-				float weightedMaxExpRet = getMaxExpectedReward(value,
-						stateAfter) * statesAfter.get(stateAfter);
-				if (weightedMaxExpRet > maxExpectedR)
-					maxExpectedR = weightedMaxExpRet;
-//				maxExpectedR += weightedMaxExpRet;
-			}
-		}
+		for (int action = 0; action < actionVotesAfter.getSize(); action++)
+			if (maxExpectedR < actionVotesAfter.get(action))
+				maxExpectedR = actionVotesAfter.get(action);
 
 		// Do the update once for each state
 		for (int stateBefore = 0; stateBefore < numStates; stateBefore++)
 			// Dont bother if the activation is to small
-			if (statesBefore.get(stateBefore) > EPS)
-				updateLastAction(stateBefore, a, maxExpectedR);
+			// if (statesBefore.get(stateBefore) > EPS)
+			updateLastAction(stateBefore, a, maxExpectedR);
 
+		float newSum = 0;
+		for (int stateBefore = 0; stateBefore < numStates; stateBefore++)
+			newSum += statesBefore.get(stateBefore) * value.get(stateBefore, a);
+		if (reward.get() == 1) {
+			System.out.print("Nuevo valor para la accion " + a + ": " + newSum);
+			System.out.println();
+		}
 	}
 
 	private void updateLastAction(int sBefore, int a, float maxERNextState) {
 
-//		float actionValue = value.get(sBefore, a);
+		// float actionValue = value.get(sBefore, a);
 		// Get the value expected return from the sum of all votes
-		float actionValue = actionExpectedValues.get(a);
-		
+		float actionValue = /* actionExpectedValues.get(a) + */value.get(
+				sBefore, a);
+
 		// Weight by the activity of both states
-		// Q(s,a) = A(s) * [Q(s,a) + 
-		//	alpha ( reward + gamma * sum_s' max_a' A(s')*Q(s',a') - Q(s,a)]
-		//	+ (1-A(s)) Q(s,a)
+		// Q(s,a) = A(s) * [Q(s,a) +
+		// alpha ( reward + gamma * sum_s' max_a' A(s')*Q(s',a') - Q(s,a)]
+		// + (1-A(s)) Q(s,a)
+		// Non normalized activity
 		float newValue = statesBefore.get(sBefore)
 				* (actionValue + alpha
-						* (reward.get() + discountFactor * maxERNextState - actionValue))
+						* (reward.get()
+								+ discountFactor
+								* (maxERNextState /* + actionExpectedValues.get(a) */) - actionValue))
 				+ (1 - statesBefore.get(sBefore)) * actionValue;
 
 		// System.out.println("Updating action " + a);

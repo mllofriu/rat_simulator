@@ -43,8 +43,8 @@
 				<numIntentions>8</numIntentions>
 				<deterministicActionSelection>true</deterministicActionSelection>
 				<foodReward>1</foodReward>
-				<nonFoodReward>-.01</nonFoodReward>
-				<discountFactor>.50</discountFactor>
+				<nonFoodReward>0</nonFoodReward>
+				<discountFactor>.95</discountFactor>
 				<alpha>.8</alpha>
 				<initialValue>0</initialValue>
 				<flashingReward>1</flashingReward>
