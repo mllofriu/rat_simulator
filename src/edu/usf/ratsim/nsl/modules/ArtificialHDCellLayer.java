@@ -23,7 +23,10 @@ public class ArtificialHDCellLayer extends NslModule {
 		float angleInterval = (float) (Math.PI * 2 / numCells);
 		for (int i = 0; i < numCells - 1; i++) {
 			// Add a cell with center x,y
-			cells.add(new ArtificialHDCell(i * angleInterval,angleInterval*2));
+			cells.add(new ArtificialHDCell(i * angleInterval, angleInterval * 2));
+			// Create one phased out half the angle interval
+			cells.add(new ArtificialHDCell(i * angleInterval + angleInterval
+					/ 2, angleInterval * 2));
 		}
 
 		activation = new NslDoutFloat1(this, "activation", cells.size());
@@ -36,12 +39,11 @@ public class ArtificialHDCellLayer extends NslModule {
 		int i = 0;
 		float angle = universe.getRobotOrientationAngle();
 		for (ArtificialHDCell pCell : cells) {
-			activation.set(i,
-					pCell.getActivation(angle));
-//			System.out.print(pCell.getActivation(angle) + " ");
+			activation.set(i, pCell.getActivation(angle));
+			// System.out.print(pCell.getActivation(angle) + " ");
 			i++;
 		}
-//		System.out.println();
+		// System.out.println();
 	}
 
 	public int getSize() {
