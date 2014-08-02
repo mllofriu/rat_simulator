@@ -131,8 +131,8 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 		float newValue = statesBefore.get(sBefore)
 				* (actionValue + alpha
 						* (reward.get() + discountFactor * (maxERNextState) - actionValue))
-				+ (1 - statesBefore.get(sBefore)) * actionValue;
-//		if (newValue != 0)
+				+ (1 - statesBefore.get(sBefore)) * value.get(sBefore, a);
+//		if (newValue == 0 && value.get(sBefore, a) != 0)
 //			System.out.println(newValue);
 //		System.out.println(reward.get());
 //		 System.out.println("Updating action " + a);
