@@ -47,7 +47,7 @@ public class JointStatesManyMultiply extends NslModule {
 
 				jointActivation *= activation;
 				
-				// If I see a cero activation, I can skip all states involving
+				// If I see a zero activation, I can skip all states involving
 				// this one
 				// Optimiziation to speed up execution
 				if (activation < EPS) {
