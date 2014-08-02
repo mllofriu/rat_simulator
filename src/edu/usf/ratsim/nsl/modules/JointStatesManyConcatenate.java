@@ -33,14 +33,15 @@ public class JointStatesManyConcatenate extends NslModule {
 //		jointState.set(0);
 
 //		System.out.println("sum " + sum);
-		// Normalized 
 		int i = 0;
 		for (NslDinFloat1 state : states){
 			for (int j = 0; j < state.getSize(); j++){
 				jointState.set(i, state.get(j));
+//				System.out.println(jointState.get(i));
 				i++;
 			}
 		}
+//		System.exit(1);
 	}
 
 	public int getSize() {

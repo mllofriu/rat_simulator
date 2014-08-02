@@ -13,7 +13,7 @@ public class ArtificialHDCell {
 	}
 
 	public float getActivation(float currOrientation) {
-		return (float) Math.exp(-angleDistance(currOrientation, preferredOrientation) / width);
+		return (float) Math.exp(-Math.pow(angleDistance(currOrientation, preferredOrientation),2) / width);
 //		return Utiles.gaussian(angleDistance(currOrientation, preferredOrientation), width);
 	}
 
