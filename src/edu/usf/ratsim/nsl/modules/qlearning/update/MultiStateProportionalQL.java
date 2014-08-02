@@ -30,7 +30,6 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 	private NslDinInt0 takenAction;
 	private NslDoutFloat2 value;
 	private NslDinFloat1 statesBefore;
-	private NslDinFloat1 taxonExpectedValues;
 
 	private float alpha;
 	private float discountFactor;
@@ -38,6 +37,8 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 	private int numStates;
 
 	private NslDinFloat1 actionVotesAfter;
+
+	private NslDinFloat1 actionVotesBefore;
 
 	public MultiStateProportionalQL(String nslMain, NslModule nslParent,
 			int numStates, int numActions, float discountFactor, float alpha,
@@ -56,9 +57,9 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 		value = new NslDoutFloat2(this, "value", numStates, numActions);
 		value.set(initialValue);
 
-		taxonExpectedValues = new NslDinFloat1(this, "taxonExpectedValues",
-				numActions);
 		actionVotesAfter = new NslDinFloat1(this, "actionVotesAfter",
+				numActions);
+		actionVotesBefore = new NslDinFloat1(this, "actionVotesBefore",
 				numActions);
 		// for (int s = 0; s < numStates; s++)
 		// for (int a = 0; a < numActions; a++)
@@ -87,18 +88,18 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 		// }
 
 		// Calculate weighted max expected reward batch
-//		float maxExpectedR = Float.NEGATIVE_INFINITY;
-//		// float maxExpectedR = 0;
-//		for (int stateAfter = 0; stateAfter < numStates; stateAfter++) {
-//			if (statesAfter.get(stateAfter) > EPS) {
-//				float weightedMaxExpRet = getMaxExpectedReward(value,
-//						stateAfter) * statesAfter.get(stateAfter);
-//				if (weightedMaxExpRet > maxExpectedR)
-//					maxExpectedR = weightedMaxExpRet;
-//				// maxExpectedR += weightedMaxExpRet;
-//			}
-//		}
-		
+		// float maxExpectedR = Float.NEGATIVE_INFINITY;
+		// // float maxExpectedR = 0;
+		// for (int stateAfter = 0; stateAfter < numStates; stateAfter++) {
+		// if (statesAfter.get(stateAfter) > EPS) {
+		// float weightedMaxExpRet = getMaxExpectedReward(value,
+		// stateAfter) * statesAfter.get(stateAfter);
+		// if (weightedMaxExpRet > maxExpectedR)
+		// maxExpectedR = weightedMaxExpRet;
+		// // maxExpectedR += weightedMaxExpRet;
+		// }
+		// }
+
 		// Maximize the action value after the movement
 		float maxExpectedR = Float.NEGATIVE_INFINITY;
 		for (int action = 0; action < actionVotesAfter.getSize(); action++)
@@ -110,36 +111,31 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 			// Dont bother if the activation is to small
 			// if (statesBefore.get(stateBefore) > EPS)
 			updateLastAction(stateBefore, a, maxExpectedR);
-
-		float newSum = 0;
-		for (int stateBefore = 0; stateBefore < numStates; stateBefore++)
-			newSum += statesBefore.get(stateBefore) * value.get(stateBefore, a);
-		if (reward.get() == 1) {
-			System.out.print("Nuevo valor para la accion " + a + ": " + newSum);
-			System.out.println();
-		}
 	}
 
 	private void updateLastAction(int sBefore, int a, float maxERNextState) {
 
 		// float actionValue = value.get(sBefore, a);
 		// Get the value expected return from the sum of all votes
-		float actionValue = /* actionExpectedValues.get(a) + */value.get(
-				sBefore, a);
+//		 float actionValue = value.get(sBefore, a);
+		float actionValue = actionVotesBefore.get(a);
+//		if (actionValue != 0)
+//			System.out.println(actionValue);
 
 		// Weight by the activity of both states
 		// Q(s,a) = A(s) * [Q(s,a) +
 		// alpha ( reward + gamma * sum_s' max_a' A(s')*Q(s',a') - Q(s,a)]
 		// + (1-A(s)) Q(s,a)
 		// Non normalized activity
+//		System.out.println(statesBefore.get(sBefore));
 		float newValue = statesBefore.get(sBefore)
 				* (actionValue + alpha
-						* (reward.get()
-								+ discountFactor
-								* (maxERNextState /* + actionExpectedValues.get(a) */) - actionValue))
+						* (reward.get() + discountFactor * (maxERNextState) - actionValue))
 				+ (1 - statesBefore.get(sBefore)) * actionValue;
-
-		// System.out.println("Updating action " + a);
+//		if (newValue != 0)
+//			System.out.println(newValue);
+//		System.out.println(reward.get());
+//		 System.out.println("Updating action " + a);
 		value.set(sBefore, a, newValue);
 		// System.out.println(sBefore);
 		// if (actionValue != value.get(sBefore, a))

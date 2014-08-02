@@ -21,9 +21,9 @@ public class Intention extends NslModule {
 
 		if (goalFeeder.get() != -1)
 			intention.set(goalFeeder.get(), 1);
-		// for(int i = 0; i < intention.getSize(); i++)
-		// System.out.print(intention.get(i) + " ");
-		// System.out.println();
+//		 for(int i = 0; i < intention.getSize(); i++)
+//			 System.out.print(intention.get(i) + " ");
+//		 System.out.println();
 
 	}
 }

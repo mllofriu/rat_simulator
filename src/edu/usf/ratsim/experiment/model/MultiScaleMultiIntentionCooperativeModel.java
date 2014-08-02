@@ -37,7 +37,8 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private static final String BEFORE_ACTION_SELECTION_STR = "BASL";
 	private static final String AFTER_ACTION_SELECTION_STR = "AASL";
 	private static final String ACTION_PERFORMER_STR = "AP";
-	private static final String FOOD_FINDER_STR = "TD";
+	private static final String BEFORE_FOOD_FINDER_STR = "BTD";
+	private static final String AFTER_FOOD_FINDER_STR = "ATD";
 	private static final String BEFORE_STATE_STR = "BeforePCL";
 	private static final String AFTER_STATE_STR = "AfterPCL";
 	private static final String QL_STR = "NQL";
@@ -49,7 +50,8 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private static final String AFTER_ANY_GOAL_DECIDER_STR = "AANYGD";
 	private static final String AFTER_PLACE_INTENTION_STR = "API";
 	private static final String BEFORE_PLACE_INTENTION_STR = "BPI";
-	private static final String WALLAVOID_STR = "WALL_AVOID";
+	private static final String BEFORE_WALLAVOID_STR = "B_WALL_AVOID";
+	private static final String AFTER_WALLAVOID_STR = "A_WALL_AVOID";
 	private static final String BEFORE_INTENTION_STR = "BINT";
 	private static final String AFTER_INTENTION_STR = "AINT";
 	private static final String BEFORE_HD_LAYER_STR = "BHDL";
@@ -58,7 +60,8 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private static final String BEFORE_PIHD = "BPIHD";
 	private static final String BEFORE_CONCAT = "BALL";
 	private static final String AFTER_CONCAT = "AALL";
-	private static final String JOINT_VOTES = "JVOTES";
+	private static final String BEFORE_JOINT_VOTES = "BJVOTES";
+	private static final String AFTER_JOINT_VOTES = "AJVOTES";
 	private List<ArtificialPlaceCellLayer> beforePcls;
 	private List<PolicyDumper> qLUpdVal;
 	// private ProportionalExplorer actionPerformerVote;
@@ -157,27 +160,31 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 
 		// Take the value of each state and vote for an action
 		if (proportionalQl)
-			new ProportionalVotes(BEFORE_ACTION_SELECTION_STR, this, bAll.getSize());
+			new ProportionalVotes(BEFORE_ACTION_SELECTION_STR, this,
+					bAll.getSize());
 		else
 			new WTAVotes(BEFORE_ACTION_SELECTION_STR, this, bAll.getSize());
 
 		// Create taxic driver
-		new GeneralTaxicFoodFinderSchema(FOOD_FINDER_STR, this, robot,
+		new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
 				universe, numActions, flashingReward, nonFlashingReward);
 
 		// Wall following for obst. avoidance
-		new WallAvoider(WALLAVOID_STR, this, robot, universe, numActions,
+		new WallAvoider(BEFORE_WALLAVOID_STR, this, robot, universe, numActions,
 				wallFollowingVal);
-		
+
 		// Three joint states - QL Votes, Taxic, WallAvoider
-		new JointStatesManySum(JOINT_VOTES, this, universe, 3, numActions);
+		new JointStatesManySum(BEFORE_JOINT_VOTES, this, universe, 3,
+				numActions);
 
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf
 		if (deterministic) {
-			new NoExploration(ACTION_PERFORMER_STR, this, 1+2, robot, universe);
+			new NoExploration(ACTION_PERFORMER_STR, this, 1 + 2, robot,
+					universe);
 		} else {
-			new ProportionalExplorer(ACTION_PERFORMER_STR, this, 1 + 2, robot, universe);
+			new ProportionalExplorer(ACTION_PERFORMER_STR, this, 1 + 2, robot,
+					universe);
 		}
 
 		new Reward(REWARD_STR, this, universe, foodReward, nonFoodReward);
@@ -226,14 +233,27 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 				apihdSizes.add(jStates.getSize());
 
 			}
-		new JointStatesManyConcatenate(AFTER_CONCAT, this, universe, apihdSizes);
+		JointStatesManyConcatenate aAll = new JointStatesManyConcatenate(AFTER_CONCAT, this, universe, apihdSizes);
 
 		// Take the value of each state and vote for an action
 		if (proportionalQl)
-			new ProportionalVotes(AFTER_ACTION_SELECTION_STR, this, bAll.getSize());
+			new ProportionalVotes(AFTER_ACTION_SELECTION_STR, this,
+					aAll.getSize());
 		else
-			new WTAVotes(AFTER_ACTION_SELECTION_STR, this, bAll.getSize());
-		
+			new WTAVotes(AFTER_ACTION_SELECTION_STR, this, aAll.getSize());
+
+		// Create taxic driver
+		new GeneralTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot,
+				universe, numActions, flashingReward, nonFlashingReward);
+
+		// Wall following for obst. avoidance
+		new WallAvoider(AFTER_WALLAVOID_STR, this, robot, universe, numActions,
+				wallFollowingVal);
+
+		// Three joint states - QL Votes, Taxic, WallAvoider
+		new JointStatesManySum(AFTER_JOINT_VOTES, this, universe, 3,
+				numActions);
+
 		if (proportionalQl)
 			new MultiStateProportionalQL(QL_STR, this, bAll.getSize(),
 					numActions, discountFactor, alpha, initialValue);
@@ -252,12 +272,18 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	public void makeConn() {
 		// Connect anygoal to taxic bh
 		nslConnect(getChild(BEFORE_ANY_GOAL_DECIDER_STR), "goalFeeder",
-				getChild(FOOD_FINDER_STR), "goalFeeder");
+				getChild(BEFORE_FOOD_FINDER_STR), "goalFeeder");
+		nslConnect(getChild(AFTER_ANY_GOAL_DECIDER_STR), "goalFeeder",
+				getChild(AFTER_FOOD_FINDER_STR), "goalFeeder");
 		// Connect taxic behaviors to vote_adder
-		nslConnect(getChild(FOOD_FINDER_STR), "votes",
-				getChild(JOINT_VOTES), "state" + 0);
-		nslConnect(getChild(WALLAVOID_STR), "votes",
-				getChild(JOINT_VOTES), "state" + 1);
+		nslConnect(getChild(BEFORE_FOOD_FINDER_STR), "votes",
+				getChild(BEFORE_JOINT_VOTES), "state" + 0);
+		nslConnect(getChild(BEFORE_WALLAVOID_STR), "votes",
+				getChild(BEFORE_JOINT_VOTES), "state" + 1);
+		nslConnect(getChild(AFTER_FOOD_FINDER_STR), "votes",
+				getChild(AFTER_JOINT_VOTES), "state" + 0);
+		nslConnect(getChild(AFTER_WALLAVOID_STR), "votes",
+				getChild(AFTER_JOINT_VOTES), "state" + 1);
 		// Connect active goal to intention
 		nslConnect(getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(BEFORE_INTENTION_STR), "goalFeeder");
@@ -306,23 +332,27 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 				getChild(BEFORE_ACTION_SELECTION_STR), "states");
 		nslConnect(getChild(AFTER_CONCAT), "jointState",
 				getChild(AFTER_ACTION_SELECTION_STR), "states");
-		nslConnect(getChild(QL_STR), "value", getChild(BEFORE_ACTION_SELECTION_STR),
-				"value");
-		nslConnect(getChild(QL_STR), "value", getChild(AFTER_ACTION_SELECTION_STR),
-				"value");
+		nslConnect(getChild(QL_STR), "value",
+				getChild(BEFORE_ACTION_SELECTION_STR), "value");
+		nslConnect(getChild(QL_STR), "value",
+				getChild(AFTER_ACTION_SELECTION_STR), "value");
 		nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes",
-				getChild(JOINT_VOTES), "state" + 2);
-		nslConnect(getChild(JOINT_VOTES), "jointState",
+				getChild(BEFORE_JOINT_VOTES), "state" + 2);
+		nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes",
+				getChild(AFTER_JOINT_VOTES), "state" + 2);
+		nslConnect(getChild(BEFORE_JOINT_VOTES), "jointState",
 				getChild(ACTION_PERFORMER_STR), "votes");
 		nslConnect(getChild(ACTION_PERFORMER_STR), "takenAction",
 				getChild(QL_STR), "takenAction");
-		nslConnect(getChild(FOOD_FINDER_STR), "votes",
-				getChild(QL_STR), "taxonExpectedValues");
+//		nslConnect(getChild(BEFORE_FOOD_FINDER_STR), "votes", getChild(QL_STR),
+//				"taxonExpectedValues");
 		nslConnect(getChild(REWARD_STR), "reward", getChild(QL_STR), "reward");
 		nslConnect(getChild(BEFORE_CONCAT), "jointState", getChild(QL_STR),
 				"statesBefore");
 		nslConnect(getChild(AFTER_CONCAT), "jointState", getChild(QL_STR),
 				"statesAfter");
+		nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes", getChild(QL_STR),
+				"actionVotesBefore");
 		nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes", getChild(QL_STR),
 				"actionVotesAfter");
 
@@ -362,7 +392,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	}
 
 	public void deactivatePCL(List<Integer> feedersToDeactivate) {
-		for (Integer layer : feedersToDeactivate){
+		for (Integer layer : feedersToDeactivate) {
 			beforePcls.get(layer).deactivate();
 			afterPcls.get(layer).deactivate();
 		}
@@ -371,15 +401,13 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	@Override
 	protected void finalize() {
 		// TODO Auto-generated method stub
-		try{
+		try {
 			super.finalize();
-		} catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-//		System.out.println("NsL model being finalized");
+
+		// System.out.println("NsL model being finalized");
 	}
-	
-	
 
 }

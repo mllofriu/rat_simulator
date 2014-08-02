@@ -43,12 +43,19 @@ public class ProportionalVotes extends NslModule {
 				for (int action = 0; action < numActions; action++){
 					if (value.get(state, action) != 0) 
 						// Normalize activity when weighting votes
-						values[action] += states.get(state) / sum * value.get(state, action);
-		//			System.out.print(value.get(state, action));
+						values[action] = values[action] + states.get(state) / sum * value.get(state, action);
+//						if (values[action] != 0)
+//							System.out.println("value action " + values[action]);
+//						if (states.get(state) / sum * value.get(state, action) < 0)
+//							System.out.println("Termino negativo");
 				}
 			}
 	//		System.out.println();
 		}
+		
+		for (int action = 0; action < numActions; action++)
+			if (values[action] != 0)
+				System.out.println("value action " + values[action]);
 		
 		actionVote.set(values);
 	}
