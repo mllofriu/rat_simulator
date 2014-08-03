@@ -44,8 +44,8 @@
 				<deterministicActionSelection>true</deterministicActionSelection>
 				<foodReward>1</foodReward>
 				<nonFoodReward>0</nonFoodReward>
-				<discountFactor>.5</discountFactor>
-				<alpha>.8</alpha>
+				<discountFactor>.95</discountFactor>
+				<alpha>.1</alpha>
 				<initialValue>0</initialValue>
 				<flashingReward>1</flashingReward>
 				<nonFlashingReward>1</nonFlashingReward>
@@ -101,7 +101,7 @@
 			<stopCondition>
 				<name>FoundNFood</name>
 				<params>
-					<n>1000</n>
+					<n>100</n>
 				</params>
 			</stopCondition>
 		</stopConditions>

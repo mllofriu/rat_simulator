@@ -132,6 +132,8 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 				* (value.get(sBefore, a) + alpha
 						* (reward.get() + discountFactor * (maxERNextState) - value.get(sBefore, a)))
 				+ (1 - statesBefore.get(sBefore)) * value.get(sBefore, a);
+//		if (reward.get() + discountFactor * (maxERNextState) < value.get(sBefore, a))
+//			System.out.println("Decrease in value");
 //		if (newValue == 0 && value.get(sBefore, a) != 0)
 //			System.out.println(newValue);
 //		System.out.println(reward.get());
