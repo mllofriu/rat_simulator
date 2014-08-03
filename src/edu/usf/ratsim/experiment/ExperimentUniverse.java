@@ -88,4 +88,6 @@ public interface ExperimentUniverse {
 	int getFeedingInFrontOfRobot(int excludeFeeder);
 
 	public boolean isRobotCloseToAFeeder();
+
+	public float getDistanceToFeeder(int i);
 }

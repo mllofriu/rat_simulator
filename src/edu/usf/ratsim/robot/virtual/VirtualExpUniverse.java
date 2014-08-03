@@ -606,4 +606,15 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 				return true;
 		return false;
 	}
+
+	@Override
+	public float getDistanceToFeeder(int i) {
+		// Get robot vector
+		Transform3D t = new Transform3D();
+		robot.getTransformGroup().getTransform(t);
+		Vector3f pos = new Vector3f();
+		t.get(pos);
+		pos.sub(feeders.get(i).getPosition());
+		return pos.length();
+	}
 }
