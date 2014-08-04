@@ -128,17 +128,28 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 		// + (1-A(s)) Q(s,a)
 		// Non normalized activity
 //		System.out.println(statesBefore.get(sBefore));
-		float newValue = statesBefore.get(sBefore)
-				* (value.get(sBefore, a) + alpha
-						* (reward.get() + discountFactor * (maxERNextState) - value.get(sBefore, a)))
-				+ (1 - statesBefore.get(sBefore)) * value.get(sBefore, a);
-//		if (reward.get() + discountFactor * (maxERNextState) < value.get(sBefore, a))
-//			System.out.println("Decrease in value");
-//		if (newValue == 0 && value.get(sBefore, a) != 0)
-//			System.out.println(newValue);
-//		System.out.println(reward.get());
-//		 System.out.println("Updating action " + a);
-		value.set(sBefore, a, newValue);
+		// If lower than -1, dead synapse
+		if (value.get(sBefore, a) >= -1){
+			float delta = alpha * (reward.get() + discountFactor * (maxERNextState) - value.get(sBefore, a));
+			// When discovered an error, apply LTD rules
+			if (delta < 0){
+				delta *= 10 * (value.get(sBefore, a) + 1);
+//				if (a == 3)
+//					System.out.println("neg update while trying to eat");
+			}
+			float newValue = statesBefore.get(sBefore)
+					* (value.get(sBefore, a) + delta)
+					+ (1 - statesBefore.get(sBefore)) * value.get(sBefore, a);
+			if (newValue < -1)
+				System.out.println("killed a synapse");
+	//		if (reward.get() + discountFactor * (maxERNextState) < value.get(sBefore, a))
+	//			System.out.println("Decrease in value");
+	//		if (newValue == 0 && value.get(sBefore, a) != 0)
+	//			System.out.println(newValue);
+	//		System.out.println(reward.get());
+	//		 System.out.println("Updating action " + a);
+			value.set(sBefore, a, newValue);
+		}
 		// System.out.println(sBefore);
 		// if (actionValue != value.get(sBefore, a))
 		// System.out.println(actionValue + " " + value.get(sBefore, a));
