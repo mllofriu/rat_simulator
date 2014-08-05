@@ -123,7 +123,8 @@ public class Trial implements Runnable {
 			do {
 				// One cycle to the trial
 				subject.stepCycle();
-
+				System.out.println("End of cycle");
+				
 				if (sleep && !name.equals("training")) {
 					try {
 						Thread.sleep(SLEEP_BETWEEN_CYCLES);

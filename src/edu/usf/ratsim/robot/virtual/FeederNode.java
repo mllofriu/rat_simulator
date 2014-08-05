@@ -54,6 +54,7 @@ public class FeederNode extends ExpUniverseNode {
 						}
 						if (flashing) {
 							Thread.sleep(50);
+//							System.out.println("flashing");
 						}
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
