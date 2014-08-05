@@ -23,7 +23,7 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 
 	private static final String DUMP_FILENAME = "policy.txt";
 
-	private static final float EPS = 0.0f;
+	private static final float EPS = 0.2f;
 
 	private static PrintWriter writer;
 	private NslDinFloat0 reward;
@@ -109,8 +109,8 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 		// Do the update once for each state
 		for (int stateBefore = 0; stateBefore < numStates; stateBefore++)
 			// Dont bother if the activation is to small
-			// if (statesBefore.get(stateBefore) > EPS)
-			updateLastAction(stateBefore, a, maxExpectedR);
+			if (statesBefore.get(stateBefore) > EPS)
+				updateLastAction(stateBefore, a, maxExpectedR);
 	}
 
 	private void updateLastAction(int sBefore, int a, float maxERNextState) {

@@ -28,6 +28,7 @@ import com.vividsolutions.jts.geom.LineSegment;
 
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.support.Configuration;
+import edu.usf.ratsim.support.Debug;
 import edu.usf.ratsim.support.Utiles;
 import edu.usf.ratsim.support.XMLDocReader;
 
@@ -558,7 +559,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		}
 
 		if (feedingFeeder != -1) {
-			System.out.println("Robot ate");
+			if (Debug.printRobotAte) System.out.println("Robot ate");
 			robotAte = true;
 		} else {
 			// System.out.println("Tried to eat but not close to active feeder");

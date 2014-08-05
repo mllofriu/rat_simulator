@@ -10,7 +10,7 @@ import edu.usf.ratsim.experiment.ExperimentUniverse;
 
 public class JointStatesManyMultiply extends NslModule {
 
-	private static final float EPS = 0.01f;
+	private static final float EPS = 0.2f;
 	public List<NslDinFloat1> states;
 	public NslDoutFloat1 jointState;
 

@@ -34,8 +34,8 @@
 		<model>
 			<name>MultiScaleMultiIntentionCooperativeModel</name>
 			<params>
-				<numPCLayers>3</numPCLayers>
-				<minRadius>.2</minRadius>
+				<numPCLayers>1</numPCLayers>
+				<minRadius>.02</minRadius>
 				<maxRadius>.25</maxRadius>
 				<numHDLayers>8</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
