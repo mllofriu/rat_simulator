@@ -7,10 +7,10 @@ import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.ratsim.support.Debug;
 
 public class JointStatesManySum extends NslModule {
 
-	private static final float EPS = 0.01f;
 	public List<NslDinFloat1> states;
 	public NslDoutFloat1 jointState;
 	private int numStates;
@@ -36,19 +36,20 @@ public class JointStatesManySum extends NslModule {
 
 		int jointStatesSize = jointState.getSize();
 
-		System.out.println("Values");
+		if (Debug.printValues)
+			System.out.println("Values");
 		for (int i = 0; i < states.size(); i++) {
 			// Add up all states values
 			for (int j = 0; j < jointStatesSize; j++) {
-				System.out.print(states.get(i).get(j) + "\t\t");
+				if (Debug.printValues)
+					System.out.print(states.get(i).get(j) + "\t\t");
 				jointState.set(j, jointState.get(j) + states.get(i).get(j));
 			}
-			
-			System.out.println();
+			if (Debug.printValues) System.out.println();
 		}
 		// Go over all states in joint state
 
-		System.out.println();
+		if (Debug.printValues) System.out.println();
 	}
 
 	@Override

@@ -292,15 +292,15 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 //				getChild(AFTER_ANY_GOAL_DECIDER_STR), "goalFeeder");
 //		nslConnect(getChild(AFTER_ANY_GOAL_DECIDER_STR), "goalFeeder",
 //				getChild(BEFORE_ANY_GOAL_DECIDER_STR), "goalFeeder");
-		nslConnect(getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
-				getChild(AFTER_ACTIVE_GOAL_DECIDER_STR), "goalFeeder");
-		nslConnect(getChild(AFTER_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
-				getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder");
+//		nslConnect(getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
+//				getChild(AFTER_ACTIVE_GOAL_DECIDER_STR), "goalFeeder");
+//		nslConnect(getChild(AFTER_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
+//				getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder");
 		// Connect active goal to intention
 		nslConnect(getChild(AFTER_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(AFTER_INTENTION_STR), "goalFeeder");
-		nslConnect(getChild(BEFORE_INTENTION_STR), "goalFeeder",
-				getChild(AFTER_INTENTION_STR), "goalFeeder");
+//		nslConnect(getChild(BEFORE_INTENTION_STR), "goalFeeder",
+//				getChild(AFTER_INTENTION_STR), "goalFeeder");
 
 		// Build intention hd place layers
 		for (int i = 0; i < numPCLayers; i++)
