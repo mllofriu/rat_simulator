@@ -45,7 +45,7 @@
 				<foodReward>1</foodReward>
 				<nonFoodReward>0</nonFoodReward>
 				<discountFactor>.95</discountFactor>
-				<alpha>.1</alpha>
+				<alpha>.8</alpha>
 				<initialValue>0</initialValue>
 				<flashingReward>1</flashingReward>
 				<nonFlashingReward>1</nonFlashingReward>
