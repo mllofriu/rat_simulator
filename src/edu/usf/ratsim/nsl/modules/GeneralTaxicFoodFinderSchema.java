@@ -9,6 +9,7 @@ import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.support.Debug;
 import edu.usf.ratsim.support.Utiles;
 
 /**
@@ -52,7 +53,7 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 				// System.out.println("Setting votes to eat");
 			} else {
 				// votes.set(Utiles.eatAction, Float.NEGATIVE_INFINITY);
-				System.out.println("Taxic set to goal " + goalFeeder.get() + " " + FlashingOrAnyGoalDecider.currentGoal);
+				if (Debug.printTaxic) System.out.println("Taxic set to goal " + goalFeeder.get() + " " + FlashingOrAnyGoalDecider.currentGoal);
 				// Get angle to food
 				Point3f rPos = univ.getRobotPosition();
 				Point3f fPos = univ.getFoodPosition(goalFeeder.get());

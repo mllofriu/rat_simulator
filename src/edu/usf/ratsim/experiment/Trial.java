@@ -15,6 +15,7 @@ import edu.usf.ratsim.experiment.stopcondition.StopCondition;
 import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.experiment.task.TaskFactory;
 import edu.usf.ratsim.support.Configuration;
+import edu.usf.ratsim.support.Debug;
 import edu.usf.ratsim.support.ElementWrapper;
 
 /*
@@ -123,7 +124,7 @@ public class Trial implements Runnable {
 			do {
 				// One cycle to the trial
 				subject.stepCycle();
-				System.out.println("End of cycle");
+				if (Debug.printEndCycle) System.out.println("End of cycle");
 				
 				if (sleep && !name.equals("training")) {
 					try {
