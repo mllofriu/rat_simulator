@@ -45,7 +45,7 @@ public class FlashingOrAnyGoalDecider extends NslModule {
 //			currentGoal = 0;
 			currentGoal = universe.getFeeders().get(
 					r.nextInt(universe.getFeeders().size()));
-			System.out.println("Goal in -1 for " + nslGetName());
+//			System.out.println("Goal in -1 for " + nslGetName());
 		}
 
 		if (!universe.getFlashingFeeders().isEmpty()) {
@@ -68,7 +68,7 @@ public class FlashingOrAnyGoalDecider extends NslModule {
 		}
 
 		goalFeeder.set(currentGoal);
-//		System.out.println("Any GD: " + currentGoal);
+		System.out.println("Any GD: " + currentGoal + " " + goalFeeder.get());
 	}
 
 	public void newTrial() {
