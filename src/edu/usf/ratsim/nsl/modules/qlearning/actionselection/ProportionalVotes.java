@@ -53,9 +53,9 @@ public class ProportionalVotes extends NslModule {
 	//		System.out.println();
 		}
 		
-		for (int action = 0; action < numActions; action++)
-			if (values[action] != 0)
-				System.out.println("value action " + values[action]);
+//		for (int action = 0; action < numActions; action++)
+//			if (values[action] != 0)
+//				System.out.println("value action " + values[action]);
 		
 		actionVote.set(values);
 	}

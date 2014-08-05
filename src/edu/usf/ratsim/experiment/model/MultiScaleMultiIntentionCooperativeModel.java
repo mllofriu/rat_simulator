@@ -288,10 +288,10 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		nslConnect(getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(BEFORE_INTENTION_STR), "goalFeeder");
 		// Mantain the same goal before and after
-		nslConnect(getChild(BEFORE_ANY_GOAL_DECIDER_STR), "goalFeeder",
-				getChild(AFTER_ANY_GOAL_DECIDER_STR), "goalFeeder");
-		nslConnect(getChild(AFTER_ANY_GOAL_DECIDER_STR), "goalFeeder",
-				getChild(BEFORE_ANY_GOAL_DECIDER_STR), "goalFeeder");
+//		nslConnect(getChild(BEFORE_ANY_GOAL_DECIDER_STR), "goalFeeder",
+//				getChild(AFTER_ANY_GOAL_DECIDER_STR), "goalFeeder");
+//		nslConnect(getChild(AFTER_ANY_GOAL_DECIDER_STR), "goalFeeder",
+//				getChild(BEFORE_ANY_GOAL_DECIDER_STR), "goalFeeder");
 		nslConnect(getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(AFTER_ACTIVE_GOAL_DECIDER_STR), "goalFeeder");
 		nslConnect(getChild(AFTER_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
@@ -351,9 +351,13 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 				"statesBefore");
 		nslConnect(getChild(AFTER_CONCAT), "jointState", getChild(QL_STR),
 				"statesAfter");
-		nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes", getChild(QL_STR),
+		nslConnect(getChild(BEFORE_FOOD_FINDER_STR), "votes", getChild(QL_STR),
 				"actionVotesBefore");
-		nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes", getChild(QL_STR),
+//		nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes", getChild(QL_STR),
+//				"actionVotesAfter");
+//		nslConnect(getChild(BEFORE_JOINT_VOTES), "jointState", getChild(QL_STR),
+//				"actionVotesBefore");
+		nslConnect(getChild(AFTER_JOINT_VOTES), "jointState", getChild(QL_STR),
 				"actionVotesAfter");
 
 	}

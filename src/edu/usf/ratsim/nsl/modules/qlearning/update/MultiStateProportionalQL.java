@@ -117,39 +117,30 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 
 		// float actionValue = value.get(sBefore, a);
 		// Get the value expected return from the sum of all votes
-//		 float actionValue = value.get(sBefore, a);
+		// float actionValue = value.get(sBefore, a);
 		float actionValue = actionVotesBefore.get(a);
-//		if (actionValue != 0)
-//			System.out.println(actionValue);
+		// if (actionValue != 0)
+		// System.out.println(actionValue);
 
 		// Weight by the activity of both states
 		// Q(s,a) = A(s) * [Q(s,a) +
 		// alpha ( reward + gamma * sum_s' max_a' A(s')*Q(s',a') - Q(s,a)]
 		// + (1-A(s)) Q(s,a)
 		// Non normalized activity
-//		System.out.println(statesBefore.get(sBefore));
-		// If lower than -1, dead synapse
-		if (value.get(sBefore, a) >= -1){
-			float delta = alpha * (reward.get() + discountFactor * (maxERNextState) - value.get(sBefore, a));
-			// When discovered an error, apply LTD rules
-			if (delta < 0){
-				delta *= 10 * (value.get(sBefore, a) + 1);
-//				if (a == 3)
-//					System.out.println("neg update while trying to eat");
-			}
-			float newValue = statesBefore.get(sBefore)
-					* (value.get(sBefore, a) + delta)
-					+ (1 - statesBefore.get(sBefore)) * value.get(sBefore, a);
-			if (newValue < -1)
-				System.out.println("killed a synapse");
-	//		if (reward.get() + discountFactor * (maxERNextState) < value.get(sBefore, a))
-	//			System.out.println("Decrease in value");
-	//		if (newValue == 0 && value.get(sBefore, a) != 0)
-	//			System.out.println(newValue);
-	//		System.out.println(reward.get());
-	//		 System.out.println("Updating action " + a);
-			value.set(sBefore, a, newValue);
-		}
+		// System.out.println(statesBefore.get(sBefore));
+		float val = value.get(sBefore, a);
+		float delta = alpha
+				* (reward.get() + discountFactor * (maxERNextState) - (val + actionVotesBefore.get(a)));
+		float newValue = statesBefore.get(sBefore) * (val + delta)
+				+ (1 - statesBefore.get(sBefore)) * value.get(sBefore, a);
+		// if (reward.get() + discountFactor * (maxERNextState) <
+		// value.get(sBefore, a))
+		// System.out.println("Decrease in value");
+		// if (newValue == 0 && value.get(sBefore, a) != 0)
+		// System.out.println(newValue);
+		// System.out.println(reward.get());
+		// System.out.println("Updating action " + a);
+		value.set(sBefore, a, newValue);
 		// System.out.println(sBefore);
 		// if (actionValue != value.get(sBefore, a))
 		// System.out.println(actionValue + " " + value.get(sBefore, a));
