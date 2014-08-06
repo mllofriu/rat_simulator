@@ -42,12 +42,12 @@
 				<stepHDCellsPerLayer>16</stepHDCellsPerLayer>
 				<numIntentions>8</numIntentions>
 				<deterministicActionSelection>true</deterministicActionSelection>
-				<foodReward>10</foodReward>
+				<foodReward>3</foodReward>
 				<nonFoodReward>0</nonFoodReward>
 				<discountFactor>.95</discountFactor>
 				<alpha>.8</alpha>
 				<initialValue>0</initialValue>
-				<flashingReward>1</flashingReward>
+				<flashingReward>2</flashingReward>
 				<nonFlashingReward>1</nonFlashingReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
 				<proportionalQL>true</proportionalQL>

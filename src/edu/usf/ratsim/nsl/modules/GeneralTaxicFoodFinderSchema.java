@@ -9,7 +9,6 @@ import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
-import edu.usf.ratsim.support.Debug;
 import edu.usf.ratsim.support.Utiles;
 
 /**
@@ -21,10 +20,13 @@ import edu.usf.ratsim.support.Utiles;
  */
 public class GeneralTaxicFoodFinderSchema extends NslModule {
 
+	private static final float HALF_FIELD_OF_VIEW = (float) (105 * Math.PI / 180); // 105
+																					// degrees
 	private ExperimentUniverse univ;
 	public NslDinInt0 goalFeeder;
 	public NslDoutFloat1 votes;
 	private float rewardFlashing, rewardNonFlashing;
+	private Integer lastEatenFeeder;
 
 	public GeneralTaxicFoodFinderSchema(String nslName, NslModule nslParent,
 			IRobot robot, ExperimentUniverse univ, int numActions,
@@ -37,59 +39,70 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 		goalFeeder = new NslDinInt0(this, "goalFeeder");
 		votes = new NslDoutFloat1(this, "votes", numActions);
 
+		lastEatenFeeder = -1;
 	}
 
 	public void simRun() {
-		System.out.println(univ.getRobotOrientationAngle());
-		System.out.println(univ.getFeederInFrontOfRobot(-1));
-		
-		// If the current goal is flashing override other modules actions
-		// (this module should come after others)
 		votes.set(0);
-		// System.out.println(goalFeeder.get());
-		if (goalFeeder.get() != -1) {
-			if (univ.isRobotCloseToFeeder(goalFeeder.get())) {
-				if (univ.getFlashingFeeders().contains(goalFeeder.get()))
-					votes.set(Utiles.eatAction, rewardFlashing);
-				else
-					votes.set(Utiles.eatAction, rewardNonFlashing);
-				// System.out.println("Setting votes to eat");
-			} else {
-				// votes.set(Utiles.eatAction, Float.NEGATIVE_INFINITY);
-				if (Debug.printTaxic) System.out.println("Taxic set to goal " + goalFeeder.get() + " " + FlashingOrAnyGoalDecider.currentGoal);
-				// Get angle to food
-				Point3f rPos = univ.getRobotPosition();
-				Point3f fPos = univ.getFoodPosition(goalFeeder.get());
 
-				// Get the vector food - robot
-				Vector3f vToFood = Utiles.pointsToVector(rPos, fPos);
+		boolean foundFeeder = false;
 
-				// Build quat4d for angle to food
-				// Use (1,0,0) to get absolute orientation
-				Quat4f rotToFood = Utiles.rotBetweenVectors(new Vector3f(1, 0, 0),
-						vToFood);
+		// Go over all feeders
+		for (Integer fn : univ.getFeeders()) {
+			// Avoid last feeder
+			if (fn != lastEatenFeeder){
+				if (univ.angleToFeeder(fn) <= HALF_FIELD_OF_VIEW) {
+					foundFeeder = true;
+					// Get the best action for that feeder
+					int action = getActionToFeeder(fn);
+					// Set the reward to be the corresponding reward
+					// float distanceMod = Math.max(0, (1 -
+					// univ.getDistanceToFeeder(fn)));
+					float distanceMod = 1;
 
-				Quat4f currRot = univ.getRobotOrientation();
-				int action = Utiles.bestActionToRot(rotToFood, currRot);
-				// Incorporate distance to the feeder into the reward expectation
-				if (univ.getFlashingFeeders().contains(goalFeeder.get()))
-					votes.set(
-							action,
-							rewardFlashing
-//									* Math.max(0, (1 - univ
-//											.getDistanceToFeeder(goalFeeder
-//													.get()))));
-							);
-				else
-					votes.set(
-							action,
-							rewardNonFlashing
-//									* Math.max(0, (1 - univ
-//											.getDistanceToFeeder(goalFeeder
-//													.get()))));
-							);
+					if (univ.getFlashingFeeders().contains(fn))
+						votes.set(
+								action,
+								Math.max(rewardFlashing * distanceMod,
+										votes.get(action)));
+					else
+						votes.set(
+								action,
+								Math.max(rewardNonFlashing * distanceMod,
+										votes.get(action)));
+					
+					if (action == Utiles.eatAction)
+						lastEatenFeeder = fn;
+				}
 			}
 
+		}
+		
+		
+		if (!foundFeeder){
+			// Give a forward impulse
+			votes.set(Utiles.discretizeAction(0), rewardNonFlashing / 2);
+		}
+
+	}
+
+	private int getActionToFeeder(int feeder) {
+		if (univ.isRobotCloseToFeeder(feeder))
+			return Utiles.eatAction;
+		else {
+			Point3f rPos = univ.getRobotPosition();
+			Point3f fPos = univ.getFoodPosition(feeder);
+
+			// Get the vector food - robot
+			Vector3f vToFood = Utiles.pointsToVector(rPos, fPos);
+
+			// Build quat4d for angle to food
+			// Use (1,0,0) to get absolute orientation
+			Quat4f rotToFood = Utiles.rotBetweenVectors(new Vector3f(1, 0, 0),
+					vToFood);
+
+			Quat4f currRot = univ.getRobotOrientation();
+			return Utiles.bestActionToRot(rotToFood, currRot);
 		}
 	}
 }
