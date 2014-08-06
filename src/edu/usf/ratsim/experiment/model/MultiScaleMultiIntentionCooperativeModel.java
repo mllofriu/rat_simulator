@@ -70,11 +70,12 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private int numPCLayers;
 	private LinkedList<PlaceIntention> beforePI;
 	private LinkedList<PlaceIntention> afterPI;
-	private FlashingActiveGoalDecider activeGoalDecider;
+	private FlashingActiveGoalDecider beforeActiveGoalDecider;
 	private FlashingOrAnyGoalDecider anyGoalDecider;
 	private int numHDLayers;
 	private List<ArtificialHDCellLayer> afterHDs;
 	private LinkedList<ArtificialHDCellLayer> beforeHDs;
+	private FlashingActiveGoalDecider afterActiveGoalDecider;
 
 	public MultiScaleMultiIntentionCooperativeModel(ElementWrapper params,
 			IRobot robot, ExperimentUniverse universe) {
@@ -107,7 +108,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		qLUpdVal = new LinkedList<PolicyDumper>();
 		qLActionSel = new LinkedList<WTAVotes>();
 
-		activeGoalDecider = new FlashingActiveGoalDecider(
+		beforeActiveGoalDecider = new FlashingActiveGoalDecider(
 				BEFORE_ACTIVE_GOAL_DECIDER_STR, this, universe);
 		anyGoalDecider = new FlashingOrAnyGoalDecider(
 				BEFORE_ANY_GOAL_DECIDER_STR, this, universe);
@@ -190,7 +191,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		new Reward(REWARD_STR, this, universe, foodReward, nonFoodReward);
 
 		// Second goal deciders after the robot has moved
-		activeGoalDecider = new FlashingActiveGoalDecider(
+		afterActiveGoalDecider = new FlashingActiveGoalDecider(
 				AFTER_ACTIVE_GOAL_DECIDER_STR, this, universe);
 		anyGoalDecider = new FlashingOrAnyGoalDecider(
 				AFTER_ANY_GOAL_DECIDER_STR, this, universe);
@@ -271,9 +272,9 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 
 	public void makeConn() {
 		// Connect anygoal to taxic bh
-		nslConnect(getChild(BEFORE_ANY_GOAL_DECIDER_STR), "goalFeeder",
+		nslConnect(getChild(BEFORE_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(BEFORE_FOOD_FINDER_STR), "goalFeeder");
-		nslConnect(getChild(AFTER_ANY_GOAL_DECIDER_STR), "goalFeeder",
+		nslConnect(getChild(AFTER_ACTIVE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(AFTER_FOOD_FINDER_STR), "goalFeeder");
 		// Connect taxic behaviors to vote_adder
 		nslConnect(getChild(BEFORE_FOOD_FINDER_STR), "votes",
@@ -391,8 +392,9 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	}
 
 	public void newTrial() {
-		activeGoalDecider.newTrial();
-		anyGoalDecider.newTrial();
+		beforeActiveGoalDecider.newTrial();
+		afterActiveGoalDecider.newTrial();
+//		anyGoalDecider.newTrial();
 	}
 
 	public void deactivatePCL(List<Integer> feedersToDeactivate) {

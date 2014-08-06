@@ -37,15 +37,17 @@ public class FlashingActiveGoalDecider extends NslModule {
 
 	public void simRun() {
 		// System.out.println("Got goal: " + goalFeeder.get());
-		if (currentGoal == -1) {
-			List<Integer> active = universe.getActiveFeeders();
-//			currentGoal = active.get(r.nextInt(active.size()));
-			currentGoal = 0; // Hack to avoid too much comunication between universe and rat
-							// First round of learning is "discarded"
-							// Problems may arise if first goal is 0
-			universe.clearWantedFeeders();
-			// universe.setWantedFeeder(currentGoal, true);
-		} else if (universe.hasRobotAte() /* || universe.hasRobotTriedToEat() */) {
+		// if (currentGoal == -1) {
+		// List<Integer> active = universe.getActiveFeeders();
+		// // currentGoal = active.get(r.nextInt(active.size()));
+		// currentGoal = 0; // Hack to avoid too much comunication between
+		// universe and rat
+		// // First round of learning is "discarded"
+		// // Problems may arise if first goal is 0
+		// universe.clearWantedFeeders();
+		// // universe.setWantedFeeder(currentGoal, true);
+		// } else
+		if (universe.hasRobotAte() /* || universe.hasRobotTriedToEat() */) {
 			// List<Integer> active = universe.getActiveFeeders();
 			// // Dont pick the same goal twice
 			// // active.remove(new Integer(goalFeeder.get()));
@@ -56,19 +58,24 @@ public class FlashingActiveGoalDecider extends NslModule {
 			// goalFeeder.set(active.get(r.nextInt(active.size())));
 			// }
 			currentGoal = universe.getFeedingFeeder();
-			
+
 			universe.clearWantedFeeders();
 
 		}
 
 		// }
 
-		universe.setWantedFeeder(currentGoal, true);
+		if (currentGoal != -1)
+			universe.setWantedFeeder(currentGoal, true);
+
 		goalFeeder.set(currentGoal);
-		if (Debug.printActiveGoal)System.out.println("Active GD: " + goalFeeder.get() + " " + currentGoal);
+		if (Debug.printActiveGoal)
+			System.out.println("Active GD: " + goalFeeder.get() + " "
+					+ currentGoal);
 	}
 
 	public void newTrial() {
-		goalFeeder.set(-1);
+		currentGoal = -1;
+		goalFeeder.set(currentGoal);
 	}
 }

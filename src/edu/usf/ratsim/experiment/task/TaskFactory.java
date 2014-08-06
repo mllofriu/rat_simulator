@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.vecmath.Point4f;
 
-import nslj.src.lang.NslModel;
 import edu.usf.ratsim.experiment.ExperimentTask;
 import edu.usf.ratsim.experiment.Trial;
 import edu.usf.ratsim.support.ElementWrapper;
@@ -37,6 +36,8 @@ public class TaskFactory {
 //				res.add(new PolicyValueUpdater(model));
 			} else if (taskName.equals("ActivateFeeders")) {
 				res.add(new ActivateFeeders());
+			} else if (taskName.equals("DeactivateFeeder")) {
+				res.add(new DeactivateFeeder(taskParams));
 			}else if (taskName.equals("FlashFeeder")) {
 				res.add(new FlashFeeder());
 			}else if (taskName.equals("FlashFeederWhenWrong")) {

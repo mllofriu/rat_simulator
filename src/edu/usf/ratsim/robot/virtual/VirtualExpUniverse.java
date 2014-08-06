@@ -586,12 +586,9 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	public int getFeederInFrontOfRobot(int excludeFeeder) {
 		float minAngle = Float.MAX_VALUE;
 		FeederNode bestNode = feeders.get(0);
-		for (FeederNode fn : feeders){
-			float fnAngle = Math.abs(Utiles.angleToPointWithOrientation(
-					getRobotOrientation(), getRobotPosition(),
-					new Point3f(fn.getPosition())));
-			if (feeders.indexOf(fn) != excludeFeeder
-					&& fnAngle < minAngle) {
+		for (FeederNode fn : feeders) {
+			float fnAngle = angleToFeeder(feeders.indexOf(fn));
+			if (feeders.indexOf(fn) != excludeFeeder && fnAngle < minAngle) {
 				minAngle = fnAngle;
 				bestNode = fn;
 			}
@@ -617,5 +614,22 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		t.get(pos);
 		pos.sub(feeders.get(i).getPosition());
 		return pos.length();
+	}
+
+	@Override
+	public int getFoundFeeder() {
+		Point3f robot = getRobotPosition();
+		for (FeederNode fn : feeders)
+			if (robot.distance(new Point3f(fn.getPosition())) < CLOSE_TO_FOOD_THRS)
+				return feeders.indexOf(fn);
+		
+		return -1;
+	}
+
+	@Override
+	public float angleToFeeder(Integer fn) {
+		return Math.abs(Utiles.angleToPointWithOrientation(
+				getRobotOrientation(), getRobotPosition(),
+				new Point3f(feeders.get(fn).getPosition())));
 	}
 }

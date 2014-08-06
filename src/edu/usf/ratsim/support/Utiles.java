@@ -30,6 +30,7 @@ public class Utiles {
 	public static final int numActions = numRotations + 1;
 	public static int eatAction = numRotations;
 	// private static final float actionMax = (float) (Math.PI/8);
+	public static int forwardAction = numRotations / 2;
 
 	private static final float angleInterval = (float) (Math.PI / 8);
 	private static final float angleMin = 0;
