@@ -29,14 +29,14 @@
                 <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
-                <foodReward>1</foodReward>
-                <nonFoodReward>-.01</nonFoodReward>
-                <discountFactor>.50</discountFactor>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
-                <flashingReward>2.5</flashingReward>
-                <nonFlashingReward>0</nonFlashingReward>
-                <wallAvoidingVal>-10E200</wallAvoidingVal>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
                 <proportionalQL>true</proportionalQL>
             </params>
         </model>
@@ -63,14 +63,14 @@
                 <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
-                <foodReward>1</foodReward>
-                <nonFoodReward>-.01</nonFoodReward>
-                <discountFactor>.50</discountFactor>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
-                <flashingReward>2.5</flashingReward>
-                <nonFlashingReward>0</nonFlashingReward>
-                <wallAvoidingVal>-10E200</wallAvoidingVal>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
                 <proportionalQL>true</proportionalQL>
             </params>
         </model>
@@ -97,14 +97,14 @@
                 <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
-                <foodReward>1</foodReward>
-                <nonFoodReward>-.01</nonFoodReward>
-                <discountFactor>.50</discountFactor>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
-                <flashingReward>2.5</flashingReward>
-                <nonFlashingReward>0</nonFlashingReward>
-                <wallAvoidingVal>-10E200</wallAvoidingVal>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
                 <proportionalQL>true</proportionalQL>
             </params>
         </model>
@@ -131,14 +131,14 @@
                 <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
-                <foodReward>1</foodReward>
-                <nonFoodReward>-.01</nonFoodReward>
-                <discountFactor>.50</discountFactor>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
-                <flashingReward>2.5</flashingReward>
-                <nonFlashingReward>0</nonFlashingReward>
-                <wallAvoidingVal>-10E200</wallAvoidingVal>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
                 <proportionalQL>true</proportionalQL>
             </params>
         </model>
@@ -165,14 +165,14 @@
                 <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
-                <foodReward>1</foodReward>
-                <nonFoodReward>-.01</nonFoodReward>
-                <discountFactor>.50</discountFactor>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
-                <flashingReward>2.5</flashingReward>
-                <nonFlashingReward>0</nonFlashingReward>
-                <wallAvoidingVal>-10E200</wallAvoidingVal>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
                 <proportionalQL>true</proportionalQL>
             </params>
         </model>
@@ -199,14 +199,14 @@
                 <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
-                <foodReward>1</foodReward>
-                <nonFoodReward>-.01</nonFoodReward>
-                <discountFactor>.50</discountFactor>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
-                <flashingReward>2.5</flashingReward>
-                <nonFlashingReward>0</nonFlashingReward>
-                <wallAvoidingVal>-10E200</wallAvoidingVal>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
                 <proportionalQL>true</proportionalQL>
             </params>
         </model>
@@ -233,14 +233,14 @@
                 <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
-                <foodReward>1</foodReward>
-                <nonFoodReward>-.01</nonFoodReward>
-                <discountFactor>.50</discountFactor>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
-                <flashingReward>2.5</flashingReward>
-                <nonFlashingReward>0</nonFlashingReward>
-                <wallAvoidingVal>-10E200</wallAvoidingVal>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
                 <proportionalQL>true</proportionalQL>
             </params>
         </model>
@@ -267,14 +267,14 @@
                 <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
-                <foodReward>1</foodReward>
-                <nonFoodReward>-.01</nonFoodReward>
-                <discountFactor>.50</discountFactor>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
-                <flashingReward>2.5</flashingReward>
-                <nonFlashingReward>0</nonFlashingReward>
-                <wallAvoidingVal>-10E200</wallAvoidingVal>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
                 <proportionalQL>true</proportionalQL>
             </params>
         </model>
@@ -301,14 +301,14 @@
                 <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
-                <foodReward>1</foodReward>
-                <nonFoodReward>-.01</nonFoodReward>
-                <discountFactor>.50</discountFactor>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
-                <flashingReward>2.5</flashingReward>
-                <nonFlashingReward>0</nonFlashingReward>
-                <wallAvoidingVal>-10E200</wallAvoidingVal>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
                 <proportionalQL>true</proportionalQL>
             </params>
         </model>
@@ -355,6 +355,9 @@
             <task>
                 <name>FlashFeeder</name>
             </task>
+            <task>
+				<name>ResetRobotAte</name>
+			</task>
             <!-- <task> <name>UnflashFeeder</name> </task> -->
         </afterCycleTasks>
         <afterTrialTasks>
@@ -363,7 +366,7 @@
             <stopCondition>
                 <name>FoundNFood</name>
                 <params>
-                    <n>1000</n>
+                    <n>100</n>
                 </params>
             </stopCondition>
         </stopConditions>
@@ -380,8 +383,15 @@
         <afterTrialLoggers>
             <!-- <logger> <name>PolicyDumperWithIntention</name> <params> <numIntentions>8</numIntentions> 
                 </params> </logger> -->
+            <logger>
+                <name>WallLogger</name>
+            </logger>
         </afterTrialLoggers>
         <plotters>
+       		<plotter>
+				<name>MutliFeedersPlotter</name>
+				<params></params>
+			</plotter>
 		</plotters>
 
     </trial>
@@ -440,18 +450,27 @@
         </initialTasks>
         <afterCycleTasks>
             <task>
+				<name>FlashFeederWhenWrong</name>
+				<params>
+					<timeout>200</timeout>
+				</params>
+			</task>
+			<task>
                 <name>FeederTemporalDeactivate</name>
+            </task>
+            <task>
+                <name>ResetRobotAte</name>
             </task>
         </afterCycleTasks>
         <afterTrialTasks>
         </afterTrialTasks>
         <stopConditions>
             <stopCondition>
-                <name>FoundNFood</name>
-                <params>
-                    <n>15</n>
-                </params>
-            </stopCondition>
+				<name>FoundNFoodNoMistakes</name>
+				<params>
+					<n>15</n>
+				</params>
+			</stopCondition>
             <stopCondition>
                 <name>Time</name>
                 <params>
@@ -542,18 +561,27 @@
         </initialTasks>
         <afterCycleTasks>
             <task>
+				<name>FlashFeederWhenWrong</name>
+				<params>
+					<timeout>200</timeout>
+				</params>
+			</task>
+			<task>
                 <name>FeederTemporalDeactivate</name>
+            </task>
+            <task>
+                <name>ResetRobotAte</name>
             </task>
         </afterCycleTasks>
         <afterTrialTasks>
         </afterTrialTasks>
         <stopConditions>
             <stopCondition>
-                <name>FoundNFood</name>
-                <params>
-                    <n>15</n>
-                </params>
-            </stopCondition>
+				<name>FoundNFoodNoMistakes</name>
+				<params>
+					<n>15</n>
+				</params>
+			</stopCondition>
             <stopCondition>
                 <name>Time</name>
                 <params>
@@ -645,18 +673,27 @@
         </initialTasks>
         <afterCycleTasks>
             <task>
+				<name>FlashFeederWhenWrong</name>
+				<params>
+					<timeout>200</timeout>
+				</params>
+			</task>
+			<task>
                 <name>FeederTemporalDeactivate</name>
+            </task>
+            <task>
+                <name>ResetRobotAte</name>
             </task>
         </afterCycleTasks>
         <afterTrialTasks>
         </afterTrialTasks>
         <stopConditions>
             <stopCondition>
-                <name>FoundNFood</name>
-                <params>
-                    <n>15</n>
-                </params>
-            </stopCondition>
+				<name>FoundNFoodNoMistakes</name>
+				<params>
+					<n>15</n>
+				</params>
+			</stopCondition>
             <stopCondition>
                 <name>Time</name>
                 <params>
