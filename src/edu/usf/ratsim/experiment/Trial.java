@@ -82,35 +82,34 @@ public class Trial implements Runnable {
 		this.trialNode = trialNode;
 		this.points = points;
 
-		
 	}
 
 	public void run() {
-		// Lock before starting
-		try {
-			System.out.println("Press enter to continue");
-			System.in.read();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		if (Debug.waitBeforeTrial) {
+			// Lock before starting
+			try {
+				System.out.println("Press enter to continue");
+				System.in.read();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
-		
+
 		// Load the trial tasks
-		loadInitialTasks(trialNode.getChild(STR_INITIAL_TASKS)
-				, points, subject.getModel());
-		loadAfterCycleTasks(trialNode.getChild(STR_AFTER_CYCLE_TASKS)
-						, points, subject.getModel());
-		loadAfterTrialTasks(trialNode.getChild(STR_AFTER_TRIAL_TASKS)
-				, points, subject.getModel());
+		loadInitialTasks(trialNode.getChild(STR_INITIAL_TASKS), points,
+				subject.getModel());
+		loadAfterCycleTasks(trialNode.getChild(STR_AFTER_CYCLE_TASKS), points,
+				subject.getModel());
+		loadAfterTrialTasks(trialNode.getChild(STR_AFTER_TRIAL_TASKS), points,
+				subject.getModel());
 		// Load the stop conditions
-		loadConditions(trialNode.getChild(STR_STOP_CONDITIONS)
-				, points, subject.getModel(), subject.getUniverse());
+		loadConditions(trialNode.getChild(STR_STOP_CONDITIONS), points,
+				subject.getModel(), subject.getUniverse());
 		// Load loggers
-		loadAfterCycleLoggers(trialNode.getChild(
-				STR_CYCLE_LOGGERS));
-		loadAfterTrialLoggers(trialNode.getChild(
-				STR_TRIAL_LOGGERS));
-		
+		loadAfterCycleLoggers(trialNode.getChild(STR_CYCLE_LOGGERS));
+		loadAfterTrialLoggers(trialNode.getChild(STR_TRIAL_LOGGERS));
+
 		// Lock on the subject to ensure mutual exclusion for the same rat
 		// Assumes is fifo
 		synchronized (getSubject()) {
@@ -124,8 +123,9 @@ public class Trial implements Runnable {
 			do {
 				// One cycle to the trial
 				subject.stepCycle();
-				if (Debug.printEndCycle) System.out.println("End of cycle");
-				
+				if (Debug.printEndCycle)
+					System.out.println("End of cycle");
+
 				if (sleep && !name.equals("training")) {
 					try {
 						Thread.sleep(SLEEP_BETWEEN_CYCLES);
@@ -142,7 +142,7 @@ public class Trial implements Runnable {
 					stop = stop || sc.experimentFinished();
 				// Do all after-cycle tasks
 				for (ExperimentTask task : afterCycleTasks)
-					task.perform(getUniverse(),getSubject());
+					task.perform(getUniverse(), getSubject());
 			} while (!stop);
 
 			// After trial tasks
@@ -161,11 +161,11 @@ public class Trial implements Runnable {
 
 			System.out.println("Trial " + getName() + " " + group + " "
 					+ getSubjectName() + " " + getRep() + " finished.");
-			
+
 			// Load plotters
 			if (trialNode.getChild(STR_PLOTTING_STR) != null)
-				loadPlottingTasks(trialNode.getChild(STR_PLOTTING_STR)
-						, points, subject.getModel());
+				loadPlottingTasks(trialNode.getChild(STR_PLOTTING_STR), points,
+						subject.getModel());
 			for (ExperimentPlotter p : plotters)
 				p.plot();
 		}
@@ -175,7 +175,7 @@ public class Trial implements Runnable {
 	private void loadPlottingTasks(ElementWrapper elementWrapper,
 			Hashtable<String, Point4f> points2, NslModel model) {
 		plotters = PlottingFactory.createPlottingTasks(elementWrapper);
-		
+
 	}
 
 	public void loadConditions(ElementWrapper elementWrapper,

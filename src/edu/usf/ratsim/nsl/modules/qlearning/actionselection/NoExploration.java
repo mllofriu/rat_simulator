@@ -8,6 +8,7 @@ import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.support.Debug;
 import edu.usf.ratsim.support.Utiles;
 
 public class NoExploration extends NslModule {
@@ -89,7 +90,7 @@ public class NoExploration extends NslModule {
 
 		// Rotate the robot the desired angle
 		if (actions.get(action).getAction() == Utiles.eatAction) {
-			System.out.println("Trying to eat");
+			if (Debug.printTryingToEat) System.out.println("Trying to eat");
 			robot.eat();
 		} else {
 			float angle = Utiles
@@ -100,12 +101,14 @@ public class NoExploration extends NslModule {
 				angle = Utiles.getActionAngle(0);
 
 			do {
-				robot.rotate(angle);
+				if (Debug.moveRobot) 
+					robot.rotate(angle);
 				aff = robot.getAffordances();
 			} while (!aff[Utiles.discretizeAction(0)]);
 
 			// else {
-			robot.forward();
+			if (Debug.moveRobot)
+				robot.forward();
 			// }
 		}
 
