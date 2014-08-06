@@ -1,5 +1,6 @@
 package edu.usf.ratsim.experiment.task;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -21,7 +22,11 @@ public class FlashFeeder implements ExperimentTask {
 			List<Integer> active = (List<Integer>) subject
 					.getProperty(ActivateFeeders.STR_ACTIVE_FEEDERS);
 			active = new LinkedList<Integer>(active);
-			int feeder = active.get(r.nextInt(active.size()));
+//			int feeder = active.get(r.nextInt(active.size()));
+			// Pick the greatest to avoid problems with ActiveGoal/Intention initialization
+			Collections.sort(active);
+			int feeder = active.get(active.size()-1);
+			
 			univ.setFlashingFeeder(feeder, true);
 			univ.setActiveFeeder(feeder, true);
 		} else if (!univ.getFlashingFeeders().isEmpty()

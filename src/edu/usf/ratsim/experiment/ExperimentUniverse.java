@@ -90,4 +90,8 @@ public interface ExperimentUniverse {
 	public boolean isRobotCloseToAFeeder();
 
 	public float getDistanceToFeeder(int i);
+
+	public int getFoundFeeder();
+
+	public float angleToFeeder(Integer fn);
 }
