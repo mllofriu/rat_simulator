@@ -13,6 +13,7 @@ import edu.usf.ratsim.support.Utiles;
 
 public class NoExploration extends NslModule {
 
+	private static final float FORWARD_EPS = 0.00001f;
 	public NslDinFloat1 votes;
 	public NslDoutInt0 takenAction;
 
@@ -34,47 +35,19 @@ public class NoExploration extends NslModule {
 	}
 
 	public void simRun() {
-//		float[] overallValues = new float[Utiles.numActions];
-//		for (int i = 0; i < overallValues.length; i++)
-//			overallValues[i] = 0;
-		// Add each contribution
-//		System.out.println("Values");
-//		for (NslDinFloat1 layerVal : votes) {
-//			for (int angle = 0; angle < layerVal.getSize(); angle++) {
-//				overallValues[angle] += layerVal.get(angle);
-//				System.out.print(layerVal.get(angle) + "\t\t");
-//			}
-//			System.out.println();
-//		}
-//		System.out.println();
-		//
-		// System.out.print("Values\t");
-		// for (int angle = 0; angle < Utiles.numActions; angle++)
-		// System.out.print(overallValues[angle] + "\t\t");
-		// System.out.println();
-		//
 		float maxVal = Float.MIN_VALUE;
 		for (int angle = 0; angle < votes.getSize(); angle++)
 			if (maxVal < votes.get(angle))
 				maxVal = votes.get(angle);
 
 		LinkedList<ActionValue> actions = new LinkedList<ActionValue>();
-		// for (int angle = 0; angle < overallValues.length; angle++) {
-		// // Get angle to that maximal direction
-		// Quat4f nextRot = Utiles.angleToRot(Utiles.getAngle(angle));
-		//
-		// // Get the action that better approximates that angle
-		// int action = Utiles.bestActionToRot(nextRot,
-		// universe.getRobotOrientation());
-		// // Add a small bias towards going forward and small rotations
-		// // Radial function centered on the going forward angle
-		// float val = overallValues[angle];
-		//
-		// actions.add(new ActionValue(action, val));
-		// }
 		// Assign values to actions as a function of angles instead of viceversa
 		for (int action = 0; action < Utiles.numActions; action++) {
-			actions.add(new ActionValue(action, votes.get(action)));
+			// Add a small eps to forward action to prefer it in case of a tie
+			if (action == Utiles.forwardAction)
+				actions.add(new ActionValue(action, votes.get(action) + FORWARD_EPS));
+			else 
+				actions.add(new ActionValue(action, votes.get(action)));
 		}
 
 		int action;
