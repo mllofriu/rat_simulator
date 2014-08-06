@@ -50,11 +50,11 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 				Quat4f rRot = univ.getRobotOrientation();
 
 				// Get the vector food - robot
-				Vector3f vToFood = Utiles.vectorToPoint(rPos, fPos);
+				Vector3f vToFood = Utiles.pointsToVector(rPos, fPos);
 
 				// Build quat4d for angle to food
 				// Use (1,0,0) to get absolute orientation
-				Quat4f rotToFood = Utiles.rotToPoint(new Vector3f(1, 0, 0),
+				Quat4f rotToFood = Utiles.rotBetweenVectors(new Vector3f(1, 0, 0),
 						vToFood);
 
 				// Get affordances

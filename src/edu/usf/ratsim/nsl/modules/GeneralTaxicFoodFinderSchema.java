@@ -40,6 +40,9 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 	}
 
 	public void simRun() {
+		System.out.println(univ.getRobotOrientationAngle());
+		System.out.println(univ.getFeederInFrontOfRobot(-1));
+		
 		// If the current goal is flashing override other modules actions
 		// (this module should come after others)
 		votes.set(0);
@@ -59,11 +62,11 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 				Point3f fPos = univ.getFoodPosition(goalFeeder.get());
 
 				// Get the vector food - robot
-				Vector3f vToFood = Utiles.vectorToPoint(rPos, fPos);
+				Vector3f vToFood = Utiles.pointsToVector(rPos, fPos);
 
 				// Build quat4d for angle to food
 				// Use (1,0,0) to get absolute orientation
-				Quat4f rotToFood = Utiles.rotToPoint(new Vector3f(1, 0, 0),
+				Quat4f rotToFood = Utiles.rotBetweenVectors(new Vector3f(1, 0, 0),
 						vToFood);
 
 				Quat4f currRot = univ.getRobotOrientation();

@@ -559,7 +559,8 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		}
 
 		if (feedingFeeder != -1) {
-			if (Debug.printRobotAte) System.out.println("Robot ate");
+			if (Debug.printRobotAte)
+				System.out.println("Robot ate");
 			robotAte = true;
 		} else {
 			// System.out.println("Tried to eat but not close to active feeder");
@@ -582,19 +583,19 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	}
 
 	@Override
-	public int getFeedingInFrontOfRobot(int excludeFeeder) {
+	public int getFeederInFrontOfRobot(int excludeFeeder) {
 		float minAngle = Float.MAX_VALUE;
 		FeederNode bestNode = feeders.get(0);
-		for (FeederNode fn : feeders)
+		for (FeederNode fn : feeders){
+			float fnAngle = Math.abs(Utiles.angleToPointWithOrientation(
+					getRobotOrientation(), getRobotPosition(),
+					new Point3f(fn.getPosition())));
 			if (feeders.indexOf(fn) != excludeFeeder
-					&& Math.abs(Utiles.angleToPointWithOrientation(
-							getRobotOrientation(), getRobotPosition(),
-							new Point3f(fn.getPosition()))) < minAngle) {
-				minAngle = Math.abs(Utiles.angleToPointWithOrientation(
-						getRobotOrientation(), getRobotPosition(), new Point3f(
-								fn.getPosition())));
+					&& fnAngle < minAngle) {
+				minAngle = fnAngle;
 				bestNode = fn;
 			}
+		}
 		return feeders.indexOf(bestNode);
 	}
 
@@ -602,8 +603,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	public boolean isRobotCloseToAFeeder() {
 		Point3f robot = getRobotPosition();
 		for (FeederNode fn : feeders)
-			if (robot.distance(new Point3f(fn
-				.getPosition())) < CLOSE_TO_FOOD_THRS)
+			if (robot.distance(new Point3f(fn.getPosition())) < CLOSE_TO_FOOD_THRS)
 				return true;
 		return false;
 	}
