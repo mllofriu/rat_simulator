@@ -54,7 +54,7 @@ public class FlashingOrAnyGoalDecider extends NslModule {
 
 		if (universe.hasRobotAte() || universe.hasRobotTriedToEat()) {
 			lastFeeder = currentGoal;
-			currentGoal = universe.getFeedingInFrontOfRobot(lastFeeder);
+			currentGoal = universe.getFeederInFrontOfRobot(lastFeeder);
 			
 		}
 

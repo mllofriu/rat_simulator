@@ -85,7 +85,7 @@ public interface ExperimentUniverse {
 
 	public boolean hasRobotTriedToEat();
 
-	int getFeedingInFrontOfRobot(int excludeFeeder);
+	int getFeederInFrontOfRobot(int excludeFeeder);
 
 	public boolean isRobotCloseToAFeeder();
 
