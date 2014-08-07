@@ -632,4 +632,16 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 				getRobotOrientation(), getRobotPosition(),
 				new Point3f(feeders.get(fn).getPosition())));
 	}
+
+	@Override
+	public float wallDistanceToFeeders(LineSegment wall) {
+		float minDist = Float.MAX_VALUE;
+		for (FeederNode fn : feeders){
+			Vector3f pos = fn.getPosition();
+			Coordinate c = new Coordinate(pos.x, pos.z);
+			if (wall.distance(c) < minDist)
+				minDist = (float) wall.distance(c);
+		}
+		return minDist;
+	}
 }
