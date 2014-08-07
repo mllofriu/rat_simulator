@@ -1,42 +1,44 @@
 package edu.usf.ratsim.experiment.stopcondition;
 
 import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.ratsim.support.Debug;
 import edu.usf.ratsim.support.ElementWrapper;
 
 public class FoundNFoodNoMistakesStopCond implements StopCondition {
 
-	private static final String STR_N = "n";
 	private ExperimentUniverse uni;
+	private int stepsSinceLastAte;
+	private int timeout;
 	private int n;
-	private int found;
-	private boolean hasMadeMistake;
+	private int toGo;
 
 	public FoundNFoodNoMistakesStopCond(ExperimentUniverse uni,
 			ElementWrapper condParams) {
-		this.n = condParams.getChildInt(STR_N);
-		this.found = this.n;
 		this.uni = uni;
-		this.hasMadeMistake = false;
+		n = condParams.getChildInt("n");
+		toGo = n;
+		timeout = condParams.getChildInt("timeout");
+		stepsSinceLastAte = 0;
 	}
 
 	public boolean experimentFinished() {
-		
-		if (uni.hasRobotFoundFood() && uni.hasRobotAte())
-			found--;
-		// If made a mistake but is the first one, dont reinitialize
-		else if (uni.hasRobotTriedToEat() && uni.isRobotCloseToAFeeder()
-				&& !uni.hasRobotAte() && !hasMadeMistake)
-			hasMadeMistake = true;
-		// If rat made a mistake already, reinitialize
-		else if (uni.hasRobotTriedToEat() && uni.isRobotCloseToAFeeder()
-				&& !uni.hasRobotAte() && hasMadeMistake){
-			System.out.println("Reinitializing count");
-			found = n;
-			hasMadeMistake = false;
+		if (uni.hasRobotAte()) {
+			stepsSinceLastAte = 0;
+			toGo--;
+		} else
+			stepsSinceLastAte++;
+				
+		if (stepsSinceLastAte >= timeout){
+			if (Debug.printFoundNNoMistakes)
+				System.out.println("Reseting count of feeders");
+			toGo = n;
+			stepsSinceLastAte = 0;
 		}
 		
-		System.out.println("Feeders to go: " + found);
-		return found <= 0;
+		if (Debug.printFoundNNoMistakes)
+			System.out.println("Feeders to go " + toGo);
+		
+		return toGo <= 0;
 	}
 
 }
