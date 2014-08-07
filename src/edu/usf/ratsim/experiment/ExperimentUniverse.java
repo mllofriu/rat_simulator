@@ -94,4 +94,6 @@ public interface ExperimentUniverse {
 	public int getFoundFeeder();
 
 	public float angleToFeeder(Integer fn);
+
+	public float wallDistanceToFeeders(LineSegment wall);
 }
