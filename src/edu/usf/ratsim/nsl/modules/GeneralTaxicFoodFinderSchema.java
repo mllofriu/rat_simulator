@@ -27,12 +27,14 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 	public NslDoutFloat1 votes;
 	private float rewardFlashing, rewardNonFlashing;
 	private Integer lastEatenFeeder;
+	private IRobot robot;
 
 	public GeneralTaxicFoodFinderSchema(String nslName, NslModule nslParent,
 			IRobot robot, ExperimentUniverse univ, int numActions,
 			float rewardFlashing, float rewardNonFlashing) {
 		super(nslName, nslParent);
 		this.univ = univ;
+		this.robot = robot;
 		this.rewardFlashing = rewardFlashing;
 		this.rewardNonFlashing = rewardNonFlashing;
 
@@ -48,10 +50,13 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 		boolean foundFeeder = false;
 
 		// Go over all feeders
+		boolean aff[] = robot.getAffordances();
 		for (Integer fn : univ.getFeeders()) {
 			// Avoid last feeder
-			if (fn != lastEatenFeeder){
-				if (univ.angleToFeeder(fn) <= HALF_FIELD_OF_VIEW) {
+			if (fn != lastEatenFeeder) {
+				float angleToFeeder = univ.angleToFeeder(fn);
+				if (angleToFeeder <= HALF_FIELD_OF_VIEW
+						&& aff[Utiles.discretizeAction((int) Math.toDegrees(angleToFeeder))]) {
 					foundFeeder = true;
 					// Get the best action for that feeder
 					int action = getActionToFeeder(fn);
@@ -70,16 +75,33 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 								action,
 								Math.max(rewardNonFlashing * distanceMod,
 										votes.get(action)));
-					
+
 					if (action == Utiles.eatAction)
 						lastEatenFeeder = fn;
 				}
 			}
 
 		}
-		
-		
-		if (!foundFeeder){
+
+		// If I cannot go in one direction, follow the wall
+		// boolean aff[] = robot.getAffordances();
+		// boolean forbiddenAff = false;
+		// for (int i = 0; i < Utiles.numRotations; i++)
+		// if (Utiles.getActionAngle(i) != 0)
+		// forbiddenAff = forbiddenAff || !aff[i];
+		//
+		// int forwardAction = Utiles.discretizeAction(0);
+		// if (forbiddenAff)
+		// if (!univ.getFlashingFeeders().isEmpty())
+		// votes.set(forwardAction,
+		// Math.max(rewardFlashing, votes.get(forwardAction)));
+		// else
+		// votes.set(
+		// forwardAction,
+		// Math.max(rewardNonFlashing,
+		// votes.get(forwardAction)));
+
+		if (!foundFeeder) {
 			// Give a forward impulse
 			votes.set(Utiles.discretizeAction(0), rewardNonFlashing / 2);
 		}
