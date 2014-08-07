@@ -182,6 +182,7 @@
 				<name>FoundNFoodNoMistakes</name>
 				<params>
 					<n>15</n>
+					<timeout>200</timeout>
 				</params>
 			</stopCondition>
 		</stopConditions>
