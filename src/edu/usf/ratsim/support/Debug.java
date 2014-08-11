@@ -2,7 +2,7 @@ package edu.usf.ratsim.support;
 
 public class Debug {
 
-	public static boolean printValues = true;
+	public static boolean printValues = false;
 	public static boolean printEndCycle = false;
 	public static boolean printAnyGoal = false;
 	public static boolean printTaxic = false;
@@ -13,7 +13,7 @@ public class Debug {
 	public static boolean printFoundNNoMistakes = false;
 	
 	
-	public static boolean waitBeforeTrial = true;
+	public static boolean pressEnterBeforeTrial = false;
 	public static boolean moveRobot = true;
 	public static boolean sleepBeforeStart = false;	
 
