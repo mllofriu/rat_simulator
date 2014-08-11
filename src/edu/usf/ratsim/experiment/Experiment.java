@@ -8,16 +8,13 @@ package edu.usf.ratsim.experiment;
  * Fecha: 11 de agosto de 2010
  */
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -59,11 +56,13 @@ public class Experiment implements Runnable {
 	private Map<ExpSubject, List<Trial>> trials;
 	private String logPath;
 	private String mazeFile;
-	private Hashtable<String, Hashtable<String, ExpSubject>> groups;
+	private List<Group> groups;
 
-	public Experiment(String filename, String logPath, String individual) {
-		System.out.println("Starting individual " + individual + " in log " + logPath);
-		
+	public Experiment(String filename, String logPath, String group,
+			String individual) {
+		System.out.println("Starting group " + group + " individual "
+				+ " in log " + logPath);
+
 		// If there is no log path, compute it
 		if (logPath == null) {
 			logPath = computeLogPath();
@@ -71,36 +70,38 @@ public class Experiment implements Runnable {
 			// No individual specific execution
 			Configuration.setProperty("Log.INDIVIDUAL", "");
 		} else {
-			logPath = logPath + File.separator + individual+ File.separator;
+			logPath = logPath + File.separator + individual + File.separator;
 			// No individual specific execution
+			Configuration.setProperty("Log.GROUP", group);
 			Configuration.setProperty("Log.INDIVIDUAL", individual);
 		}
-		
+
 		// Set the log path in the global configuration class for the rest to
 		// know
-		Configuration.setProperty("Log.DIRECTORY",logPath);
-		
+		Configuration.setProperty("Log.DIRECTORY", logPath);
+
 		File file = new File(logPath);
 		file.mkdirs();
 
 		// Read experiments from xml file
 		try {
-			FileUtils.copyURLToFile(getClass().getResource(filename),
-					new File(logPath + "experiment.xml"));
+			FileUtils.copyURLToFile(getClass().getResource(filename), new File(
+					logPath + "experiment.xml"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		Document doc = XMLDocReader.readDocument(logPath + "experiment.xml");
 
 		ElementWrapper root = new ElementWrapper(doc.getDocumentElement());
 
 		// Copy the configuration file to the experiment's folder
 		try {
-			FileUtils.copyURLToFile(
-					getClass().getResource(Configuration.PROP_FILE), new File(
-							logPath + File.separator
+			FileUtils
+					.copyURLToFile(
+							getClass().getResource(Configuration.PROP_FILE),
+							new File(logPath + File.separator
 									+ Configuration.PROP_FILE));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -129,23 +130,21 @@ public class Experiment implements Runnable {
 		loadTrials(root, points, groups, logPath);
 	}
 
-	private Hashtable<String, Hashtable<String, ExpSubject>> loadGroups(
-			ElementWrapper root) {
-		Hashtable<String, Hashtable<String, ExpSubject>> groups = new Hashtable<String, Hashtable<String, ExpSubject>>();
+	private List<Group> loadGroups(ElementWrapper root) {
+		List<Group> groups = new LinkedList<Group>();
 		List<ElementWrapper> groupNodes = root.getChildren(STR_GROUP);
 		for (ElementWrapper gNode : groupNodes) {
 			String gName = gNode.getChildText(STR_NAME);
+			Group g = new Group(gName);
 			int groupNumSubs = gNode.getChildInt(STR_NUM_MEMBERS);
 
-			Hashtable<String, ExpSubject> sGroup = new Hashtable<String, ExpSubject>();
 			for (int k = 1; k <= groupNumSubs; k++) {
 				String subName = gName + " - rat " + k;
 
-				sGroup.put(subName, new ExpSubject(subName, gName, gNode,
-						mazeFile));
+				g.addSubject(new ExpSubject(subName, gName, gNode, mazeFile));
 			}
 
-			groups.put(gName, sGroup);
+			groups.add(g);
 		}
 
 		return groups;
@@ -154,8 +153,6 @@ public class Experiment implements Runnable {
 	public String getLogPath() {
 		return logPath;
 	}
-
-	
 
 	private String computeLogPath() {
 		// Setup the logPath to be the log directory + name of the experiment
@@ -172,8 +169,7 @@ public class Experiment implements Runnable {
 	}
 
 	private void loadTrials(ElementWrapper root,
-			Hashtable<String, Point4f> points,
-			Hashtable<String, Hashtable<String, ExpSubject>> groups,
+			Hashtable<String, Point4f> points, List<Group> groups,
 			String experimentLogPath) {
 
 		List<ElementWrapper> trialNodes = root.getChildren(STR_TRIAL);
@@ -185,16 +181,19 @@ public class Experiment implements Runnable {
 			for (ElementWrapper groupNode : trialGroups) {
 				String groupName = groupNode.getText();
 				// For each subject in the group
-				for (String subName : groups.get(groupName).keySet()) {
-					ExpSubject subject = groups.get(groupName).get(subName);
-					// For each repetition
-					int reps = trialNode.getChildInt(STR_REPETITIONS);
-					for (int k = 0; k < reps; k++) {
-						Trial t = new Trial(trialNode, points, groupName,
-								subject, k);
-						if (!trials.containsKey(subject))
-							trials.put(subject, new LinkedList<Trial>());
-						trials.get(subject).add(t);
+				for (Group group : groups) {
+					if (group.getName().equals(groupName)) {
+						for (ExpSubject subject : group.getSubjects()) {
+							// For each repetition
+							int reps = trialNode.getChildInt(STR_REPETITIONS);
+							for (int k = 0; k < reps; k++) {
+								Trial t = new Trial(trialNode, points,
+										groupName, subject, k);
+								if (!trials.containsKey(subject))
+									trials.put(subject, new LinkedList<Trial>());
+								trials.get(subject).add(t);
+							}
+						}
 					}
 				}
 			}
@@ -225,12 +224,10 @@ public class Experiment implements Runnable {
 							.getInt("Experiment.numThreads"));
 
 			// Create threads
-			for (final Entry<String, Hashtable<String, ExpSubject>> groupSubjects : groups
-					.entrySet()) {
-				for (final Entry<String, ExpSubject> entry : groupSubjects
-						.getValue().entrySet()) {
-					executor.execute(new SubjectThread(entry.getValue(), trials
-							.get(entry.getValue())));
+			for (Group group : groups) {
+				for (ExpSubject subject : group.getSubjects()) {
+					executor.execute(new SubjectThread(subject, trials
+							.get(subject)));
 				}
 			}
 
@@ -249,24 +246,16 @@ public class Experiment implements Runnable {
 				e.printStackTrace();
 			}
 
-//			execPlottingScripts();
+			// execPlottingScripts();
 		} else {
-			int i = 1;
 			int individualNum = Integer.parseInt(Configuration
 					.getString("Log.INDIVIDUAL"));
-			for (final Entry<String, Hashtable<String, ExpSubject>> groupSubjects : groups
-					.entrySet()) {
-				for (final Entry<String, ExpSubject> entry : groupSubjects
-						.getValue().entrySet()) {
-					if (i == individualNum){
-						System.out.println("Running " + entry.getValue().getName());
-						new SubjectThread(entry.getValue(), trials.get(entry
-								.getValue())).run();
-					}
-						
-					i++;
-				}
-			}
+			int groupNum = Integer.parseInt(Configuration
+					.getString("Log.GROUP"));
+
+			ExpSubject subject = groups.get(groupNum).getSubject(individualNum);
+			System.out.println("Running " + subject.getName());
+			new SubjectThread(subject, trials.get(subject)).run();
 		}
 
 	}
@@ -279,13 +268,11 @@ public class Experiment implements Runnable {
 		// More than one parameter means that we have to run only one (the
 		// specified) inidividual
 		if (args.length == 1) {
-			e = new Experiment(args[0], null, null);
+			e = new Experiment(args[0], null, null, null);
 		} else {
-			e = new Experiment(
-					args[0],
-					Configuration.getString("Log.DIRECTORY")
-							+ File.separator + args[1] + File.separator,
-					args[2]);
+			e = new Experiment(args[0],
+					Configuration.getString("Log.DIRECTORY") + File.separator
+							+ args[1] + File.separator, args[2], args[3]);
 		}
 
 		e.run();
