@@ -64,9 +64,12 @@ public class PlaceRandomWallsTask implements ExperimentTask {
 
 					float breakAngle;
 					if (random.nextFloat() > .5)
-						breakAngle = (float) (Math.PI / 2);
+						breakAngle = (float) (Math.PI / 3);
 					else
-						breakAngle = (float) (Math.PI / 2);
+						breakAngle = (float) (Math.PI / 4);
+					if (random.nextFloat() > .5)
+						breakAngle = -breakAngle;
+					
 					x3 = new Point2f(x2);
 					translation.x = (float) (length / 2 * Math.cos(orientation
 							+ breakAngle));

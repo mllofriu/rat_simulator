@@ -13,8 +13,9 @@ public class Debug {
 	public static boolean printFoundNNoMistakes = false;
 	
 	
-	public static boolean waitBeforeTrial = false;
+	public static boolean pressEnterBeforeTrial = false;
 	public static boolean moveRobot = true;
+	public static boolean sleepBeforeStart = false;	
 
 
 }
