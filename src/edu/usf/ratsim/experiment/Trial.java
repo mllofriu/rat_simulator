@@ -85,7 +85,7 @@ public class Trial implements Runnable {
 	}
 
 	public void run() {
-		if (Debug.waitBeforeTrial) {
+		if (Debug.pressEnterBeforeTrial) {
 			// Lock before starting
 			try {
 				System.out.println("Press enter to continue");
@@ -95,6 +95,8 @@ public class Trial implements Runnable {
 				e1.printStackTrace();
 			}
 		}
+		
+		
 
 		// Load the trial tasks
 		loadInitialTasks(trialNode.getChild(STR_INITIAL_TASKS), points,
@@ -118,6 +120,14 @@ public class Trial implements Runnable {
 			for (ExperimentTask task : initialTasks)
 				task.perform(getUniverse(), getSubject());
 
+			if (Debug.sleepBeforeStart)
+				try {
+					Thread.sleep(15000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			
 			boolean stop;
 			boolean sleep = Configuration.getBoolean("UniverseFrame.display");
 			do {
