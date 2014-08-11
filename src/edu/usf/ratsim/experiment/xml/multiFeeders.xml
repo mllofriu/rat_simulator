@@ -475,7 +475,7 @@
             <stopCondition>
                 <name>Time</name>
                 <params>
-                    <time>10000</time>
+                    <time>30000</time>
                 </params>
             </stopCondition>
         </stopConditions>
@@ -587,7 +587,7 @@
             <stopCondition>
                 <name>Time</name>
                 <params>
-                    <time>10000</time>
+                    <time>30000</time>
                 </params>
             </stopCondition>
         </stopConditions>
@@ -700,7 +700,7 @@
             <stopCondition>
                 <name>Time</name>
                 <params>
-                    <time>10000</time>
+                    <time>30000</time>
                 </params>
             </stopCondition>
         </stopConditions>
