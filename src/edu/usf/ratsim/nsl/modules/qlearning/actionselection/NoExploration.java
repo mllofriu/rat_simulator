@@ -2,6 +2,7 @@ package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Random;
 
 import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDoutInt0;
@@ -20,6 +21,7 @@ public class NoExploration extends NslModule {
 	private IRobot robot;
 
 	private ExperimentUniverse universe;
+	private Random random;
 
 	public NoExploration(String nslName, NslModule nslParent, int numVotes,
 			IRobot robot, ExperimentUniverse universe) {
@@ -32,6 +34,7 @@ public class NoExploration extends NslModule {
 
 		takenAction = new NslDoutInt0(this, "takenAction");
 
+		random = new Random();
 	}
 
 	public void simRun() {
@@ -57,8 +60,11 @@ public class NoExploration extends NslModule {
 		Collections.sort(actions);
 		action = actions.size() - 1;
 
+//		if (actions.get(action).getAction() == Utiles.eatAction
+//				&& actions.get(action).getValue() < 0)
+//			action = action - 1;
 		if (actions.get(action).getAction() == Utiles.eatAction
-				&& actions.get(action).getValue() < 0)
+				&& !universe.isRobotCloseToAFeeder())
 			action = action - 1;
 
 		// Rotate the robot the desired angle
@@ -70,9 +76,18 @@ public class NoExploration extends NslModule {
 					.getActionAngle(actions.get(action).getAction());
 			aff = robot.getAffordances();
 			// If going forward and no affordance - rotate
-			if (angle == 0 && !aff[Utiles.discretizeAction(0)])
-				angle = Utiles.getActionAngle(0);
-
+			if (angle == 0 && !aff[Utiles.discretizeAction(0)]){
+				// Depends on the fact that there are only two rotatin actions
+				if (random.nextFloat() > 0.5)
+					angle = Utiles.getActionAngle(0);
+				else
+					angle = Utiles.getActionAngle(2);
+				// Skip to the next action
+//				action = action - 1;
+//				angle = Utiles
+//						.getActionAngle(actions.get(action).getAction());
+			}
+			
 			do {
 				if (Debug.moveRobot) 
 					robot.rotate(angle);
