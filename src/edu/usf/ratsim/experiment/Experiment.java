@@ -70,7 +70,7 @@ public class Experiment implements Runnable {
 			// No individual specific execution
 			Configuration.setProperty("Log.INDIVIDUAL", "");
 		} else {
-			logPath = logPath + File.separator + individual + File.separator;
+			logPath = logPath + File.separator + group + File.separator + individual + File.separator;
 			// No individual specific execution
 			Configuration.setProperty("Log.GROUP", group);
 			Configuration.setProperty("Log.INDIVIDUAL", individual);

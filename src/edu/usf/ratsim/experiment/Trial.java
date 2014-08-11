@@ -85,7 +85,7 @@ public class Trial implements Runnable {
 	}
 
 	public void run() {
-		if (Debug.waitBeforeTrial) {
+		if (Debug.pressEnterBeforeTrial) {
 			// Lock before starting
 			try {
 				System.out.println("Press enter to continue");
