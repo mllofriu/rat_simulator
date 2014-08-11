@@ -452,7 +452,7 @@
             <task>
 				<name>FlashFeederWhenWrong</name>
 				<params>
-					<timeout>200</timeout>
+					<timeout>150</timeout>
 				</params>
 			</task>
 			<task>
@@ -469,7 +469,7 @@
 				<name>FoundNFoodNoMistakes</name>
 				<params>
 					<n>15</n>
-					<timeout>200</timeout>
+					<timeout>150</timeout>
 				</params>
 			</stopCondition>
             <stopCondition>
@@ -564,7 +564,7 @@
             <task>
 				<name>FlashFeederWhenWrong</name>
 				<params>
-					<timeout>200</timeout>
+					<timeout>150</timeout>
 				</params>
 			</task>
 			<task>
@@ -581,7 +581,7 @@
 				<name>FoundNFoodNoMistakes</name>
 				<params>
 					<n>15</n>
-					<timeout>200</timeout>
+					<timeout>150</timeout>
 				</params>
 			</stopCondition>
             <stopCondition>
@@ -677,7 +677,7 @@
             <task>
 				<name>FlashFeederWhenWrong</name>
 				<params>
-					<timeout>200</timeout>
+					<timeout>150</timeout>
 				</params>
 			</task>
 			<task>
@@ -694,7 +694,7 @@
 				<name>FoundNFoodNoMistakes</name>
 				<params>
 					<n>15</n>
-					<timeout>200</timeout>
+					<timeout>150</timeout>
 				</params>
 			</stopCondition>
             <stopCondition>
