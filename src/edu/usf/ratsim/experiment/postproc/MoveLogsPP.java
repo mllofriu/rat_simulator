@@ -5,8 +5,6 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 
-import com.sun.tools.internal.jxc.gen.config.Config;
-
 import edu.usf.ratsim.support.Configuration;
 
 public class MoveLogsPP implements ExperimentPostProc {
