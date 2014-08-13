@@ -172,7 +172,8 @@ plotPolicyOnMaze <- function(name, pathData, policyData, wallData, maze){
 saveArrivalTime <- function(pathData){
   runTimes <- ddply(pathData, .(trial, group, subject, repetition), summarise, runTime = length(x))
   summarizedRunTimes <- ddply(runTimes, .(trial, group, subject), summarise, runtime = mean(runTime))
-  write.csv(summarizedRunTimes, "summary.csv")
+  #write.csv(summarizedRunTimes, "summary.csv")
+  save(summarizedRunTimes, file='summary.RData')
   #   print(summarizedRunTimes)
 #   p <- ggplot(summarizedRunTimes, aes(x=group, y=mRT)) + geom_errorbar(aes(ymin=mRT-sdRT, ymax=mRT+sdRT, color=group), width=.3) + geom_point(aes(color=group))
 #   #   print(p)
@@ -194,12 +195,23 @@ mazeFile <- "maze.xml"
 pathFile = 'position.txt'
 feedersFile = 'wantedFeeder.txt'
 wallsFile = 'walls.txt'
-# policyFile = 'policy.txt'
-
+# # policyFile = 'policy.txt'
+# 
 # policyData <- read.csv(policyFile, sep='\t')
 pathData <- read.csv(pathFile, sep='\t')
 feederData <- read.csv(feedersFile, sep='\t')
 wallData <- read.csv(wallsFile, sep='\t')
+save(pathData, file='position.RData')
+save(feederData, file='feeders.RData')
+save(wallData, file='walls.RData')
+file.remove(pathFile)
+file.remove(feedersFile)
+file.remove(wallsFile)
+
+#load('pos.RData')
+#load('walls.RData')
+#load('wantedFeeder.RData')
+
 
 splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 splitFeeders <- split(feederData, feederData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
