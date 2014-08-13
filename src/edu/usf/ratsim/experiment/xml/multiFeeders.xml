@@ -366,7 +366,7 @@
             <stopCondition>
                 <name>FoundNFood</name>
                 <params>
-                    <n>1</n>
+                    <n>100</n>
                 </params>
             </stopCondition>
         </stopConditions>
@@ -465,7 +465,7 @@
             <stopCondition>
 				<name>FoundNFoodNoMistakes</name>
 				<params>
-					<n>1</n>
+					<n>15</n>
 					<timeout>240</timeout>
 				</params>
 			</stopCondition>
@@ -577,7 +577,7 @@
             <stopCondition>
 				<name>FoundNFoodNoMistakes</name>
 				<params>
-					<n>1</n>
+					<n>15</n>
 					<timeout>240</timeout>
 				</params>
 			</stopCondition>
@@ -690,7 +690,7 @@
             <stopCondition>
 				<name>FoundNFoodNoMistakes</name>
 				<params>
-					<n>1</n>
+					<n>15</n>
 					<timeout>240</timeout>
 				</params>
 			</stopCondition>
