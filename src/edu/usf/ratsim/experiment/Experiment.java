@@ -10,6 +10,7 @@ package edu.usf.ratsim.experiment;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -24,6 +25,8 @@ import javax.vecmath.Point4f;
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 
+import edu.usf.ratsim.experiment.postproc.ExperimentPostProc;
+import edu.usf.ratsim.experiment.postproc.PostProcFactory;
 import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.ElementWrapper;
@@ -57,6 +60,7 @@ public class Experiment implements Runnable {
 	private String logPath;
 	private String mazeFile;
 	private List<Group> groups;
+	private Collection<ExperimentPostProc> postProcs;
 
 	public Experiment(String filename, String logPath, String group,
 			String individual) {
@@ -70,10 +74,15 @@ public class Experiment implements Runnable {
 			// No individual specific execution
 			Configuration.setProperty("Log.INDIVIDUAL", "");
 		} else {
-			logPath = logPath + File.separator + group + File.separator + individual + File.separator;
+			logPath = logPath + File.separator + group + File.separator
+					+ individual + File.separator;
 			// No individual specific execution
 			Configuration.setProperty("Log.GROUP", group);
 			Configuration.setProperty("Log.INDIVIDUAL", individual);
+			Configuration.setProperty("Log.REL_DIRECTORY",
+					Configuration.getString("Log.REL_DIRECTORY")
+							+ File.separator + group + File.separator
+							+ individual + File.separator);
 		}
 
 		// Set the log path in the global configuration class for the rest to
@@ -128,6 +137,8 @@ public class Experiment implements Runnable {
 
 		trials = new HashMap<ExpSubject, List<Trial>>();
 		loadTrials(root, points, groups, logPath);
+
+		postProcs = PostProcFactory.createPPs(root);
 	}
 
 	private List<Group> loadGroups(ElementWrapper root) {
@@ -258,6 +269,9 @@ public class Experiment implements Runnable {
 			new SubjectThread(subject, trials.get(subject)).run();
 		}
 
+		for (ExperimentPostProc pp : postProcs)
+			pp.perform();
+
 	}
 
 	public static void main(String[] args) {
@@ -267,19 +281,23 @@ public class Experiment implements Runnable {
 		Experiment e;
 		// More than one parameter means that we have to run only one (the
 		// specified) inidividual
+
 		if (args.length == 1) {
 			e = new Experiment(args[0], null, null, null);
 		} else {
-			e = new Experiment(args[0],
-					Configuration.getString("Log.DIRECTORY") + File.separator
-							+ args[1] + File.separator, args[2], args[3]);
+			// Set a variable with the relative folder to this run
+			Configuration.setProperty("Log.REL_DIRECTORY", File.separator
+					+ args[1] + File.separator);
+			String tmpLogPath = Configuration.getString("Log.TMP")
+					+ File.separator
+					+ Configuration.getString("Log.REL_DIRECTORY");
+			e = new Experiment(args[0], tmpLogPath, args[2], args[3]);
 		}
 
 		e.run();
 
 		System.exit(0);
 	}
-
 }
 
 class SubjectThread extends Thread {
