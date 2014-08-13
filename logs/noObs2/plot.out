@@ -1,0 +1,35 @@
+[1] Recall No Obs.
+Levels: Recall No Obs. Training
+             Df    Sum Sq   Mean Sq F value Pr(>F)    
+group         2 7.032e+09 3.516e+09    51.7 <2e-16 ***
+Residuals   188 1.279e+10 6.801e+07                   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = runtime ~ group, data = pathData)
+
+$group
+                                diff       lwr       upr     p adj
+VentralNoObs-ControlNoObs   673.3495 -2784.225  4130.924 0.8899646
+DorsalNoObs-ControlNoObs  13181.1307  9723.557 16638.705 0.0000000
+DorsalNoObs-VentralNoObs  12507.7813  9063.847 15951.716 0.0000000
+
+[1] Training
+Levels: Recall No Obs. Training
+             Df  Sum Sq Mean Sq F value Pr(>F)
+group         2    1203     602   0.036  0.965
+Residuals   188 3162878   16824               
+  Tukey multiple comparisons of means
+    95% family-wise confidence level
+
+Fit: aov(formula = runtime ~ group, data = pathData)
+
+$group
+                               diff       lwr      upr     p adj
+VentralNoObs-ControlNoObs -5.530506 -59.91338 48.85237 0.9686876
+DorsalNoObs-ControlNoObs  -0.452381 -54.83525 53.93049 0.9997871
+DorsalNoObs-VentralNoObs   5.078125 -49.09022 59.24647 0.9733267
+
+data frame with 0 columns and 0 rows
