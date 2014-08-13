@@ -366,7 +366,7 @@
             <stopCondition>
                 <name>FoundNFood</name>
                 <params>
-                    <n>100</n>
+                    <n>1</n>
                 </params>
             </stopCondition>
         </stopConditions>
@@ -388,10 +388,7 @@
             </logger>
         </afterTrialLoggers>
         <plotters>
-       		<plotter>
-				<name>MutliFeedersPlotter</name>
-				<params></params>
-			</plotter>
+
 		</plotters>
 
     </trial>
@@ -468,7 +465,7 @@
             <stopCondition>
 				<name>FoundNFoodNoMistakes</name>
 				<params>
-					<n>15</n>
+					<n>1</n>
 					<timeout>240</timeout>
 				</params>
 			</stopCondition>
@@ -580,7 +577,7 @@
             <stopCondition>
 				<name>FoundNFoodNoMistakes</name>
 				<params>
-					<n>15</n>
+					<n>1</n>
 					<timeout>240</timeout>
 				</params>
 			</stopCondition>
@@ -693,7 +690,7 @@
             <stopCondition>
 				<name>FoundNFoodNoMistakes</name>
 				<params>
-					<n>15</n>
+					<n>1</n>
 					<timeout>240</timeout>
 				</params>
 			</stopCondition>
@@ -728,6 +725,10 @@
 
     </trial>
 
+	<postproc>
+		<name>moveLogs</name>
+		<params></params>
+	</postproc>
 
 
 </experiment>
