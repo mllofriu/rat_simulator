@@ -2,6 +2,9 @@
 
 #SBATCH --array=1-576
 
+# execute ploting after this job
+sbatch --dependency=afterok:$SLURM_JOB_ID scripts/plotRuntimes.sh $log
+
 groupSize=64
 
 experiment=$1
