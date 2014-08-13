@@ -9,9 +9,13 @@
 
 
 plotArrival <- function(pathData){
-  print (pathData)
+  #print (pathData)
   summarizedRunTimes <- ddply(pathData, .(group), summarise, sdRT = sd(runtime)/sqrt(length(runtime)), mRT = mean(runtime))
-  print(summarizedRunTimes)
+  runtimes.aov <- aov(runtime ~ group, data=pathData)
+  print(pathData[1,'trial'])
+  print(summary(runtimes.aov))
+  print(TukeyHSD(runtimes.aov))
+  #print(summarizedRunTimes)
   p <- ggplot(summarizedRunTimes, aes(x=group, y=mRT)) + geom_errorbar(aes(ymin=mRT-sdRT, ymax=mRT+sdRT, color=group), width=.3) + geom_point(aes(color=group))
 #   print(p)
   ggsave(plot=p,filename=paste("runtimes", ".", pathData[1,'trial'],".pdf", sep=''), width=10, height=10)
@@ -20,7 +24,7 @@ plotArrival <- function(pathData){
 #summaryFile = 'summary.csv'
 #dirs = list.dirs(recursive=FALSE)
 files <- list.files('.', 'summary.RData', recursive=T)
-runtimeFrames<-lapply(files,load)
+runtimeFrames<-lapply(files,function(x) {load(x); summarizedRunTimes})
  
 # Adapt from previous format
 #runtimeFrames<-lapply(runtimeFrames, function(x) x[-5])
