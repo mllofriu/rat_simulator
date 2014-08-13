@@ -17,10 +17,10 @@ plotArrival <- function(pathData){
   ggsave(plot=p,filename=paste("runtimes", ".", pathData[1,'trial'],".pdf", sep=''), width=10, height=10)
 }
 
-summaryFile = 'summary.csv'
+#summaryFile = 'summary.csv'
 #dirs = list.dirs(recursive=FALSE)
-files <- list.files('.', 'summary.csv', recursive=T)
-runtimeFrames<-lapply(files,read.csv)
+files <- list.files('.', 'summary.RData', recursive=T)
+runtimeFrames<-lapply(files,load)
  
 # Adapt from previous format
 #runtimeFrames<-lapply(runtimeFrames, function(x) x[-5])
