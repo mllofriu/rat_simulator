@@ -9,6 +9,7 @@ import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Utiles;
 
 /**
@@ -28,6 +29,8 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 	private float rewardFlashing, rewardNonFlashing;
 	private Integer lastEatenFeeder;
 	private IRobot robot;
+	private int timeWaiting;
+	private int feedersDelay;
 
 	public GeneralTaxicFoodFinderSchema(String nslName, NslModule nslParent,
 			IRobot robot, ExperimentUniverse univ, int numActions,
@@ -37,6 +40,9 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 		this.robot = robot;
 		this.rewardFlashing = rewardFlashing;
 		this.rewardNonFlashing = rewardNonFlashing;
+		
+		this.timeWaiting = 0;
+		this.feedersDelay = Configuration.getInt("VirtualUniverse.feedersDelay");
 
 		goalFeeder = new NslDinInt0(this, "goalFeeder");
 		votes = new NslDoutFloat1(this, "votes", numActions);
@@ -109,9 +115,14 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 	}
 
 	private int getActionToFeeder(int feeder) {
-		if (univ.isRobotCloseToFeeder(feeder))
-			return Utiles.eatAction;
-		else {
+		if (univ.isRobotCloseToFeeder(feeder)){
+			timeWaiting++;
+			if (timeWaiting > feedersDelay){
+				timeWaiting = 0;
+				return Utiles.eatAction;
+			} else
+				return Utiles.waitAction;
+		} else {
 			Point3f rPos = univ.getRobotPosition();
 			Point3f fPos = univ.getFoodPosition(feeder);
 
