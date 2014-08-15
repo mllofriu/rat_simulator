@@ -36,6 +36,8 @@ public class TaskFactory {
 //				res.add(new PolicyValueUpdater(model));
 			} else if (taskName.equals("ActivateFeeders")) {
 				res.add(new ActivateFeeders());
+			} else if (taskName.equals("GiveFood")) {
+				res.add(new GiveFood());
 			} else if (taskName.equals("DeactivateFeeder")) {
 				res.add(new DeactivateFeeder(taskParams));
 			}else if (taskName.equals("FlashFeeder")) {

@@ -96,4 +96,8 @@ public interface ExperimentUniverse {
 	public float angleToFeeder(Integer fn);
 
 	public float wallDistanceToFeeders(LineSegment wall);
+
+	public boolean isFeederActive(int feeder);
+
+	public void releaseFood(int feeder);
 }

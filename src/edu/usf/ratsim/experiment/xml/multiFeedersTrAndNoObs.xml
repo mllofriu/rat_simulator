@@ -17,7 +17,7 @@
     <!--Subject groups -->
     <group>
         <name>ControlNoObs</name>
-        <numMembers>64</numMembers>
+        <numMembers>16</numMembers>
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
@@ -52,7 +52,7 @@
     
     <group>
         <name>VentralNoObs</name>
-        <numMembers>64</numMembers>
+        <numMembers>16</numMembers>
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
@@ -87,7 +87,7 @@
     
     <group>
         <name>DorsalNoObs</name>
-        <numMembers>64</numMembers>
+        <numMembers>16</numMembers>
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
@@ -146,6 +146,9 @@
             </task>
         </initialTasks>
         <afterCycleTasks>
+        	<task>
+                <name>GiveFood</name>
+            </task>
             <task>
                 <name>FlashFeeder</name>
             </task>
@@ -240,6 +243,9 @@
 
         </initialTasks>
         <afterCycleTasks>
+        	<task>
+                <name>GiveFood</name>
+            </task>
             <task>
 				<name>FlashFeederWhenWrong</name>
 				<params>
