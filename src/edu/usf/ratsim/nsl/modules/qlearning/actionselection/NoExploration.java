@@ -71,7 +71,10 @@ public class NoExploration extends NslModule {
 		if (actions.get(action).getAction() == Utiles.eatAction) {
 			if (Debug.printTryingToEat) System.out.println("Trying to eat");
 			robot.eat();
+		} else if (actions.get(action).getAction() == Utiles.waitAction) {
+			
 		} else {
+		
 			float angle = Utiles
 					.getActionAngle(actions.get(action).getAction());
 			aff = robot.getAffordances();

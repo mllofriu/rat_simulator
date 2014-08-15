@@ -32,6 +32,7 @@ public class FeederNode extends ExpUniverseNode {
 	
 	private boolean terminated;
 	private Thread flashThread;
+	private boolean hasFood;
 
 	class FlashThread implements Runnable {
 
@@ -78,6 +79,7 @@ public class FeederNode extends ExpUniverseNode {
 		active = false;
 		flashing = false;
 		wanted = false;
+		hasFood = false;
 
 		Map<String, Float> values = readValues(node);
 
@@ -149,5 +151,17 @@ public class FeederNode extends ExpUniverseNode {
 		}
 		
 		flashThread = null;
+	}
+
+	public void releaseFood() {
+		hasFood = true;
+	}
+	
+	public void clearFood() {
+		hasFood = false;
+	}
+
+	public boolean hasFood() {
+		return hasFood;
 	}
 }

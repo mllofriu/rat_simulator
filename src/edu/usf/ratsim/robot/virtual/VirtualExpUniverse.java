@@ -552,7 +552,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		Point3f robotPos = getRobotPosition();
 		for (int i = 0; i < feeders.size(); i++) {
 			if (robotPos.distance(new Point3f(feeders.get(i).getPosition())) < CLOSE_TO_FOOD_THRS)
-				if (feeders.get(i).isActive())
+				if (feeders.get(i).hasFood())
 					feedingFeeder = i;
 				else
 					robotTriedToEat = true;
@@ -562,6 +562,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			if (Debug.printRobotAte)
 				System.out.println("Robot ate");
 			robotAte = true;
+			feeders.get(feedingFeeder).clearFood();
 		} else {
 			// System.out.println("Tried to eat but not close to active feeder");
 		}
@@ -643,5 +644,15 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 				minDist = (float) wall.distance(c);
 		}
 		return minDist;
+	}
+
+	@Override
+	public boolean isFeederActive(int feeder) {
+		return feeders.get(feeder).isActive();
+	}
+
+	@Override
+	public void releaseFood(int feeder) {
+		feeders.get(feeder).releaseFood();
 	}
 }
