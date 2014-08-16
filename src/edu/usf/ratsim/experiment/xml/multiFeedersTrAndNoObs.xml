@@ -51,6 +51,74 @@
     </group>
     
     <group>
+        <name>ControlNegNoObs</name>
+        <numMembers>16</numMembers>
+        <model>
+            <name>MultiScaleMultiIntentionCooperativeModel</name>
+            <params>
+                <numPCLayers>3</numPCLayers>
+                <minRadius>.125</minRadius>
+                <maxRadius>.6</maxRadius>
+                <numHDLayers>8</numHDLayers>
+                <minHDCellsPerLayer>1</minHDCellsPerLayer>
+                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <numIntentions>8</numIntentions>
+                <deterministicActionSelection>true</deterministicActionSelection>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
+                <alpha>.8</alpha>
+                <initialValue>0</initialValue>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
+                <proportionalQL>true</proportionalQL>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>3</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
+    </group>
+    <group>
+        <name>VentralLearnRecallNoObs</name>
+        <numMembers>16</numMembers>
+        <model>
+            <name>MultiScaleMultiIntentionCooperativeModel</name>
+            <params>
+                <numPCLayers>3</numPCLayers>
+                <minRadius>.125</minRadius>
+                <maxRadius>.6</maxRadius>
+                <numHDLayers>8</numHDLayers>
+                <minHDCellsPerLayer>1</minHDCellsPerLayer>
+                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <numIntentions>8</numIntentions>
+                <deterministicActionSelection>true</deterministicActionSelection>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
+                <alpha>.8</alpha>
+                <initialValue>0</initialValue>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
+                <proportionalQL>true</proportionalQL>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>3</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
+    </group>
+    <group>
         <name>VentralNoObs</name>
         <numMembers>16</numMembers>
         <model>
@@ -131,6 +199,8 @@
             <group>VentralNoObs</group>
       
             <group>DorsalNoObs</group>
+            <group>VentralLearnRecallNoObs</group>
+            <group>ControlNegNoObs</group>
           
         </groups>
         <initialTasks>
@@ -143,6 +213,13 @@
             <!-- <task> <name>ActivateFeeders</name> <params> </params> </task> -->
             <task>
                 <name>FlashFeeder</name>
+            </task>
+            <task>
+                <name>DeactivatePCL</name>
+                <params>
+                    <layers>1,2</layers>
+                    <group>VentralLearnRecallNoObs</group>
+                </params>
             </task>
         </initialTasks>
         <afterCycleTasks>
@@ -231,6 +308,13 @@
                 <params>
                     <layers>1,2</layers>
                     <group>VentralNoObs</group>
+                </params>
+            </task>
+            <task>
+                <name>DeactivatePCL</name>
+                <params>
+                    <layers>0,1,2</layers>
+                    <group>ControlNegNoObs</group>
                 </params>
             </task>
             <task>
