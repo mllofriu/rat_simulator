@@ -272,8 +272,12 @@
         <reps>1</reps>
         <groups>
             <group>ControlNoObs</group>
+ 
             <group>VentralNoObs</group>
+      
             <group>DorsalNoObs</group>
+            <group>VentralLearnRecallNoObs</group>
+            <group>ControlNegNoObs</group>
         </groups>
         <initialTasks>
             <task>
@@ -308,6 +312,13 @@
                 <params>
                     <layers>1,2</layers>
                     <group>VentralNoObs</group>
+                </params>
+            </task>
+            <task>
+                <name>DeactivatePCL</name>
+                <params>
+                    <layers>1,2</layers>
+                    <group>VentralLearnRecallNoObs</group>
                 </params>
             </task>
             <task>
