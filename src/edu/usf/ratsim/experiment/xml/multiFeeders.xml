@@ -24,7 +24,7 @@
                 <numPCLayers>3</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.2</maxRadius>
-                <numHDLayers>3</numHDLayers>
+                <numHDLayers>5</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
