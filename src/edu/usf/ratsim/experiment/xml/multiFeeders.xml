@@ -50,143 +50,7 @@
         </initializers>
     </group>
     <group>
-        <name>ControlSmall</name>
-        <numMembers>16</numMembers>
-        <model>
-            <name>MultiScaleMultiIntentionCooperativeModel</name>
-            <params>
-                <numPCLayers>3</numPCLayers>
-                <minRadius>.125</minRadius>
-                <maxRadius>.6</maxRadius>
-                <numHDLayers>8</numHDLayers>
-                <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
-                <numIntentions>8</numIntentions>
-                <deterministicActionSelection>true</deterministicActionSelection>
-                <foodReward>3</foodReward>
-                <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
-                <alpha>.8</alpha>
-                <initialValue>0</initialValue>
-                <flashingReward>2</flashingReward>
-                <nonFlashingReward>1</nonFlashingReward>
-                <wallAvoidingVal>0</wallAvoidingVal>
-                <proportionalQL>true</proportionalQL>
-            </params>
-        </model>
-        <initializers>
-            <initializer>
-                <name>feederSelector</name>
-                <params>
-                    <numFeeders>3</numFeeders>
-                </params>
-            </initializer>
-        </initializers>
-    </group>
-    <group>
-        <name>ControlLarge</name>
-        <numMembers>16</numMembers>
-        <model>
-            <name>MultiScaleMultiIntentionCooperativeModel</name>
-            <params>
-                <numPCLayers>3</numPCLayers>
-                <minRadius>.125</minRadius>
-                <maxRadius>.6</maxRadius>
-                <numHDLayers>8</numHDLayers>
-                <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
-                <numIntentions>8</numIntentions>
-                <deterministicActionSelection>true</deterministicActionSelection>
-                <foodReward>3</foodReward>
-                <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
-                <alpha>.8</alpha>
-                <initialValue>0</initialValue>
-                <flashingReward>2</flashingReward>
-                <nonFlashingReward>1</nonFlashingReward>
-                <wallAvoidingVal>0</wallAvoidingVal>
-                <proportionalQL>true</proportionalQL>
-            </params>
-        </model>
-        <initializers>
-            <initializer>
-                <name>feederSelector</name>
-                <params>
-                    <numFeeders>3</numFeeders>
-                </params>
-            </initializer>
-        </initializers>
-    </group>
-    <group>
         <name>VentralNoObs</name>
-        <numMembers>16</numMembers>
-        <model>
-            <name>MultiScaleMultiIntentionCooperativeModel</name>
-            <params>
-                <numPCLayers>3</numPCLayers>
-                <minRadius>.125</minRadius>
-                <maxRadius>.6</maxRadius>
-                <numHDLayers>8</numHDLayers>
-                <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
-                <numIntentions>8</numIntentions>
-                <deterministicActionSelection>true</deterministicActionSelection>
-                <foodReward>3</foodReward>
-                <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
-                <alpha>.8</alpha>
-                <initialValue>0</initialValue>
-                <flashingReward>2</flashingReward>
-                <nonFlashingReward>1</nonFlashingReward>
-                <wallAvoidingVal>0</wallAvoidingVal>
-                <proportionalQL>true</proportionalQL>
-            </params>
-        </model>
-        <initializers>
-            <initializer>
-                <name>feederSelector</name>
-                <params>
-                    <numFeeders>3</numFeeders>
-                </params>
-            </initializer>
-        </initializers>
-    </group>
-    <group>
-        <name>VentralSmall</name>
-        <numMembers>16</numMembers>
-        <model>
-            <name>MultiScaleMultiIntentionCooperativeModel</name>
-            <params>
-                <numPCLayers>3</numPCLayers>
-                <minRadius>.125</minRadius>
-                <maxRadius>.6</maxRadius>
-                <numHDLayers>8</numHDLayers>
-                <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
-                <numIntentions>8</numIntentions>
-                <deterministicActionSelection>true</deterministicActionSelection>
-                <foodReward>3</foodReward>
-                <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
-                <alpha>.8</alpha>
-                <initialValue>0</initialValue>
-                <flashingReward>2</flashingReward>
-                <nonFlashingReward>1</nonFlashingReward>
-                <wallAvoidingVal>0</wallAvoidingVal>
-                <proportionalQL>true</proportionalQL>
-            </params>
-        </model>
-        <initializers>
-            <initializer>
-                <name>feederSelector</name>
-                <params>
-                    <numFeeders>3</numFeeders>
-                </params>
-            </initializer>
-        </initializers>
-    </group>
-    <group>
-        <name>VentralLarge</name>
         <numMembers>16</numMembers>
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
@@ -254,7 +118,211 @@
         </initializers>
     </group>
     <group>
+        <name>ControlNegNoObs</name>
+        <numMembers>16</numMembers>
+        <model>
+            <name>MultiScaleMultiIntentionCooperativeModel</name>
+            <params>
+                <numPCLayers>3</numPCLayers>
+                <minRadius>.125</minRadius>
+                <maxRadius>.6</maxRadius>
+                <numHDLayers>8</numHDLayers>
+                <minHDCellsPerLayer>1</minHDCellsPerLayer>
+                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <numIntentions>8</numIntentions>
+                <deterministicActionSelection>true</deterministicActionSelection>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
+                <alpha>.8</alpha>
+                <initialValue>0</initialValue>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
+                <proportionalQL>true</proportionalQL>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>3</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
+    </group>
+    <group>
+        <name>ControlSmall</name>
+        <numMembers>16</numMembers>
+        <model>
+            <name>MultiScaleMultiIntentionCooperativeModel</name>
+            <params>
+                <numPCLayers>3</numPCLayers>
+                <minRadius>.125</minRadius>
+                <maxRadius>.6</maxRadius>
+                <numHDLayers>8</numHDLayers>
+                <minHDCellsPerLayer>1</minHDCellsPerLayer>
+                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <numIntentions>8</numIntentions>
+                <deterministicActionSelection>true</deterministicActionSelection>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
+                <alpha>.8</alpha>
+                <initialValue>0</initialValue>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
+                <proportionalQL>true</proportionalQL>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>3</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
+    </group>
+    <group>
+        <name>VentralSmall</name>
+        <numMembers>16</numMembers>
+        <model>
+            <name>MultiScaleMultiIntentionCooperativeModel</name>
+            <params>
+                <numPCLayers>3</numPCLayers>
+                <minRadius>.125</minRadius>
+                <maxRadius>.6</maxRadius>
+                <numHDLayers>8</numHDLayers>
+                <minHDCellsPerLayer>1</minHDCellsPerLayer>
+                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <numIntentions>8</numIntentions>
+                <deterministicActionSelection>true</deterministicActionSelection>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
+                <alpha>.8</alpha>
+                <initialValue>0</initialValue>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
+                <proportionalQL>true</proportionalQL>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>3</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
+    </group>
+    <group>
         <name>DorsalSmall</name>
+        <numMembers>16</numMembers>
+        <model>
+            <name>MultiScaleMultiIntentionCooperativeModel</name>
+            <params>
+                <numPCLayers>3</numPCLayers>
+                <minRadius>.125</minRadius>
+                <maxRadius>.6</maxRadius>
+                <numHDLayers>8</numHDLayers>
+                <minHDCellsPerLayer>1</minHDCellsPerLayer>
+                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <numIntentions>8</numIntentions>
+                <deterministicActionSelection>true</deterministicActionSelection>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
+                <alpha>.8</alpha>
+                <initialValue>0</initialValue>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
+                <proportionalQL>true</proportionalQL>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>3</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
+    </group>
+    <group>
+        <name>ControlNegSmall</name>
+        <numMembers>16</numMembers>
+        <model>
+            <name>MultiScaleMultiIntentionCooperativeModel</name>
+            <params>
+                <numPCLayers>3</numPCLayers>
+                <minRadius>.125</minRadius>
+                <maxRadius>.6</maxRadius>
+                <numHDLayers>8</numHDLayers>
+                <minHDCellsPerLayer>1</minHDCellsPerLayer>
+                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <numIntentions>8</numIntentions>
+                <deterministicActionSelection>true</deterministicActionSelection>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
+                <alpha>.8</alpha>
+                <initialValue>0</initialValue>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
+                <proportionalQL>true</proportionalQL>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>3</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
+    </group>
+    <group>
+        <name>ControlLarge</name>
+        <numMembers>16</numMembers>
+        <model>
+            <name>MultiScaleMultiIntentionCooperativeModel</name>
+            <params>
+                <numPCLayers>3</numPCLayers>
+                <minRadius>.125</minRadius>
+                <maxRadius>.6</maxRadius>
+                <numHDLayers>8</numHDLayers>
+                <minHDCellsPerLayer>1</minHDCellsPerLayer>
+                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <numIntentions>8</numIntentions>
+                <deterministicActionSelection>true</deterministicActionSelection>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
+                <alpha>.8</alpha>
+                <initialValue>0</initialValue>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
+                <proportionalQL>true</proportionalQL>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>3</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
+    </group>
+    <group>
+        <name>VentralLarge</name>
         <numMembers>16</numMembers>
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
@@ -321,7 +389,40 @@
             </initializer>
         </initializers>
     </group>
-
+	<group>
+        <name>ControlNegLarge</name>
+        <numMembers>16</numMembers>
+        <model>
+            <name>MultiScaleMultiIntentionCooperativeModel</name>
+            <params>
+                <numPCLayers>3</numPCLayers>
+                <minRadius>.125</minRadius>
+                <maxRadius>.6</maxRadius>
+                <numHDLayers>8</numHDLayers>
+                <minHDCellsPerLayer>1</minHDCellsPerLayer>
+                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <numIntentions>8</numIntentions>
+                <deterministicActionSelection>true</deterministicActionSelection>
+                <foodReward>3</foodReward>
+                <nonFoodReward>0</nonFoodReward>
+                <discountFactor>.95</discountFactor>
+                <alpha>.8</alpha>
+                <initialValue>0</initialValue>
+                <flashingReward>2</flashingReward>
+                <nonFlashingReward>1</nonFlashingReward>
+                <wallAvoidingVal>0</wallAvoidingVal>
+                <proportionalQL>true</proportionalQL>
+            </params>
+        </model>
+        <initializers>
+            <initializer>
+                <name>feederSelector</name>
+                <params>
+                    <numFeeders>3</numFeeders>
+                </params>
+            </initializer>
+        </initializers>
+    </group>
 
     <!--Experiment Trials -->
     <!-- 8 training trials -->
@@ -338,6 +439,9 @@
             <group>DorsalNoObs</group>
             <group>DorsalSmall</group>
             <group>DorsalLarge</group>
+            <group>ControlNegNoObs</group>
+            <group>ControlNegSmall</group>
+            <group>ControlNegLarge</group>
         </groups>
         <initialTasks>
             <task>
@@ -403,6 +507,7 @@
             <group>ControlNoObs</group>
             <group>VentralNoObs</group>
             <group>DorsalNoObs</group>
+            <group>ControlNegNoObs</group>
         </groups>
         <initialTasks>
             <task>
@@ -444,6 +549,13 @@
                 <params>
                     <layers>0,1</layers>
                     <group>DorsalNoObs</group>
+                </params>
+            </task>
+            <task>
+                <name>DeactivatePCL</name>
+                <params>
+                    <layers>0,1,2</layers>
+                    <group>ControlNegNoObs</group>
                 </params>
             </task>
 
@@ -511,6 +623,7 @@
             <group>ControlSmall</group>
             <group>VentralSmall</group>
             <group>DorsalSmall</group>
+            <group>ControlNegSmall</group>
         </groups>
         <initialTasks>
             <task>
@@ -559,6 +672,13 @@
                 <params>
                     <layers>0,1</layers>
                     <group>DorsalSmall</group>
+                </params>
+            </task>
+            <task>
+                <name>DeactivatePCL</name>
+                <params>
+                    <layers>0,1,2</layers>
+                    <group>ControlNegSmall</group>
                 </params>
             </task>
 
@@ -627,6 +747,7 @@
             <group>ControlLarge</group>
             <group>VentralLarge</group>
             <group>DorsalLarge</group>
+            <group>ControlNegLarge</group>
         </groups>
         <initialTasks>
             <task>
@@ -677,7 +798,13 @@
                     <group>DorsalLarge</group>
                 </params>
             </task>
-
+			<task>
+                <name>DeactivatePCL</name>
+                <params>
+                    <layers>0,1,2</layers>
+                    <group>ControlNegLarge</group>
+                </params>
+            </task>
         </initialTasks>
         <afterCycleTasks>
         	<task>

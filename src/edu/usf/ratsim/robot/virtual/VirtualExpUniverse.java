@@ -52,6 +52,9 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	private static final float CLOSE_TO_FOOD_THRS = Configuration
 			.getFloat("VirtualUniverse.closeToFood");
+	
+	private static final float HALF_FIELD_OF_VIEW = (float) (105 * Math.PI / 180); // 105
+	// degrees
 
 	private static final int LOOKAHEADSTEPS = 5;
 
@@ -654,5 +657,21 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	@Override
 	public void releaseFood(int feeder) {
 		feeders.get(feeder).releaseFood();
+	}
+
+	@Override
+	public boolean canRobotSeeFeeder(Integer fn) {
+		float angleToFeeder = angleToFeeder(fn);
+		boolean inField = angleToFeeder <= HALF_FIELD_OF_VIEW;
+		
+		boolean intersects = false;
+		Coordinate rPos = new Coordinate(getRobotPosition().x, getRobotPosition().z);
+		Vector3f fPosV = feeders.get(fn).getPosition();
+		Coordinate fPos = new Coordinate(fPosV.x, fPosV.z);
+		LineSegment lineOfSight = new LineSegment(rPos, fPos);
+		for (WallNode w : wallNodes)
+			intersects = intersects || w.intersects(lineOfSight);
+		
+		return inField && !intersects;
 	}
 }
