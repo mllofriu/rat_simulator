@@ -29,6 +29,7 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 	private IRobot robot;
 	private int timeWaiting;
 	private int feedersDelay;
+	private int waitingForFeeder;
 
 	public GeneralTaxicFoodFinderSchema(String nslName, NslModule nslParent,
 			IRobot robot, ExperimentUniverse univ, int numActions,
@@ -39,6 +40,7 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 		this.rewardFlashing = rewardFlashing;
 		this.rewardNonFlashing = rewardNonFlashing;
 		
+		this.waitingForFeeder = -1;
 		this.timeWaiting = 0;
 		this.feedersDelay = Configuration.getInt("VirtualUniverse.feedersDelay");
 
@@ -114,9 +116,13 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 
 	private int getActionToFeeder(int feeder) {
 		if (univ.isRobotCloseToFeeder(feeder)){
+			if (feeder != waitingForFeeder){
+				waitingForFeeder = feeder;
+				timeWaiting = 0;
+			}
+			
 			timeWaiting++;
 			if (timeWaiting > feedersDelay){
-				timeWaiting = 0;
 				return Utiles.eatAction;
 			} else
 				return Utiles.waitAction;
