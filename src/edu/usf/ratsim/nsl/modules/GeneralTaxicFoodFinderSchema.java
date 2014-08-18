@@ -21,8 +21,6 @@ import edu.usf.ratsim.support.Utiles;
  */
 public class GeneralTaxicFoodFinderSchema extends NslModule {
 
-	private static final float HALF_FIELD_OF_VIEW = (float) (105 * Math.PI / 180); // 105
-																					// degrees
 	private ExperimentUniverse univ;
 	public NslDinInt0 goalFeeder;
 	public NslDoutFloat1 votes;
@@ -61,7 +59,7 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 			// Avoid last feeder
 			if (fn != lastEatenFeeder) {
 				float angleToFeeder = univ.angleToFeeder(fn);
-				if (angleToFeeder <= HALF_FIELD_OF_VIEW
+				if (univ.canRobotSeeFeeder(fn)
 						&& aff[Utiles.discretizeAction((int) Math.toDegrees(angleToFeeder))]) {
 					foundFeeder = true;
 					// Get the best action for that feeder

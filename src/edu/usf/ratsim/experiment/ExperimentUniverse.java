@@ -100,4 +100,10 @@ public interface ExperimentUniverse {
 	public boolean isFeederActive(int feeder);
 
 	public void releaseFood(int feeder);
+	/**
+	 * Determine whether the robot can see a feeder, taking both its field of view and obstacles in line of sight into account.
+	 * @param fn
+	 * @return
+	 */
+	public boolean canRobotSeeFeeder(Integer fn);
 }
