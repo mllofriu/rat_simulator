@@ -2,6 +2,10 @@ package edu.usf.ratsim.support;
 
 public class Debug {
 
+	public static boolean pressEnterBeforeTrial = false;
+	public static boolean moveRobot = true;
+	public static boolean sleepBeforeStart = false;
+	
 	public static boolean printValues = false;
 	public static boolean printEndCycle = false;
 	public static boolean printAnyGoal = false;
@@ -11,11 +15,6 @@ public class Debug {
 	public static boolean printIntention = false;
 	public static boolean printTryingToEat = false;
 	public static boolean printFoundNNoMistakes = false;
+	public static boolean printHDCells = false;	
 	
-	
-	public static boolean pressEnterBeforeTrial = false;
-	public static boolean moveRobot = true;
-	public static boolean sleepBeforeStart = false;	
-
-
 }
