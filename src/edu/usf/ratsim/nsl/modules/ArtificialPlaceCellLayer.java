@@ -46,7 +46,7 @@ public class ArtificialPlaceCellLayer extends NslModule {
 //			}
 //		}
 		Random r = new Random();
-		for (int i = 0; i < 100; i++){
+		for (int i = 0; i < 200; i++){
 			float x = r.nextFloat() * (maxX - minX) + minX;
 			float y = r.nextFloat() * (maxY - minY) + minY;
 			cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y), radius));
