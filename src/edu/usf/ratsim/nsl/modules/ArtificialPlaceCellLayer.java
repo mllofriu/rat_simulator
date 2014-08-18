@@ -3,6 +3,7 @@ package edu.usf.ratsim.nsl.modules;
 import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import javax.vecmath.Point3f;
 
@@ -35,14 +36,20 @@ public class ArtificialPlaceCellLayer extends NslModule {
 
 		// Compute number of cells
 		cells = new LinkedList<ArtificialPlaceCell>();
-		for (float x = minX; x < maxX; x += 2 * radius) {
-			for (float y = minY; y < maxY; y += 2 * radius) {
-				// Add a cell with center x,y
-				cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y), radius));
-				// phased out layer
-				cells.add(new ArtificialPlaceCell(new Point3f(x + radius, 0, y
-						+ radius), radius));
-			}
+//		for (float x = minX; x < maxX; x += 2 * radius) {
+//			for (float y = minY; y < maxY; y += 2 * radius) {
+//				// Add a cell with center x,y
+//				cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y), radius));
+//				// phased out layer
+//				cells.add(new ArtificialPlaceCell(new Point3f(x + radius, 0, y
+//						+ radius), radius));
+//			}
+//		}
+		Random r = new Random();
+		for (int i = 0; i < 100; i++){
+			float x = r.nextFloat() * (maxX - minX) + minX;
+			float y = r.nextFloat() * (maxY - minY) + minY;
+			cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y), radius));
 		}
 
 		activation = new NslDoutFloat1(this, "activation", cells.size());
