@@ -21,6 +21,7 @@ public class ArtificialHDCellLayer extends NslModule {
 		// Compute number of cells
 		cells = new LinkedList<ArtificialHDCell>();
 		float angleInterval = (float) (Math.PI * 2 / numCells);
+		System.out.println("Adding " + numCells + " hd cells");
 		for (int i = 0; i < numCells - 1; i++) {
 			// Add a cell with center x,y
 			cells.add(new ArtificialHDCell(i * angleInterval, angleInterval * 2));
