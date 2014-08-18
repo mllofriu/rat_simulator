@@ -24,9 +24,9 @@
                 <numPCLayers>3</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.2</maxRadius>
-                <numHDLayers>8</numHDLayers>
+                <numHDLayers>3</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
@@ -58,9 +58,9 @@
                 <numPCLayers>3</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.2</maxRadius>
-                <numHDLayers>8</numHDLayers>
+                <numHDLayers>3</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
@@ -92,9 +92,9 @@
                 <numPCLayers>3</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.2</maxRadius>
-                <numHDLayers>8</numHDLayers>
+                <numHDLayers>3</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
@@ -126,9 +126,9 @@
                 <numPCLayers>3</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.2</maxRadius>
-                <numHDLayers>8</numHDLayers>
+                <numHDLayers>3</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
@@ -160,9 +160,9 @@
                 <numPCLayers>3</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.2</maxRadius>
-                <numHDLayers>8</numHDLayers>
+                <numHDLayers>3</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
@@ -194,9 +194,9 @@
                 <numPCLayers>3</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.2</maxRadius>
-                <numHDLayers>8</numHDLayers>
+                <numHDLayers>3</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
@@ -228,9 +228,9 @@
                 <numPCLayers>3</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.2</maxRadius>
-                <numHDLayers>8</numHDLayers>
+                <numHDLayers>3</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
@@ -262,9 +262,9 @@
                 <numPCLayers>3</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.2</maxRadius>
-                <numHDLayers>8</numHDLayers>
+                <numHDLayers>3</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
@@ -296,9 +296,9 @@
                 <numPCLayers>3</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.2</maxRadius>
-                <numHDLayers>8</numHDLayers>
+                <numHDLayers>3</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
@@ -330,9 +330,9 @@
                 <numPCLayers>3</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.2</maxRadius>
-                <numHDLayers>8</numHDLayers>
+                <numHDLayers>3</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
@@ -364,9 +364,9 @@
                 <numPCLayers>3</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.2</maxRadius>
-                <numHDLayers>8</numHDLayers>
+                <numHDLayers>3</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
@@ -398,9 +398,9 @@
                 <numPCLayers>3</numPCLayers>
                 <minRadius>.05</minRadius>
                 <maxRadius>.2</maxRadius>
-                <numHDLayers>8</numHDLayers>
+                <numHDLayers>3</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
-                <stepHDCellsPerLayer>16</stepHDCellsPerLayer>
+                <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
