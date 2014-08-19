@@ -135,8 +135,12 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 		float val = value.get(sBefore, a);
 		float delta;
 		// If eating cut the cycle - episodic ql
-		if (robot.hasTriedToEat())
-			delta = alpha * (reward.get() - (val + actionVotesBefore.get(a)));
+		if (a == Utiles.eatAction)
+			// Just look at eating future prediction
+			delta = alpha
+					* (reward.get() + discountFactor
+							* actionVotesAfter.get(Utiles.eatAction) - (val + actionVotesBefore
+							.get(a)));
 		// // For all other actions - normal ql
 		else
 			delta = alpha
