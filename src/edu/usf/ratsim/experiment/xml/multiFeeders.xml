@@ -484,7 +484,7 @@
             <stopCondition>
                 <name>FoundNFood</name>
                 <params>
-                    <n>100</n>
+                    <n>2</n>
                 </params>
             </stopCondition>
         </stopConditions>
