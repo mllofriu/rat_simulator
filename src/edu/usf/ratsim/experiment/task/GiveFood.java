@@ -18,12 +18,13 @@ public class GiveFood implements ExperimentTask {
 	}
 	@Override
 	public void perform(ExperimentUniverse univ, ExpSubject subject) {
-		if (univ.isRobotCloseToAFeeder())
+		if (univ.getFeedingFeeder() != -1)
 			stepsCloseToFeeder--;
 		else
 			stepsCloseToFeeder = feederDelay;
 		
 		if (stepsCloseToFeeder <= 0){
+			stepsCloseToFeeder = feederDelay;
 			if (Debug.printGiveFood) System.out.println("Close to a feeder for long");
 			int feeder = univ.getFoundFeeder();
 			if (univ.isFeederActive(feeder)){
