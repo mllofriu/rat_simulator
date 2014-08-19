@@ -106,4 +106,6 @@ public interface ExperimentUniverse {
 	 * @return
 	 */
 	public boolean canRobotSeeFeeder(Integer fn);
+
+	public boolean hasFoodFeeder(int feeder);
 }

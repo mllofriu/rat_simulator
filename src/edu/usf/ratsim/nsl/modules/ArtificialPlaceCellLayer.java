@@ -22,7 +22,7 @@ public class ArtificialPlaceCellLayer extends NslModule {
 	private boolean active;
 
 	public ArtificialPlaceCellLayer(String nslName, NslModule nslParent,
-			ExperimentUniverse universe, float radius) {
+			ExperimentUniverse universe, float radius, int numCells, long seed) {
 		super(nslName, nslParent);
 
 		active = true;
@@ -45,8 +45,8 @@ public class ArtificialPlaceCellLayer extends NslModule {
 //						+ radius), radius));
 //			}
 //		}
-		Random r = new Random();
-		for (int i = 0; i < 200; i++){
+		Random r = new Random(seed);
+		for (int i = 0; i < numCells; i++){
 			float x = r.nextFloat() * (maxX - minX) + minX;
 			float y = r.nextFloat() * (maxY - minY) + minY;
 			cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y), radius));

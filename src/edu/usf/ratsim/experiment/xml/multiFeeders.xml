@@ -22,8 +22,9 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <minRadius>.001</minRadius>
-                <maxRadius>.005</maxRadius>
+                <numPCCellsPerLayer>100</numPCCellsPerLayer>
+                <minRadius>.005</minRadius>
+                <maxRadius>.015</maxRadius>
                 <numHDLayers>5</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -31,7 +32,7 @@
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
                 <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
+                <discountFactor>1</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
                 <flashingReward>2</flashingReward>
@@ -65,7 +66,7 @@
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
                 <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
+                <discountFactor>1</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
                 <flashingReward>2</flashingReward>
@@ -99,7 +100,7 @@
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
                 <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
+                <discountFactor>1</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
                 <flashingReward>2</flashingReward>
@@ -133,7 +134,7 @@
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
                 <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
+                <discountFactor>1</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
                 <flashingReward>2</flashingReward>
@@ -167,7 +168,7 @@
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
                 <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
+                <discountFactor>1</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
                 <flashingReward>2</flashingReward>
@@ -201,7 +202,7 @@
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
                 <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
+                <discountFactor>1</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
                 <flashingReward>2</flashingReward>
@@ -235,7 +236,7 @@
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
                 <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
+                <discountFactor>1</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
                 <flashingReward>2</flashingReward>
@@ -269,7 +270,7 @@
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
                 <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
+                <discountFactor>1</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
                 <flashingReward>2</flashingReward>
@@ -303,7 +304,7 @@
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
                 <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
+                <discountFactor>1</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
                 <flashingReward>2</flashingReward>
@@ -337,7 +338,7 @@
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
                 <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
+                <discountFactor>1</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
                 <flashingReward>2</flashingReward>
@@ -371,7 +372,7 @@
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
                 <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
+                <discountFactor>1</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
                 <flashingReward>2</flashingReward>
@@ -405,7 +406,7 @@
                 <deterministicActionSelection>true</deterministicActionSelection>
                 <foodReward>3</foodReward>
                 <nonFoodReward>0</nonFoodReward>
-                <discountFactor>.95</discountFactor>
+                <discountFactor>1</discountFactor>
                 <alpha>.8</alpha>
                 <initialValue>0</initialValue>
                 <flashingReward>2</flashingReward>
@@ -444,6 +445,11 @@
             <group>ControlNegLarge</group>
         </groups>
         <initialTasks>
+        	 <task>
+                <name>ActivateFeeders</name>
+                <params>
+                </params>
+            </task>
             <task>
                 <name>PlaceRobotInitiallyTask</name>
                 <params>
@@ -454,8 +460,12 @@
             <task>
                 <name>FlashFeeder</name>
             </task>
+           
         </initialTasks>
         <afterCycleTasks>
+        	<task>
+                <name>FeederTemporalDeactivate</name>
+            </task>
             <task>
                 <name>FlashFeeder</name>
             </task>
@@ -465,6 +475,7 @@
             <task>
 				<name>ResetRobotAte</name>
 			</task>
+			
             <!-- <task> <name>UnflashFeeder</name> </task> -->
         </afterCycleTasks>
         <afterTrialTasks>

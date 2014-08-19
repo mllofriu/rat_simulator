@@ -48,8 +48,9 @@ public class NoExploration extends NslModule {
 		for (int action = 0; action < Utiles.numActions; action++) {
 			// Add a small eps to forward action to prefer it in case of a tie
 			if (action == Utiles.forwardAction)
-				actions.add(new ActionValue(action, votes.get(action) + FORWARD_EPS));
-			else 
+				actions.add(new ActionValue(action, votes.get(action)
+						+ FORWARD_EPS));
+			else
 				actions.add(new ActionValue(action, votes.get(action)));
 		}
 
@@ -60,39 +61,45 @@ public class NoExploration extends NslModule {
 		Collections.sort(actions);
 		action = actions.size() - 1;
 
-//		if (actions.get(action).getAction() == Utiles.eatAction
-//				&& actions.get(action).getValue() < 0)
-//			action = action - 1;
-		if (actions.get(action).getAction() == Utiles.eatAction
-				&& !universe.isRobotCloseToAFeeder())
-			action = action - 1;
+		// if (actions.get(action).getAction() == Utiles.eatAction
+		// && actions.get(action).getValue() < 0)
+		// action = action - 1;
+		// if (actions.get(action).getAction() == Utiles.eatAction
+		// && !universe.isRobotCloseToAFeeder())
+		// action = action - 1;
 
 		// Rotate the robot the desired angle
 		if (actions.get(action).getAction() == Utiles.eatAction) {
-			if (Debug.printTryingToEat) System.out.println("Trying to eat");
-			robot.eat();
-		} else if (actions.get(action).getAction() == Utiles.waitAction) {
-			
+			if (robot.hasFoundFood()) {
+				if (Debug.printTryingToEat)
+					System.out.println("Trying to eat");
+				robot.eat();
+			}
+			// } else if (actions.get(action).getAction() == Utiles.waitAction)
+			// {
+			// // do nothing
+			// if (Debug.printTryingToEat) System.out.println("");
 		} else {
-		
+			if (Debug.printTryingToEat)
+				System.out.println("");
 			float angle = Utiles
 					.getActionAngle(actions.get(action).getAction());
 			aff = robot.getAffordances();
 			// If going forward and no affordance - rotate
-			if (angle == 0 && !aff[Utiles.discretizeAction(0)]){
+			if (angle == 0 && !aff[Utiles.discretizeAction(0)]) {
 				// Depends on the fact that there are only two rotatin actions
 				if (random.nextFloat() > 0.5)
 					angle = Utiles.getActionAngle(0);
 				else
 					angle = Utiles.getActionAngle(2);
 				// Skip to the next action
-//				action = action - 1;
-//				angle = Utiles
-//						.getActionAngle(actions.get(action).getAction());
+				// action = action - 1;
+				// angle = Utiles
+				// .getActionAngle(actions.get(action).getAction());
 			}
-			
+
 			do {
-				if (Debug.moveRobot) 
+				if (Debug.moveRobot)
 					robot.rotate(angle);
 				aff = robot.getAffordances();
 			} while (!aff[Utiles.discretizeAction(0)]);
