@@ -183,7 +183,7 @@ saveArrivalTime <- function(pathData){
 
 incrementalPath <- function(pathData, feederData, wallData)
 {
-  for (i in seq(2, dim(pathData)[1], dim(pathData)[1]/100)) { 
+  for (i in seq(2, dim(pathData)[1], 50)) { 
     maze <- mazePlot(mazeFile, feederData[i,"wantedFeeder"])
     plotPathOnMaze('', pathData[1:i,],wallData, maze)
   }
