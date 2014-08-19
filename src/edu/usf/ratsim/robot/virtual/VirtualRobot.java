@@ -128,4 +128,9 @@ public class VirtualRobot implements IRobot {
 		universe.robotEat();
 	}
 
+	@Override
+	public boolean hasTriedToEat() {
+		return universe.hasRobotTriedToEat();
+	}
+
 }

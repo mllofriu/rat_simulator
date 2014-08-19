@@ -52,7 +52,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	private static final float CLOSE_TO_FOOD_THRS = Configuration
 			.getFloat("VirtualUniverse.closeToFood");
-	
+
 	private static final float HALF_FIELD_OF_VIEW = (float) (105 * Math.PI / 180); // 105
 	// degrees
 
@@ -320,6 +320,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		Point3f robot = getRobotPosition();
 		for (FeederNode fNode : feeders) {
 			if (fNode.isActive()
+					&& fNode.hasFood()
 					&& robot.distance(new Point3f(fNode.getPosition())) < CLOSE_TO_FOOD_THRS)
 				return true;
 		}
@@ -626,21 +627,21 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		for (FeederNode fn : feeders)
 			if (robot.distance(new Point3f(fn.getPosition())) < CLOSE_TO_FOOD_THRS)
 				return feeders.indexOf(fn);
-		
+
 		return -1;
 	}
 
 	@Override
 	public float angleToFeeder(Integer fn) {
 		return Math.abs(Utiles.angleToPointWithOrientation(
-				getRobotOrientation(), getRobotPosition(),
-				new Point3f(feeders.get(fn).getPosition())));
+				getRobotOrientation(), getRobotPosition(), new Point3f(feeders
+						.get(fn).getPosition())));
 	}
 
 	@Override
 	public float wallDistanceToFeeders(LineSegment wall) {
 		float minDist = Float.MAX_VALUE;
-		for (FeederNode fn : feeders){
+		for (FeederNode fn : feeders) {
 			Vector3f pos = fn.getPosition();
 			Coordinate c = new Coordinate(pos.x, pos.z);
 			if (wall.distance(c) < minDist)
@@ -663,15 +664,21 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	public boolean canRobotSeeFeeder(Integer fn) {
 		float angleToFeeder = angleToFeeder(fn);
 		boolean inField = angleToFeeder <= HALF_FIELD_OF_VIEW;
-		
+
 		boolean intersects = false;
-		Coordinate rPos = new Coordinate(getRobotPosition().x, getRobotPosition().z);
+		Coordinate rPos = new Coordinate(getRobotPosition().x,
+				getRobotPosition().z);
 		Vector3f fPosV = feeders.get(fn).getPosition();
 		Coordinate fPos = new Coordinate(fPosV.x, fPosV.z);
 		LineSegment lineOfSight = new LineSegment(rPos, fPos);
 		for (WallNode w : wallNodes)
 			intersects = intersects || w.intersects(lineOfSight);
-		
+
 		return inField && !intersects;
+	}
+
+	@Override
+	public boolean hasFoodFeeder(int feeder) {
+		return feeders.get(feeder).hasFood();
 	}
 }

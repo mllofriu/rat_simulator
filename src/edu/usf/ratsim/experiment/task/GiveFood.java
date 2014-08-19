@@ -1,11 +1,10 @@
 package edu.usf.ratsim.experiment.task;
 
-import java.util.Collection;
-
 import edu.usf.ratsim.experiment.ExperimentTask;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.support.Configuration;
+import edu.usf.ratsim.support.Debug;
 
 public class GiveFood implements ExperimentTask {
 
@@ -25,9 +24,11 @@ public class GiveFood implements ExperimentTask {
 			stepsCloseToFeeder = feederDelay;
 		
 		if (stepsCloseToFeeder <= 0){
+			if (Debug.printGiveFood) System.out.println("Close to a feeder for long");
 			int feeder = univ.getFoundFeeder();
 			if (univ.isFeederActive(feeder)){
 				univ.releaseFood(feeder);
+				if (Debug.printGiveFood) System.out.println("Feeder is active, releasing");
 			}
 		}
 	}

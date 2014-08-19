@@ -19,8 +19,9 @@ public class FlashFeeder implements ExperimentTask {
 
 	public void perform(ExperimentUniverse univ, ExpSubject subject) {
 		if (univ.getFlashingFeeders().isEmpty()) {
-			List<Integer> active = (List<Integer>) subject
-					.getProperty(ActivateFeeders.STR_ACTIVE_FEEDERS);
+//			List<Integer> active = (List<Integer>) subject
+//					.getProperty(ActivateFeeders.STR_ACTIVE_FEEDERS);
+			List<Integer> active = univ.getActiveFeeders();
 			active = new LinkedList<Integer>(active);
 //			int feeder = active.get(r.nextInt(active.size()));
 			// Pick the greatest to avoid problems with ActiveGoal/Intention initialization
@@ -28,22 +29,23 @@ public class FlashFeeder implements ExperimentTask {
 			int feeder = active.get(active.size()-1);
 			
 			univ.setFlashingFeeder(feeder, true);
-			univ.setActiveFeeder(feeder, true);
+//			univ.setActiveFeeder(feeder, true);
 		} else if (!univ.getFlashingFeeders().isEmpty()
 				&& univ.hasRobotFoundFeeder(univ.getFlashingFeeders().get(0))
 				&& univ.hasRobotAte()) {
 			int flashingFeeder = univ.getFlashingFeeders().get(0);
 			univ.setFlashingFeeder(flashingFeeder, false);
-			univ.setActiveFeeder(flashingFeeder, false);
-			List<Integer> selectedFeeders = (List<Integer>) subject
-					.getProperty(ActivateFeeders.STR_ACTIVE_FEEDERS);
+//			univ.setActiveFeeder(flashingFeeder, false);
+//			List<Integer> selectedFeeders = (List<Integer>) subject
+//					.getProperty(ActivateFeeders.STR_ACTIVE_FEEDERS);
+			List<Integer> selectedFeeders = univ.getActiveFeeders();
 			// Copy to avoid modifying the property holder
 			selectedFeeders = new LinkedList<Integer>(selectedFeeders);
 			if (selectedFeeders.contains(flashingFeeder))
 				selectedFeeders.remove(new Integer(flashingFeeder));
 			int feeder = selectedFeeders.get(r.nextInt(selectedFeeders.size()));
 			univ.setFlashingFeeder(feeder, true);
-			univ.setActiveFeeder(feeder, true);
+//			univ.setActiveFeeder(feeder, true);
 		}
 	}
 
