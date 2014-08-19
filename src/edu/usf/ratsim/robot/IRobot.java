@@ -62,4 +62,6 @@ public interface IRobot {
 
 	public abstract boolean[] getAffordances(int wallLookahead);
 
+	public abstract boolean hasTriedToEat();
+
 }

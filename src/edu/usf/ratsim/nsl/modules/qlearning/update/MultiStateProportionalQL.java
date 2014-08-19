@@ -16,6 +16,7 @@ import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayerWithIntention;
 import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
+import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Utiles;
 
@@ -40,14 +41,17 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 
 	private NslDinFloat1 actionVotesBefore;
 
+	private IRobot robot;
+
 	public MultiStateProportionalQL(String nslMain, NslModule nslParent,
 			int numStates, int numActions, float discountFactor, float alpha,
-			float initialValue) {
+			float initialValue, IRobot robot) {
 		super(nslMain, nslParent);
 
 		this.discountFactor = discountFactor;
 		this.alpha = alpha;
 		this.numStates = numStates;
+		this.robot = robot;
 
 		takenAction = new NslDinInt0(this, "takenAction");
 		reward = new NslDinFloat0(this, "reward");
@@ -118,7 +122,7 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 		// float actionValue = value.get(sBefore, a);
 		// Get the value expected return from the sum of all votes
 		// float actionValue = value.get(sBefore, a);
-		float actionValue = actionVotesBefore.get(a);
+		// float actionValue = actionVotesBefore.get(a);
 		// if (actionValue != 0)
 		// System.out.println(actionValue);
 
@@ -130,14 +134,18 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 		// System.out.println(statesBefore.get(sBefore));
 		float val = value.get(sBefore, a);
 		float delta;
-		if (a!=3)
+		// If eating cut the cycle - episodic ql
+		if (robot.hasTriedToEat())
+			delta = alpha * (reward.get() - (val + actionVotesBefore.get(a)));
+		// // For all other actions - normal ql
+		else
 			delta = alpha
-					* (reward.get() + 1 * (maxERNextState) - (val + actionVotesBefore.get(a)));
-		else 
-			delta = alpha
-			* (reward.get() - (val + actionVotesBefore.get(a)));
+					* (reward.get() + discountFactor * (maxERNextState) - (val + actionVotesBefore
+							.get(a)));
+		// if (a == Utiles.eatAction)
+		// System.out.println("Updating eat with delta " + delta);
 		float newValue = statesBefore.get(sBefore) * (val + delta)
-				+ (1 - statesBefore.get(sBefore)) * value.get(sBefore, a);
+				+ (1 - statesBefore.get(sBefore)) * val;
 		// if (reward.get() + discountFactor * (maxERNextState) <
 		// value.get(sBefore, a))
 		// System.out.println("Decrease in value");

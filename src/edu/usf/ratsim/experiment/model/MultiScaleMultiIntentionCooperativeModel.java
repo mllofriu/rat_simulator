@@ -2,6 +2,7 @@ package edu.usf.ratsim.experiment.model;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.Vector;
 
 import nslj.src.lang.NslModel;
@@ -85,6 +86,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		float minRadius = params.getChildFloat("minRadius");
 		float maxRadius = params.getChildFloat("maxRadius");
 		numPCLayers = params.getChildInt("numPCLayers");
+		int numPCCellsPerLayer = params.getChildInt("numPCCellsPerLayer");
 		numHDLayers = params.getChildInt("numHDLayers");
 		int minHDCellsPerLayer = params.getChildInt("minHDCellsPerLayer");
 		int stepHDCellsPerLayer = params.getChildInt("stepHDCellsPerLayer");
@@ -101,6 +103,10 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		boolean deterministic = params
 				.getChildBoolean("deterministicActionSelection");
 		boolean proportionalQl = params.getChildBoolean("proportionalQL");
+		
+		Random r = new Random();
+		long pclSeed = r.nextLong();
+		
 		beforePcls = new LinkedList<ArtificialPlaceCellLayer>();
 		beforePI = new LinkedList<PlaceIntention>();
 		afterPcls = new LinkedList<ArtificialPlaceCellLayer>();
@@ -120,7 +126,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		// For each layer
 		for (int i = 0; i < numPCLayers; i++) {
 			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer(
-					BEFORE_STATE_STR + i, this, universe, radius);
+					BEFORE_STATE_STR + i, this, universe, radius, numPCCellsPerLayer, pclSeed);
 			beforePcls.add(pcl);
 			// JointStates placeIntention = new JointStates(
 			// BEFORE_PLACE_INTENTION_STR + i, this, universe,
@@ -201,7 +207,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		radius = minRadius;
 		for (int i = 0; i < numPCLayers; i++) {
 			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer(
-					AFTER_STATE_STR + i, this, universe, radius);
+					AFTER_STATE_STR + i, this, universe, radius, numPCCellsPerLayer, pclSeed);
 			afterPcls.add(pcl);
 			// JointStates placeIntention = new JointStates(
 			// AFTER_PLACE_INTENTION_STR + i, this, universe,
@@ -257,7 +263,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 
 		if (proportionalQl)
 			new MultiStateProportionalQL(QL_STR, this, bAll.getSize(),
-					numActions, discountFactor, alpha, initialValue);
+					numActions, discountFactor, alpha, initialValue, robot);
 		else
 			new SingleStateQL(QL_STR, this, bAll.getSize(), numActions,
 					discountFactor, alpha, initialValue);

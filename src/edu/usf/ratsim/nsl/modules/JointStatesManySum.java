@@ -42,7 +42,7 @@ public class JointStatesManySum extends NslModule {
 			// Add up all states values
 			for (int j = 0; j < jointStatesSize; j++) {
 				if (Debug.printValues)
-					System.out.print(states.get(i).get(j) + "\t\t");
+					System.out.format("%.2f\t\t", states.get(i).get(j));
 				jointState.set(j, jointState.get(j) + states.get(i).get(j));
 			}
 			if (Debug.printValues) System.out.println();
