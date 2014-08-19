@@ -110,7 +110,7 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 
 		if (!foundFeeder) {
 			// Give a forward impulse
-			votes.set(Utiles.discretizeAction(0), rewardNonFlashing / 2);
+			votes.set(Utiles.discretizeAction(0), rewardNonFlashing);
 		}
 
 	}

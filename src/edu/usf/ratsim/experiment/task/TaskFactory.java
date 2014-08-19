@@ -50,6 +50,8 @@ public class TaskFactory {
 				res.add(new UnflashFeeder());
 			} else if (taskName.equals("PlaceWall")) {
 				res.add(new PlaceWallTask(taskParams, points));
+			} else if (taskName.equals("PlaceFeederWalls")) {
+				res.add(new PlaceFeederWallsTask(taskParams));
 			} else if (taskName.equals("PlaceRandomWalls")) {
 				res.add(new PlaceRandomWallsTask(taskParams));
 			} else if (taskName.equals("ClearWalls")) {
