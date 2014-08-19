@@ -57,8 +57,9 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <minRadius>.001</minRadius>
+                <numPCCellsPerLayer>100</numPCCellsPerLayer>
                 <minRadius>.005</minRadius>
+                <maxRadius>.015</maxRadius>
                 <numHDLayers>5</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -91,8 +92,9 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <minRadius>.001</minRadius>
+                <numPCCellsPerLayer>100</numPCCellsPerLayer>
                 <minRadius>.005</minRadius>
+                <maxRadius>.015</maxRadius>
                 <numHDLayers>5</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -125,8 +127,9 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <minRadius>.001</minRadius>
+                <numPCCellsPerLayer>100</numPCCellsPerLayer>
                 <minRadius>.005</minRadius>
+                <maxRadius>.015</maxRadius>
                 <numHDLayers>5</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -159,8 +162,9 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <minRadius>.001</minRadius>
+                <numPCCellsPerLayer>100</numPCCellsPerLayer>
                 <minRadius>.005</minRadius>
+                <maxRadius>.015</maxRadius>
                 <numHDLayers>5</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -193,8 +197,8 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <minRadius>.001</minRadius>
                 <minRadius>.005</minRadius>
+                <maxRadius>.015</maxRadius>
                 <numHDLayers>5</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -227,8 +231,9 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <minRadius>.001</minRadius>
+                <numPCCellsPerLayer>100</numPCCellsPerLayer>
                 <minRadius>.005</minRadius>
+                <maxRadius>.015</maxRadius>
                 <numHDLayers>5</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -261,8 +266,9 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <minRadius>.001</minRadius>
+                <numPCCellsPerLayer>100</numPCCellsPerLayer>
                 <minRadius>.005</minRadius>
+                <maxRadius>.015</maxRadius>
                 <numHDLayers>5</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -295,8 +301,9 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <minRadius>.001</minRadius>
+                <numPCCellsPerLayer>100</numPCCellsPerLayer>
                 <minRadius>.005</minRadius>
+                <maxRadius>.015</maxRadius>
                 <numHDLayers>5</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -329,8 +336,9 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <minRadius>.001</minRadius>
+                <numPCCellsPerLayer>100</numPCCellsPerLayer>
                 <minRadius>.005</minRadius>
+                <maxRadius>.015</maxRadius>
                 <numHDLayers>5</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -363,8 +371,9 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <minRadius>.001</minRadius>
+                <numPCCellsPerLayer>100</numPCCellsPerLayer>
                 <minRadius>.005</minRadius>
+                <maxRadius>.015</maxRadius>
                 <numHDLayers>5</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -397,8 +406,9 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <minRadius>.001</minRadius>
+                <numPCCellsPerLayer>100</numPCCellsPerLayer>
                 <minRadius>.005</minRadius>
+                <maxRadius>.015</maxRadius>
                 <numHDLayers>5</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
