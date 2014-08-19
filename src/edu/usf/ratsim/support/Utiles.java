@@ -27,9 +27,9 @@ public class Utiles {
 	private static final float actionMin = (float) (-Math.PI / 8);
 	// private static final float actionMin = (float) 0;
 	public static final int numRotations = 3;
-	public static final int numActions = numRotations + 2;
+	public static final int numActions = numRotations + 1;
 	public static int eatAction = numRotations;
-	public static int waitAction = eatAction + 1;
+//	public static int waitAction = eatAction + 1;
 	// private static final float actionMax = (float) (Math.PI/8);
 	public static int forwardAction = numRotations / 2;
 

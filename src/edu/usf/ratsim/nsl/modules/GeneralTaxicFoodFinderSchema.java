@@ -10,6 +10,7 @@ import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.Configuration;
+import edu.usf.ratsim.support.Debug;
 import edu.usf.ratsim.support.Utiles;
 
 /**
@@ -25,11 +26,10 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 	public NslDinInt0 goalFeeder;
 	public NslDoutFloat1 votes;
 	private float rewardFlashing, rewardNonFlashing;
-	private Integer lastEatenFeeder;
 	private IRobot robot;
-	private int timeWaiting;
-	private int feedersDelay;
-	private int waitingForFeeder;
+	private static int timeWaiting;
+	private static int feedersDelay;
+	private static int waitingForFeeder;
 
 	public GeneralTaxicFoodFinderSchema(String nslName, NslModule nslParent,
 			IRobot robot, ExperimentUniverse univ, int numActions,
@@ -39,15 +39,14 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 		this.robot = robot;
 		this.rewardFlashing = rewardFlashing;
 		this.rewardNonFlashing = rewardNonFlashing;
-		
-		this.waitingForFeeder = -1;
-		this.timeWaiting = 0;
-		this.feedersDelay = Configuration.getInt("VirtualUniverse.feedersDelay");
+
+		waitingForFeeder = -1;
+		timeWaiting = 0;
+		feedersDelay = Configuration.getInt("VirtualUniverse.feedersDelay");
 
 		goalFeeder = new NslDinInt0(this, "goalFeeder");
 		votes = new NslDoutFloat1(this, "votes", numActions);
 
-		lastEatenFeeder = -1;
 	}
 
 	public void simRun() {
@@ -59,16 +58,18 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 		boolean aff[] = robot.getAffordances();
 		for (Integer fn : univ.getFeeders()) {
 			// Avoid last feeder
-			if (fn != lastEatenFeeder) {
-				float angleToFeeder = univ.angleToFeeder(fn);
-				if (univ.canRobotSeeFeeder(fn)
-						&& aff[Utiles.discretizeAction((int) Math.toDegrees(angleToFeeder))]) {
+
+			float angleToFeeder = univ.angleToFeeder(fn);
+			if (univ.canRobotSeeFeeder(fn)
+					&& aff[Utiles.discretizeAction((int) Math
+							.toDegrees(angleToFeeder))]) {
+				if (wantedFeeder(fn)) {
 					foundFeeder = true;
 					// Get the best action for that feeder
 					int action = getActionToFeeder(fn);
 					// Set the reward to be the corresponding reward
-					// float distanceMod = Math.max(0, (1 -
-					// univ.getDistanceToFeeder(fn)));
+					// float distanceMod = Math.max(0,
+					// (1 - univ.getDistanceToFeeder(fn)));
 					float distanceMod = 1;
 
 					if (univ.getFlashingFeeders().contains(fn))
@@ -82,8 +83,8 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 								Math.max(rewardNonFlashing * distanceMod,
 										votes.get(action)));
 
-					if (action == Utiles.eatAction)
-						lastEatenFeeder = fn;
+					// if (action == Utiles.eatAction)
+					// lastEatenFeeder = fn;
 				}
 			}
 
@@ -114,18 +115,33 @@ public class GeneralTaxicFoodFinderSchema extends NslModule {
 
 	}
 
+	private boolean wantedFeeder(int fn) {
+		// The feeder is wanted if it is not the last one and
+		// the time waiting has not expired
+		// 2 * feedersDelay - 1 makes the first taxic component want to eat
+		// but the second, after the robot action wont want to eat
+		return !(waitingForFeeder == fn && timeWaiting > 2 * feedersDelay - 1);
+	}
+
 	private int getActionToFeeder(int feeder) {
-		if (univ.isRobotCloseToFeeder(feeder)){
-			if (feeder != waitingForFeeder){
+		if (univ.isRobotCloseToFeeder(feeder)) {
+			if (feeder != waitingForFeeder) {
 				waitingForFeeder = feeder;
 				timeWaiting = 0;
 			}
-			
+
 			timeWaiting++;
-			if (timeWaiting > feedersDelay){
-				return Utiles.eatAction;
-			} else
-				return Utiles.waitAction;
+			// // If there is food or enough time has passed - eat
+			// // if (univ.hasFoodFeeder(feeder) || timeWaiting > feedersDelay){
+			// // return Utiles.eatAction;
+			// // // If not - wait
+			// // }
+			// // else
+			// // return Utiles.waitAction;
+			// if (timeWaiting < feedersDelay)
+			if (Debug.printTryingToEat)
+				System.out.println("Trying to eat");
+			return Utiles.eatAction;
 		} else {
 			Point3f rPos = univ.getRobotPosition();
 			Point3f fPos = univ.getFoodPosition(feeder);
