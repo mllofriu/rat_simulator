@@ -461,6 +461,11 @@
                 <params>
                 </params>
             </task>
+             <task>
+                <name>PlaceFeederWalls</name>
+                <params>
+                </params>
+            </task>
             <task>
                 <name>PlaceRobotInitiallyTask</name>
                 <params>
@@ -553,6 +558,11 @@
             </task>
             <task>
                 <name>ClearWalls</name>
+                <params>
+                </params>
+            </task>
+            <task>
+                <name>PlaceFeederWalls</name>
                 <params>
                 </params>
             </task>
@@ -669,6 +679,11 @@
             </task>
             <task>
                 <name>ClearWalls</name>
+                <params>
+                </params>
+            </task>
+            <task>
+                <name>PlaceFeederWalls</name>
                 <params>
                 </params>
             </task>
@@ -793,6 +808,11 @@
             </task>
             <task>
                 <name>ClearWalls</name>
+                <params>
+                </params>
+            </task>
+            <task>
+                <name>PlaceFeederWalls</name>
                 <params>
                 </params>
             </task>
