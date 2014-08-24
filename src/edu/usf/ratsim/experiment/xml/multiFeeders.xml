@@ -21,11 +21,11 @@
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
-                <numPCLayers>5</numPCLayers>
-                <numPCCellsPerLayer>100</numPCCellsPerLayer>
+                <numPCLayers>1</numPCLayers>
+                <numPCCellsPerLayer>500</numPCCellsPerLayer>
                 <minRadius>.05</minRadius> <!-- .05 m of ".2 radius" -->
                 <maxRadius>.6</maxRadius> <!-- .25 m of ".2 radius" -->
-                <numHDLayers>5</numHDLayers>
+                <numHDLayers>4</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
@@ -460,7 +460,6 @@
                 <params>
                 </params>
             </task>
-            
             <task>
                 <name>PlaceRobotInitiallyTask</name>
                 <params>
@@ -551,6 +550,7 @@
                 <params>
                 </params>
             </task>
+
             <task>
                 <name>ClearWalls</name>
                 <params>
@@ -590,7 +590,7 @@
             <task>
 				<name>FlashFeederWhenWrong</name>
 				<params>
-					<timeout>240</timeout>
+					<timeout>360</timeout>
 				</params>
 			</task>
 			<task>
@@ -607,7 +607,7 @@
 				<name>FoundNFoodNoMistakes</name>
 				<params>
 					<n>15</n>
-					<timeout>240</timeout>
+					<timeout>360</timeout>
 				</params>
 			</stopCondition>
             <stopCondition>
@@ -673,11 +673,7 @@
                 <params>
                 </params>
             </task>
-            <task>
-                <name>PlaceFeederWalls</name>
-                <params>
-                </params>
-            </task>
+            
             <task>
                 <name>PlaceRandomWalls</name>
                 <params>
@@ -718,7 +714,7 @@
             <task>
 				<name>FlashFeederWhenWrong</name>
 				<params>
-					<timeout>240</timeout>
+					<timeout>360</timeout>
 				</params>
 			</task>
 			<task>
@@ -735,7 +731,7 @@
 				<name>FoundNFoodNoMistakes</name>
 				<params>
 					<n>15</n>
-					<timeout>240</timeout>
+					<timeout>360</timeout>
 				</params>
 			</stopCondition>
             <stopCondition>
@@ -797,16 +793,14 @@
                 <params>
                 </params>
             </task>
+            
             <task>
                 <name>ClearWalls</name>
                 <params>
                 </params>
             </task>
-            <task>
-                <name>PlaceFeederWalls</name>
-                <params>
-                </params>
-            </task>
+            
+            
             <task>
                 <name>PlaceRandomWalls</name>
                 <params>
@@ -846,7 +840,7 @@
             <task>
 				<name>FlashFeederWhenWrong</name>
 				<params>
-					<timeout>240</timeout>
+					<timeout>360</timeout>
 				</params>
 			</task>
 			<task>
@@ -863,7 +857,7 @@
 				<name>FoundNFoodNoMistakes</name>
 				<params>
 					<n>15</n>
-					<timeout>240</timeout>
+					<timeout>360</timeout>
 				</params>
 			</stopCondition>
             <stopCondition>
