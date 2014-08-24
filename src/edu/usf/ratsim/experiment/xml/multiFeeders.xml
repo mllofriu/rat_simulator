@@ -21,10 +21,10 @@
         <model>
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
-                <numPCLayers>3</numPCLayers>
+                <numPCLayers>5</numPCLayers>
                 <numPCCellsPerLayer>100</numPCCellsPerLayer>
-                <minRadius>.005</minRadius>
-                <maxRadius>.015</maxRadius>
+                <minRadius>.05</minRadius> <!-- .05 m of ".2 radius" -->
+                <maxRadius>.6</maxRadius> <!-- .25 m of ".2 radius" -->
                 <numHDLayers>5</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -163,8 +163,8 @@
             <params>
                 <numPCLayers>3</numPCLayers>
                 <numPCCellsPerLayer>100</numPCCellsPerLayer>
-                <minRadius>.005</minRadius>
-                <maxRadius>.015</maxRadius>
+                <minRadius>.05</minRadius> <!-- .05 m of ".2 radius" -->
+                <maxRadius>.6</maxRadius> <!-- .25 m of ".2 radius" -->
                 <numHDLayers>5</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -460,11 +460,7 @@
                 <params>
                 </params>
             </task>
-             <task>
-                <name>PlaceFeederWalls</name>
-                <params>
-                </params>
-            </task>
+            
             <task>
                 <name>PlaceRobotInitiallyTask</name>
                 <params>
@@ -560,11 +556,7 @@
                 <params>
                 </params>
             </task>
-            <task>
-                <name>PlaceFeederWalls</name>
-                <params>
-                </params>
-            </task>
+            
             <!-- <task> <name>PlaceWall</name> <params> <x1>W1</x1> <x2>W2</x2> </params> 
                 </task> -->
 
@@ -689,8 +681,8 @@
             <task>
                 <name>PlaceRandomWalls</name>
                 <params>
-                    <number>20</number>
-                    <length>.125</length>
+                    <number>10</number>
+                    <length>.20</length>
                 </params>
             </task>
             <!-- <task> <name>PlaceWall</name> <params> <x1>W1</x1> <x2>W2</x2> </params> 
