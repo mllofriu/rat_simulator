@@ -22,10 +22,10 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <numPCCellsPerLayer>100</numPCCellsPerLayer>
-                <minRadius>.005</minRadius>
-                <maxRadius>.015</maxRadius>
-                <numHDLayers>5</numHDLayers>
+                <numPCCellsPerLayer>500</numPCCellsPerLayer>
+                <minRadius>.05</minRadius> <!-- .05 m of ".2 radius" -->
+                <maxRadius>.3</maxRadius> <!-- .25 m of ".2 radius" -->
+                <numHDLayers>4</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
@@ -57,10 +57,10 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <numPCCellsPerLayer>100</numPCCellsPerLayer>
-                <minRadius>.005</minRadius>
-                <maxRadius>.015</maxRadius>
-                <numHDLayers>5</numHDLayers>
+                <numPCCellsPerLayer>500</numPCCellsPerLayer>
+                <minRadius>.05</minRadius> <!-- .05 m of ".2 radius" -->
+                <maxRadius>.3</maxRadius> <!-- .25 m of ".2 radius" -->
+                <numHDLayers>4</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
@@ -92,10 +92,10 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <numPCCellsPerLayer>100</numPCCellsPerLayer>
-                <minRadius>.005</minRadius>
-                <maxRadius>.015</maxRadius>
-                <numHDLayers>5</numHDLayers>
+                <numPCCellsPerLayer>500</numPCCellsPerLayer>
+                <minRadius>.05</minRadius> <!-- .05 m of ".2 radius" -->
+                <maxRadius>.3</maxRadius> <!-- .25 m of ".2 radius" -->
+                <numHDLayers>4</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
@@ -127,10 +127,10 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <numPCCellsPerLayer>100</numPCCellsPerLayer>
-                <minRadius>.005</minRadius>
-                <maxRadius>.015</maxRadius>
-                <numHDLayers>5</numHDLayers>
+                <numPCCellsPerLayer>500</numPCCellsPerLayer>
+                <minRadius>.05</minRadius> <!-- .05 m of ".2 radius" -->
+                <maxRadius>.3</maxRadius> <!-- .25 m of ".2 radius" -->
+                <numHDLayers>4</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
@@ -162,10 +162,10 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <numPCCellsPerLayer>100</numPCCellsPerLayer>
-                <minRadius>.005</minRadius>
-                <maxRadius>.015</maxRadius>
-                <numHDLayers>5</numHDLayers>
+                <numPCCellsPerLayer>500</numPCCellsPerLayer>
+                <minRadius>.05</minRadius> <!-- .05 m of ".2 radius" -->
+                <maxRadius>.3</maxRadius> <!-- .25 m of ".2 radius" -->
+                <numHDLayers>4</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
@@ -197,10 +197,10 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <numPCCellsPerLayer>100</numPCCellsPerLayer>
-                <minRadius>.005</minRadius>
-                <maxRadius>.015</maxRadius>
-                <numHDLayers>5</numHDLayers>
+                <numPCCellsPerLayer>500</numPCCellsPerLayer>
+                <minRadius>.05</minRadius> <!-- .05 m of ".2 radius" -->
+                <maxRadius>.3</maxRadius> <!-- .25 m of ".2 radius" -->
+                <numHDLayers>4</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
@@ -232,10 +232,10 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <numPCCellsPerLayer>100</numPCCellsPerLayer>
-                <minRadius>.005</minRadius>
-                <maxRadius>.015</maxRadius>
-                <numHDLayers>5</numHDLayers>
+                <numPCCellsPerLayer>500</numPCCellsPerLayer>
+                <minRadius>.05</minRadius> <!-- .05 m of ".2 radius" -->
+                <maxRadius>.3</maxRadius> <!-- .25 m of ".2 radius" -->
+                <numHDLayers>4</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
@@ -267,10 +267,10 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <numPCCellsPerLayer>100</numPCCellsPerLayer>
-                <minRadius>.005</minRadius>
-                <maxRadius>.015</maxRadius>
-                <numHDLayers>5</numHDLayers>
+                <numPCCellsPerLayer>500</numPCCellsPerLayer>
+                <minRadius>.05</minRadius> <!-- .05 m of ".2 radius" -->
+                <maxRadius>.3</maxRadius> <!-- .25 m of ".2 radius" -->
+                <numHDLayers>4</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
@@ -302,10 +302,10 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <numPCCellsPerLayer>100</numPCCellsPerLayer>
-                <minRadius>.005</minRadius>
-                <maxRadius>.015</maxRadius>
-                <numHDLayers>5</numHDLayers>
+                <numPCCellsPerLayer>500</numPCCellsPerLayer>
+                <minRadius>.05</minRadius> <!-- .05 m of ".2 radius" -->
+                <maxRadius>.3</maxRadius> <!-- .25 m of ".2 radius" -->
+                <numHDLayers>4</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
@@ -337,10 +337,10 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <numPCCellsPerLayer>100</numPCCellsPerLayer>
-                <minRadius>.005</minRadius>
-                <maxRadius>.015</maxRadius>
-                <numHDLayers>5</numHDLayers>
+                <numPCCellsPerLayer>500</numPCCellsPerLayer>
+                <minRadius>.05</minRadius> <!-- .05 m of ".2 radius" -->
+                <maxRadius>.3</maxRadius> <!-- .25 m of ".2 radius" -->
+                <numHDLayers>4</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
@@ -372,10 +372,10 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <numPCCellsPerLayer>100</numPCCellsPerLayer>
-                <minRadius>.005</minRadius>
-                <maxRadius>.015</maxRadius>
-                <numHDLayers>5</numHDLayers>
+                <numPCCellsPerLayer>500</numPCCellsPerLayer>
+                <minRadius>.05</minRadius> <!-- .05 m of ".2 radius" -->
+                <maxRadius>.3</maxRadius> <!-- .25 m of ".2 radius" -->
+                <numHDLayers>4</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
@@ -407,10 +407,10 @@
             <name>MultiScaleMultiIntentionCooperativeModel</name>
             <params>
                 <numPCLayers>3</numPCLayers>
-                <numPCCellsPerLayer>100</numPCCellsPerLayer>
-                <minRadius>.005</minRadius>
-                <maxRadius>.015</maxRadius>
-                <numHDLayers>5</numHDLayers>
+                <numPCCellsPerLayer>500</numPCCellsPerLayer>
+                <minRadius>.05</minRadius> <!-- .05 m of ".2 radius" -->
+                <maxRadius>.3</maxRadius> <!-- .25 m of ".2 radius" -->
+                <numHDLayers>4</numHDLayers>
                 <minHDCellsPerLayer>1</minHDCellsPerLayer>
                 <stepHDCellsPerLayer>4</stepHDCellsPerLayer>
                 <numIntentions>8</numIntentions>
@@ -458,11 +458,6 @@
         <initialTasks>
         	 <task>
                 <name>ActivateFeeders</name>
-                <params>
-                </params>
-            </task>
-             <task>
-                <name>PlaceFeederWalls</name>
                 <params>
                 </params>
             </task>
@@ -556,16 +551,13 @@
                 <params>
                 </params>
             </task>
+
             <task>
                 <name>ClearWalls</name>
                 <params>
                 </params>
             </task>
-            <task>
-                <name>PlaceFeederWalls</name>
-                <params>
-                </params>
-            </task>
+            
             <!-- <task> <name>PlaceWall</name> <params> <x1>W1</x1> <x2>W2</x2> </params> 
                 </task> -->
 
@@ -599,7 +591,7 @@
             <task>
 				<name>FlashFeederWhenWrong</name>
 				<params>
-					<timeout>240</timeout>
+					<timeout>360</timeout>
 				</params>
 			</task>
 			<task>
@@ -616,7 +608,7 @@
 				<name>FoundNFoodNoMistakes</name>
 				<params>
 					<n>15</n>
-					<timeout>240</timeout>
+					<timeout>360</timeout>
 				</params>
 			</stopCondition>
             <stopCondition>
@@ -682,16 +674,12 @@
                 <params>
                 </params>
             </task>
-            <task>
-                <name>PlaceFeederWalls</name>
-                <params>
-                </params>
-            </task>
+            
             <task>
                 <name>PlaceRandomWalls</name>
                 <params>
-                    <number>20</number>
-                    <length>.125</length>
+                    <number>10</number>
+                    <length>.20</length>
                 </params>
             </task>
             <!-- <task> <name>PlaceWall</name> <params> <x1>W1</x1> <x2>W2</x2> </params> 
@@ -727,7 +715,7 @@
             <task>
 				<name>FlashFeederWhenWrong</name>
 				<params>
-					<timeout>240</timeout>
+					<timeout>360</timeout>
 				</params>
 			</task>
 			<task>
@@ -744,7 +732,7 @@
 				<name>FoundNFoodNoMistakes</name>
 				<params>
 					<n>15</n>
-					<timeout>240</timeout>
+					<timeout>360</timeout>
 				</params>
 			</stopCondition>
             <stopCondition>
@@ -806,16 +794,14 @@
                 <params>
                 </params>
             </task>
+            
             <task>
                 <name>ClearWalls</name>
                 <params>
                 </params>
             </task>
-            <task>
-                <name>PlaceFeederWalls</name>
-                <params>
-                </params>
-            </task>
+            
+            
             <task>
                 <name>PlaceRandomWalls</name>
                 <params>
@@ -855,7 +841,7 @@
             <task>
 				<name>FlashFeederWhenWrong</name>
 				<params>
-					<timeout>240</timeout>
+					<timeout>360</timeout>
 				</params>
 			</task>
 			<task>
@@ -872,7 +858,7 @@
 				<name>FoundNFoodNoMistakes</name>
 				<params>
 					<n>15</n>
-					<timeout>240</timeout>
+					<timeout>360</timeout>
 				</params>
 			</stopCondition>
             <stopCondition>
