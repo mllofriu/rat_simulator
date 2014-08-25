@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH --array=80-95
+#SBATCH --array=0-63
 #SBATCH -J ratsim
 # #SBATCH --dependency=singleton
 
