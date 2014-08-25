@@ -6,7 +6,7 @@ public class Debug {
 	public static boolean moveRobot = true;
 	public static boolean sleepBeforeStart = false;
 	
-	public static boolean print = true;
+	public static boolean print = false;
 	
 	public static boolean printValues = print && true;
 	public static boolean printEndCycle = print && false;
