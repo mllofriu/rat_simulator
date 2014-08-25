@@ -400,7 +400,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	public void newTrial() {
 		beforeActiveGoalDecider.newTrial();
 		afterActiveGoalDecider.newTrial();
-//		anyGoalDecider.newTrial();
+		anyGoalDecider.newTrial();
 	}
 
 	public void deactivatePCL(List<Integer> feedersToDeactivate) {
