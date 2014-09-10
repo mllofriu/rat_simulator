@@ -1,13 +1,13 @@
 #!/bin/bash
 
-#SBATCH --array=0-63
+#SBATCH --array=0-255
 #SBATCH -J ratsim
 # #SBATCH --dependency=singleton
 
 # execute ploting after this job
 #sbatch --dependency=afterok:$SLURM_JOB_ID scripts/plotRuntimes.sh $log
 
-groupSize=16
+groupSize=64
 
 experiment=$1
 logDir=$2
