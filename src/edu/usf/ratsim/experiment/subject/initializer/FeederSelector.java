@@ -30,6 +30,7 @@ public class FeederSelector implements SubjectInitializer {
 			if (!feeders.contains(i))
 				feeders.add(i);
 		}
+		
 //		feeders.add(0);
 //		feeders.add(6);
 //		feeders.add(4);
