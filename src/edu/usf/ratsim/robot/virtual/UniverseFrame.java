@@ -29,7 +29,6 @@ public class UniverseFrame extends java.awt.Frame {
 
 	private java.awt.Panel panel1;
 	private java.awt.Panel topViewPanel;
-	private java.awt.Panel robotViewPanel;
 	private java.awt.Panel wideViewPanel;
 
 	private java.awt.Label posRat;
@@ -56,15 +55,15 @@ public class UniverseFrame extends java.awt.Frame {
 			}
 	
 			// Main robot view canvas
-			robotViewCanvas = new Canvas3D(config);
-			robotViewCanvas.setSize(240, 240);
-			world.getRobotViews()[RobotNode.NUM_ROBOT_VIEWS / 2]
-					.addCanvas3D(robotViewCanvas);
-			robotViewPanel.add(robotViewCanvas);
+//			robotViewCanvas = new Canvas3D(config);
+//			robotViewCanvas.setSize(240, 240);
+//			world.getRobotViews()[RobotNode.NUM_ROBOT_VIEWS / 2]
+//					.addCanvas3D(robotViewCanvas);
+//			robotViewPanel.add(robotViewCanvas);
 			// Top view canvas
 			topViewCanvas = new Canvas3D(config);
 			world.getTopView().addCanvas3D(topViewCanvas);
-			topViewCanvas.setSize(240, 240);
+			topViewCanvas.setSize(500, 500);
 			topViewPanel.add(topViewCanvas);
 		}
 
@@ -86,7 +85,6 @@ public class UniverseFrame extends java.awt.Frame {
 		posRat = new java.awt.Label();
 
 		turnLeftBtn = new java.awt.Button();
-		robotViewPanel = new java.awt.Panel();
 		topViewPanel = new java.awt.Panel();
 		wideViewPanel = new java.awt.Panel();
 
@@ -220,12 +218,6 @@ public class UniverseFrame extends java.awt.Frame {
 
 		// panel1 es el de los botones
 		// panel2 -> world1, panel3 -> world2, panel4 -> world3
-		robotViewPanel.setBackground(Color.blue);
-		gridBagConstraints = new java.awt.GridBagConstraints();
-		gridBagConstraints.gridx = 1;
-		gridBagConstraints.gridy = 0;
-		gridBagConstraints.gridwidth = 1;
-		add(robotViewPanel, gridBagConstraints);
 
 		topViewPanel.setBackground(new java.awt.Color(153, 244, 51));
 		gridBagConstraints = new java.awt.GridBagConstraints();
@@ -243,8 +235,9 @@ public class UniverseFrame extends java.awt.Frame {
 
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit()
 				.getScreenSize();
-		setBounds((screenSize.width - 510) / 2, (screenSize.height - 510) / 2,
-				510, 510);
+		int size = 800;
+		setBounds((screenSize.width - size) / 2, (screenSize.height - size) / 2,
+				size, size);
 	}
 
 	// accion asociada al boton de girar horario

@@ -10,7 +10,7 @@ import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.nsl.modules.ArtificialHDCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayerWithIntention;
-import edu.usf.ratsim.nsl.modules.FlashingActiveGoalDecider;
+import edu.usf.ratsim.nsl.modules.LastAteGoalDecider;
 import edu.usf.ratsim.nsl.modules.FlashingOrAnyGoalDecider;
 import edu.usf.ratsim.nsl.modules.GeneralTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.Intention;
