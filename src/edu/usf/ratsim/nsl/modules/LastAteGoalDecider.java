@@ -8,14 +8,14 @@ import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.support.Debug;
 
-public class FlashingActiveGoalDecider extends NslModule {
+public class LastAteGoalDecider extends NslModule {
 
 	private ExperimentUniverse universe;
 	public NslDoutInt0 goalFeeder;
 	public static int currentGoal;
 	private Random r;
 
-	public FlashingActiveGoalDecider(String nslName, NslModule nslParent,
+	public LastAteGoalDecider(String nslName, NslModule nslParent,
 			ExperimentUniverse univ) {
 		super(nslName, nslParent);
 
