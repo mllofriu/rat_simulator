@@ -56,7 +56,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	private static final float HALF_FIELD_OF_VIEW = (float) (105 * Math.PI / 180); // 105
 	// degrees
 
-	private static final int LOOKAHEADSTEPS = 5;
+	private static final int LOOKAHEADSTEPS = 2;
 
 	private View topView;
 	private RobotNode robot;
@@ -79,6 +79,8 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 		robotAte = false;
 		robotTriedToEat = false;
+		
+		wallNodes = new LinkedList<WallNode>();
 
 		if (Configuration.getBoolean("UniverseFrame.display")) {
 			Locale l = new Locale(this);
@@ -113,8 +115,10 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 			// Morris tanks
 			list = doc.getElementsByTagName("pool");
-			pool = new PoolNode(list.item(0));
-			bg.addChild(pool);
+			if (list.getLength() != 0){
+				pool = new PoolNode(list.item(0));
+				bg.addChild(pool);
+			}
 
 			// Cylinders
 			list = doc.getElementsByTagName("cylinder");
@@ -126,6 +130,14 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			list = doc.getElementsByTagName("box");
 			for (int i = 0; i < list.getLength(); i++) {
 				bg.addChild(new BoxNode(list.item(i)));
+			}
+			
+			// Walls
+			list = doc.getElementsByTagName("wall");
+			for (int i = 0; i < list.getLength(); i++) {
+				WallNode w = new WallNode(list.item(i));
+				bg.addChild(w);
+				wallNodes.add(w);
 			}
 
 			// Floor
@@ -213,7 +225,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			}
 		}
 
-		wallNodes = new LinkedList<WallNode>();
+		
 	}
 
 	public void addWall(float x1, float y1, float x2, float y2) {
@@ -471,7 +483,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			rPos.get(finalPos);
 			Coordinate finalCoordinate = new Coordinate(finalPos.x, finalPos.z);
 			// Check it's in the maze
-			boolean insideMaze = pool.isInside(new Point3f(finalPos));
+			boolean insideMaze = (pool == null) || pool.isInside(new Point3f(finalPos));
 			// Check if crosses any wall
 			boolean intesectsWall = false;
 			LineSegment path = new LineSegment(initCoordinate, finalCoordinate);

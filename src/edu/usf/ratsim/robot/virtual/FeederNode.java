@@ -85,8 +85,8 @@ public class FeederNode extends ExpUniverseNode {
 
 		normalColor = new Color3f(values.get("cr"), values.get("cg"),
 				values.get("cb"));
-		flashingColor = new Color3f(255, 255, 255);
-		wantedColor = new Color3f(255, 50, 0);
+		flashingColor = new Color3f(1f, 1f, 1f);
+		wantedColor = new Color3f(1f, .4f, 0f);
 		float xp = values.get("xp");
 		float yp = values.get("yp");
 		float zp = values.get("zp");

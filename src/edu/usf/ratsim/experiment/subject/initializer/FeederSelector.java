@@ -6,7 +6,7 @@ import java.util.Random;
 
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.subject.ExpSubject;
-import edu.usf.ratsim.experiment.task.ActivateFeeders;
+import edu.usf.ratsim.experiment.task.ActivateAllFeeders;
 import edu.usf.ratsim.support.ElementWrapper;
 
 public class FeederSelector implements SubjectInitializer {
@@ -35,7 +35,7 @@ public class FeederSelector implements SubjectInitializer {
 //		feeders.add(6);
 //		feeders.add(4);
 
-		subject.setProperty(ActivateFeeders.STR_ACTIVE_FEEDERS, feeders);
+		subject.setProperty(ActivateAllFeeders.STR_ACTIVE_FEEDERS, feeders);
 	}
 
 }

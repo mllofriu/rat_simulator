@@ -26,7 +26,7 @@ public class PlaceRobotInitallyTask implements ExperimentTask {
 	}
 
 	public void perform(ExperimentUniverse univ, ExpSubject subject) {
-		univ.setRobotPosition(new Point2D.Float(initPos.x, initPos.z), 0);
+		univ.setRobotPosition(new Point2D.Float(initPos.x, initPos.z), (float) (-Math.PI/2));
 		// TODO: implement orientation in xml
 	}
 
