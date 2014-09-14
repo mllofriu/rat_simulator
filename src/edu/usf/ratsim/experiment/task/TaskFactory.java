@@ -35,11 +35,15 @@ public class TaskFactory {
 //			} else if (taskName.equals("PolicyValueUpdater")) {
 //				res.add(new PolicyValueUpdater(model));
 			} else if (taskName.equals("ActivateFeeders")) {
-				res.add(new ActivateFeeders());
+				res.add(new ActivateAllFeeders());
+			} else if (taskName.equals("ActivateRandomFeeder")) {
+				res.add(new ActivateRandomFeeder());
 			} else if (taskName.equals("GiveFood")) {
 				res.add(new GiveFood());
 			} else if (taskName.equals("DeactivateFeeder")) {
 				res.add(new DeactivateFeeder(taskParams));
+			} else if (taskName.equals("DeactivateAllFeeders")) {
+				res.add(new DeactivateAllFeeders());
 			}else if (taskName.equals("FlashFeeder")) {
 				res.add(new FlashFeeder());
 			}else if (taskName.equals("FlashFeederWhenWrong")) {

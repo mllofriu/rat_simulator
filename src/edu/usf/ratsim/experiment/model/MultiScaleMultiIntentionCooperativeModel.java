@@ -8,12 +8,14 @@ import java.util.Vector;
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.ratsim.nsl.modules.ActiveGoalDecider;
 import edu.usf.ratsim.nsl.modules.ArtificialHDCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayerWithIntention;
-import edu.usf.ratsim.nsl.modules.FlashingActiveGoalDecider;
+import edu.usf.ratsim.nsl.modules.LastAteGoalDecider;
 import edu.usf.ratsim.nsl.modules.FlashingOrAnyGoalDecider;
 import edu.usf.ratsim.nsl.modules.GeneralTaxicFoodFinderSchema;
+import edu.usf.ratsim.nsl.modules.GoalTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.Intention;
 import edu.usf.ratsim.nsl.modules.JointStatesManyConcatenate;
 import edu.usf.ratsim.nsl.modules.JointStatesManyMultiply;
@@ -71,12 +73,12 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private int numPCLayers;
 	private LinkedList<PlaceIntention> beforePI;
 	private LinkedList<PlaceIntention> afterPI;
-	private FlashingActiveGoalDecider beforeActiveGoalDecider;
+	private ActiveGoalDecider beforeActiveGoalDecider;
 	private FlashingOrAnyGoalDecider anyGoalDecider;
 	private int numHDLayers;
 	private List<ArtificialHDCellLayer> afterHDs;
 	private LinkedList<ArtificialHDCellLayer> beforeHDs;
-	private FlashingActiveGoalDecider afterActiveGoalDecider;
+	private ActiveGoalDecider afterActiveGoalDecider;
 
 	public MultiScaleMultiIntentionCooperativeModel(ElementWrapper params,
 			IRobot robot, ExperimentUniverse universe) {
@@ -114,10 +116,10 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		qLUpdVal = new LinkedList<PolicyDumper>();
 		qLActionSel = new LinkedList<WTAVotes>();
 
-		beforeActiveGoalDecider = new FlashingActiveGoalDecider(
+		beforeActiveGoalDecider = new ActiveGoalDecider(
 				BEFORE_ACTIVE_GOAL_DECIDER_STR, this, universe);
-		anyGoalDecider = new FlashingOrAnyGoalDecider(
-				BEFORE_ANY_GOAL_DECIDER_STR, this, universe);
+//		anyGoalDecider = new FlashingOrAnyGoalDecider(
+//				BEFORE_ANY_GOAL_DECIDER_STR, this, universe);
 
 		new Intention(this, BEFORE_INTENTION_STR, numIntentions);
 
@@ -173,8 +175,9 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 			new WTAVotes(BEFORE_ACTION_SELECTION_STR, this, bAll.getSize());
 
 		// Create taxic driver
-		new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
-				universe, numActions, flashingReward, nonFlashingReward);
+//		new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
+//				universe, numActions, flashingReward, nonFlashingReward);
+		new GoalTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot, universe, numActions, nonFlashingReward);
 
 		// Wall following for obst. avoidance
 		new WallAvoider(BEFORE_WALLAVOID_STR, this, robot, universe, numActions,
@@ -197,10 +200,10 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		new Reward(REWARD_STR, this, universe, foodReward, nonFoodReward);
 
 		// Second goal deciders after the robot has moved
-		afterActiveGoalDecider = new FlashingActiveGoalDecider(
+		afterActiveGoalDecider = new ActiveGoalDecider(
 				AFTER_ACTIVE_GOAL_DECIDER_STR, this, universe);
-		anyGoalDecider = new FlashingOrAnyGoalDecider(
-				AFTER_ANY_GOAL_DECIDER_STR, this, universe);
+//		anyGoalDecider = new FlashingOrAnyGoalDecider(
+//				AFTER_ANY_GOAL_DECIDER_STR, this, universe);
 
 		new Intention(this, AFTER_INTENTION_STR, numIntentions);
 
@@ -250,8 +253,9 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 			new WTAVotes(AFTER_ACTION_SELECTION_STR, this, aAll.getSize());
 
 		// Create taxic driver
-		new GeneralTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot,
-				universe, numActions, flashingReward, nonFlashingReward);
+//		new GeneralTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot,
+//				universe, numActions, flashingReward, nonFlashingReward);
+		new GoalTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot, universe, numActions, nonFlashingReward);
 
 		// Wall following for obst. avoidance
 		new WallAvoider(AFTER_WALLAVOID_STR, this, robot, universe, numActions,
@@ -400,7 +404,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	public void newTrial() {
 		beforeActiveGoalDecider.newTrial();
 		afterActiveGoalDecider.newTrial();
-		anyGoalDecider.newTrial();
+//		anyGoalDecider.newTrial();
 	}
 
 	public void deactivatePCL(List<Integer> feedersToDeactivate) {
