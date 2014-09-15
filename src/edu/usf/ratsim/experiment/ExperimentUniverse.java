@@ -8,6 +8,7 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
 import com.vividsolutions.jts.geom.LineSegment;
+import com.vividsolutions.jts.geom.Polygon;
 
 import edu.usf.ratsim.robot.virtual.WallNode;
 
@@ -108,5 +109,7 @@ public interface ExperimentUniverse {
 	public boolean canRobotSeeFeeder(Integer fn);
 
 	public boolean hasFoodFeeder(int feeder);
+
+	public boolean placeIntersectsWalls(Polygon createCircle);
 
 }

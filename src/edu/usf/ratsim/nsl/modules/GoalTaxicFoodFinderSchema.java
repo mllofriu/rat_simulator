@@ -72,12 +72,12 @@ public class GoalTaxicFoodFinderSchema extends NslModule {
 		} else {
 			// Give a forward impulse
 			if (r.nextFloat() > .8)
-				votes.set(Utiles.discretizeAction(0), maxReward/2);
+				votes.set(Utiles.discretizeAction(0),.01);
 			else 
 				if (r.nextFloat() > .5)
-					votes.set(Utiles.discretizeAction(90), maxReward/2);
+					votes.set(Utiles.discretizeAction(90), .01);
 				else
-					votes.set(Utiles.discretizeAction(-90), maxReward/2);
+					votes.set(Utiles.discretizeAction(-90), .01);
 		}
 	}
 }
