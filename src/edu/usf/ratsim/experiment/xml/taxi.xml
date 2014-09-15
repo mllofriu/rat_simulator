@@ -21,24 +21,24 @@
 		<model>
 			<name>MultiScaleMultiIntentionCooperativeModel</name>
 			<params>
-				<numPCLayers>3</numPCLayers>
-				<numPCCellsPerLayer>500</numPCCellsPerLayer>
-				<minRadius>.05</minRadius>
+				<numPCLayers>5</numPCLayers>
+				<numPCCellsPerLayer>1000</numPCCellsPerLayer>
+				<minRadius>.01</minRadius>
 				<!-- .05 m of ".2 radius" -->
-				<maxRadius>.3</maxRadius>
+				<maxRadius>.2</maxRadius>
 				<!-- .25 m of ".2 radius" -->
 				<numHDLayers>4</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
 				<numIntentions>4</numIntentions>
 				<deterministicActionSelection>true</deterministicActionSelection>
-				<foodReward>3</foodReward>
+				<foodReward>1000</foodReward>
 				<nonFoodReward>0</nonFoodReward>
 				<discountFactor>1</discountFactor>
 				<alpha>.8</alpha>
 				<initialValue>0</initialValue>
-				<flashingReward>2</flashingReward>
-				<nonFlashingReward>1</nonFlashingReward>
+				<flashingReward>1000</flashingReward>
+				<nonFlashingReward>1000</nonFlashingReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
 				<proportionalQL>true</proportionalQL>
 			</params>

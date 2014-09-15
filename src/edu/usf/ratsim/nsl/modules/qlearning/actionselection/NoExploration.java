@@ -64,9 +64,9 @@ public class NoExploration extends NslModule {
 		// if (actions.get(action).getAction() == Utiles.eatAction
 		// && actions.get(action).getValue() < 0)
 		// action = action - 1;
-		// if (actions.get(action).getAction() == Utiles.eatAction
-		// && !universe.isRobotCloseToAFeeder())
-		// action = action - 1;
+		if (actions.get(action).getAction() == Utiles.eatAction
+				&& !universe.isRobotCloseToAFeeder())
+			action = action - 1;
 
 		// Rotate the robot the desired angle
 		if (actions.get(action).getAction() == Utiles.eatAction) {
