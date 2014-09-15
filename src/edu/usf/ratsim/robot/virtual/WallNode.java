@@ -8,8 +8,10 @@ import javax.vecmath.Point3f;
 import org.w3c.dom.Node;
 
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineSegment;
-
+import com.vividsolutions.jts.geom.LineString;
+import com.vividsolutions.jts.geom.Polygon;
 
 public class WallNode extends ExpUniverseNode {
 
@@ -20,8 +22,8 @@ public class WallNode extends ExpUniverseNode {
 	public float x2;
 	public float y2;
 	public float z2;
-	
-	public  LineSegment segment;
+
+	public LineSegment segment;
 
 	public WallNode(Node node) {
 		Map<String, Float> values = readValues(node);
@@ -43,16 +45,16 @@ public class WallNode extends ExpUniverseNode {
 			addChild(new CylinderNode(RADIO, h, color, x1 + (x2 - x1) * lambda,
 					y1 + (y2 - y1) * lambda, z1 + (z2 - z1) * lambda));
 		}
-		
-		segment = new LineSegment(new Coordinate(x1, z1), new Coordinate(x2, z2));
+
+		segment = new LineSegment(new Coordinate(x1, z1),
+				new Coordinate(x2, z2));
 
 	}
 
 	public WallNode(float x1, float y1, float z1, float x2, float y2, float z2,
 			float h) {
 		Color3f color = new Color3f(1, 0, 0);
-		
-		
+
 		this.x1 = x1;
 		this.x2 = x2;
 		this.y1 = y1;
@@ -67,8 +69,9 @@ public class WallNode extends ExpUniverseNode {
 			addChild(new CylinderNode(RADIO, h, color, x1 + (x2 - x1) * lambda,
 					y1 + (y2 - y1) * lambda, z1 + (z2 - z1) * lambda));
 		}
-		
-		segment = new LineSegment(new Coordinate(x1, z1), new Coordinate(x2, z2));
+
+		segment = new LineSegment(new Coordinate(x1, z1),
+				new Coordinate(x2, z2));
 
 	}
 
@@ -78,5 +81,14 @@ public class WallNode extends ExpUniverseNode {
 
 	public float distanceTo(LineSegment wall) {
 		return (float) segment.distance(wall);
+	}
+
+	public boolean intersects(Polygon c) {
+		GeometryFactory gf = new GeometryFactory();
+		Coordinate cs[] = new Coordinate[2];
+		cs[0] = segment.p0;
+		cs[1] = segment.p1;
+		LineString ls = gf.createLineString(cs);
+		return ls.crosses(c) || c.contains(ls);
 	}
 }

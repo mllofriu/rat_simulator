@@ -362,14 +362,14 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 				"statesBefore");
 		nslConnect(getChild(AFTER_CONCAT), "jointState", getChild(QL_STR),
 				"statesAfter");
-		nslConnect(getChild(BEFORE_FOOD_FINDER_STR), "votes", getChild(QL_STR),
-				"actionVotesBefore");
-//		nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes", getChild(QL_STR),
-//				"actionVotesAfter");
-//		nslConnect(getChild(BEFORE_JOINT_VOTES), "jointState", getChild(QL_STR),
+//		nslConnect(getChild(BEFORE_FOOD_FINDER_STR), "votes", getChild(QL_STR),
 //				"actionVotesBefore");
-		nslConnect(getChild(AFTER_JOINT_VOTES), "jointState", getChild(QL_STR),
+		nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes", getChild(QL_STR),
 				"actionVotesAfter");
+		nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes", getChild(QL_STR),
+				"actionVotesBefore");
+//		nslConnect(getChild(AFTER_JOINT_VOTES), "jointState", getChild(QL_STR),
+//				"actionVotesAfter");
 
 	}
 

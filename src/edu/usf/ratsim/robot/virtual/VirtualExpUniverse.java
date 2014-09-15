@@ -25,6 +25,7 @@ import org.w3c.dom.NodeList;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
+import com.vividsolutions.jts.geom.Polygon;
 
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.support.Configuration;
@@ -57,6 +58,8 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	// degrees
 
 	private static final int LOOKAHEADSTEPS = 2;
+
+	private static final float VISION_DIST = 0.4f;
 
 	private View topView;
 	private RobotNode robot;
@@ -535,6 +538,8 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 		return intersects;
 	}
+	
+
 
 	@Override
 	public float shortestDistanceToWalls(LineSegment wall) {
@@ -686,11 +691,22 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		for (WallNode w : wallNodes)
 			intersects = intersects || w.intersects(lineOfSight);
 
-		return inField && !intersects;
+		boolean closeEnough = getRobotPosition().distance(new Point3f(feeders.get(fn).getPosition())) < VISION_DIST;
+		
+		return inField && !intersects && closeEnough;
 	}
 
 	@Override
 	public boolean hasFoodFeeder(int feeder) {
 		return feeders.get(feeder).hasFood();
+	}
+
+	@Override
+	public boolean placeIntersectsWalls(Polygon c) {
+		boolean intersects = false;
+		for (WallNode w : wallNodes)
+			intersects = intersects || w.intersects(c);
+
+		return intersects;
 	}
 }
