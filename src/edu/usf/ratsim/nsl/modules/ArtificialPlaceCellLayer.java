@@ -9,6 +9,11 @@ import javax.vecmath.Point3f;
 
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.util.GeometricShapeFactory;
+
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 
 public class ArtificialPlaceCellLayer extends NslModule {
@@ -45,12 +50,24 @@ public class ArtificialPlaceCellLayer extends NslModule {
 //						+ radius), radius));
 //			}
 //		}
+		GeometryFactory gf = new GeometryFactory();
+		
 		Random r = new Random(seed);
-		for (int i = 0; i < numCells; i++){
+		int i = 0;
+		do{
 			float x = r.nextFloat() * (maxX - minX) + minX;
 			float y = r.nextFloat() * (maxY - minY) + minY;
-			cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y), radius));
-		}
+			// Find if it intersects any wall
+			GeometricShapeFactory gsf = new GeometricShapeFactory();
+			gsf.setCentre(new Coordinate(x,y));
+			gsf.setSize(2*radius);
+//			System.out.println("PC " + x + " " + y + " " + universe.placeIntersectsWalls(gsf.createCircle()));
+			if (!universe.placeIntersectsWalls(gsf.createCircle())){
+				cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y), radius));
+				i++;
+			}
+			
+		} while (i < numCells);
 
 		activation = new NslDoutFloat1(this, "activation", cells.size());
 
