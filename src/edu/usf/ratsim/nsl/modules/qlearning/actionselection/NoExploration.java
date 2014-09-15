@@ -88,10 +88,14 @@ public class NoExploration extends NslModule {
 			// If going forward and no affordance - rotate
 			if (angle == 0 && !aff[Utiles.discretizeAction(0)]) {
 				// Depends on the fact that there are only two rotatin actions
-				if (random.nextFloat() > 0.5)
-					angle = Utiles.getActionAngle(0);
+//				if (random.nextFloat() > 0.5)
+//					angle = Utiles.getActionAngle(0);
+//				else
+//					angle = Utiles.getActionAngle(2);
+				if (aff[Utiles.discretizeAction(90)])
+					angle = Utiles.getActionAngle(Utiles.discretizeAction(90));
 				else
-					angle = Utiles.getActionAngle(2);
+					angle = Utiles.getActionAngle(Utiles.discretizeAction(-90));
 				// Skip to the next action
 				// action = action - 1;
 				// angle = Utiles
