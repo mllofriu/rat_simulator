@@ -1,6 +1,7 @@
 package edu.usf.ratsim.robot;
 
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 /**
  * 
@@ -61,6 +62,8 @@ public interface IRobot {
 	public abstract void forward();
 
 	public abstract boolean[] getAffordances(int wallLookahead);
+	
+	public abstract List<Landmark> getLandmarks();
 
 	public abstract boolean hasTriedToEat();
 
