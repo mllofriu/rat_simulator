@@ -6,13 +6,13 @@ public class Debug {
 	public static boolean moveRobot = true;
 	public static boolean sleepBeforeStart = false;
 	
-	public static boolean print = true;
+	public static boolean print = false;
 	
-	public static boolean printValues = print && true;
+	public static boolean printValues = print && false;
 	public static boolean printEndCycle = print && false;
 	public static boolean printAnyGoal = print && false;
 	public static boolean printTaxic = print && false;
-	public static boolean printActiveGoal = print && false;
+	public static boolean printActiveGoal = print && true;
 	public static boolean printRobotAte = print && false;
 	public static boolean printIntention = print && false;
 	public static boolean printTryingToEat = print && false;

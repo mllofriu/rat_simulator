@@ -10,6 +10,8 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
+import edu.usf.ratsim.robot.IRobot;
+
 public class Utiles {
 
 	// public static final float[] actions = { -(float) Math.PI,
@@ -29,7 +31,7 @@ public class Utiles {
 	public static final int numRotations = 3;
 	public static final int numActions = numRotations + 1;
 	public static int eatAction = numRotations;
-//	public static int waitAction = eatAction + 1;
+	// public static int waitAction = eatAction + 1;
 	// private static final float actionMax = (float) (Math.PI/8);
 	public static int forwardAction = numRotations / 2;
 
@@ -40,9 +42,9 @@ public class Utiles {
 	// angleInterval);
 	private static final float EPS_STRAIGHT = actionInterval;
 
-
 	/**
 	 * Gets the angle rotation for an action
+	 * 
 	 * @param index
 	 * @return
 	 */
@@ -113,54 +115,56 @@ public class Utiles {
 	 * @return
 	 */
 	public static Quat4f rotBetweenVectors(Vector3f from, Vector3f to) {
-		// Taken from http://lolengine.net/blog/2013/09/18/beautiful-maths-quaternion-from-vectors
-//		from.normalize();
-//		to.normalize();
-//		Quat4f res = new Quat4f();
-//		Vector3f cross = new Vector3f();
-//		cross.cross(from, to);
-//		cross.normalize();
-//		float dot = from.dot(to);
-//		
-//		res.x = cross.x;
-//		res.y = cross.y;
-//		res.z = cross.z;
-//		res.w = 1.f + dot;
-//	
-//		res.normalize();
-//		
-		// Taken fromhttp://lolengine.net/blog/2014/02/24/quaternion-from-two-vectors-final
-		from.normalize(); to.normalize();
+		// Taken from
+		// http://lolengine.net/blog/2013/09/18/beautiful-maths-quaternion-from-vectors
+		// from.normalize();
+		// to.normalize();
+		// Quat4f res = new Quat4f();
+		// Vector3f cross = new Vector3f();
+		// cross.cross(from, to);
+		// cross.normalize();
+		// float dot = from.dot(to);
+		//
+		// res.x = cross.x;
+		// res.y = cross.y;
+		// res.z = cross.z;
+		// res.w = 1.f + dot;
+		//
+		// res.normalize();
+		//
+		// Taken
+		// fromhttp://lolengine.net/blog/2014/02/24/quaternion-from-two-vectors-final
+		from.normalize();
+		to.normalize();
 		float norm_u_norm_v = 1f;
-	    float real_part = norm_u_norm_v + from.dot(to);
-	    Vector3f w;
-	    if (real_part < 1.e-6f * norm_u_norm_v)
-	    {
-	        /* If u and v are exactly opposite, rotate 180 degrees
-	         * around an arbitrary orthogonal axis. Axis normalisation
-	         * can happen later, when we normalise the quaternion. */
-	        real_part = 0.0f;
-	       	if(Math.abs(from.x) > Math.abs(from.z))
-	       		w = new Vector3f(-from.y, from.x, 0.f);
-	       	else
-	       		w = new Vector3f(0.f, -from.z, from.y);
-	    }
-	    else
-	    {
-	        /* Otherwise, build quaternion the standard way. */
-	        w = new Vector3f();
-	    		w.cross(from,to);
-	    }
+		float real_part = norm_u_norm_v + from.dot(to);
+		Vector3f w;
+		if (real_part < 1.e-6f * norm_u_norm_v) {
+			/*
+			 * If u and v are exactly opposite, rotate 180 degrees around an
+			 * arbitrary orthogonal axis. Axis normalisation can happen later,
+			 * when we normalise the quaternion.
+			 */
+			real_part = 0.0f;
+			if (Math.abs(from.x) > Math.abs(from.z))
+				w = new Vector3f(-from.y, from.x, 0.f);
+			else
+				w = new Vector3f(0.f, -from.z, from.y);
+		} else {
+			/* Otherwise, build quaternion the standard way. */
+			w = new Vector3f();
+			w.cross(from, to);
+		}
 
-	    Quat4f res = new Quat4f(w.x, w.y, w.z,real_part);
-	    res.normalize();
+		Quat4f res = new Quat4f(w.x, w.y, w.z, real_part);
+		res.normalize();
 		return res;
 	}
-	
-	public static float angleToPointWithOrientation(Quat4f orientation, Point3f from, Point3f to)
-	{
-		Vector3f toPoint = pointsToVector(from,to);
-		Quat4f rotTo = rotBetweenVectors(new Vector3f(1,0,0), toPoint);
+
+	public static float angleToPointWithOrientation(Quat4f orientation,
+			Point3f from, Point3f to) {
+		Vector3f toPoint = pointsToVector(from, to);
+		Quat4f rotTo = rotBetweenVectors(new Vector3f(1, 0, 0), toPoint);
 		rotTo.inverse();
 		rotTo.mul(orientation);
 		return rotToAngle(rotTo);
@@ -169,7 +173,7 @@ public class Utiles {
 	public static Vector3f pointsToVector(Point3f from, Point3f to) {
 		Vector3f fVect = new Vector3f(to);
 		fVect.sub(from);
-		
+
 		return fVect;
 	}
 
@@ -178,6 +182,43 @@ public class Utiles {
 		Quat4f rotToMake = new Quat4f();
 		rotToMake.inverse(currentRot);
 		rotToMake.mul(rotToGoal);
+
+		// See if going straight isnt good enough
+		float resultingAnglePos = (float) Math.abs(rotToAngle(rotToMake));
+		float resultingAngleInv = (float) Math.abs(Math.PI * 2
+				- resultingAnglePos);
+		if (Math.min(resultingAnglePos, resultingAngleInv) < EPS_STRAIGHT) {
+			return discretizeAction(0);
+		}
+
+		int action = -1;
+		float angleDifference = (float) (Math.PI * 2);
+		for (int i = 0; i < numRotations; i++) {
+			// Make rotation for this action
+			Quat4f rotAction = angleToRot(getActionAngle(i));
+			// Invert
+			rotAction.inverse();
+			// Compose rotToMake and inverse of action.
+			Quat4f tmpRot = new Quat4f(rotToMake);
+			tmpRot.mul(rotAction);
+			// Compare axis angle. The closer to 0, the more suitable
+			// Take the min of normal and inverse
+			resultingAnglePos = (float) Math.abs(rotToAngle(tmpRot));
+			resultingAngleInv = (float) Math.abs(Math.PI * 2
+					- resultingAnglePos);
+			if (Math.min(resultingAnglePos, resultingAngleInv) < angleDifference) {
+				angleDifference = Math
+						.min(resultingAnglePos, resultingAngleInv);
+				action = i;
+			}
+		}
+
+		return action;
+	}
+
+	public static int bestActionToRot(Quat4f rotToGoal) {
+		// Find the desired rot
+		Quat4f rotToMake = rotToGoal;
 
 		// See if going straight isnt good enough
 		float resultingAnglePos = (float) Math.abs(rotToAngle(rotToMake));
@@ -240,9 +281,9 @@ public class Utiles {
 		// Get the shortest
 		if (angle > Math.PI)
 			angle -= Math.PI * 2;
-		else if (angle < - Math.PI)
+		else if (angle < -Math.PI)
 			angle -= -Math.PI * 2;
-		
+
 		return (float) (angle);
 	}
 
@@ -321,6 +362,12 @@ public class Utiles {
 	public static float gaussian(float distance, float width) {
 		return (float) ((1 / Math.sqrt(2 * Math.PI) / width) * Math.exp(-Math
 				.pow(distance, 2) / (2 * Math.pow(width, 2))));
+	}
+
+	public static Quat4f angleToPoint(Point3f location) {
+		Vector3f toPoint = new Vector3f(location);
+		Quat4f rotTo = rotBetweenVectors(new Vector3f(1, 0, 0), toPoint);
+		return rotTo;
 	}
 
 }
