@@ -3,14 +3,21 @@ package edu.usf.ratsim.robot.virtual;
 //import Rat;
 
 import java.awt.image.BufferedImage;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.ImageComponent2D;
+import javax.media.j3d.Transform3D;
+import javax.vecmath.Point3f;
+import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.robot.Landmark;
 import edu.usf.ratsim.support.Configuration;
+import edu.usf.ratsim.support.Utiles;
 
 public class VirtualRobot implements IRobot {
 
@@ -131,6 +138,29 @@ public class VirtualRobot implements IRobot {
 	@Override
 	public boolean hasTriedToEat() {
 		return universe.hasRobotTriedToEat();
+	}
+
+	@Override
+	public List<Landmark> getLandmarks() {
+		List<Landmark> res = new LinkedList<Landmark>();
+		for(Integer i : universe.getFeeders())
+			if(universe.canRobotSeeFeeder(i)){
+				// Get relative position
+				Point3f fPos = universe.getFoodPosition(i);
+				Point3f rPos = universe.getRobotPosition();
+				Point3f relFPos = new Point3f(Utiles.pointsToVector(rPos, fPos));
+				// Rotate to robots framework
+				Quat4f rRot = universe.getRobotOrientation();
+				rRot.inverse();
+				Transform3D t = new Transform3D();
+				t.setRotation(rRot);
+				t.transform(relFPos);
+				// Return the landmark
+				res.add(new Landmark(i, relFPos));
+			}
+				
+		
+		return res;
 	}
 
 }
