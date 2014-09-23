@@ -17,7 +17,7 @@ RATSIM=/home/m/mllofriualon/work/rat_simulator
 JAVA_LIBS=/home/m/mllofriualon/java_libs/
 
 JAVA=java
-JAVA=/etc/alternatives/java_sdk_1.7.0/bin/java
+#JAVA=/etc/alternatives/java_sdk_1.7.0/bin/java
 #sh scripts/compile.sh
 
 export PATH=/work/R-3.1.1/bin:$PATH

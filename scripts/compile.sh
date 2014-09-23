@@ -2,15 +2,16 @@
 
 #SBATCH -J ratsim
 
-#RATSIM=/work/rat_simulator/
-#JAVA_LIBS=/work/java_libs/
+RATSIM=/work/rat_simulator/
+JAVA_LIBS=/work/java_libs/
 
 #RATSIM=/home/m/mllofriualon/work/rat_simulator
 #JAVA_LIBS=/home/m/mllofriualon/java_libs/
 
-RATSIM=/home/m/mllofriualon/rat_simulator
-JAVA_LIBS=/home/m/mllofriualon/java_libs/
-JAVAC=/etc/alternatives/java_sdk_1.7.0/bin/javac
+#RATSIM=/home/m/mllofriualon/rat_simulator
+#JAVA_LIBS=/home/m/mllofriualon/java_libs/
+#JAVAC=/etc/alternatives/java_sdk_1.7.0/bin/javac
+JAVAC=javac
 
 rm -r bin
 mkdir bin
