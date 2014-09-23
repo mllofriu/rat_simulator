@@ -32,6 +32,8 @@ import edu.usf.ratsim.support.ElementWrapper;
  * 
  */
 public class Trial implements Runnable {
+	public static boolean cont;
+
 	public ExpSubject getSubject() {
 		return subject;
 	}
@@ -81,6 +83,7 @@ public class Trial implements Runnable {
 		this.group = group;
 		this.trialNode = trialNode;
 		this.points = points;
+		Trial.cont = true;
 
 	}
 
@@ -131,6 +134,8 @@ public class Trial implements Runnable {
 			boolean stop;
 			boolean sleep = Configuration.getBoolean("UniverseFrame.display");
 			do {
+				while(!cont)
+					Thread.yield();
 				// One cycle to the trial
 				subject.stepCycle();
 				if (Debug.printEndCycle)

@@ -16,6 +16,7 @@ import edu.usf.ratsim.experiment.subject.initializer.SubInitializerFactory;
 import edu.usf.ratsim.experiment.subject.initializer.SubjectInitializer;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.robot.RobotFactory;
+import edu.usf.ratsim.robot.naorobot.GlobalCameraUniv;
 import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.ElementWrapper;
@@ -53,7 +54,8 @@ public class ExpSubject {
 		initNSL();
 
 //		System.out.println("Initializing model for subject " + getName());
-		universe = new VirtualExpUniverse(mazeFile);
+//		universe = new VirtualExpUniverse(mazeFile);
+		universe = new GlobalCameraUniv(mazeFile);
 		IRobot robot = RobotFactory.getRobot(
 		Configuration.getString("Reflexion.Robot"), universe);
 		model = ModelFactory.createModel(params.getChild(STR_MODEL), robot, universe);

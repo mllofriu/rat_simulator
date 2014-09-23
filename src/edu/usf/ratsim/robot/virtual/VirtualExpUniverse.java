@@ -117,11 +117,11 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			}
 
 			// Morris tanks
-			list = doc.getElementsByTagName("pool");
-			if (list.getLength() != 0){
-				pool = new PoolNode(list.item(0));
-				bg.addChild(pool);
-			}
+//			list = doc.getElementsByTagName("pool");
+//			if (list.getLength() != 0){
+//				pool = new PoolNode(list.item(0));
+//				bg.addChild(pool);
+//			}
 
 			// Cylinders
 			list = doc.getElementsByTagName("cylinder");
@@ -217,7 +217,15 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			robot = new RobotNode(params);
 
 			list = doc.getElementsByTagName("pool");
-			pool = new PoolNode(list.item(0));
+			if (list.getLength() != 0)
+				pool = new PoolNode(list.item(0));
+			
+			// Walls
+			list = doc.getElementsByTagName("wall");
+			for (int i = 0; i < list.getLength(); i++) {
+				WallNode w = new WallNode(list.item(i));
+				wallNodes.add(w);
+			}
 
 			list = doc.getElementsByTagName("feeder");
 			feeders = new LinkedList<FeederNode>();
