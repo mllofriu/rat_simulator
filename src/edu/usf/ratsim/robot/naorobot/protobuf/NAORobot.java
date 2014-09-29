@@ -31,6 +31,7 @@ public class NAORobot implements IRobot {
 		
 		try {
 			protoSocket = new Socket(host, port);
+			System.out.println("Connection stablished");
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

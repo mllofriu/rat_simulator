@@ -29,6 +29,8 @@ public class VisionListener {
 
 	private InetAddress group;
 	private MulticastSocket s;
+	private Position lastPosition;
+	private long lastPosTime;
 
 	public VisionListener() {
 		try {
@@ -43,9 +45,13 @@ public class VisionListener {
 			e.printStackTrace();
 		}
 
+		lastPosTime = 0;
 	}
 
 	private Position getRobotPosition() {
+		if (Math.abs(System.currentTimeMillis() - lastPosTime) < 500)
+			return lastPosition;
+		
 		boolean finish = false;
 		SSL_WrapperPacket f = null;
 		while (!finish) {
@@ -68,7 +74,9 @@ public class VisionListener {
 		}
 
 		SSL_DetectionRobot r = f.getDetection().getRobotsBlue(0);
-		return new Position(r.getX(), r.getY(), r.getOrientation());
+		lastPosition = new Position(r.getX(), r.getY(), r.getOrientation());
+		lastPosTime = System.currentTimeMillis();
+		return lastPosition;
 	}
 	
 	
@@ -99,5 +107,6 @@ public class VisionListener {
 	
 	public static void main(String[] args){
 		System.out.println(new VisionListener().getRobotPoint());
+		System.out.println(new VisionListener().getRobotOrientation());
 	}
 }

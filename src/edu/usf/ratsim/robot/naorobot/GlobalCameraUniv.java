@@ -21,7 +21,7 @@ public class GlobalCameraUniv extends VirtualExpUniverse{
 	@Override
 	public Point3f getRobotPosition() {
 		Point3f p = vision.getRobotPoint();
-		System.out.println(p);
+//		System.out.println(p);
 		setRobotPosition(new Point2D.Float(p.x, p.z), vision.getRobotOrientation());
 		return vision.getRobotPoint();
 	}

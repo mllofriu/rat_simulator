@@ -7,7 +7,7 @@
 		<name>S</name>
 		<xp>.5</xp>
 		<yp>0</yp>
-		<zp>-.5</zp>
+		<zp>.5</zp>
 		<rot>0</rot>
 	</point>
 	
@@ -130,7 +130,10 @@
 	</trial>
 	
 	<!-- 4 testing trials -->
-	
+	<postproc>
+		<name>moveLogs</name>
+		<params></params>
+	</postproc>
 	
 	
 </experiment>
