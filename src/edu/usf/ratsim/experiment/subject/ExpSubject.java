@@ -14,8 +14,15 @@ import edu.usf.ratsim.experiment.NslSequentialScheduler;
 import edu.usf.ratsim.experiment.model.ModelFactory;
 import edu.usf.ratsim.experiment.subject.initializer.SubInitializerFactory;
 import edu.usf.ratsim.experiment.subject.initializer.SubjectInitializer;
+<<<<<<< HEAD
+import edu.usf.ratsim.experiment.universe.UniverseFactory;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.robot.RobotFactory;
+import edu.usf.ratsim.robot.naorobot.GlobalCameraUniv;
+=======
+import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.robot.RobotFactory;
+>>>>>>> 9a9cd5d65e743e12727fe9c647f1a62190880224
 import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.ElementWrapper;
@@ -53,7 +60,12 @@ public class ExpSubject {
 		initNSL();
 
 //		System.out.println("Initializing model for subject " + getName());
+<<<<<<< HEAD
+//		universe = new VirtualExpUniverse(mazeFile);
+		universe = UniverseFactory.getUniverse(mazeFile);
+=======
 		universe = new VirtualExpUniverse(mazeFile);
+>>>>>>> 9a9cd5d65e743e12727fe9c647f1a62190880224
 		IRobot robot = RobotFactory.getRobot(
 		Configuration.getString("Reflexion.Robot"), universe);
 		model = ModelFactory.createModel(params.getChild(STR_MODEL), robot, universe);

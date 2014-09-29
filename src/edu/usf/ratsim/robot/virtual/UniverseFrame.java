@@ -2,12 +2,15 @@ package edu.usf.ratsim.robot.virtual;
 
 import java.awt.Color;
 import java.awt.GraphicsConfiguration;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.media.j3d.Canvas3D;
 import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
+import edu.usf.ratsim.experiment.Trial;
 import edu.usf.ratsim.support.Configuration;
 
 public class UniverseFrame extends java.awt.Frame {
@@ -101,6 +104,11 @@ public class UniverseFrame extends java.awt.Frame {
 		panel1.setLayout(new java.awt.GridBagLayout());
 
 		button1.setLabel("Publ. Space");
+		button1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Trial.cont = ! Trial.cont;
+			}
+		});
 
 		gridBagConstraints = new java.awt.GridBagConstraints();
 		gridBagConstraints.gridx = 3;
