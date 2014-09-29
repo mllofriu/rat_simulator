@@ -315,6 +315,48 @@ class SubjectThread extends Thread {
 	public void setSubject(ExpSubject subject) {
 		this.subject = subject;
 
+<<<<<<< HEAD
+=======
+	public static void main(String[] args) {
+		if (args.length < 1)
+			System.out.println("Missing experiment xml argument");
+
+		Experiment e;
+		// More than one parameter means that we have to run only one (the
+		// specified) inidividual
+
+		if (args.length == 1) {
+			e = new Experiment(args[0], null, null, null);
+		} else {
+			// Set a variable with the relative folder to this run
+			Configuration.setProperty("Log.REL_DIRECTORY", File.separator
+					+ args[1] + File.separator);
+			String tmpLogPath = Configuration.getString("Log.TMP")
+					+ File.separator
+					+ Configuration.getString("Log.REL_DIRECTORY");
+			e = new Experiment(args[0], tmpLogPath, args[2], args[3]);
+		}
+
+		e.run();
+
+		System.exit(0);
+	}
+}
+
+class SubjectThread extends Thread {
+
+	private List<Trial> trials;
+	private ExpSubject subject;
+
+	public SubjectThread(ExpSubject subject, List<Trial> trials) {
+		this.subject = subject;
+		this.trials = trials;
+	}
+
+	public void setSubject(ExpSubject subject) {
+		this.subject = subject;
+
+>>>>>>> 9a9cd5d65e743e12727fe9c647f1a62190880224
 	}
 
 	public void run() {

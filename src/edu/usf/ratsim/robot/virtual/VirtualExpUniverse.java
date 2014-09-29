@@ -122,6 +122,11 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 //				pool = new PoolNode(list.item(0));
 //				bg.addChild(pool);
 //			}
+			list = doc.getElementsByTagName("pool");
+			if (list.getLength() != 0){
+				pool = new PoolNode(list.item(0));
+				bg.addChild(pool);
+			}
 
 			// Cylinders
 			list = doc.getElementsByTagName("cylinder");
