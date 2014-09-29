@@ -93,7 +93,7 @@ public class NoExploration extends NslModule {
 				// angle = Utiles.getActionAngle(0);
 				// else
 				// angle = Utiles.getActionAngle(2);
-				System.out.println("Angle 0 and no front affordance");
+//				System.out.println("Angle 0 and no front affordance");
 				if (aff[Utiles.discretizeAction(90)])
 					angle = Utiles.getActionAngle(Utiles.discretizeAction(90));
 				else if (aff[Utiles.discretizeAction(-90)])
@@ -104,7 +104,7 @@ public class NoExploration extends NslModule {
 					else
 						angle = Utiles.getActionAngle(Utiles.discretizeAction(-90));
 				}
-				System.out.println(angle);
+//				System.out.println(angle);
 				// Skip to the next action
 				// action = action - 1;
 				// angle = Utiles

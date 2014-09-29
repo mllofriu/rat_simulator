@@ -65,7 +65,7 @@ public class GoalTaxicFoodFinderSchema extends NslModule {
 				// Get best action to food
 				int action = Utiles.bestActionToRot(rotToFood);
 				
-				System.out.println(action);
+//				System.out.println(action);
 
 				votes.set(action, maxReward);
 			}
