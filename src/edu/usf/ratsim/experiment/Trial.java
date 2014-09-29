@@ -32,11 +32,8 @@ import edu.usf.ratsim.support.ElementWrapper;
  * 
  */
 public class Trial implements Runnable {
-<<<<<<< HEAD
 	public static boolean cont;
 
-=======
->>>>>>> 9a9cd5d65e743e12727fe9c647f1a62190880224
 	public ExpSubject getSubject() {
 		return subject;
 	}
@@ -86,10 +83,7 @@ public class Trial implements Runnable {
 		this.group = group;
 		this.trialNode = trialNode;
 		this.points = points;
-<<<<<<< HEAD
 		Trial.cont = true;
-=======
->>>>>>> 9a9cd5d65e743e12727fe9c647f1a62190880224
 
 	}
 
