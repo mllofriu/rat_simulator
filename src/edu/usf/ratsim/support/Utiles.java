@@ -321,13 +321,15 @@ public class Utiles {
 		return action;
 	}
 
-	// public static void main(String[] args) {
-	// // System.out.println(discretizeAngle((float) (-135 * Math.PI / 180)));
-	// // System.out.println(discretizeAngle((float) (-90 * Math.PI / 180)));
-	// System.out.println(Math.toDegrees(actions[bestActionToRot(
-	// angleToRot((float) Math.toRadians(135)),
-	// angleToRot((float) Math.toRadians(90)))]));
-	// }
+	 public static void main(String[] args) {
+//	  System.out.println(discretizeAngle((float) (-135 * Math.PI / 180)));
+//	  System.out.println(discretizeAngle((float) (-90 * Math.PI / 180)));
+	  System.out.println(discretizeAction(90));
+	  System.out.println(discretizeAction(-90));
+//	 System.out.println(Math.toDegrees(actions[bestActionToRot(
+//	 angleToRot((float) Math.toRadians(135)),
+//	 angleToRot((float) Math.toRadians(90)))]));
+	 }
 
 	public static double actionDistance(int a1, int a2) {
 		return Math.min(Math.abs(a1 - a2), Math.abs(numRotations - a2 + a1));
