@@ -27,6 +27,8 @@ public class PostProcFactory {
 			ElementWrapper ppParams = ppNode.getChild(STR_PP_PARAMS);
 			if (ppName.equals("moveLogs")) {
 				res.add(new MoveLogsPP());
+			} else if (ppName.equals("toRData")) {
+				res.add(new ToRData());
 			} else {
 				throw new RuntimeException("Task " + ppName
 						+ " not implemented.");

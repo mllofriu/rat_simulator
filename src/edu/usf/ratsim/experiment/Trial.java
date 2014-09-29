@@ -85,16 +85,7 @@ public class Trial implements Runnable {
 	}
 
 	public void run() {
-		if (Debug.pressEnterBeforeTrial) {
-			// Lock before starting
-			try {
-				System.out.println("Press enter to continue");
-				System.in.read();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		}
+		
 		
 		
 
@@ -120,6 +111,17 @@ public class Trial implements Runnable {
 			for (ExperimentTask task : initialTasks)
 				task.perform(getUniverse(), getSubject());
 
+			if (Debug.pressEnterBeforeTrial) {
+				// Lock before starting
+				try {
+					System.out.println("Press enter to continue");
+					System.in.read();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+			
 			if (Debug.sleepBeforeStart)
 				try {
 					Thread.sleep(15000);
