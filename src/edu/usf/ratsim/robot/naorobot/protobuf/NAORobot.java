@@ -23,6 +23,7 @@ public class NAORobot implements IRobot {
 
 	private Socket protoSocket;
 
+<<<<<<< HEAD
 	public NAORobot(String host, int port, ExperimentUniverse world) {
 		if (Configuration.getBoolean("UniverseFrame.display")) {
 			UniverseFrame worldFrame = new UniverseFrame((VirtualExpUniverse) world);
@@ -32,6 +33,11 @@ public class NAORobot implements IRobot {
 		try {
 			protoSocket = new Socket(host, port);
 			System.out.println("Connection stablished");
+=======
+	public NAORobot(String host, int port) {
+		try {
+			protoSocket = new Socket(host, port);
+>>>>>>> 9a9cd5d65e743e12727fe9c647f1a62190880224
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -51,8 +57,11 @@ public class NAORobot implements IRobot {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+<<<<<<< HEAD
 		
 
+=======
+>>>>>>> 9a9cd5d65e743e12727fe9c647f1a62190880224
 	}
 
 	@Override
