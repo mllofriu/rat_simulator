@@ -14,7 +14,7 @@ public class RobotFactory {
 						"Virtual robot must be created with a virtual universe");
 			return new VirtualRobot((VirtualExpUniverse) universe);
 		} else if (robotType.equals("edu.usf.ratsim.robot.naorobot.NAORobot")) {
-			return new NAORobot("cerebro", 12345);
+			return new NAORobot("localhost", 12345,(VirtualExpUniverse) universe);
 		} else {
 			throw new RuntimeException("Robot " + robotType
 					+ " not implemented");

@@ -15,6 +15,7 @@ import edu.usf.ratsim.support.Utiles;
 public class NoExploration extends NslModule {
 
 	private static final float FORWARD_EPS = 0.00001f;
+	private static final float ANGLE_EPS = 1e-6f;
 	public NslDinFloat1 votes;
 	public NslDoutInt0 takenAction;
 
@@ -86,27 +87,36 @@ public class NoExploration extends NslModule {
 					.getActionAngle(actions.get(action).getAction());
 			aff = robot.getAffordances();
 			// If going forward and no affordance - rotate
-			if (angle == 0 && !aff[Utiles.discretizeAction(0)]) {
+			if (Math.abs(angle) < ANGLE_EPS && !aff[Utiles.discretizeAction(0)]) {
 				// Depends on the fact that there are only two rotatin actions
-//				if (random.nextFloat() > 0.5)
-//					angle = Utiles.getActionAngle(0);
-//				else
-//					angle = Utiles.getActionAngle(2);
+				// if (random.nextFloat() > 0.5)
+				// angle = Utiles.getActionAngle(0);
+				// else
+				// angle = Utiles.getActionAngle(2);
+				System.out.println("Angle 0 and no front affordance");
 				if (aff[Utiles.discretizeAction(90)])
 					angle = Utiles.getActionAngle(Utiles.discretizeAction(90));
-				else
+				else if (aff[Utiles.discretizeAction(-90)])
 					angle = Utiles.getActionAngle(Utiles.discretizeAction(-90));
+				else {
+					if (random.nextFloat() > 0.5)
+						angle = Utiles.getActionAngle(Utiles.discretizeAction(90));
+					else
+						angle = Utiles.getActionAngle(Utiles.discretizeAction(-90));
+				}
+				System.out.println(angle);
 				// Skip to the next action
 				// action = action - 1;
 				// angle = Utiles
 				// .getActionAngle(actions.get(action).getAction());
 			}
 
-			do {
-				if (Debug.moveRobot)
-					robot.rotate(angle);
-				aff = robot.getAffordances();
-			} while (!aff[Utiles.discretizeAction(0)]);
+			if (angle != 0)
+				do {
+					if (Debug.moveRobot)
+						robot.rotate(angle);
+					aff = robot.getAffordances();
+				} while (!aff[Utiles.discretizeAction(0)]);
 
 			// else {
 			if (Debug.moveRobot)
