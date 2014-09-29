@@ -17,7 +17,7 @@
 	<!--Subject groups -->
 	<group>
 		<name>oneLayer</name>
-		<numMembers>1</numMembers>
+		<numMembers>100</numMembers>
 		<model>
 			<name>MultiScaleMultiIntentionCooperativeModel</name>
 			<params>
@@ -121,16 +121,18 @@
 			</logger>
 		</afterTrialLoggers>
 		<plotters>
-			<plotter>
-				<name>MutliFeedersPlotter</name>
-				<params>
-				</params>
-			</plotter>
 		</plotters>
 	</trial>
 	
 	<!-- 4 testing trials -->
-	
+	<postproc>
+		<name>toRData</name>
+		<params></params>
+	</postproc>
+	<postproc>
+		<name>moveLogs</name>
+		<params></params>
+	</postproc>
 	
 	
 </experiment>

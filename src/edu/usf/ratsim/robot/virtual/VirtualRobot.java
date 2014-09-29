@@ -36,6 +36,8 @@ public class VirtualRobot implements IRobot {
 
 	private boolean validCachedAffordances;
 
+	private Random r;
+
 	public VirtualRobot(VirtualExpUniverse world) {
 		this.universe = world;
 
@@ -45,6 +47,8 @@ public class VirtualRobot implements IRobot {
 		}
 
 		validCachedAffordances = false;
+		
+		r = new Random();
 	}
 
 	public boolean[] getAffordances() {
@@ -109,7 +113,7 @@ public class VirtualRobot implements IRobot {
 	}
 
 	public void rotate(float grados) {
-		universe.rotateRobot(grados);
+		universe.rotateRobot(grados + .2f * r.nextFloat() * grados);
 		validCachedAffordances = false;
 	}
 
@@ -121,7 +125,7 @@ public class VirtualRobot implements IRobot {
 	}
 
 	public void forward() {
-		universe.moveRobot(new Vector3f(STEP + STEP * new Random().nextFloat() * .1f, 0f, 0f));
+		universe.moveRobot(new Vector3f(STEP + STEP * r.nextFloat() * .2f, 0f, 0f));
 		validCachedAffordances = false;
 	}
 
