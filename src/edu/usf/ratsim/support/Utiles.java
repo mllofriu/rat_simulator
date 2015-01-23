@@ -40,7 +40,7 @@ public class Utiles {
 	public static final int numAngles = 16;
 	// private static final float angleMax = (float) (2* Math.PI -
 	// angleInterval);
-	private static final float EPS_STRAIGHT = actionInterval;
+	private static final float EPS_STRAIGHT = actionInterval/2;
 
 	/**
 	 * Gets the angle rotation for an action
@@ -277,7 +277,7 @@ public class Utiles {
 
 	private static float rotToAngle(Quat4f rot) {
 		rot.normalize();
-		float angle = (float) (2 * Math.acos(rot.w));
+		float angle = (float) (2 * Math.acos(rot.w)) * Math.signum(rot.z);
 		// Get the shortest
 		if (angle > Math.PI)
 			angle -= Math.PI * 2;
