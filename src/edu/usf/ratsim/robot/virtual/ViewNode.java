@@ -26,9 +26,9 @@ public class ViewNode extends ExpUniverseNode {
 
 		Transform3D rPos = new Transform3D();
 		rPos.setTranslation(new Vector3f(x, y, z));
-		Transform3D rRot = new Transform3D();
-		rRot.rotX(Math.PI / 180.0d * -90);
-		rPos.mul(rRot);
+//		Transform3D rRot = new Transform3D();
+//		rRot.rotY(-Math.PI/2);
+//		rPos.mul(rRot);
 		TransformGroup tg = new TransformGroup();
 		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
 		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);

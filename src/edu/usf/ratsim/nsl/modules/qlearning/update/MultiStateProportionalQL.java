@@ -76,6 +76,7 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 		// int sBefore = getActiveState(statesBefore);
 		// int sAfter = getActiveState(statesAfter);
 		int a = takenAction.get();
+
 		// System.out.println(a);
 		// updateLastAction(sBefore, sAfter, a);
 		// for (int stateAfter = 0; stateAfter < numStates; stateAfter++) {
@@ -132,6 +133,7 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 		// + (1-A(s)) Q(s,a)
 		// Non normalized activity
 		// System.out.println(statesBefore.get(sBefore));
+		// System.out.println(reward.get());
 		float val = value.get(sBefore, a);
 		float delta;
 		// If eating cut the cycle - episodic ql

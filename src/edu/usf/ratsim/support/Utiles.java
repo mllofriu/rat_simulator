@@ -256,7 +256,7 @@ public class Utiles {
 	public static Quat4f angleToRot(float angle) {
 		Quat4f res = new Quat4f();
 		Transform3D t = new Transform3D();
-		t.rotY(angle);
+		t.rotZ(angle);
 		t.get(res);
 		return res;
 	}
