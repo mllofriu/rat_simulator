@@ -143,7 +143,7 @@ public class Trial implements Runnable {
 				if (Debug.printEndCycle)
 					System.out.println("End of cycle");
 
-				if (sleep && !name.equals("training")) {
+				if (sleep /*&& !name.equals("training")*/) {
 					try {
 						Thread.sleep(SLEEP_BETWEEN_CYCLES);
 					} catch (InterruptedException e) {
