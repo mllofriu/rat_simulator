@@ -19,7 +19,7 @@ public class ToRData implements ExperimentPostProc {
 			// Copy the plotting script to the experiment's folder
 			FileUtils.copyURLToFile(getClass().getResource(CONVERT_SCRIPT),
 					new File(Configuration.getString("Log.DIRECTORY")
-							+ "/convert.r"));
+							+ "/convert.R"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

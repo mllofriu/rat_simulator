@@ -2,6 +2,7 @@ package edu.usf.ratsim.robot;
 
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.naorobot.protobuf.NAORobot;
+import edu.usf.ratsim.robot.romina.Romina;
 import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 import edu.usf.ratsim.robot.virtual.VirtualRobot;
 
@@ -15,6 +16,8 @@ public class RobotFactory {
 			return new VirtualRobot((VirtualExpUniverse) universe);
 		} else if (robotType.equals("edu.usf.ratsim.robot.naorobot.NAORobot")) {
 			return new NAORobot("localhost", 12345,(VirtualExpUniverse) universe);
+		} else if (robotType.equals("edu.usf.ratsim.robot.romina.Romina")) {
+			return new Romina("localhost", 12345,(VirtualExpUniverse) universe);
 		} else {
 			throw new RuntimeException("Robot " + robotType
 					+ " not implemented");
