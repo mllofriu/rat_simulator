@@ -12,6 +12,7 @@ import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 public class SLAMUniverse extends VirtualExpUniverse{
 
 	private Romina romina;
+	private boolean rominaAte;
 
 	public SLAMUniverse(String mazeResource) {
 		super(mazeResource);
@@ -43,5 +44,34 @@ public class SLAMUniverse extends VirtualExpUniverse{
 		this.romina = romina;
 	}
 
+	@Override
+	public boolean hasRobotFoundFood() {
+		return romina.hasFoundFood();
+	}
+
+	@Override
+	public boolean hasRobotAte() {
+		return rominaAte;
+	}
+
+	@Override
+	public void robotEat() {
+		if (romina.hasFoundFood())
+			rominaAte = true;
+	}
+
+	@Override
+	public void clearRobotAte() {
+		rominaAte = false;
+		romina.invalidateResponse();
+	}
+
+	@Override
+	public boolean isRobotCloseToAFeeder() {
+		
+		return romina.isCloseToAFeeder();
+	}
+	
+	
 	
 }

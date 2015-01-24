@@ -16,6 +16,8 @@ public class Landmark {
 	public Landmark(edu.usf.ratsim.robot.naorobot.protobuf.Connector.Landmark lm) {
 		this(lm.getId(), new Point3f(lm.getX(), lm.getY(), lm.getZ()));
 	}
-	
+	public Landmark(edu.usf.ratsim.robot.romina.protobuf.Connector.Landmark lm) {
+		this(lm.getId(), new Point3f(lm.getX(), lm.getY(), lm.getZ()));
+	}
 	
 }

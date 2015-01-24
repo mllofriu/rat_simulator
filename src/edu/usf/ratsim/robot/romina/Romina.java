@@ -12,26 +12,34 @@ import javax.vecmath.Point3f;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.robot.Landmark;
-import edu.usf.ratsim.robot.naorobot.protobuf.Connector.Command;
-import edu.usf.ratsim.robot.naorobot.protobuf.Connector.Command.Builder;
-import edu.usf.ratsim.robot.naorobot.protobuf.Connector.Command.CommandType;
-import edu.usf.ratsim.robot.naorobot.protobuf.Connector.Response;
-import edu.usf.ratsim.robot.virtual.ExpUniverseNode;
+import edu.usf.ratsim.robot.romina.protobuf.Connector.Command;
+import edu.usf.ratsim.robot.romina.protobuf.Connector.Command.Builder;
+import edu.usf.ratsim.robot.romina.protobuf.Connector.Command.CommandType;
+import edu.usf.ratsim.robot.romina.protobuf.Connector.Response;
 import edu.usf.ratsim.robot.virtual.UniverseFrame;
 import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 import edu.usf.ratsim.support.Configuration;
+import edu.usf.ratsim.support.Debug;
 
 public class Romina implements IRobot {
+	
+	private static final float CLOSE_TO_FOOD_THRS = Configuration
+			.getFloat("VirtualUniverse.closeToFood");
 
 	private Socket protoSocket;
+	private boolean validResponse;
+	private Response r;
+	private ExperimentUniverse world;
 
 	public Romina(String host, int port, ExperimentUniverse world) {
 		if (Configuration.getBoolean("UniverseFrame.display")) {
-			UniverseFrame worldFrame = new UniverseFrame((VirtualExpUniverse) world);
+			UniverseFrame worldFrame = new UniverseFrame(
+					(VirtualExpUniverse) world);
 			worldFrame.setVisible(true);
 		}
-		
-		((SLAMUniverse)world).setRominaRobot(this);
+
+		((SLAMUniverse) world).setRominaRobot(this);
+		this.world = world;
 		
 		try {
 			protoSocket = new Socket(host, port);
@@ -56,8 +64,8 @@ public class Romina implements IRobot {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
+		validResponse = false;
 	}
 
 	@Override
@@ -70,26 +78,34 @@ public class Romina implements IRobot {
 			c.writeTo(protoSocket.getOutputStream());
 
 			Response.parseDelimitedFrom(protoSocket.getInputStream());
+
+			validResponse = false;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 
 	@Override
 	public void eat() {
+		world.robotEat();
+		if (Debug.printTryingToEat)
+			System.out.println("Romina ate");
 	}
 
 	@Override
 	public boolean[] getAffordances() {
 		try {
-			Builder b = Command.newBuilder();
-			b.setType(CommandType.getInfo);
-			Command c = b.build();
-			c.writeTo(protoSocket.getOutputStream());
+			if (!validResponse) {
+				Builder b = Command.newBuilder();
+				b.setType(CommandType.getInfo);
+				Command c = b.build();
+				c.writeTo(protoSocket.getOutputStream());
 
-			Response r = Response.parseDelimitedFrom(protoSocket
-					.getInputStream());
+				r = Response.parseDelimitedFrom(protoSocket.getInputStream());
+				validResponse = true;
+			}
 
 			boolean res[] = new boolean[r.getAffs().getAffCount()];
 			for (int i = 0; i < r.getAffs().getAffCount(); i++)
@@ -106,6 +122,13 @@ public class Romina implements IRobot {
 
 	@Override
 	public boolean hasFoundFood() {
+		Point3f robot = getRobotPoint();
+		for (Landmark lm : getLandmarks()) {
+			if (world.isFeederActive(lm.id)
+					&& lm.location.distance(new Point3f()) < CLOSE_TO_FOOD_THRS)
+				return true;
+		}
+
 		return false;
 	}
 
@@ -118,6 +141,8 @@ public class Romina implements IRobot {
 			c.writeTo(protoSocket.getOutputStream());
 
 			Response.parseDelimitedFrom(protoSocket.getInputStream());
+
+			validResponse = false;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -133,6 +158,7 @@ public class Romina implements IRobot {
 	@Override
 	public void forward() {
 		rotate(0);
+		validResponse = false;
 	}
 
 	@Override
@@ -143,17 +169,18 @@ public class Romina implements IRobot {
 	@Override
 	public List<Landmark> getLandmarks() {
 		try {
-			Builder b = Command.newBuilder();
-			b.setType(CommandType.getInfo);
-			Command c = b.build();
-			c.writeTo(protoSocket.getOutputStream());
+			if (!validResponse) {
+				Builder b = Command.newBuilder();
+				b.setType(CommandType.getInfo);
+				Command c = b.build();
+				c.writeTo(protoSocket.getOutputStream());
 
-			Response r = Response.parseDelimitedFrom(protoSocket
-					.getInputStream());
+				r = Response.parseDelimitedFrom(protoSocket.getInputStream());
+				validResponse = true;
+			}
 
 			List<Landmark> lms = new LinkedList<Landmark>();
-			for (edu.usf.ratsim.robot.naorobot.protobuf.Connector.Landmark lm : r
-					.getLandmarksList())
+			for (edu.usf.ratsim.robot.romina.protobuf.Connector.Landmark lm : r.getLandmarksList())
 				lms.add(new Landmark(lm));
 
 			return lms;
@@ -171,12 +198,63 @@ public class Romina implements IRobot {
 	}
 
 	public Point3f getRobotPoint() {
-		return new Point3f(0,0,0);
+		try {
+			if (!validResponse){
+				Builder b = Command.newBuilder();
+				b.setType(CommandType.getInfo);
+				Command c = b.build();
+				c.writeTo(protoSocket.getOutputStream());
+				
+	
+				r = Response.parseDelimitedFrom(protoSocket
+						.getInputStream());
+				validResponse = true;
+			}
+			
+			return new Point3f(r.getRobotPos().getX(), r.getRobotPos().getY(), 0);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	public float getRobotOrientation() {
+		try {
+			if (!validResponse){
+				Builder b = Command.newBuilder();
+				b.setType(CommandType.getInfo);
+				Command c = b.build();
+				c.writeTo(protoSocket.getOutputStream());
+				
+	
+				r = Response.parseDelimitedFrom(protoSocket
+						.getInputStream());
+				validResponse = true;
+			}
+			
+			return r.getRobotPos().getTheta();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return 0;
 	}
 
+	public boolean isCloseToAFeeder() {
+		Point3f robot = getRobotPoint();
+		for (Landmark lm : getLandmarks()) {
+			if (lm.location.distance(new Point3f()) < CLOSE_TO_FOOD_THRS)
+				return true;
+		}
+
+		return false;
+	}
+
+	public void invalidateResponse() {
+		validResponse = false;
+	}
 
 }
