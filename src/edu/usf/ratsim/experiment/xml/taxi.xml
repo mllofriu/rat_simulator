@@ -55,7 +55,7 @@
 	
 	<trial>
 		<name>training</name>
-		<reps>100</reps>
+		<reps>2</reps>
 		<groups>
 			<group>oneLayer</group>
 		</groups>
