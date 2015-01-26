@@ -67,12 +67,12 @@ public class RobotNode extends ExpUniverseNode {
 		Transform3D cylT = new Transform3D();
 		cylT.rotZ(Math.toRadians(90));
 		cylTG.setTransform(cylT);
-		Cylinder bodyCylinder = new Cylinder(0.0125f, 0.05f, app);
+		Cylinder bodyCylinder = new Cylinder(0.05f, 0.10f, app);
 		cylTG.addChild(bodyCylinder);
 		robotBG.addChild(cylTG);
 
 		// Transforms
-		Vector3f robotCameraOffset = new Vector3f(0.025f, CAMERA_HEIGHT, 0);
+		Vector3f robotCameraOffset = new Vector3f(0.1f, CAMERA_HEIGHT, 0);
 		TransformGroup camTG = new TransformGroup();
 		Transform3D camT = new Transform3D();
 		camT.setTranslation(robotCameraOffset);
@@ -90,7 +90,7 @@ public class RobotNode extends ExpUniverseNode {
 		app = new Appearance();
 		mat = createMaterial(new Color3f(0.5f, 0.5f, 0f));
 		app.setMaterial(mat);
-		Cone viewCone = new Cone(0.0125f, 0.055f, app);
+		Cone viewCone = new Cone(0.05f, 0.1f, app);
 		cConeTG.addChild(viewCone);
 		camTG.addChild(cConeTG);
 
