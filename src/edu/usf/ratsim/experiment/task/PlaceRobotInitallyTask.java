@@ -1,6 +1,7 @@
 package edu.usf.ratsim.experiment.task;
 
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.util.Map;
 
 import javax.vecmath.Point4f;
@@ -26,8 +27,16 @@ public class PlaceRobotInitallyTask implements ExperimentTask {
 	}
 
 	public void perform(ExperimentUniverse univ, ExpSubject subject) {
-		univ.setRobotPosition(new Point2D.Float(initPos.x, initPos.z), (float) (0));
+		//univ.setRobotPosition(new Point2D.Float(initPos.x, initPos.y), (float) (0));
 		// TODO: implement orientation in xml
+		
+		System.out.println("Place robot");
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

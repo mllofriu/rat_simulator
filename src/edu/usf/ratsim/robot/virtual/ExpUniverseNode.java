@@ -33,6 +33,9 @@ public abstract class ExpUniverseNode extends BranchGroup {
 		Transform3D translate = new Transform3D();
 		Vector3f position = new Vector3f(x, y, z);
 		translate.setTranslation(position);
+		Transform3D rot = new Transform3D();
+		rot.rotX(Math.PI/2);
+		translate.mul(rot);
 		TransformGroup tg = new TransformGroup(translate);
 		tg.addChild(vol);
 		this.addChild(tg);

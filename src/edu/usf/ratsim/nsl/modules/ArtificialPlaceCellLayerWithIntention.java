@@ -41,11 +41,11 @@ public class ArtificialPlaceCellLayerWithIntention extends NslModule {
 			for (float x = minX; x < maxX; x += 2 * radius) {
 				for (float y = minY; y < maxY; y += 2 * radius) {
 					// Add a cell with center x,y
-					cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y),
+					cells.add(new ArtificialPlaceCell(new Point3f(x, y,0),
 							radius));
 					// phased out layer
 					cells.add(new ArtificialPlaceCell(new Point3f(x + radius,
-							0, y + radius), radius));
+							y + radius, 0), radius));
 				}
 			}
 			intentionCells.add(cells);

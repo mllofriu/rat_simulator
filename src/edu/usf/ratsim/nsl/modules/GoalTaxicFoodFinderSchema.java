@@ -50,7 +50,7 @@ public class GoalTaxicFoodFinderSchema extends NslModule {
 		
 		Landmark lm = getLM(goalFeeder.get(), robot.getLandmarks());
 		if (lm != null) {
-			System.out.println("Found Food");
+//			System.out.println("Found Food");
 			if (lm.location.distance(new Point3f(0,0,0))<CLOSE_TO_FOOD_THRS){
 				votes.set(Utiles.eatAction, maxReward);
 //				System.out.println("Setting votes to eat");

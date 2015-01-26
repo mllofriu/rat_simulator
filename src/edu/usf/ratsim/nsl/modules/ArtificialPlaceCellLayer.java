@@ -63,7 +63,7 @@ public class ArtificialPlaceCellLayer extends NslModule {
 			gsf.setSize(2*radius);
 //			System.out.println("PC " + x + " " + y + " " + universe.placeIntersectsWalls(gsf.createCircle()));
 			if (!universe.placeIntersectsWalls(gsf.createCircle())){
-				cells.add(new ArtificialPlaceCell(new Point3f(x, 0, y), radius));
+				cells.add(new ArtificialPlaceCell(new Point3f(x, y, 0), radius));
 				i++;
 			}
 			
