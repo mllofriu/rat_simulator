@@ -6,8 +6,8 @@
 	<point>
 		<name>S</name>
 		<xp>.5</xp>
-		<yp>0</yp>
-		<zp>.5</zp>
+		<yp>.5</yp>
+		<zp>0</zp>
 		<rot>0</rot>
 	</point>
 	
@@ -55,7 +55,7 @@
 	
 	<trial>
 		<name>training</name>
-		<reps>100</reps>
+		<reps>2</reps>
 		<groups>
 			<group>oneLayer</group>
 		</groups>

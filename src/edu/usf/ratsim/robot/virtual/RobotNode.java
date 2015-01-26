@@ -77,6 +77,9 @@ public class RobotNode extends ExpUniverseNode {
 		Transform3D camT = new Transform3D();
 		camT.setTranslation(robotCameraOffset);
 		Transform3D camRot = new Transform3D();
+		camRot.rotX(Math.PI / 2);
+		camT.mul(camRot);
+		camRot = new Transform3D();
 		camRot.rotY(-Math.PI / 2);
 		camT.mul(camRot);
 		camTG.setTransform(camT);

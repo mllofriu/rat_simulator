@@ -294,9 +294,9 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	public void setRobotPosition(Point2D.Float pos, float angle) {
 		Transform3D translate = new Transform3D();
-		translate.setTranslation(new Vector3f(pos.x, 0, pos.y));
+		translate.setTranslation(new Vector3f(pos.x, pos.y, 0));
 		Transform3D rot = new Transform3D();
-		rot.rotY(angle);
+		rot.rotZ(angle);
 		translate.mul(rot);
 		robot.getTransformGroup().setTransform(translate);
 	}
@@ -310,7 +310,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	public void rotateRobot(double degrees) {
 		// Create a new transforme with the translation
 		Transform3D trans = new Transform3D();
-		trans.rotY(degrees);
+		trans.rotZ(degrees);
 		// Get the old pos transform
 		Transform3D rPos = new Transform3D();
 		robot.getTransformGroup().getTransform(rPos);
@@ -374,7 +374,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 		Quat4f rot = new Quat4f();
 		t.get(rot);
-		return (float) (2 * Math.acos(rot.w) * Math.signum(rot.y));
+		return (float) (2 * Math.acos(rot.w) * Math.signum(rot.z));
 	}
 
 	// public static void main(String[] args) {
@@ -483,21 +483,21 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 			robot.getTransformGroup().getTransform(rPos);
 			Vector3f p = new Vector3f();
 			rPos.get(p);
-			Coordinate initCoordinate = new Coordinate(p.x, p.z);
+			Coordinate initCoordinate = new Coordinate(p.x, p.y);
 			// A translation vector to calc affordances
 			Transform3D trans = new Transform3D();
 			trans.setTranslation(new Vector3f(VirtualRobot.STEP * lookahead,
 					0f, 0f));
 			// The rotatio of the action
 			Transform3D rot = new Transform3D();
-			rot.rotY(Utiles.getActionAngle(action));
+			rot.rotZ(Utiles.getActionAngle(action));
 			// Apply hipotetical transformations
 			rPos.mul(rot);
 			rPos.mul(trans);
 			// Get the new position
 			Vector3f finalPos = new Vector3f();
 			rPos.get(finalPos);
-			Coordinate finalCoordinate = new Coordinate(finalPos.x, finalPos.z);
+			Coordinate finalCoordinate = new Coordinate(finalPos.x, finalPos.y);
 			// Check it's in the maze
 			boolean insideMaze = (pool == null) || pool.isInside(new Point3f(finalPos));
 			// Check if crosses any wall
@@ -568,10 +568,10 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 	@Override
 	public boolean wallInsidePool(LineSegment wall2) {
-		return pool.isInside(new Point3f((float) wall2.p0.x, 0f,
-				(float) wall2.p0.y))
-				&& pool.isInside(new Point3f((float) wall2.p1.x, 0f,
-						(float) wall2.p1.y));
+		return pool.isInside(new Point3f((float) wall2.p0.x, (float)wall2.p0.y,
+				0))
+				&& pool.isInside(new Point3f((float) wall2.p1.x, (float)wall2.p1.y,
+						0 ));
 	}
 
 	@Override
@@ -673,7 +673,7 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 		float minDist = Float.MAX_VALUE;
 		for (FeederNode fn : feeders) {
 			Vector3f pos = fn.getPosition();
-			Coordinate c = new Coordinate(pos.x, pos.z);
+			Coordinate c = new Coordinate(pos.x, pos.y);
 			if (wall.distance(c) < minDist)
 				minDist = (float) wall.distance(c);
 		}
@@ -697,9 +697,9 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 
 		boolean intersects = false;
 		Coordinate rPos = new Coordinate(getRobotPosition().x,
-				getRobotPosition().z);
+				getRobotPosition().y);
 		Vector3f fPosV = feeders.get(fn).getPosition();
-		Coordinate fPos = new Coordinate(fPosV.x, fPosV.z);
+		Coordinate fPos = new Coordinate(fPosV.x, fPosV.y);
 		LineSegment lineOfSight = new LineSegment(rPos, fPos);
 		for (WallNode w : wallNodes)
 			intersects = intersects || w.intersects(lineOfSight);

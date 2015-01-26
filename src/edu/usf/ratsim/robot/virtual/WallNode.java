@@ -46,8 +46,8 @@ public class WallNode extends ExpUniverseNode {
 					y1 + (y2 - y1) * lambda, z1 + (z2 - z1) * lambda));
 		}
 
-		segment = new LineSegment(new Coordinate(x1, z1),
-				new Coordinate(x2, z2));
+		segment = new LineSegment(new Coordinate(x1, y1),
+				new Coordinate(x2, y2));
 
 	}
 
@@ -70,8 +70,8 @@ public class WallNode extends ExpUniverseNode {
 					y1 + (y2 - y1) * lambda, z1 + (z2 - z1) * lambda));
 		}
 
-		segment = new LineSegment(new Coordinate(x1, z1),
-				new Coordinate(x2, z2));
+		segment = new LineSegment(new Coordinate(x1, y1),
+				new Coordinate(x2, y2));
 
 	}
 
