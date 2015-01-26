@@ -13,7 +13,9 @@ import javax.media.j3d.Material;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.media.j3d.View;
+import javax.vecmath.AxisAngle4d;
 import javax.vecmath.Color3f;
+import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
 import org.w3c.dom.Node;
@@ -43,11 +45,13 @@ public class RobotNode extends ExpUniverseNode {
 		float x = values.get("x");
 		float y = values.get("y");
 		float z = values.get("z");
-
+		float theta = values.get("theta");
+		
 		// Initialize the transform group
 		// Keep it public to move the robot in the future
 		Transform3D rPos = new Transform3D();
 		rPos.setTranslation(new Vector3f(x, y, z));
+		rPos.setRotation(new AxisAngle4d(new Vector3d(0,0,1), theta));
 		tg = new TransformGroup();
 		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
 		tg.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
@@ -72,7 +76,7 @@ public class RobotNode extends ExpUniverseNode {
 		robotBG.addChild(cylTG);
 
 		// Transforms
-		Vector3f robotCameraOffset = new Vector3f(0.1f, CAMERA_HEIGHT, 0);
+		Vector3f robotCameraOffset = new Vector3f(0.1f, 0, CAMERA_HEIGHT);
 		TransformGroup camTG = new TransformGroup();
 		Transform3D camT = new Transform3D();
 		camT.setTranslation(robotCameraOffset);

@@ -27,16 +27,16 @@ public class PlaceRobotInitallyTask implements ExperimentTask {
 	}
 
 	public void perform(ExperimentUniverse univ, ExpSubject subject) {
-		//univ.setRobotPosition(new Point2D.Float(initPos.x, initPos.y), (float) (0));
+		univ.setRobotPosition(new Point2D.Float(initPos.x, initPos.y), (float) (0));
 		// TODO: implement orientation in xml
 		
-		System.out.println("Place robot");
-		try {
-			System.in.read();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		System.out.println("Place robot");
+//		try {
+//			System.in.read();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 
 }
