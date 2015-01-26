@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="us-ascii"?>
 
 <world>
-        <boundingRect x='0' y='0' w='1' h='1'/>
+        <boundingRect x='-1' y='-1' w='2' h='2'/>
         
         <floor r='4' h='0' cr='0' cg='0' cb='0' xp='0' yp='-0.075' zp='0'/>
         
-        <feeder id='0' r='0.1' h='0' cr='1' cg='1' cb='0' xp='1.95' yp='0.0' zp='0.05'/> <!-- Y -->
-        <feeder id='1' r='0.1' h='0' cr='1' cg='0' cb='0' xp='.05' yp='0.0' zp='0.05'/> <!-- R -->
-        <feeder id='2' r='0.1' h='0' cr='0' cg='1' cb='0' xp='0.05' yp='0.0' zp='1.95'/> <!-- G -->
-        <feeder id='3' r='0.1' h='0' cr='0' cg='0' cb='1' xp='1.95' yp='0.0' zp='1.2'/> <!-- B -->
+        <feeder id='0' r='0.1' h='0' cr='0' cg='0' cb='1' xp='.95' yp='0.00' zp='0.1'/> <!-- 0, B -->
+        <feeder id='1' r='0.1' h='0' cr='1' cg='0' cb='0' xp='0' yp='.95' zp='0.1'/> <!-- R -->
+        <feeder id='2' r='0.1' h='0' cr='1' cg='0' cb='1' xp='-.95' yp='0' zp='0.1'/> <!-- V -->
+        <feeder id='3' r='0.1' h='0' cr='1' cg='1' cb='0' xp='0' yp='-.95' zp='0.1'/> <!-- B -->
         
         <!-- Exterior walls -->	
-        <wall cr='1' cg='1' cb='1' h='0.1' x1='0' y1='0.0' z1='0' x2='0' y2='0.0' z2='2'/>
-        <wall cr='1' cg='1' cb='1' h='0.1' x1='0' y1='0.0' z1='2' x2='2' y2='0.0' z2='2'/>
-        <wall cr='1' cg='1' cb='1' h='0.1' x1='2' y1='0.0' z1='2' x2='2' y2='0.0' z2='0'/>
-        <wall cr='1' cg='1' cb='1' h='0.1' x1='2' y1='0.0' z1='0' x2='0' y2='0.0' z2='0'/>
+        <wall cr='1' cg='1' cb='1' h='0.1' x1='1' y1='1' z1='0' x2='1' y2='-1' z2='0'/>
+        <wall cr='1' cg='1' cb='1' h='0.1' x1='1' y1='1' z1='0' x2='-1' y2='1' z2='0'/>
+        <wall cr='1' cg='1' cb='1' h='0.1' x1='-1' y1='1' z1='0' x2='-1' y2='-1' z2='0'/>
+        <wall cr='1' cg='1' cb='1' h='0.1' x1='-1' y1='-1' z1='0' x2='1' y2='-1' z2='0'/>
        
         
-        <topview x='1' y='4' z='1'/>
+        <topview x='0' y='0' z='4'/>
         <thirdview x='2.1' y='2.5' z='2.1'/>
-        <robotview x='0.5' y='0' z='.5'/> 
+        <robotview x='0' y='0' z='0' theta="1.57"/> 
 
         <!--<robotview x='0.495' y='-0.025' z='-0.425'/> -->
 </world>
