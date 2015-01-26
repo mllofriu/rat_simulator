@@ -11,13 +11,12 @@
 	<classpathentry kind="lib" path="deps/protobuf-java-2.5.0.jar"/>
 	<classpathentry kind="lib" path="deps/jts-1.8.0.zip"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/nslj"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-6-openjdk-amd64"/>
-	<classpathentry kind="lib" path="/work/java_libs/j3d-1_5_2-linux-amd64/vecmath.jar"/>
-	<classpathentry kind="lib" path="/work/java_libs/j3d-1_5_2-linux-amd64/j3dutils.jar"/>
-	<classpathentry kind="lib" path="/work/java_libs/j3d-1_5_2-linux-amd64/j3dcore.jar">
-		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="/work/java_libs/j3d-1_5_2-linux-amd64"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="/Users/ludo/Documents/workspace/rat_simulator/deps/j3dport/vecmath.jar"/>
+	<classpathentry kind="lib" path="/Users/ludo/Documents/workspace/rat_simulator/deps/j3dport/j3dutils.jar"/>
+	<classpathentry kind="lib" path="/Users/ludo/Documents/workspace/rat_simulator/deps/j3dport/j3dcore.jar"/>
+	<classpathentry kind="lib" path="/Users/ludo/Documents/workspace/rat_simulator/deps/j3dport/jogl-all.jar"/>
+	<classpathentry kind="lib" path="/Users/ludo/Documents/workspace/rat_simulator/deps/j3dport/joal.jar"/>
+	<classpathentry kind="lib" path="/Users/ludo/Documents/workspace/rat_simulator/deps/j3dport/gluegen-rt.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
