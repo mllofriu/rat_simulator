@@ -1,7 +1,12 @@
 package edu.usf.ratsim.support;
 
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.Color;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -9,8 +14,6 @@ import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
-
-import edu.usf.ratsim.robot.IRobot;
 
 public class Utiles {
 
@@ -322,6 +325,7 @@ public class Utiles {
 	}
 
 	 public static void main(String[] args) {
+		 alarm();
 //	  System.out.println(discretizeAngle((float) (-135 * Math.PI / 180)));
 //	  System.out.println(discretizeAngle((float) (-90 * Math.PI / 180)));
 	  System.out.println(discretizeAction(90));
@@ -376,6 +380,16 @@ public class Utiles {
 		Vector3f toPoint = new Vector3f(location);
 		Quat4f rotTo = rotBetweenVectors(new Vector3f(1, 0, 0), toPoint);
 		return rotTo;
+	}
+	
+	public static void alarm(){
+		try {
+			AudioClip ac = Applet.newAudioClip(new URL("file:///home/biorob/alarm.wav"));
+			ac.play();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

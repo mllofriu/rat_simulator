@@ -1,12 +1,11 @@
 package edu.usf.ratsim.robot.romina;
 
 import java.awt.geom.Point2D;
-import java.net.Socket;
+import java.awt.geom.Point2D.Float;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
-import edu.usf.ratsim.robot.naorobot.protobuf.VisionListener;
 import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 
 public class SLAMUniverse extends VirtualExpUniverse{
@@ -22,21 +21,21 @@ public class SLAMUniverse extends VirtualExpUniverse{
 	public Point3f getRobotPosition() {
 		Point3f p = romina.getRobotPoint();
 //		System.out.println(p);
-		setRobotPosition(new Point2D.Float(p.x, p.z), romina.getRobotOrientation());
+		super.setRobotPosition(new Point2D.Float(p.x, p.y), romina.getRobotOrientation());
 		return romina.getRobotPoint();
 	}
 
 	@Override
 	public Quat4f getRobotOrientation() {
 		Point3f p = romina.getRobotPoint();
-		setRobotPosition(new Point2D.Float(p.x, p.z), romina.getRobotOrientation());
+		super.setRobotPosition(new Point2D.Float(p.x, p.y), romina.getRobotOrientation());
 		return new Quat4f(0, 1, 0, romina.getRobotOrientation());
 	}
 
 	@Override
 	public float getRobotOrientationAngle() {
 		Point3f p = romina.getRobotPoint();
-		setRobotPosition(new Point2D.Float(p.x, p.z), romina.getRobotOrientation());
+		super.setRobotPosition(new Point2D.Float(p.x, p.y), romina.getRobotOrientation());
 		return romina.getRobotOrientation();
 	}
 
@@ -68,8 +67,14 @@ public class SLAMUniverse extends VirtualExpUniverse{
 
 	@Override
 	public boolean isRobotCloseToAFeeder() {
-		
 		return romina.isCloseToAFeeder();
+	}
+
+	@Override
+	public void setRobotPosition(Float pos, float angle) {
+		super.setRobotPosition(pos, angle);
+		
+		romina.resetPosition(pos, angle);
 	}
 	
 	

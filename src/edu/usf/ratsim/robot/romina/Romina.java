@@ -1,5 +1,6 @@
 package edu.usf.ratsim.robot.romina;
 
+import java.awt.geom.Point2D.Float;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.Socket;
@@ -15,6 +16,7 @@ import edu.usf.ratsim.robot.Landmark;
 import edu.usf.ratsim.robot.romina.protobuf.Connector.Command;
 import edu.usf.ratsim.robot.romina.protobuf.Connector.Command.Builder;
 import edu.usf.ratsim.robot.romina.protobuf.Connector.Command.CommandType;
+import edu.usf.ratsim.robot.romina.protobuf.Connector.Position;
 import edu.usf.ratsim.robot.romina.protobuf.Connector.Response;
 import edu.usf.ratsim.robot.virtual.UniverseFrame;
 import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
@@ -65,6 +67,7 @@ public class Romina implements IRobot {
 			e.printStackTrace();
 		}
 
+		
 		validResponse = false;
 	}
 
@@ -92,6 +95,23 @@ public class Romina implements IRobot {
 		world.robotEat();
 		if (Debug.printTryingToEat)
 			System.out.println("Romina ate");
+		
+		try {
+			Builder b = Command.newBuilder();
+			b.setType(CommandType.doAction);
+			b.setStop(true);
+			b.setAngle(0);
+			Command c = b.build();
+			c.writeTo(protoSocket.getOutputStream());
+
+			Response.parseDelimitedFrom(protoSocket.getInputStream());
+
+			validResponse = false;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	@Override
@@ -255,6 +275,28 @@ public class Romina implements IRobot {
 
 	public void invalidateResponse() {
 		validResponse = false;
+	}
+
+	public void resetPosition(Float pos, float angle) {
+		try {
+			Builder b = Command.newBuilder();
+			b.setType(CommandType.resetPosition);
+			edu.usf.ratsim.robot.romina.protobuf.Connector.Position.Builder b2 = Position.newBuilder();
+			b2.setX(pos.x);
+			b2.setY(pos.y);
+			b2.setTheta(angle);
+			Position p = b2.build();
+			b.setPos(p);
+			Command c = b.build();
+			c.writeTo(protoSocket.getOutputStream());
+
+			Response.parseDelimitedFrom(protoSocket.getInputStream());
+
+			validResponse = false;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

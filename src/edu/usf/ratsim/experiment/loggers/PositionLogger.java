@@ -41,8 +41,7 @@ public class PositionLogger implements ExperimentLogger {
 
 	public void log(ExperimentUniverse universe) {
 		Point3f pos = universe.getRobotPosition();
-		// -Z coordinate corresponds to y
-		poses.add(new Pose(pos.x, -pos.z, false));//actionPerformer.wasLastActionRandom()));
+		poses.add(new Pose(pos.x, pos.y, false));
 	}
 
 	public void finalizeLog() {
@@ -77,14 +76,3 @@ public class PositionLogger implements ExperimentLogger {
 
 }
 
-class Pose {
-	public float x, y;
-	public boolean randomAction;
-
-	public Pose(float x, float y, boolean randomAction) {
-		super();
-		this.x = x;
-		this.y = y;
-		this.randomAction = randomAction;
-	}
-}
