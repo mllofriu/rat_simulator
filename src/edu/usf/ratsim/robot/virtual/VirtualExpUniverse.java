@@ -57,9 +57,9 @@ public class VirtualExpUniverse extends VirtualUniverse implements
 	private static final float HALF_FIELD_OF_VIEW = (float) (105 * Math.PI / 180); // 105
 	// degrees
 
-	private static final int LOOKAHEADSTEPS = 2;
+	private static final int LOOKAHEADSTEPS = 3;
 
-	private static final float VISION_DIST = 0.4f;
+	private static final float VISION_DIST = 0.5f;
 
 	private View topView;
 	private RobotNode robot;

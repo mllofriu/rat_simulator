@@ -50,8 +50,8 @@ public class WallLogger implements ExperimentLogger {
 			PrintWriter writer = getWriter();
 			for (WallNode wNode : walls)
 				writer.println(trialName + '\t' + groupName + '\t' + subName
-						+ '\t' + repNum + '\t' + wNode.x1 + "\t" + -wNode.z1
-						+ '\t' + wNode.x2 + "\t" + -wNode.z2);
+						+ '\t' + repNum + '\t' + wNode.x1 + "\t" + wNode.y1
+						+ '\t' + wNode.x2 + "\t" + wNode.y2);
 
 			walls.clear();
 

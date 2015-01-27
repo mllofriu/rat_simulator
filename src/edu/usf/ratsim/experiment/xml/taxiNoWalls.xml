@@ -5,10 +5,10 @@
 	<!--Robot startin points -->
 	<point>
 		<name>S</name>
-		<xp>.5</xp>
+		<xp>0</xp>
 		<yp>0</yp>
-		<zp>.5</zp>
-		<rot>0</rot>
+		<zp>0</zp>
+		<rot>1.57</rot>
 	</point>
 	
 	
@@ -21,11 +21,11 @@
 		<model>
 			<name>MultiScaleMultiIntentionCooperativeModel</name>
 			<params>
-				<numPCLayers>5</numPCLayers>
-				<numPCCellsPerLayer>1000</numPCCellsPerLayer>
-				<minRadius>.05</minRadius>
+				<numPCLayers>3</numPCLayers>
+				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<minRadius>.025</minRadius>
 				<!-- .05 m of ".2 radius" -->
-				<maxRadius>.2</maxRadius>
+				<maxRadius>.3</maxRadius>
 				<!-- .25 m of ".2 radius" -->
 				<numHDLayers>4</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
@@ -55,7 +55,7 @@
 	
 	<trial>
 		<name>training</name>
-		<reps>100</reps>
+		<reps>10</reps>
 		<groups>
 			<group>oneLayer</group>
 		</groups>

@@ -30,6 +30,30 @@ public final class Connector {
      * <code>optional float angle = 2;</code>
      */
     float getAngle();
+
+    // optional bool stop = 3 [default = false];
+    /**
+     * <code>optional bool stop = 3 [default = false];</code>
+     */
+    boolean hasStop();
+    /**
+     * <code>optional bool stop = 3 [default = false];</code>
+     */
+    boolean getStop();
+
+    // optional .Position pos = 4;
+    /**
+     * <code>optional .Position pos = 4;</code>
+     */
+    boolean hasPos();
+    /**
+     * <code>optional .Position pos = 4;</code>
+     */
+    edu.usf.ratsim.robot.romina.protobuf.Connector.Position getPos();
+    /**
+     * <code>optional .Position pos = 4;</code>
+     */
+    edu.usf.ratsim.robot.romina.protobuf.Connector.PositionOrBuilder getPosOrBuilder();
   }
   /**
    * Protobuf type {@code Command}
@@ -98,6 +122,24 @@ public final class Connector {
               angle_ = input.readFloat();
               break;
             }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              stop_ = input.readBool();
+              break;
+            }
+            case 34: {
+              edu.usf.ratsim.robot.romina.protobuf.Connector.Position.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000008) == 0x00000008)) {
+                subBuilder = pos_.toBuilder();
+              }
+              pos_ = input.readMessage(edu.usf.ratsim.robot.romina.protobuf.Connector.Position.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(pos_);
+                pos_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000008;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -162,6 +204,10 @@ public final class Connector {
        * <code>stopRobot = 4;</code>
        */
       stopRobot(4, 4),
+      /**
+       * <code>resetPosition = 5;</code>
+       */
+      resetPosition(5, 5),
       ;
 
       /**
@@ -184,6 +230,10 @@ public final class Connector {
        * <code>stopRobot = 4;</code>
        */
       public static final int stopRobot_VALUE = 4;
+      /**
+       * <code>resetPosition = 5;</code>
+       */
+      public static final int resetPosition_VALUE = 5;
 
 
       public final int getNumber() { return value; }
@@ -195,6 +245,7 @@ public final class Connector {
           case 2: return getInfo;
           case 3: return startRobot;
           case 4: return stopRobot;
+          case 5: return resetPosition;
           default: return null;
         }
       }
@@ -279,15 +330,61 @@ public final class Connector {
       return angle_;
     }
 
+    // optional bool stop = 3 [default = false];
+    public static final int STOP_FIELD_NUMBER = 3;
+    private boolean stop_;
+    /**
+     * <code>optional bool stop = 3 [default = false];</code>
+     */
+    public boolean hasStop() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional bool stop = 3 [default = false];</code>
+     */
+    public boolean getStop() {
+      return stop_;
+    }
+
+    // optional .Position pos = 4;
+    public static final int POS_FIELD_NUMBER = 4;
+    private edu.usf.ratsim.robot.romina.protobuf.Connector.Position pos_;
+    /**
+     * <code>optional .Position pos = 4;</code>
+     */
+    public boolean hasPos() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional .Position pos = 4;</code>
+     */
+    public edu.usf.ratsim.robot.romina.protobuf.Connector.Position getPos() {
+      return pos_;
+    }
+    /**
+     * <code>optional .Position pos = 4;</code>
+     */
+    public edu.usf.ratsim.robot.romina.protobuf.Connector.PositionOrBuilder getPosOrBuilder() {
+      return pos_;
+    }
+
     private void initFields() {
       type_ = edu.usf.ratsim.robot.romina.protobuf.Connector.Command.CommandType.getInfo;
       angle_ = 0F;
+      stop_ = false;
+      pos_ = edu.usf.ratsim.robot.romina.protobuf.Connector.Position.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized != -1) return isInitialized == 1;
 
+      if (hasPos()) {
+        if (!getPos().isInitialized()) {
+          memoizedIsInitialized = 0;
+          return false;
+        }
+      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -300,6 +397,12 @@ public final class Connector {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeFloat(2, angle_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeBool(3, stop_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeMessage(4, pos_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -317,6 +420,14 @@ public final class Connector {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeFloatSize(2, angle_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBoolSize(3, stop_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, pos_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -426,6 +537,7 @@ public final class Connector {
       }
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+          getPosFieldBuilder();
         }
       }
       private static Builder create() {
@@ -438,6 +550,14 @@ public final class Connector {
         bitField0_ = (bitField0_ & ~0x00000001);
         angle_ = 0F;
         bitField0_ = (bitField0_ & ~0x00000002);
+        stop_ = false;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        if (posBuilder_ == null) {
+          pos_ = edu.usf.ratsim.robot.romina.protobuf.Connector.Position.getDefaultInstance();
+        } else {
+          posBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -474,6 +594,18 @@ public final class Connector {
           to_bitField0_ |= 0x00000002;
         }
         result.angle_ = angle_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.stop_ = stop_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        if (posBuilder_ == null) {
+          result.pos_ = pos_;
+        } else {
+          result.pos_ = posBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -496,11 +628,23 @@ public final class Connector {
         if (other.hasAngle()) {
           setAngle(other.getAngle());
         }
+        if (other.hasStop()) {
+          setStop(other.getStop());
+        }
+        if (other.hasPos()) {
+          mergePos(other.getPos());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
+        if (hasPos()) {
+          if (!getPos().isInitialized()) {
+            
+            return false;
+          }
+        }
         return true;
       }
 
@@ -590,6 +734,156 @@ public final class Connector {
         angle_ = 0F;
         onChanged();
         return this;
+      }
+
+      // optional bool stop = 3 [default = false];
+      private boolean stop_ ;
+      /**
+       * <code>optional bool stop = 3 [default = false];</code>
+       */
+      public boolean hasStop() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional bool stop = 3 [default = false];</code>
+       */
+      public boolean getStop() {
+        return stop_;
+      }
+      /**
+       * <code>optional bool stop = 3 [default = false];</code>
+       */
+      public Builder setStop(boolean value) {
+        bitField0_ |= 0x00000004;
+        stop_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional bool stop = 3 [default = false];</code>
+       */
+      public Builder clearStop() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        stop_ = false;
+        onChanged();
+        return this;
+      }
+
+      // optional .Position pos = 4;
+      private edu.usf.ratsim.robot.romina.protobuf.Connector.Position pos_ = edu.usf.ratsim.robot.romina.protobuf.Connector.Position.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          edu.usf.ratsim.robot.romina.protobuf.Connector.Position, edu.usf.ratsim.robot.romina.protobuf.Connector.Position.Builder, edu.usf.ratsim.robot.romina.protobuf.Connector.PositionOrBuilder> posBuilder_;
+      /**
+       * <code>optional .Position pos = 4;</code>
+       */
+      public boolean hasPos() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional .Position pos = 4;</code>
+       */
+      public edu.usf.ratsim.robot.romina.protobuf.Connector.Position getPos() {
+        if (posBuilder_ == null) {
+          return pos_;
+        } else {
+          return posBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .Position pos = 4;</code>
+       */
+      public Builder setPos(edu.usf.ratsim.robot.romina.protobuf.Connector.Position value) {
+        if (posBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          pos_ = value;
+          onChanged();
+        } else {
+          posBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .Position pos = 4;</code>
+       */
+      public Builder setPos(
+          edu.usf.ratsim.robot.romina.protobuf.Connector.Position.Builder builderForValue) {
+        if (posBuilder_ == null) {
+          pos_ = builderForValue.build();
+          onChanged();
+        } else {
+          posBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .Position pos = 4;</code>
+       */
+      public Builder mergePos(edu.usf.ratsim.robot.romina.protobuf.Connector.Position value) {
+        if (posBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008) &&
+              pos_ != edu.usf.ratsim.robot.romina.protobuf.Connector.Position.getDefaultInstance()) {
+            pos_ =
+              edu.usf.ratsim.robot.romina.protobuf.Connector.Position.newBuilder(pos_).mergeFrom(value).buildPartial();
+          } else {
+            pos_ = value;
+          }
+          onChanged();
+        } else {
+          posBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .Position pos = 4;</code>
+       */
+      public Builder clearPos() {
+        if (posBuilder_ == null) {
+          pos_ = edu.usf.ratsim.robot.romina.protobuf.Connector.Position.getDefaultInstance();
+          onChanged();
+        } else {
+          posBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+      /**
+       * <code>optional .Position pos = 4;</code>
+       */
+      public edu.usf.ratsim.robot.romina.protobuf.Connector.Position.Builder getPosBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getPosFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .Position pos = 4;</code>
+       */
+      public edu.usf.ratsim.robot.romina.protobuf.Connector.PositionOrBuilder getPosOrBuilder() {
+        if (posBuilder_ != null) {
+          return posBuilder_.getMessageOrBuilder();
+        } else {
+          return pos_;
+        }
+      }
+      /**
+       * <code>optional .Position pos = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          edu.usf.ratsim.robot.romina.protobuf.Connector.Position, edu.usf.ratsim.robot.romina.protobuf.Connector.Position.Builder, edu.usf.ratsim.robot.romina.protobuf.Connector.PositionOrBuilder> 
+          getPosFieldBuilder() {
+        if (posBuilder_ == null) {
+          posBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              edu.usf.ratsim.robot.romina.protobuf.Connector.Position, edu.usf.ratsim.robot.romina.protobuf.Connector.Position.Builder, edu.usf.ratsim.robot.romina.protobuf.Connector.PositionOrBuilder>(
+                  pos_,
+                  getParentForChildren(),
+                  isClean());
+          pos_ = null;
+        }
+        return posBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:Command)
@@ -3530,18 +3824,20 @@ public final class Connector {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\017connector.proto\"\232\001\n\007Command\022+\n\004type\030\001 " +
+      "\n\017connector.proto\"\332\001\n\007Command\022+\n\004type\030\001 " +
       "\001(\0162\024.Command.CommandType:\007getInfo\022\r\n\005an" +
-      "gle\030\002 \001(\002\"S\n\013CommandType\022\014\n\010doAction\020\000\022\n" +
-      "\n\006rotate\020\001\022\013\n\007getInfo\020\002\022\016\n\nstartRobot\020\003\022" +
-      "\r\n\tstopRobot\020\004\"7\n\010Landmark\022\n\n\002id\030\001 \002(\005\022\t" +
-      "\n\001x\030\002 \002(\002\022\t\n\001y\030\003 \002(\002\022\t\n\001z\030\004 \002(\002\"\032\n\013Affor" +
-      "dances\022\013\n\003aff\030\001 \003(\010\"/\n\010Position\022\t\n\001x\030\001 \002" +
-      "(\002\022\t\n\001y\030\002 \002(\002\022\r\n\005theta\030\003 \002(\002\"m\n\010Response" +
-      "\022\n\n\002ok\030\001 \002(\010\022\034\n\tlandmarks\030\002 \003(\0132\t.Landma" +
-      "rk\022\032\n\004affs\030\003 \001(\0132\014.Affordances\022\033\n\010robotP",
-      "os\030\004 \001(\0132\t.PositionB&\n$edu.usf.ratsim.ro" +
-      "bot.romina.protobuf"
+      "gle\030\002 \001(\002\022\023\n\004stop\030\003 \001(\010:\005false\022\026\n\003pos\030\004 " +
+      "\001(\0132\t.Position\"f\n\013CommandType\022\014\n\010doActio" +
+      "n\020\000\022\n\n\006rotate\020\001\022\013\n\007getInfo\020\002\022\016\n\nstartRob" +
+      "ot\020\003\022\r\n\tstopRobot\020\004\022\021\n\rresetPosition\020\005\"7" +
+      "\n\010Landmark\022\n\n\002id\030\001 \002(\005\022\t\n\001x\030\002 \002(\002\022\t\n\001y\030\003" +
+      " \002(\002\022\t\n\001z\030\004 \002(\002\"\032\n\013Affordances\022\013\n\003aff\030\001 " +
+      "\003(\010\"/\n\010Position\022\t\n\001x\030\001 \002(\002\022\t\n\001y\030\002 \002(\002\022\r\n" +
+      "\005theta\030\003 \002(\002\"m\n\010Response\022\n\n\002ok\030\001 \002(\010\022\034\n\t",
+      "landmarks\030\002 \003(\0132\t.Landmark\022\032\n\004affs\030\003 \001(\013" +
+      "2\014.Affordances\022\033\n\010robotPos\030\004 \001(\0132\t.Posit" +
+      "ionB&\n$edu.usf.ratsim.robot.romina.proto" +
+      "buf"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -3553,7 +3849,7 @@ public final class Connector {
           internal_static_Command_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_Command_descriptor,
-              new java.lang.String[] { "Type", "Angle", });
+              new java.lang.String[] { "Type", "Angle", "Stop", "Pos", });
           internal_static_Landmark_descriptor =
             getDescriptor().getMessageTypes().get(1);
           internal_static_Landmark_fieldAccessorTable = new

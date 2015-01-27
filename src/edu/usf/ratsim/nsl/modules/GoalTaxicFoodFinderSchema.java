@@ -14,6 +14,7 @@ import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.robot.Landmark;
 import edu.usf.ratsim.support.Configuration;
+import edu.usf.ratsim.support.Debug;
 import edu.usf.ratsim.support.Utiles;
 
 public class GoalTaxicFoodFinderSchema extends NslModule {
@@ -50,7 +51,8 @@ public class GoalTaxicFoodFinderSchema extends NslModule {
 		
 		Landmark lm = getLM(goalFeeder.get(), robot.getLandmarks());
 		if (lm != null) {
-//			System.out.println("Found Food");
+			if (Debug.printTaxicBh)
+				System.out.println("Found Food - executing taxic");
 			if (lm.location.distance(new Point3f(0,0,0))<CLOSE_TO_FOOD_THRS){
 				votes.set(Utiles.eatAction, maxReward);
 //				System.out.println("Setting votes to eat");

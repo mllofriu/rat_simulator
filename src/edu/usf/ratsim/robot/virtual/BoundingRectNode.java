@@ -13,7 +13,6 @@ public class BoundingRectNode extends ExpUniverseNode {
 		Map<String, Float> values = readValues(node);
 		
 		rect = new Rectangle2D.Float(values.get("x"), values.get("y"), values.get("w"), values.get("h"));
-		
 	}
 	
 	public Rectangle2D.Float getRect(){
