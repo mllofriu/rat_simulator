@@ -40,7 +40,7 @@ public class Position {
 	}
 
 	public Point3f getPoint3f() {
-		return new Point3f(x, 0, y);
+		return new Point3f(x, y, 0);
 	}
 
 }
