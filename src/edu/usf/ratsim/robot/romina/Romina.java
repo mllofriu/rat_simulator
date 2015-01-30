@@ -24,14 +24,19 @@ import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Debug;
 
 public class Romina implements IRobot {
-	
+
 	private static final float CLOSE_TO_FOOD_THRS = Configuration
 			.getFloat("VirtualUniverse.closeToFood");
+
+	private static Romina romina;
 
 	private Socket protoSocket;
 	private boolean validResponse;
 	private Response r;
 	private ExperimentUniverse world;
+
+	private String host;
+	private int port;
 
 	public Romina(String host, int port, ExperimentUniverse world) {
 		if (Configuration.getBoolean("UniverseFrame.display")) {
@@ -42,51 +47,65 @@ public class Romina implements IRobot {
 
 		((SLAMUniverse) world).setRominaRobot(this);
 		this.world = world;
-		
-		try {
-			protoSocket = new Socket(host, port);
-			System.out.println("Connection stablished");
 
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.host = host;
+		this.port = port;
+		establishConnection(host, port);
 
-		try {
-			Builder b = Command.newBuilder();
-			b.setType(CommandType.startRobot);
-			Command c = b.build();
-			c.writeTo(protoSocket.getOutputStream());
+		startRobot();
 
-			Response.parseDelimitedFrom(protoSocket.getInputStream());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		
 		validResponse = false;
+		romina = this;
+	}
+
+	private void establishConnection(String host, int port) {
+		boolean succeded = false;
+		while (!succeded)
+			try {
+				System.out.println("Trying to connect to " + host + " " + port);
+				protoSocket = new Socket(host, port);
+				System.out.println("Connection stablished");
+				succeded = true;
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 	}
 
 	@Override
 	public void rotate(float degrees) {
+		Builder b = Command.newBuilder();
+		b.setType(CommandType.doAction);
+		b.setAngle(degrees);
+		Command c = b.build();
+		
+		boolean succeded = false;
+		while (!succeded)
+			try {
+				sendCommnad(c, protoSocket);
+				succeded = true;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+
 		try {
-			Builder b = Command.newBuilder();
-			b.setType(CommandType.doAction);
-			b.setAngle(degrees);
-			Command c = b.build();
-			c.writeTo(protoSocket.getOutputStream());
-
-			Response.parseDelimitedFrom(protoSocket.getInputStream());
-
-			validResponse = false;
+			getResponse(protoSocket);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		validResponse = false;
 
 	}
 
@@ -95,49 +114,45 @@ public class Romina implements IRobot {
 		world.robotEat();
 		if (Debug.printTryingToEat)
 			System.out.println("Romina ate");
-		
-		try {
-			Builder b = Command.newBuilder();
-			b.setType(CommandType.doAction);
-			b.setStop(true);
-			b.setAngle(0);
-			Command c = b.build();
-			c.writeTo(protoSocket.getOutputStream());
 
-			Response.parseDelimitedFrom(protoSocket.getInputStream());
+		stop();
 
-			validResponse = false;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 	}
 
 	@Override
 	public boolean[] getAffordances() {
-		try {
-			if (!validResponse) {
-				Builder b = Command.newBuilder();
-				b.setType(CommandType.getInfo);
-				Command c = b.build();
-				c.writeTo(protoSocket.getOutputStream());
+		r = getInfo();
 
-				r = Response.parseDelimitedFrom(protoSocket.getInputStream());
-				validResponse = true;
+		boolean res[] = new boolean[r.getAffs().getAffCount()];
+		for (int i = 0; i < r.getAffs().getAffCount(); i++)
+			res[i] = r.getAffs().getAff(i);
+
+		return res;
+	}
+
+	private Response getInfo() {
+		Response resp = null;
+		boolean succeded = false;
+		while (!succeded)
+			try {
+				if (!validResponse) {
+					Builder b = Command.newBuilder();
+					b.setType(CommandType.getInfo);
+					Command c = b.build();
+					sendCommnad(c, protoSocket);
+					resp = getResponse(protoSocket);
+					validResponse = true;
+				} else {
+					resp = r;
+				}
+				succeded = true;
+			} catch (IOException e) {
+				System.err
+						.println("Error getting response, sending command again");
+				establishConnection(host, port);
 			}
 
-			boolean res[] = new boolean[r.getAffs().getAffCount()];
-			for (int i = 0; i < r.getAffs().getAffCount(); i++)
-				res[i] = r.getAffs().getAff(i);
-
-			return res;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
+		return resp;
 	}
 
 	@Override
@@ -154,19 +169,28 @@ public class Romina implements IRobot {
 
 	@Override
 	public void startRobot() {
+		Builder b = Command.newBuilder();
+		b.setType(CommandType.startRobot);
+		Command c = b.build();
+		
+		boolean succeded = false;
+		while (!succeded)
+			try {
+				sendCommnad(c, protoSocket);
+				succeded = true;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
 		try {
-			Builder b = Command.newBuilder();
-			b.setType(CommandType.startRobot);
-			Command c = b.build();
-			c.writeTo(protoSocket.getOutputStream());
-
-			Response.parseDelimitedFrom(protoSocket.getInputStream());
-
-			validResponse = false;
+			getResponse(protoSocket);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		validResponse = false;
 	}
 
 	@Override
@@ -188,28 +212,14 @@ public class Romina implements IRobot {
 
 	@Override
 	public List<Landmark> getLandmarks() {
-		try {
-			if (!validResponse) {
-				Builder b = Command.newBuilder();
-				b.setType(CommandType.getInfo);
-				Command c = b.build();
-				c.writeTo(protoSocket.getOutputStream());
+		r = getInfo();
 
-				r = Response.parseDelimitedFrom(protoSocket.getInputStream());
-				validResponse = true;
-			}
+		List<Landmark> lms = new LinkedList<Landmark>();
+		for (edu.usf.ratsim.robot.romina.protobuf.Connector.Landmark lm : r
+				.getLandmarksList())
+			lms.add(new Landmark(lm));
 
-			List<Landmark> lms = new LinkedList<Landmark>();
-			for (edu.usf.ratsim.robot.romina.protobuf.Connector.Landmark lm : r.getLandmarksList())
-				lms.add(new Landmark(lm));
-
-			return lms;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
+		return lms;
 	}
 
 	@Override
@@ -218,49 +228,23 @@ public class Romina implements IRobot {
 	}
 
 	public Point3f getRobotPoint() {
-		try {
-			if (!validResponse){
-				Builder b = Command.newBuilder();
-				b.setType(CommandType.getInfo);
-				Command c = b.build();
-				c.writeTo(protoSocket.getOutputStream());
-				
-	
-				r = Response.parseDelimitedFrom(protoSocket
-						.getInputStream());
-				validResponse = true;
-			}
-			
-			return new Point3f(r.getRobotPos().getX(), r.getRobotPos().getY(), 0);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return null;
+		r = getInfo();
+
+		return new Point3f(r.getRobotPos().getX(), r.getRobotPos().getY(), 0);
+	}
+
+	private void sendCommnad(Command c, Socket protoSocket) throws IOException {
+		c.writeTo(protoSocket.getOutputStream());
 	}
 
 	public float getRobotOrientation() {
-		try {
-			if (!validResponse){
-				Builder b = Command.newBuilder();
-				b.setType(CommandType.getInfo);
-				Command c = b.build();
-				c.writeTo(protoSocket.getOutputStream());
-				
-	
-				r = Response.parseDelimitedFrom(protoSocket
-						.getInputStream());
-				validResponse = true;
-			}
-			
-			return r.getRobotPos().getTheta();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return 0;
+		r = getInfo();
+
+		return r.getRobotPos().getTheta();
+	}
+
+	private Response getResponse(Socket protoSocket) throws IOException {
+		return Response.parseDelimitedFrom(protoSocket.getInputStream());
 	}
 
 	public boolean isCloseToAFeeder() {
@@ -278,25 +262,67 @@ public class Romina implements IRobot {
 	}
 
 	public void resetPosition(Float pos, float angle) {
+		boolean succeded = false;
+		while (!succeded)
+			try {
+				Builder b = Command.newBuilder();
+				b.setType(CommandType.resetPosition);
+				edu.usf.ratsim.robot.romina.protobuf.Connector.Position.Builder b2 = Position
+						.newBuilder();
+				b2.setX(pos.x);
+				b2.setY(pos.y);
+				b2.setTheta(angle);
+				Position p = b2.build();
+				b.setPos(p);
+				Command c = b.build();
+				sendCommnad(c, protoSocket);
+
+				getResponse(protoSocket);
+
+				// Sleep to wait for update to propagate
+				Thread.sleep(10000);
+
+				// Invalidate response object
+				validResponse = false;
+				succeded = true;
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				System.err
+						.println("Did not get response, reseting position again");
+				establishConnection(host, port);
+			}
+	}
+
+	public static Romina getRomina() {
+		return romina;
+	}
+
+	public void stop() {
+		Builder b = Command.newBuilder();
+		b.setType(CommandType.doAction);
+		b.setStop(true);
+		b.setAngle(0);
+		Command c = b.build();
+		boolean succeded = false;
+		while (!succeded)
+			try {
+				sendCommnad(c, protoSocket);
+				succeded = true;
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
 		try {
-			Builder b = Command.newBuilder();
-			b.setType(CommandType.resetPosition);
-			edu.usf.ratsim.robot.romina.protobuf.Connector.Position.Builder b2 = Position.newBuilder();
-			b2.setX(pos.x);
-			b2.setY(pos.y);
-			b2.setTheta(angle);
-			Position p = b2.build();
-			b.setPos(p);
-			Command c = b.build();
-			c.writeTo(protoSocket.getOutputStream());
-
-			Response.parseDelimitedFrom(protoSocket.getInputStream());
-
-			validResponse = false;
+			getResponse(protoSocket);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		validResponse = false;
 	}
 
 }
