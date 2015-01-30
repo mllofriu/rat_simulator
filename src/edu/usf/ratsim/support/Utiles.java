@@ -28,8 +28,8 @@ public class Utiles {
 	// (float) (5 * Math.PI / 4), (float) (6 * Math.PI / 4),
 	// (float) (7 * Math.PI / 4) };
 
-	public static final float actionInterval = (float) (Math.PI / 8);
-	private static final float actionMin = (float) (-Math.PI / 8);
+	public static final float actionInterval = (float) (Math.PI / 6);
+	private static final float actionMin = (float) (-Math.PI / 6);
 	// private static final float actionMin = (float) 0;
 	public static final int numRotations = 3;
 	public static final int numActions = numRotations + 1;
@@ -390,6 +390,14 @@ public class Utiles {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public static float angleDiff(float a1, float a2) {
+		Quat4f rot1 = angleToRot(a1);
+		Quat4f rot2 = angleToRot(a2);
+		rot1.inverse();
+		rot1.mul(rot2);
+		return rotToAngle(rot1);
 	}
 
 }
