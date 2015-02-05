@@ -77,6 +77,10 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private List<ArtificialHDCellLayer> afterHDs;
 	private LinkedList<ArtificialHDCellLayer> beforeHDs;
 	private ActiveGoalDecider afterActiveGoalDecider;
+	private MultiStateProportionalQL ql;
+	private NoExploration actionPerformer;
+	private JointStatesManySum jointVotes;
+	private ProportionalVotes qlVotes;
 
 	public MultiScaleMultiIntentionCooperativeModel(ElementWrapper params,
 			IRobot robot, ExperimentUniverse universe) {
@@ -167,7 +171,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 
 		// Take the value of each state and vote for an action
 		if (proportionalQl)
-			new ProportionalVotes(BEFORE_ACTION_SELECTION_STR, this,
+			qlVotes = new ProportionalVotes(BEFORE_ACTION_SELECTION_STR, this,
 					bAll.getSize());
 		else
 			new WTAVotes(BEFORE_ACTION_SELECTION_STR, this, bAll.getSize());
@@ -182,13 +186,13 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 				wallFollowingVal);
 
 		// Three joint states - QL Votes, Taxic, WallAvoider
-		new JointStatesManySum(BEFORE_JOINT_VOTES, this, universe, 3,
+		jointVotes = new JointStatesManySum(BEFORE_JOINT_VOTES, this, universe, 3,
 				numActions);
 
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf
 		if (deterministic) {
-			new NoExploration(ACTION_PERFORMER_STR, this, 1 + 2, robot,
+			actionPerformer = new NoExploration(ACTION_PERFORMER_STR, this, 1 + 2, robot,
 					universe);
 		} else {
 			new ProportionalExplorer(ACTION_PERFORMER_STR, this, 1 + 2, robot,
@@ -263,10 +267,11 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		new JointStatesManySum(AFTER_JOINT_VOTES, this, universe, 3,
 				numActions);
 
-		if (proportionalQl)
-			new MultiStateProportionalQL(QL_STR, this, bAll.getSize(),
+		if (proportionalQl){
+			ql = new MultiStateProportionalQL(QL_STR, this, bAll.getSize(),
 					numActions, discountFactor, alpha, initialValue, robot);
-		else
+			qLUpdVal.add(ql);
+		} else
 			new SingleStateQL(QL_STR, this, bAll.getSize(), numActions,
 					discountFactor, alpha, initialValue);
 
@@ -381,8 +386,8 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		return null;
 	}
 
-	public ProportionalExplorer getActionPerformer() {
-		return null;
+	public NoExploration getActionPerformer() {
+		return actionPerformer;
 	}
 
 	public List<ArtificialPlaceCellLayer> getPCLLayers() {
@@ -424,4 +429,16 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		// System.out.println("NsL model being finalized");
 	}
 
+	@Override
+	public void setPassiveMode(boolean passive) {
+		ql.setUpdatesEnabled(!passive);
+	}
+	
+	public JointStatesManySum getJointVoites(){
+		return jointVotes;
+	}
+	
+	public ProportionalVotes getQLVotes(){
+		return qlVotes;
+	}
 }

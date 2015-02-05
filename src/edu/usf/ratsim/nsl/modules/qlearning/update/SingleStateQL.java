@@ -12,6 +12,8 @@ import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDinInt0;
 import nslj.src.lang.NslDoutFloat2;
 import nslj.src.lang.NslModule;
+import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayerWithIntention;
@@ -219,5 +221,13 @@ public class SingleStateQL extends NslModule implements PolicyDumper {
 			}
 		}
 		return maxAngle;
+	}
+
+	@Override
+	public void dumpPolicy(String trial, String groupName, String subName,
+			String rep, int numIntentions, ExperimentUniverse univ,
+			ExpSubject subject) {
+		// TODO Auto-generated method stub
+		
 	}
 }
