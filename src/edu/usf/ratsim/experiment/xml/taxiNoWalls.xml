@@ -54,7 +54,7 @@
 	</group>
 	
 	<group>
-		<name>One Layer - .025 </name>
+		<name>One Layer - .025</name>
 		<numMembers>100</numMembers>
 		<model>
 			<name>MultiScaleMultiIntentionCooperativeModel</name>
@@ -92,7 +92,7 @@
 	</group>
 	
 	<group>
-		<name>One Layer - .15 </name>
+		<name>One Layer - .15</name>
 		<numMembers>100</numMembers>
 		<model>
 			<name>MultiScaleMultiIntentionCooperativeModel</name>
@@ -130,7 +130,7 @@
 	</group>
 	
 	<group>
-		<name>One Layer - .3 </name>
+		<name>One Layer - .3</name>
 		<numMembers>100</numMembers>
 		<model>
 			<name>MultiScaleMultiIntentionCooperativeModel</name>
@@ -171,7 +171,9 @@
 		<name>training</name>
 		<reps>100</reps>
 		<groups>
-			<group>One Layer</group>
+			<group>One Layer - .025</group>
+			<group>One Layer - .15</group>
+			<group>One Layer - .3</group>
 			<group>Three Layers</group>
 		</groups>
 		<initialTasks>
@@ -219,12 +221,12 @@
 				</params>
 				
 			</stopCondition>
-			<!-- <stopCondition>
+			<stopCondition>
 				<name>Time</name>
 				<params>
-					<time>10</time>
+					<time>5000</time>
 				</params>
-			</stopCondition> -->
+			</stopCondition> 
 			
 		</stopConditions>
 		<afterCycleLoggers>
