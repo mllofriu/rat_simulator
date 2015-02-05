@@ -16,7 +16,7 @@
 	
 	<!--Subject groups -->
 	<group>
-		<name>oneLayer</name>
+		<name>Three Layers</name>
 		<numMembers>100</numMembers>
 		<model>
 			<name>MultiScaleMultiIntentionCooperativeModel</name>
@@ -30,7 +30,7 @@
 				<numHDLayers>4</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
-				<numIntentions>4</numIntentions>
+				<numIntentions>1</numIntentions>
 				<deterministicActionSelection>true</deterministicActionSelection>
 				<foodReward>10000</foodReward>
 				<nonFoodReward>0</nonFoodReward>
@@ -47,7 +47,45 @@
 			<initializer>
 				<name>feederSelector</name>
 				<params>
-					<numFeeders>4</numFeeders>
+					<numFeeders>1</numFeeders>
+				</params>
+			</initializer>
+		</initializers>
+	</group>
+	
+	<group>
+		<name>One Layer</name>
+		<numMembers>100</numMembers>
+		<model>
+			<name>MultiScaleMultiIntentionCooperativeModel</name>
+			<params>
+				<numPCLayers>1</numPCLayers>
+				<numPCCellsPerLayer>1000</numPCCellsPerLayer>
+				<minRadius>.10</minRadius>
+				<!-- .05 m of ".2 radius" -->
+				<maxRadius>.3</maxRadius>
+				<!-- .25 m of ".2 radius" -->
+				<numHDLayers>4</numHDLayers>
+				<minHDCellsPerLayer>1</minHDCellsPerLayer>
+				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
+				<numIntentions>1</numIntentions>
+				<deterministicActionSelection>true</deterministicActionSelection>
+				<foodReward>10000</foodReward>
+				<nonFoodReward>0</nonFoodReward>
+				<discountFactor>1</discountFactor>
+				<alpha>.8</alpha>
+				<initialValue>0</initialValue>
+				<flashingReward>10000</flashingReward>
+				<nonFlashingReward>10000</nonFlashingReward>
+				<wallAvoidingVal>0</wallAvoidingVal>
+				<proportionalQL>true</proportionalQL>
+			</params>
+		</model>
+		<initializers>
+			<initializer>
+				<name>feederSelector</name>
+				<params>
+					<numFeeders>1</numFeeders>
 				</params>
 			</initializer>
 		</initializers>
@@ -55,9 +93,10 @@
 	
 	<trial>
 		<name>training</name>
-		<reps>20</reps>
+		<reps>5</reps>
 		<groups>
-			<group>oneLayer</group>
+			<group>One Layer</group>
+			<group>Three Layers</group>
 		</groups>
 		<initialTasks>
 			<task>
@@ -66,14 +105,15 @@
 					<initialPosition>S</initialPosition>
 				</params>
 			</task>
-			 <task>
-                <name>ResetModelTask</name>
-                <params>
-                </params>
-            </task>
+			<task>
+				<name>ResetModelTask</name>
+				<params>
+				</params>
+			</task>
 			<task>
 				<name>DeactivateAllFeeders</name>
-				<params></params>
+				<params>
+				</params>
 			</task>
 			<task>
 				<name>ActivateRandomFeeder</name>
@@ -101,7 +141,15 @@
 				<params>
 					<n>1</n>
 				</params>
+				
 			</stopCondition>
+			<!-- <stopCondition>
+				<name>Time</name>
+				<params>
+					<time>10</time>
+				</params>
+			</stopCondition> -->
+			
 		</stopConditions>
 		<afterCycleLoggers>
 			<logger>
@@ -114,25 +162,39 @@
 			
 		</afterCycleLoggers>
 		<afterTrialLoggers>
-			<!-- <logger> <name>PolicyDumperWithIntention</name> <params> <numIntentions>8</numIntentions>
-				</params> </logger> -->
+			<logger>
+				<name>PolicyDumperWithIntention</name>
+				<params>
+					<numIntentions>1</numIntentions>
+				</params>
+			</logger>
 			<logger>
 				<name>WallLogger</name>
 			</logger>
 		</afterTrialLoggers>
 		<plotters>
+			
+
 		</plotters>
 	</trial>
 	
 	<!-- 4 testing trials -->
 	<postproc>
 		<name>toRData</name>
-		<params></params>
+		<params>
+		</params>
+	</postproc>
+	<postproc>
+		<name>plots</name>
+		<params>
+		</params>
 	</postproc>
 	<postproc>
 		<name>moveLogs</name>
-		<params></params>
+		<params>
+		</params>
 	</postproc>
 
+	
 	
 </experiment>

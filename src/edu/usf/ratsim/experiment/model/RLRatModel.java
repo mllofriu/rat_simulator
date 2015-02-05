@@ -4,17 +4,20 @@ import java.util.List;
 
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayerWithIntention;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.NoExploration;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
 
 public interface RLRatModel {
 
-	public ProportionalExplorer getActionPerformer();
+	public NoExploration getActionPerformer();
 
 	public List<ArtificialPlaceCellLayerWithIntention> getPCLLayersIntention();
 
 	public List<ArtificialPlaceCellLayer> getPCLLayers();
 	
 	public List<PolicyDumper> getPolicyDumpers();
+	
+	public void setPassiveMode(boolean enabled);
 	
 }

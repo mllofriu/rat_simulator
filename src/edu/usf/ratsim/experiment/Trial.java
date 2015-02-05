@@ -88,10 +88,6 @@ public class Trial implements Runnable {
 	}
 
 	public void run() {
-		
-		
-		
-
 		// Load the trial tasks
 		loadInitialTasks(trialNode.getChild(STR_INITIAL_TASKS), points,
 				subject.getModel());
