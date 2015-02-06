@@ -48,12 +48,6 @@ public class LoggerFactory {
 			} else if (loggerName.equals("WallLogger")) {
 				res.add(new WallLogger(t.getName(), t.getGroup(), t
 						.getSubjectName(), t.getRep()));
-			} else if (loggerName.equals("PolicyDumperWithIntention")) {
-				res.add(new PolicyDumperWithIntention(
-						t.getSubject(), t.getName(), t.getGroup(), t
-								.getSubjectName(), t.getRep(), Integer
-								.parseInt(loggerParams
-										.getChildText(STR_NUM_INTENTIONS))));
 			} else {
 				throw new RuntimeException("Logger " + loggerName
 						+ " not implemented.");

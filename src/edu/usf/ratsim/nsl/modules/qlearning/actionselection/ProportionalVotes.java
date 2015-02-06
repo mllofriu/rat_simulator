@@ -4,6 +4,7 @@ import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDinFloat2;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
+import edu.usf.ratsim.nsl.modules.Voter;
 import edu.usf.ratsim.support.Utiles;
 
 /**
@@ -11,7 +12,7 @@ import edu.usf.ratsim.support.Utiles;
  * @author ludo
  *
  */
-public class ProportionalVotes extends NslModule {
+public class ProportionalVotes extends NslModule implements Voter {
 
 	public NslDoutFloat1 actionVote;
 	public NslDinFloat1 states;
@@ -58,6 +59,11 @@ public class ProportionalVotes extends NslModule {
 //				System.out.println("value action " + values[action]);
 		
 		actionVote.set(values);
+	}
+
+	@Override
+	public NslDoutFloat1 getVotes() {
+		return actionVote;
 	}
 
 }
