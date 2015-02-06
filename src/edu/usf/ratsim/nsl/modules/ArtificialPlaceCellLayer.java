@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import javax.management.RuntimeErrorException;
 import javax.vecmath.Point3f;
 
 import nslj.src.lang.NslDoutFloat1;
@@ -27,7 +28,7 @@ public class ArtificialPlaceCellLayer extends NslModule {
 	private boolean active;
 
 	public ArtificialPlaceCellLayer(String nslName, NslModule nslParent,
-			ExperimentUniverse universe, float radius, int numCells, long seed) {
+			ExperimentUniverse universe, float radius, int numCells, long seed, String placeCellType) {
 		super(nslName, nslParent);
 
 		active = true;
@@ -63,7 +64,12 @@ public class ArtificialPlaceCellLayer extends NslModule {
 			gsf.setSize(2*radius);
 //			System.out.println("PC " + x + " " + y + " " + universe.placeIntersectsWalls(gsf.createCircle()));
 			if (!universe.placeIntersectsWalls(gsf.createCircle())){
-				cells.add(new ArtificialPlaceCell(new Point3f(x, y, 0), radius));
+				if (placeCellType.equals("proportional"))
+					cells.add(new ProportionalArtificialPlaceCell(new Point3f(x, y, 0)));
+				else if (placeCellType.equals("exponential"))
+					cells.add(new ExponentialArtificialPlaceCell(new Point3f(x, y, 0), radius));
+				else 
+					throw new RuntimeException("Place cell type not implemented");
 				i++;
 			}
 			

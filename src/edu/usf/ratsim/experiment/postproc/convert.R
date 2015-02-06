@@ -14,12 +14,17 @@ saveArrivalTime <- function(pathData){
 #                                ".pdf", sep=''), width=10, height=10)
 }
 
+
 mazeFile <- "maze.xml"
 pathFile = 'position.txt'
+pathData <- read.csv(pathFile, sep='\t')
+splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+saveArrivalTime(pathData)
+
 feedersFile = 'wantedFeeder.txt'
 wallsFile = 'walls.txt'
 policyFile = 'policy.txt'
-pathData <- read.csv(pathFile, sep='\t')
+
 feederData <- read.csv(feedersFile, sep='\t')
 wallData <- read.csv(wallsFile, sep='\t')
 policyData <- read.csv(policyFile, sep='\t')
@@ -32,11 +37,11 @@ file.remove(feedersFile)
 file.remove(wallsFile)
 file.remove(policyFile)
 
-splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+
 splitFeeders <- split(feederData, feederData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 
 #Save arrival times as a function of repetition number
-saveArrivalTime(pathData)
+
 
 

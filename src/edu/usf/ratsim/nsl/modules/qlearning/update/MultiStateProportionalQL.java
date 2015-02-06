@@ -23,15 +23,17 @@ import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Utiles;
 
-public class MultiStateProportionalQL extends NslModule implements PolicyDumper {
+public class MultiStateProportionalQL extends NslModule implements PolicyDumper, QLUpdater {
 
 	private static final String DUMP_FILENAME = "policy.txt";
 
 	private static final float EPS = 0.2f;
 
-	private static final float INTERVAL = 0.1f;
+	private static final float INTERVAL = 0.05f;
 	// Margin for ignoring inside maze
 	private static final float MARGIN = 0.1f;
+
+	private static final float ANGLE_INTERVAL = 0.314f;
 
 	private static PrintWriter writer;
 	private NslDinFloat0 reward;
@@ -144,26 +146,34 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 				for (float xInc = MARGIN; xInc
 						- (univ.getBoundingRectangle().getWidth() - MARGIN/2) < 1e-8; xInc += INTERVAL) {
 					for (float yInc = MARGIN; yInc
-							
 							- (univ.getBoundingRectangle().getHeight() - MARGIN/2) < 1e-8; yInc += INTERVAL) {
 						float x = (float) (univ.getBoundingRectangle()
 								.getMinX() + xInc);
 						float y = (float) (univ.getBoundingRectangle()
 								.getMinY() + yInc);
 
-						List<Float> preferredAngles = new LinkedList<Float>();
+//						List<Float> preferredAngles = new LinkedList<Float>();
 						float maxVal = Float.NEGATIVE_INFINITY;
 						float bestAngle = 0;
-						for (float angle = 0; angle <= 2 * Math.PI; angle += Utiles.actionInterval / 4) {
+						for (float angle = 0; angle <= 2 * Math.PI; angle += ANGLE_INTERVAL) {
 							univ.setRobotPosition(new Point2D.Float(x, y),
 									angle);
 							rat.stepCycle();
-							float forwardVal = ((MultiScaleMultiIntentionCooperativeModel) rat
-									.getModel()).getQLVotes().actionVote.get(Utiles.discretizeAction(0));
-							if( forwardVal > maxVal){
-								maxVal = forwardVal;
-								bestAngle = angle;
+////							float forwardVal = ((MultiScaleMultiIntentionCooperativeModel) rat
+////									.getModel()).getQLVotes().getVotes().get(Utiles.discretizeAction(0));
+//							if( forwardVal > maxVal){
+//								maxVal = forwardVal;
+//								bestAngle = angle;
+//							}
+							for (int action = 0; action < Utiles.numActions; action++){
+								float angleVal = ((MultiScaleMultiIntentionCooperativeModel) rat
+									.getModel()).getQLVotes().getVotes().get(action);
+								if (angleVal > maxVal){
+									maxVal = angleVal;
+									bestAngle = angle;
+								}
 							}
+								
 							// If goes forward, it is the preferred angle
 						}
 

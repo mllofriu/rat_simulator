@@ -120,7 +120,7 @@ public class Trial implements Runnable {
 					e1.printStackTrace();
 				}
 			}
-			
+
 			if (Debug.sleepBeforeStart)
 				try {
 					Thread.sleep(15000);
@@ -128,18 +128,18 @@ public class Trial implements Runnable {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-			
+
 			boolean stop;
 			boolean sleep = Configuration.getBoolean("UniverseFrame.display");
 			do {
-				while(!cont)
+				while (!cont)
 					Thread.yield();
 				// One cycle to the trial
 				subject.stepCycle();
 				if (Debug.printEndCycle)
 					System.out.println("End of cycle");
 
-				if (sleep /*&& !name.equals("training")*/) {
+				if (sleep /* && !name.equals("training") */) {
 					try {
 						Thread.sleep(SLEEP_BETWEEN_CYCLES);
 					} catch (InterruptedException e) {
@@ -179,6 +179,7 @@ public class Trial implements Runnable {
 			if (trialNode.getChild(STR_PLOTTING_STR) != null)
 				loadPlottingTasks(trialNode.getChild(STR_PLOTTING_STR), points,
 						subject.getModel());
+
 			for (ExperimentPlotter p : plotters)
 				p.plot();
 		}

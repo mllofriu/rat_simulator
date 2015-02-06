@@ -4,9 +4,10 @@ import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDinFloat2;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
+import edu.usf.ratsim.nsl.modules.Voter;
 import edu.usf.ratsim.support.Utiles;
 
-public class WTAVotes extends NslModule {
+public class WTAVotes extends NslModule implements Voter {
 
 	public NslDoutFloat1 actionVote;
 	public NslDinFloat1 states;
@@ -42,7 +43,7 @@ public class WTAVotes extends NslModule {
 
 	private int getActiveState() {
 		// Winner take all within the layer
-		float maxVal = 0;
+		float maxVal = Float.NEGATIVE_INFINITY;
 		int activeState = -1;
 		for (int i = 0; i < states.getSize(); i++)
 			if (states.get(i) > maxVal) {
@@ -51,6 +52,11 @@ public class WTAVotes extends NslModule {
 			}
 
 		return activeState;
+	}
+
+	@Override
+	public NslDoutFloat1 getVotes() {
+		return actionVote;
 	}
 
 }

@@ -1,0 +1,22 @@
+package edu.usf.ratsim.nsl.modules;
+
+import javax.vecmath.Point3f;
+
+import edu.usf.ratsim.support.Utiles;
+
+public class ProportionalArtificialPlaceCell implements ArtificialPlaceCell {
+
+	private Point3f center;
+
+	public ProportionalArtificialPlaceCell(Point3f center) {
+		this.center = center;
+	}
+
+	public float getActivation(Point3f currLocation) {
+		return 1 / center.distance(currLocation);
+	}
+
+	public Point3f getCenter() {
+		return center;
+	}
+}

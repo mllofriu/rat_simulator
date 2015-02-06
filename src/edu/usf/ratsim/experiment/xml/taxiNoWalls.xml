@@ -23,9 +23,10 @@
 			<params>
 				<numPCLayers>3</numPCLayers>
 				<numPCCellsPerLayer>100</numPCCellsPerLayer>
-				<minRadius>.025</minRadius>
+				<minRadius>.05</minRadius>
 				<!-- .05 m of ".2 radius" -->
 				<maxRadius>.3</maxRadius>
+				<placeCells>exponential</placeCells>
 				<!-- .25 m of ".2 radius" -->
 				<numHDLayers>4</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
@@ -41,6 +42,7 @@
 				<nonFlashingReward>10000</nonFlashingReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
 				<proportionalQL>true</proportionalQL>
+				
 			</params>
 		</model>
 		<initializers>
@@ -54,92 +56,95 @@
 	</group>
 	
 	<group>
-		<name>One Layer - .025</name>
+		<name>One Layer - Small</name>
 		<numMembers>100</numMembers>
 		<model>
 			<name>MultiScaleMultiIntentionCooperativeModel</name>
 			<params>
 				<numPCLayers>1</numPCLayers>
-				<numPCCellsPerLayer>100</numPCCellsPerLayer>
-				<minRadius>.025</minRadius>
-				<!-- .05 m of ".2 radius" -->
-				<maxRadius>.3</maxRadius>
-				<!-- .25 m of ".2 radius" -->
-				<numHDLayers>4</numHDLayers>
-				<minHDCellsPerLayer>1</minHDCellsPerLayer>
-				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
-				<numIntentions>1</numIntentions>
-				<deterministicActionSelection>true</deterministicActionSelection>
-				<foodReward>10000</foodReward>
-				<nonFoodReward>0</nonFoodReward>
-				<discountFactor>1</discountFactor>
-				<alpha>.8</alpha>
-				<initialValue>0</initialValue>
-				<flashingReward>10000</flashingReward>
-				<nonFlashingReward>10000</nonFlashingReward>
-				<wallAvoidingVal>0</wallAvoidingVal>
-				<proportionalQL>true</proportionalQL>
-			</params>
-		</model>
-		<initializers>
-			<initializer>
-				<name>feederSelector</name>
-				<params>
-					<numFeeders>1</numFeeders>
-				</params>
-			</initializer>
-		</initializers>
-	</group>
-	
-	<group>
-		<name>One Layer - .15</name>
-		<numMembers>100</numMembers>
-		<model>
-			<name>MultiScaleMultiIntentionCooperativeModel</name>
-			<params>
-				<numPCLayers>1</numPCLayers>
-				<numPCCellsPerLayer>100</numPCCellsPerLayer>
-				<minRadius>.15</minRadius>
-				<!-- .05 m of ".2 radius" -->
-				<maxRadius>.3</maxRadius>
-				<!-- .25 m of ".2 radius" -->
-				<numHDLayers>4</numHDLayers>
-				<minHDCellsPerLayer>1</minHDCellsPerLayer>
-				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
-				<numIntentions>1</numIntentions>
-				<deterministicActionSelection>true</deterministicActionSelection>
-				<foodReward>10000</foodReward>
-				<nonFoodReward>0</nonFoodReward>
-				<discountFactor>1</discountFactor>
-				<alpha>.8</alpha>
-				<initialValue>0</initialValue>
-				<flashingReward>10000</flashingReward>
-				<nonFlashingReward>10000</nonFlashingReward>
-				<wallAvoidingVal>0</wallAvoidingVal>
-				<proportionalQL>true</proportionalQL>
-			</params>
-		</model>
-		<initializers>
-			<initializer>
-				<name>feederSelector</name>
-				<params>
-					<numFeeders>1</numFeeders>
-				</params>
-			</initializer>
-		</initializers>
-	</group>
-	
-	<group>
-		<name>One Layer - .3</name>
-		<numMembers>100</numMembers>
-		<model>
-			<name>MultiScaleMultiIntentionCooperativeModel</name>
-			<params>
-				<numPCLayers>1</numPCLayers>
-				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<numPCCellsPerLayer>400</numPCCellsPerLayer>
 				<minRadius>.3</minRadius>
 				<!-- .05 m of ".2 radius" -->
 				<maxRadius>.3</maxRadius>
+				<placeCells>proportional</placeCells>
+				<!-- .25 m of ".2 radius" -->
+				<numHDLayers>4</numHDLayers>
+				<minHDCellsPerLayer>1</minHDCellsPerLayer>
+				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
+				<numIntentions>1</numIntentions>
+				<deterministicActionSelection>true</deterministicActionSelection>
+				<foodReward>10000</foodReward>
+				<nonFoodReward>0</nonFoodReward>
+				<discountFactor>1</discountFactor>
+				<alpha>.8</alpha>
+				<initialValue>0</initialValue>
+				<flashingReward>10000</flashingReward>
+				<nonFlashingReward>10000</nonFlashingReward>
+				<wallAvoidingVal>0</wallAvoidingVal>
+				<proportionalQL>false</proportionalQL>
+			</params>
+		</model>
+		<initializers>
+			<initializer>
+				<name>feederSelector</name>
+				<params>
+					<numFeeders>1</numFeeders>
+				</params>
+			</initializer>
+		</initializers>
+	</group>
+	
+	<group>
+		<name>One Layer - Medium</name>
+		<numMembers>100</numMembers>
+		<model>
+			<name>MultiScaleMultiIntentionCooperativeModel</name>
+			<params>
+				<numPCLayers>1</numPCLayers>
+				<numPCCellsPerLayer>200</numPCCellsPerLayer>
+				<minRadius>.3</minRadius>
+				<!-- .05 m of ".2 radius" -->
+				<maxRadius>.3</maxRadius>
+				<placeCells>proportional</placeCells>
+				<!-- .25 m of ".2 radius" -->
+				<numHDLayers>4</numHDLayers>
+				<minHDCellsPerLayer>1</minHDCellsPerLayer>
+				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
+				<numIntentions>1</numIntentions>
+				<deterministicActionSelection>true</deterministicActionSelection>
+				<foodReward>10000</foodReward>
+				<nonFoodReward>0</nonFoodReward>
+				<discountFactor>1</discountFactor>
+				<alpha>.8</alpha>
+				<initialValue>0</initialValue>
+				<flashingReward>10000</flashingReward>
+				<nonFlashingReward>10000</nonFlashingReward>
+				<wallAvoidingVal>0</wallAvoidingVal>
+				<proportionalQL>true</proportionalQL>
+			</params>
+		</model>
+		<initializers>
+			<initializer>
+				<name>feederSelector</name>
+				<params>
+					<numFeeders>1</numFeeders>
+				</params>
+			</initializer>
+		</initializers>
+	</group>
+	
+	<group>
+		<name>One Layer - Large</name>
+		<numMembers>100</numMembers>
+		<model>
+			<name>MultiScaleMultiIntentionCooperativeModel</name>
+			<params>
+				<numPCLayers>1</numPCLayers>
+				<numPCCellsPerLayer>50</numPCCellsPerLayer>
+				<minRadius>.3</minRadius>
+				<!-- .05 m of ".2 radius" -->
+				<maxRadius>.3</maxRadius>
+				<placeCells>proportional</placeCells>
 				<!-- .25 m of ".2 radius" -->
 				<numHDLayers>4</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
@@ -169,11 +174,11 @@
 	
 	<trial>
 		<name>training</name>
-		<reps>100</reps>
+		<reps>1000</reps>
 		<groups>
-			<group>One Layer - .025</group>
-			<group>One Layer - .15</group>
-			<group>One Layer - .3</group>
+			<group>One Layer - Small</group>
+			<group>One Layer - Medium</group>
+			<group>One Layer - Large</group>
 			<group>Three Layers</group>
 		</groups>
 		<initialTasks>
@@ -240,12 +245,12 @@
 			
 		</afterCycleLoggers>
 		<afterTrialLoggers>
-			<logger>
+			<!--<logger>
 				<name>PolicyDumperWithIntention</name>
 				<params>
 					<numIntentions>1</numIntentions>
 				</params>
-			</logger>
+			</logger>-->
 			<logger>
 				<name>WallLogger</name>
 			</logger>
