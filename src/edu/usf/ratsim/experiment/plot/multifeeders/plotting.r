@@ -193,16 +193,39 @@ incrementalPath <- function(pathData, feederData, wallData)
 }
 
 
+pathFile <- 'position.RData'
+wallsFile <- 'walls.RData'
+policyFile <- 'policy.RData'
+mazeFile <- 'maze.xml'
 
-load('position.RData')
-load('walls.RData')
-#load('wantedFeeder.RData')
-load('policy.RData')
+if (file.exists(pathFile)){
+  if (file.exists(mazeFile)){ 
+    if (file.exists(policyFile)){
+      maze <- mazePlot(mazeFile)
+      load(pathFile)
+      load(policyFile)
+      load(wallsFile)
+      splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+      splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+      splitPol <- split(policyData, policyData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+      llply(names(splitPol), function(x){
+        # Split data by layers and intention
+        splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('intention')], drop=TRUE)
+        # Plot different layers with same path data
+        lapply(names(splitPolLayer), function (y) plotPolicyOnMaze(paste(x,y,sep='.'),
+                                                                   splitPath[[x]], 
+                                                                   splitPolLayer[[y]],
+                                                                   splitWalls[[x]],
+                                                                   maze))
+      })
+    }
+    
+  }
+  
+}
 
-splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 #splitFeeders <- split(feederData, feederData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
-splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
-splitPol <- split(policyData, policyData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+
 
 # One worker per plot
 #registerDoParallel()
@@ -214,19 +237,9 @@ splitPol <- split(policyData, policyData[c('trial', 'group', 'subject', 'repetit
 #saveArrivalTime(pathData)
 
 
-maze <- mazePlot('maze.xml')
 
 # Saving image non-parallel:
-llply(names(splitPol), function(x){
-  # Split data by layers and intention
-  splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('intention')], drop=TRUE)
-  # Plot different layers with same path data
-  lapply(names(splitPolLayer), function (y) plotPolicyOnMaze(paste(x,y,sep='.'),
-                                                             splitPath[[x]], 
-                                                             splitPolLayer[[y]],
-                                                             splitWalls[[x]],
-                                                             maze))
-})
+
 
 
 

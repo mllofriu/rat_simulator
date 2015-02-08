@@ -17,31 +17,34 @@ saveArrivalTime <- function(pathData){
 
 mazeFile <- "maze.xml"
 pathFile = 'position.txt'
-pathData <- read.csv(pathFile, sep='\t')
-splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
-saveArrivalTime(pathData)
-
 feedersFile = 'wantedFeeder.txt'
 wallsFile = 'walls.txt'
 policyFile = 'policy.txt'
 
-feederData <- read.csv(feedersFile, sep='\t')
-wallData <- read.csv(wallsFile, sep='\t')
-policyData <- read.csv(policyFile, sep='\t')
-save(pathData, file='position.RData')
-save(feederData, file='feeders.RData')
-save(wallData, file='walls.RData')
-save(policyData, file='policy.RData')
-file.remove(pathFile)
-file.remove(feedersFile)
-file.remove(wallsFile)
-file.remove(policyFile)
+if (file.exists(pathFile)) {
+  pathData <- read.csv(pathFile, sep='\t')
+  splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+  saveArrivalTime(pathData)
+  save(pathData, file='position.RData')
+  file.remove(pathFile)
+}
 
+if (file.exists(feedersFile)) {
+  feederData <- read.csv(feedersFile, sep='\t')
+  save(feederData, file='feeders.RData')
+  file.remove(feedersFile)
+}
 
-splitFeeders <- split(feederData, feederData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
-splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+if (file.exists(wallsFile)) {
+  wallData <- read.csv(wallsFile, sep='\t')
+  save(wallData, file='walls.RData')
+  file.remove(wallsFile)
+}
 
-#Save arrival times as a function of repetition number
-
+if (file.exists(policyFile)) {
+  policyData <- read.csv(policyFile, sep='\t')
+  save(policyData, file='policy.RData')
+  file.remove(policyFile)
+}
 
 
