@@ -174,7 +174,7 @@
 	
 	<trial>
 		<name>training</name>
-		<reps>1000</reps>
+		<reps>10</reps>
 		<groups>
 			<group>One Layer - Small</group>
 			<group>One Layer - Medium</group>
@@ -245,12 +245,12 @@
 			
 		</afterCycleLoggers>
 		<afterTrialLoggers>
-			<!--<logger>
+			<logger>
 				<name>PolicyDumperWithIntention</name>
 				<params>
 					<numIntentions>1</numIntentions>
 				</params>
-			</logger>-->
+			</logger>
 			<logger>
 				<name>WallLogger</name>
 			</logger>
