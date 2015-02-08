@@ -6,8 +6,6 @@ import java.util.List;
 
 import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.Trial;
-import edu.usf.ratsim.experiment.model.RLRatModel;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.support.ElementWrapper;
 
 public class LoggerFactory {
