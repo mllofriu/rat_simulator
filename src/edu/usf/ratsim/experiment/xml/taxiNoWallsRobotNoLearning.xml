@@ -35,7 +35,7 @@
 				<foodReward>10000</foodReward>
 				<nonFoodReward>0</nonFoodReward>
 				<discountFactor>1</discountFactor>
-				<alpha>.8</alpha>
+				<alpha>0</alpha>
 				<initialValue>0</initialValue>
 				<flashingReward>10000</flashingReward>
 				<nonFlashingReward>10000</nonFlashingReward>
@@ -55,7 +55,7 @@
 	
 	<trial>
 		<name>training</name>
-		<reps>1</reps>
+		<reps>10</reps>
 		<groups>
 			<group>oneLayer</group>
 		</groups>

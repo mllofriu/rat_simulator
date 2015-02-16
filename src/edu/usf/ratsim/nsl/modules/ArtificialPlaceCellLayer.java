@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import javax.management.RuntimeErrorException;
 import javax.vecmath.Point3f;
 
 import nslj.src.lang.NslDoutFloat1;

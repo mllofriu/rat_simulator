@@ -37,7 +37,7 @@ public class SSLPositionLogger implements ExperimentLogger {
 
 		poses = new LinkedList<Pose>();
 		
-		vision = new VisionListener();
+		vision = VisionListener.getVisionListener();
 	}
 
 	public void log(ExperimentUniverse universe) {

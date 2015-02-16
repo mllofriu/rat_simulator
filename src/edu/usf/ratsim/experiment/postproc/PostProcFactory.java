@@ -1,14 +1,8 @@
 package edu.usf.ratsim.experiment.postproc;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-import javax.vecmath.Point4f;
-
-import edu.usf.ratsim.experiment.ExperimentTask;
-import edu.usf.ratsim.experiment.Trial;
 import edu.usf.ratsim.experiment.plot.multifeeders.MultiFeedersTrialPlotter;
 import edu.usf.ratsim.support.ElementWrapper;
 

@@ -1,7 +1,6 @@
 package edu.usf.ratsim.experiment.task;
 
 import java.awt.geom.Point2D;
-import java.io.IOException;
 import java.util.Map;
 
 import javax.vecmath.Point4f;

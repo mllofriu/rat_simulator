@@ -2,8 +2,6 @@ package edu.usf.ratsim.nsl.modules;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.ratsim.support.Utiles;
-
 public class ExponentialArtificialPlaceCell implements ArtificialPlaceCell {
 
 	private static final double RADIUS_THRS = 0.2;

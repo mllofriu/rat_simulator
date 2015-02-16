@@ -14,7 +14,6 @@ import edu.usf.ratsim.robot.naorobot.protobuf.Connector.Command;
 import edu.usf.ratsim.robot.naorobot.protobuf.Connector.Command.Builder;
 import edu.usf.ratsim.robot.naorobot.protobuf.Connector.Command.CommandType;
 import edu.usf.ratsim.robot.naorobot.protobuf.Connector.Response;
-import edu.usf.ratsim.robot.virtual.ExpUniverseNode;
 import edu.usf.ratsim.robot.virtual.UniverseFrame;
 import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 import edu.usf.ratsim.support.Configuration;

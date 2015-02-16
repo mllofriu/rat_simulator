@@ -33,7 +33,8 @@ import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQL;
-import edu.usf.ratsim.nsl.modules.qlearning.update.QLAlgorithm;
+import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
+import edu.usf.ratsim.nsl.modules.qlearning.update.QLUpdater;
 import edu.usf.ratsim.nsl.modules.qlearning.update.SingleStateQL;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.Configuration;
@@ -72,7 +73,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private static final String BEFORE_JOINT_VOTES = "BJVOTES";
 	private static final String AFTER_JOINT_VOTES = "AJVOTES";
 	private List<ArtificialPlaceCellLayer> beforePcls;
-	private List<QLAlgorithm> qLUpdVal;
+	private List<PolicyDumper> qLUpdVal;
 	// private ProportionalExplorer actionPerformerVote;
 	private List<WTAVotes> qLActionSel;
 	private LinkedList<ArtificialPlaceCellLayer> afterPcls;
@@ -85,7 +86,11 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private List<ArtificialHDCellLayer> afterHDs;
 	private LinkedList<ArtificialHDCellLayer> beforeHDs;
 	private ActiveGoalDecider afterActiveGoalDecider;
-	private QLAlgorithm ql;
+<<<<<<< HEAD
+	private QLUpdater ql;
+=======
+		private PolicyDumper ql;
+>>>>>>> 4b20b9da862b6dbee66df6acf4514c8945c03df4
 	private NoExploration actionPerformer;
 	private JointStatesManySum jointVotes;
 	private Voter qlVotes;
@@ -115,8 +120,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		float flashingReward = params.getChildFloat("flashingReward");
 		float nonFlashingReward = params.getChildFloat("nonFlashingReward");
 		float wallFollowingVal = params.getChildFloat("wallAvoidingVal");
-		float explorationHalfLifeVal = params
-				.getChildFloat("explorationHalfLifeVal");
+		float explorationHalfLifeVal = params.getChildFloat("explorationHalfLifeVal");
 		boolean deterministic = params
 				.getChildBoolean("deterministicActionSelection");
 		proportionalQl = params.getChildBoolean("proportionalQL");
@@ -128,7 +132,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		beforePI = new LinkedList<PlaceIntention>();
 		afterPcls = new LinkedList<ArtificialPlaceCellLayer>();
 		afterPI = new LinkedList<PlaceIntention>();
-		qLUpdVal = new LinkedList<QLAlgorithm>();
+		qLUpdVal = new LinkedList<PolicyDumper>();
 		qLActionSel = new LinkedList<WTAVotes>();
 		taxic = new LinkedList<GoalTaxicFoodFinderSchema>();
 
@@ -195,9 +199,8 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
-		taxic.add(new GoalTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this,
-				robot, universe, numActions, nonFlashingReward,
-				explorationHalfLifeVal));
+		taxic.add(new GoalTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
+				universe, numActions, nonFlashingReward, explorationHalfLifeVal));
 
 		// Wall following for obst. avoidance
 		new WallAvoider(BEFORE_WALLAVOID_STR, this, robot, universe,
@@ -277,9 +280,8 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
-		taxic.add(new GoalTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this,
-				robot, universe, numActions, nonFlashingReward,
-				explorationHalfLifeVal));
+		taxic.add(new GoalTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot,
+				universe, numActions, nonFlashingReward, explorationHalfLifeVal));
 
 		// Wall following for obst. avoidance
 		new WallAvoider(AFTER_WALLAVOID_STR, this, robot, universe, numActions,
@@ -306,16 +308,15 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 
 	private long checkPCLSeed() {
 		File f = new File("pclseed.obj");
-		if (f.exists()
-				&& Configuration.getBoolean("Experiment.loadSavedPolicy")) {
-
+		if (f.exists() && Configuration.getBoolean("Experiment.loadSavedPolicy")){
+			
 			try {
 
 				System.out.println("Using existing seed...");
 				FileInputStream fin;
 				fin = new FileInputStream(f);
 				ObjectInputStream ois = new ObjectInputStream(fin);
-				return ((Long) ois.readObject()).longValue();
+				return ((Long)ois.readObject()).longValue();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -324,10 +325,11 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 				e.printStackTrace();
 			}
 		}
-
+		
 		Random r = new Random();
 		long seed = r.nextLong();
-
+		
+		
 		try {
 			FileOutputStream fout = new FileOutputStream("pclseed.obj");
 			ObjectOutputStream oos = new ObjectOutputStream(fout);
@@ -337,7 +339,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		
 		return 0;
 	}
 
@@ -465,7 +467,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	}
 
 	@Override
-	public List<QLAlgorithm> getPolicyDumpers() {
+	public List<PolicyDumper> getPolicyDumpers() {
 		return qLUpdVal;
 	}
 
@@ -473,8 +475,8 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		beforeActiveGoalDecider.newTrial();
 		afterActiveGoalDecider.newTrial();
 		// anyGoalDecider.newTrial();
-		// for(GoalTaxicFoodFinderSchema gs : taxic)
-		// gs.newTrial();
+//		for(GoalTaxicFoodFinderSchema gs : taxic)
+//			gs.newTrial();
 	}
 
 	public void deactivatePCL(List<Integer> feedersToDeactivate) {
@@ -499,7 +501,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	public void savePolicy() {
 		ql.savePolicy();
 	}
-
+	
 	@Override
 	public void setPassiveMode(boolean passive) {
 		ql.setUpdatesEnabled(!passive);
@@ -514,7 +516,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	}
 
 	public void newRep() {
-		for (GoalTaxicFoodFinderSchema gs : taxic)
+		for(GoalTaxicFoodFinderSchema gs : taxic)
 			gs.newRep();
 	}
 }

@@ -1,6 +1,5 @@
 package edu.usf.ratsim.nsl.modules;
 
-import java.util.List;
 import java.util.Random;
 
 import nslj.src.lang.NslDoutInt0;

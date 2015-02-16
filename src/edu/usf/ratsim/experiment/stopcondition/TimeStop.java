@@ -1,7 +1,5 @@
 package edu.usf.ratsim.experiment.stopcondition;
 
-import org.w3c.dom.Element;
-
 import edu.usf.ratsim.support.ElementWrapper;
 
 public class TimeStop implements StopCondition {

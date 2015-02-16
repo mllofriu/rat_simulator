@@ -6,10 +6,10 @@ import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.model.RLRatModel;
 import edu.usf.ratsim.experiment.subject.ExpSubject;
-import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
+import edu.usf.ratsim.nsl.modules.qlearning.update.QLAlgorithm;
 
 public class PolicyDumperWithIntention implements ExperimentLogger {
-	private List<PolicyDumper> policyDumpers;
+	private List<QLAlgorithm> policyDumpers;
 	private String rep;
 	private String subName;
 	private String trial;

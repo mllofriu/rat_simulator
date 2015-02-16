@@ -2,10 +2,8 @@ package edu.usf.ratsim.experiment.universe;
 
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.naorobot.GlobalCameraUniv;
-import edu.usf.ratsim.robot.naorobot.protobuf.NAORobot;
 import edu.usf.ratsim.robot.romina.SLAMUniverse;
 import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
-import edu.usf.ratsim.robot.virtual.VirtualRobot;
 import edu.usf.ratsim.support.Configuration;
 
 public class UniverseFactory {

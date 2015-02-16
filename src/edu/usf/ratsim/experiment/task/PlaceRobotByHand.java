@@ -3,7 +3,6 @@ package edu.usf.ratsim.experiment.task;
 import java.applet.Applet;
 import java.applet.AudioClip;
 import java.awt.geom.Point2D;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
@@ -25,6 +24,7 @@ public class PlaceRobotByHand implements ExperimentTask {
 	private static final float EPS_ROT = (float) (Math.PI / 16);
 	private static final float EPS_DIST = .1f;
 	private Point4f initPos;
+	VisionListener vl;
 
 	public PlaceRobotByHand(Point4f initPos) {
 		this.initPos = initPos;
@@ -34,6 +34,8 @@ public class PlaceRobotByHand implements ExperimentTask {
 			Map<String, Point4f> points) {
 		String initPosName = taskParams.getChildText(STR_INIT_POS);
 		initPos = points.get(initPosName);
+		
+		vl = VisionListener.getVisionListener();
 	}
 
 	public void perform(ExperimentUniverse univ, ExpSubject subject) {
@@ -57,17 +59,26 @@ public class PlaceRobotByHand implements ExperimentTask {
 		// e.printStackTrace();
 		// }
 		// }
-		VisionListener vl = new VisionListener();
 		Romina robot = Romina.getRomina();
 		Point3f dest = new Point3f(0, 0, 0);
 		float destOrient = (float) (Math.PI / 2);
+		
+		// Wait for position
+		while (! vl.hasPosition())
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		
 		while (vl.getRobotPoint().distance(dest) > EPS_DIST) {
 			Point3f p = vl.getRobotPoint();
 			float orientToPoint = (float) Math
 					.atan2(dest.y - p.y, dest.x - p.x);
 			while (Math.abs(Utiles.angleDiff(vl.getRobotOrientation(),
 					orientToPoint)) > EPS_ROT / 2) {
-				robot.rotate(EPS_ROT
+				robot.rotate(EPS_ROT 
 
 						* Math.signum(Utiles.angleDiff(
 								vl.getRobotOrientation(), orientToPoint)));
@@ -89,7 +100,7 @@ public class PlaceRobotByHand implements ExperimentTask {
 		}
 
 		while (Math.abs(Utiles.angleDiff(vl.getRobotOrientation(), destOrient)) > EPS_ROT / 4) {
-			robot.rotate(EPS_ROT
+			robot.rotate(EPS_ROT 
 
 					* Math.signum(Utiles.angleDiff(vl.getRobotOrientation(),
 							destOrient)));

@@ -2,8 +2,6 @@ package edu.usf.ratsim.nsl.modules;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.ratsim.support.Utiles;
-
 public class ProportionalArtificialPlaceCell implements ArtificialPlaceCell {
 
 	private Point3f center;

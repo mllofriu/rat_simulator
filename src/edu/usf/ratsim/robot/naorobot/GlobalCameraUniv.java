@@ -15,7 +15,7 @@ public class GlobalCameraUniv extends VirtualExpUniverse{
 	public GlobalCameraUniv(String mazeResource) {
 		super(mazeResource);
 		
-		vision = new VisionListener();
+		vision = VisionListener.getVisionListener();
 	}
 
 	@Override
