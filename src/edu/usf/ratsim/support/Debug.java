@@ -19,6 +19,6 @@ public class Debug {
 	public static boolean printFoundNNoMistakes = print && false;
 	public static boolean printHDCells = print && false;
 	public static boolean printGiveFood = print && false;
-	public static boolean printTaxicBh = print && true;	
+	public static boolean printTaxicBh = print && false;	
 	
 }

@@ -18,7 +18,6 @@ import edu.usf.ratsim.support.Configuration;
 public class PositionLogger implements ExperimentLogger {
 
 	private static final String DUMP_FILENAME = "position.txt";
-	private ProportionalExplorer actionPerformer;
 	private List<Pose> poses;
 	private String repNum;
 	private String subName;
@@ -27,14 +26,13 @@ public class PositionLogger implements ExperimentLogger {
 	private static PrintWriter writer = null;
 
 	public PositionLogger(String trialName, String groupName, String subName,
-			String repNum, ProportionalExplorer actionPerformer) {
+			String repNum) {
 		super();
 
 		this.trialName = trialName;
 		this.subName = subName;
 		this.groupName = groupName;
 		this.repNum = repNum;
-		this.actionPerformer = actionPerformer;
 
 		poses = new LinkedList<Pose>();
 	}

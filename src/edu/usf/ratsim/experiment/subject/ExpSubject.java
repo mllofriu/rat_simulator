@@ -12,6 +12,7 @@ import nslj.src.system.NslSystem;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.NslSequentialScheduler;
 import edu.usf.ratsim.experiment.model.ModelFactory;
+import edu.usf.ratsim.experiment.model.RLRatModel;
 import edu.usf.ratsim.experiment.subject.initializer.SubInitializerFactory;
 import edu.usf.ratsim.experiment.subject.initializer.SubjectInitializer;
 import edu.usf.ratsim.experiment.universe.UniverseFactory;

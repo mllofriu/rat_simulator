@@ -5,10 +5,10 @@
 	<!--Robot startin points -->
 	<point>
 		<name>S</name>
-		<xp>.5</xp>
-		<yp>.5</yp>
+		<xp>1</xp>
+		<yp>1</yp>
 		<zp>0</zp>
-		<rot>0</rot>
+		<rot>1.57</rot>
 	</point>
 	
 	
@@ -55,7 +55,7 @@
 	
 	<trial>
 		<name>training</name>
-		<reps>2</reps>
+		<reps>25</reps>
 		<groups>
 			<group>oneLayer</group>
 		</groups>

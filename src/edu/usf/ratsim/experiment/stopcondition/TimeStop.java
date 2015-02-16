@@ -13,11 +13,6 @@ public class TimeStop implements StopCondition {
 		this.time = condParams.getChildInt(STR_STOP_TIME);
 	}
 
-	public TimeStop(Element condParams) {
-		this.time = Integer.parseInt(condParams
-				.getElementsByTagName(STR_STOP_TIME).item(0).getTextContent());
-	}
-
 	public boolean experimentFinished() {
 		time--;
 		if (time <= 0)

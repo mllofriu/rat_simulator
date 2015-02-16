@@ -62,7 +62,7 @@ public class Experiment implements Runnable {
 	private String logPath;
 	private String mazeFile;
 	private List<Group> groups;
-	private Collection<ExperimentPostProc> postProcs;
+	private List<ExperimentPostProc> postProcs;
 
 	public Experiment(String filename, String logPath, String group,
 			String individual) {

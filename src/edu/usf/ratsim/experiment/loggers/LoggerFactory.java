@@ -29,10 +29,8 @@ public class LoggerFactory {
 			ElementWrapper loggerParams = loggerNode
 					.getChild(STR_LOGGER_PARAMS);
 			if (loggerName.equals("PositionLogger")) {
-				ProportionalExplorer p = ((RLRatModel) t.getSubject()
-						.getModel()).getActionPerformer();
 				res.add(new PositionLogger(t.getName(), t.getGroup(), t
-						.getSubjectName(), t.getRep(), p));
+						.getSubjectName(), t.getRep()));
 //			} else if (loggerName.equals("PolicyDumper")) {
 //				res.add(new PolicyDumper(((MultiScaleModel) t.getSubject()
 //						.getModel()), t.getName(), t.getGroup(), t
@@ -52,8 +50,7 @@ public class LoggerFactory {
 						.getSubjectName(), t.getRep()));
 			} else if (loggerName.equals("PolicyDumperWithIntention")) {
 				res.add(new PolicyDumperWithIntention(
-						((RLRatModel) t.getSubject()
-								.getModel()), t.getName(), t.getGroup(), t
+						t.getSubject(), t.getName(), t.getGroup(), t
 								.getSubjectName(), t.getRep(), Integer
 								.parseInt(loggerParams
 										.getChildText(STR_NUM_INTENTIONS))));

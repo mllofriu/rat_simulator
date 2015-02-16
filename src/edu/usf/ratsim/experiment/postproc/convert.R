@@ -16,26 +16,21 @@ saveArrivalTime <- function(pathData){
 
 mazeFile <- "maze.xml"
 pathFile = 'position.txt'
-sslPathFile = 'sslposition.txt'
 feedersFile = 'wantedFeeder.txt'
 wallsFile = 'walls.txt'
+policyFile = 'policy.txt'
 pathData <- read.csv(pathFile, sep='\t')
-splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
-save(pathData, file='position.RData')
-saveArrivalTime(pathData)
-
-
-sslpathData <- read.csv(sslPathFile, sep='\t')
 feederData <- read.csv(feedersFile, sep='\t')
 wallData <- read.csv(wallsFile, sep='\t')
+policyData <- read.csv(policyFile, sep='\t')
 save(pathData, file='position.RData')
-save(sslpathData, file='sslposition.RData')
 save(feederData, file='feeders.RData')
 save(wallData, file='walls.RData')
+save(policyData, file='policy.RData')
 file.remove(pathFile)
 file.remove(feedersFile)
 file.remove(wallsFile)
-file.remove(sslPathFile)
+file.remove(policyFile)
 
 splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 splitFeeders <- split(feederData, feederData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
