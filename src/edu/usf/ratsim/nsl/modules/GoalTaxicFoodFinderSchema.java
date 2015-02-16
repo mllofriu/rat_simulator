@@ -10,6 +10,7 @@ import javax.vecmath.Vector3f;
 import nslj.src.lang.NslDinInt0;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
+import nslj.src.lang.NslNumeric0;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.robot.Landmark;
@@ -29,19 +30,25 @@ public class GoalTaxicFoodFinderSchema extends NslModule {
 	private float maxReward;
 	private Random r;
 
+	private int repCount;
+
+	private double alpha;
+
 	public GoalTaxicFoodFinderSchema(String nslName, NslModule nslParent,
 			IRobot robot, ExperimentUniverse univ, int numActions,
-			float maxReward) {
+			float maxReward, float explorationHalfLifeVal) {
 		super(nslName, nslParent);
 		this.robot = robot;
 		this.univ = univ;
 		this.maxReward = maxReward;
-
+		this.alpha = - Math.log(.5) / explorationHalfLifeVal;
+		
 		goalFeeder = new NslDinInt0(this, "goalFeeder");
 		votes = new NslDoutFloat1(this, "votes", numActions);
 		
 		r = new Random();
-
+		
+		repCount = 0;
 	}
 
 	public void simRun() {
@@ -73,13 +80,15 @@ public class GoalTaxicFoodFinderSchema extends NslModule {
 			}
 		} else {
 			// Give a forward impulse
+			double explorationValue =  maxReward * Math.exp(-repCount * alpha);
+//			System.out.println(explorationValue);
 			if (r.nextFloat() > .8)
-				votes.set(Utiles.discretizeAction(0),.01);
+				votes.set(Utiles.discretizeAction(0),explorationValue);
 			else 
 				if (r.nextFloat() > .5)
-					votes.set(Utiles.discretizeAction(90), .01);
+					votes.set(Utiles.discretizeAction(90), explorationValue);
 				else
-					votes.set(Utiles.discretizeAction(-90), .01);
+					votes.set(Utiles.discretizeAction(-90), explorationValue);
 		}
 	}
 
@@ -90,5 +99,15 @@ public class GoalTaxicFoodFinderSchema extends NslModule {
 		
 		return null;
 	}
+
+	public void newRep() {
+		repCount++;
+//		System.out.println("Increasing rep" + repCount);
+	}
+
+	public void newTrial() {
+		repCount = 0;
+	}
+
 
 }

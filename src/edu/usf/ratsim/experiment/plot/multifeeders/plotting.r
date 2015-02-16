@@ -92,10 +92,11 @@ policyArrowsPlot <- function(policyData, p){
   policyDataSignificant <- policyData[policyData$val > (max(policyData$val) / 100),]
   
   if (nrow(policyDataSignificant) > 0){
-    segLen = .0001
+    segLen = .025
     policyDataSignificant[, 'deltax'] <- cos(policyDataSignificant['heading']) * segLen
     policyDataSignificant[, 'deltay'] <- sin(policyDataSignificant['heading']) * segLen
-    p + geom_segment(data=policyDataSignificant, aes(x = x, y = y, xend = x + deltax, yend = y + deltay), arrow = arrow(length = unit(0.3,"cm")))
+    p <- p + geom_segment(data=policyDataSignificant, aes(x = x, y = y, xend = x + deltax, yend = y + deltay), arrow = arrow(length = unit(0.2,"cm")))
+#     p <- p + geom_segment(data=policyDataSignificant, aes(x = x, y = y, xend = x + deltax, yend = y + deltay))
   } else {
     p
   }
@@ -129,8 +130,8 @@ plotPathOnMaze <- function (name, pathData, wallData, maze){
   p <- p + maze
   p <- ratPathPlot(pathData, p)
   #  p <- ratPathPointsPlot(pathData, p)
-  # p <- ratStartPointPlot(pathData, p)
-  # p <- ratEndPointPlot(pathData, p)
+  p <- ratStartPointPlot(pathData, p)
+  p <- ratEndPointPlot(pathData, p)
 
   
   p <- wallPlot(wallData, p)
@@ -146,7 +147,7 @@ plotPathOnMaze <- function (name, pathData, wallData, maze){
     print(p)  
   else
     ggsave(plot=p,filename=paste("plots/path/",name,
-                                 ".pdf", sep=''), width=10, height=10)
+                                 ".png", sep=''), width=10, height=10)
   
   #   saveRDS(p, paste("plots/path/",name,".obj", sep=''))
 }
@@ -168,7 +169,7 @@ plotPolicyOnMaze <- function(name, pathData, policyData, wallData, maze){
   
   
   ggsave(plot=p,filename=paste("plots/policy/",name,
-                               ".pdf", sep=''), width=10, height=10)
+                               ".png", sep=''), width=10, height=10)
   #   saveRDS(p, paste("plots/policy/",name,".obj", sep=''))
 }
 
@@ -199,15 +200,21 @@ policyFile <- 'policy.RData'
 mazeFile <- 'maze.xml'
 
 if (file.exists(pathFile)){
+  dir.create("plots")
+  dir.create("plots/path/")
   if (file.exists(mazeFile)){ 
+    maze <- mazePlot(mazeFile)
+    load(pathFile)
+    load(wallsFile)
+    splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+    splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+    invisible(llply(names(splitPath), function(x) plotPathOnMaze(x,
+                                                                 splitPath[[x]], splitWalls[[x]], maze), .parallel = FALSE))
     if (file.exists(policyFile)){
-      maze <- mazePlot(mazeFile)
-      load(pathFile)
+      dir.create("plots/policy/")
       load(policyFile)
-      load(wallsFile)
-      splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
-      splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
       splitPol <- split(policyData, policyData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+
       llply(names(splitPol), function(x){
         # Split data by layers and intention
         splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('intention')], drop=TRUE)

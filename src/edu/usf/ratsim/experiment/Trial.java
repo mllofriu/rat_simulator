@@ -167,10 +167,11 @@ public class Trial implements Runnable {
 				logger.finalizeLog();
 
 			// After trial loggers
-			for (ExperimentLogger logger : afterTrialloggers) {
-				logger.log(subject.getUniverse());
-				logger.finalizeLog();
-			}
+			if (rep.equals("99"))
+				for (ExperimentLogger logger : afterTrialloggers) {
+					logger.log(subject.getUniverse());
+					logger.finalizeLog();
+				}
 
 			System.out.println("Trial " + getName() + " " + group + " "
 					+ getSubjectName() + " " + getRep() + " finished.");

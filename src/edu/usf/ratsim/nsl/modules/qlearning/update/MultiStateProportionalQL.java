@@ -118,6 +118,8 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper,
 		float newValue = statesBefore.get(sBefore) * (val + delta)
 				+ (1 - statesBefore.get(sBefore)) * val;
 
+		if (Float.isInfinite(newValue) || Float.isNaN(newValue))
+			System.out.println("Numeric Error");
 		value.set(sBefore, a, newValue);
 	}
 
