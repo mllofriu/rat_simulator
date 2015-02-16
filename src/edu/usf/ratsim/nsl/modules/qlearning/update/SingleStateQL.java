@@ -220,4 +220,10 @@ public class SingleStateQL extends NslModule implements PolicyDumper {
 		}
 		return maxAngle;
 	}
+
+	@Override
+	public void savePolicy() {
+		// TODO Auto-generated method stub
+		
+	}
 }

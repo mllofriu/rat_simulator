@@ -1,8 +1,12 @@
 package edu.usf.ratsim.nsl.modules.qlearning.update;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
@@ -59,7 +63,27 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 		statesAfter = new NslDinFloat1(this, "statesAfter", numStates);
 
 		value = new NslDoutFloat2(this, "value", numStates, numActions);
-		value.set(initialValue);
+		File f = new File("policy.obj");
+		if (f.exists() && Configuration.getBoolean("Experiment.loadSavedPolicy")){
+			
+			try {
+				System.out.println("Reading saved policy...");
+				FileInputStream fin;
+				fin = new FileInputStream(f);
+				ObjectInputStream ois = new ObjectInputStream(fin);
+				value.set((float[][]) ois.readObject());
+			} catch (FileNotFoundException e) {
+				value.set(initialValue);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			value.set(initialValue);
+		}
 
 		actionVotesAfter = new NslDinFloat1(this, "actionVotesAfter",
 				numActions);
@@ -288,5 +312,20 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper 
 			}
 		}
 		return maxAngle;
+	}
+
+	@Override
+	public void savePolicy() {
+		FileOutputStream fout;
+		try {
+			fout = new FileOutputStream("policy.obj");
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			oos.writeObject(value._data);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

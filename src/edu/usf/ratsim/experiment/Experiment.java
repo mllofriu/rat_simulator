@@ -8,8 +8,10 @@ package edu.usf.ratsim.experiment;
  * Fecha: 11 de agosto de 2010
  */
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -89,7 +91,10 @@ public class Experiment implements Runnable {
 		// know
 		Configuration.setProperty("Log.DIRECTORY", logPath);
 
+		// Delete tmp logpath if it is still there
 		File file = new File(logPath);
+//		if (file.exists())
+//			file.delete();
 		file.mkdirs();
 
 		// Read experiments from xml file
@@ -183,9 +188,24 @@ public class Experiment implements Runnable {
 			Hashtable<String, Point4f> points, List<Group> groups,
 			String experimentLogPath) {
 
+		
+		
 		List<ElementWrapper> trialNodes = root.getChildren(STR_TRIAL);
 		// For each trial
 		for (ElementWrapper trialNode : trialNodes) {
+			int fromRep = 0;
+			if (Configuration.getBoolean("Experiment.loadSavedPolicy")){
+				System.out.println("Ingrese la repeticion a comenzar");
+				try {
+					fromRep = Integer.parseInt(new BufferedReader(new InputStreamReader(System.in)).readLine());
+				} catch (NumberFormatException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			// For each group
 			List<ElementWrapper> trialGroups = trialNode.getChild(
 					STR_TRIALGROUPS).getChildren(STR_GROUP);
@@ -195,9 +215,11 @@ public class Experiment implements Runnable {
 				for (Group group : groups) {
 					if (group.getName().equals(groupName)) {
 						for (ExpSubject subject : group.getSubjects()) {
+							
+							
 							// For each repetition
 							int reps = trialNode.getChildInt(STR_REPETITIONS);
-							for (int k = 0; k < reps; k++) {
+							for (int k = fromRep; k < reps; k++) {
 								Trial t = new Trial(trialNode, points,
 										groupName, subject, k);
 								if (!trials.containsKey(subject))

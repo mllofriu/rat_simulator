@@ -34,22 +34,22 @@ mazePlot <- function(mazeFile, wantedFeeder = -1){
   # Same as xmlParse()
   doc <- xmlParseDoc(mazeFile)
   root <- xmlRoot(doc)
-  ns <- getNodeSet(doc, "/world//pool")
+  ns <- getNodeSet(doc, "/world//floor")
   r <- as.numeric(xmlGetAttr(ns[[1]], "r"))
   x <- as.numeric(xmlGetAttr(ns[[1]], "xp"))
   # y coordinate is z
-  y <- as.numeric(xmlGetAttr(ns[[1]], "zp"))
+  y <- as.numeric(xmlGetAttr(ns[[1]], "yp"))
   
   #   Unfilled circle
-  dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, FALSE)
-  m <- geom_path(data=dat,aes(x,y))
+  #dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, FALSE)
+  #m <- geom_path(data=dat,aes(x,y))
   
   ns <- getNodeSet(doc, "/world//feeder")
   feeders <- llply(ns, function (f) {
     r <- as.numeric(xmlGetAttr(f, "r"))
     x <- as.numeric(xmlGetAttr(f, "xp"))
     # y coordinate is -z
-    y <- - as.numeric(xmlGetAttr(f, "zp"))
+    y <- - as.numeric(xmlGetAttr(f, "yp"))
     dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, TRUE)
     #print (paste(wantedFeeder," ", as.numeric(xmlGetAttr(f, "id"))))
     if (wantedFeeder == as.numeric(xmlGetAttr(f, "id")) ){
@@ -61,7 +61,7 @@ mazePlot <- function(mazeFile, wantedFeeder = -1){
   
   
   #Return a list with the maze and platform
-  list(m,feeders)
+  feeders
   #m
 }
 
@@ -117,7 +117,7 @@ wallPlot <- function(wallData,p){
   }
 }
 
-plotPathOnMaze <- function (name, pathData, wallData, maze){
+plotPathOnMaze <- function (preName, name, pathData, wallData, maze){
   # Get the individual components of the plot
   p <- ggplot()
   p <- p + maze
@@ -139,7 +139,7 @@ plotPathOnMaze <- function (name, pathData, wallData, maze){
   if (name == '')
     print(p)  
   else
-    ggsave(plot=p,filename=paste("plots/path/",name,
+    ggsave(plot=p,filename=paste("plots/path/",preName,name,
                                  ".pdf", sep=''), width=10, height=10)
   
   #   saveRDS(p, paste("plots/path/",name,".obj", sep=''))
@@ -193,29 +193,32 @@ incrementalPath <- function(pathData, feederData, wallData)
 
 mazeFile <- "maze.xml"
 pathFile = 'position.txt'
+camFile = 'sslposition.txt'
 feedersFile = 'wantedFeeder.txt'
 wallsFile = 'walls.txt'
 # # policyFile = 'policy.txt'
 # 
 # policyData <- read.csv(policyFile, sep='\t')
-pathData <- read.csv(pathFile, sep='\t')
-feederData <- read.csv(feedersFile, sep='\t')
-wallData <- read.csv(wallsFile, sep='\t')
-save(pathData, file='position.RData')
-save(feederData, file='feeders.RData')
-save(wallData, file='walls.RData')
-file.remove(pathFile)
-file.remove(feedersFile)
-file.remove(wallsFile)
+sslpathData <- read.csv(camFile, sep='\t')
+#feederData <- read.csv(feedersFile, sep='\t')
+#wallData <- read.csv(wallsFile, sep='\t')
+#save(pathData, file='position.RData')
+#save(feederData, file='feeders.RData')
+#save(wallData, file='walls.RData')
+#file.remove(pathFile)
+#file.remove(feedersFile)
+#file.remove(wallsFile)
 
-#load('pos.RData')
-#load('walls.RData')
+load('position.RData')
+load('walls.RData')
+load('feeders.RData')
 #load('wantedFeeder.RData')
 
 
 splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+splitSSLPath  <- split(sslpathData, sslpathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 splitFeeders <- split(feederData, feederData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
-splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+#splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 # splitPol <- split(policyData, policyData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 
 # One worker per plot
@@ -244,11 +247,13 @@ maze <- mazePlot(mazeFile)
 
 # # Plot just path
 
-invisible(llply(names(splitPath), function(x) plotPathOnMaze(x,
-                                                             splitPath[[x]], splitWalls[[x]], maze), .parallel = FALSE))
+invisible(llply(names(splitPath), function(x) plotPathOnMaze("slam", x,
+                                                            splitPath[[x]], splitWalls[[x]], maze), .parallel = FALSE))
+invisible(llply(names(splitSSLPath), function(x) plotPathOnMaze("ssl", x,
+                                                                splitSSLPath[[x]], splitWalls[[x]], maze), .parallel = FALSE))
 
 # for (i in 2:dim(recallPath)[1]) {
 #   + plotPathOnMaze('', recallPath[1:i,], maze)
 #   + 
- ani.options(outdir = paste(getwd(),'/plots/path/', sep=''))
- invisible(llply(names(splitPath), function(x) saveMovie(incrementalPath(splitPath[[x]], splitFeeders[[x]], splitWalls[[x]]), interval = .2, movie.name = paste(x,'pathAnimation.gif', sep=''), ani.width=500, ani.height = 500,)))
+# ani.options(outdir = paste(getwd(),'/plots/path/', sep=''))
+# invisible(llply(names(splitPath), function(x) saveMovie(incrementalPath(splitPath[[x]], splitFeeders[[x]], splitWalls[[x]]), interval = .2, movie.name = paste(x,'pathAnimation.gif', sep=''), ani.width=500, ani.height = 500,)))

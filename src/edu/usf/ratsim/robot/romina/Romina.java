@@ -50,9 +50,11 @@ public class Romina implements IRobot {
 
 		this.host = host;
 		this.port = port;
+		protoSocket = null;
 		establishConnection(host, port);
 
-		startRobot();
+		if (Configuration.getBoolean("Experiment.startRobot")) 
+			startRobot();
 
 		validResponse = false;
 		romina = this;
@@ -62,15 +64,19 @@ public class Romina implements IRobot {
 		boolean succeded = false;
 		while (!succeded)
 			try {
+				if (protoSocket != null)
+					protoSocket.close();
+				
 				System.out.println("Trying to connect to " + host + " " + port);
 				protoSocket = new Socket(host, port);
+				protoSocket.setSoTimeout(10000);
 				System.out.println("Connection stablished");
 				succeded = true;
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+//				e.printStackTrace();
 			} catch (IOException e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e1) {
@@ -92,17 +98,15 @@ public class Romina implements IRobot {
 			try {
 				sendCommnad(c, protoSocket);
 				succeded = true;
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (Exception e) {
+				establishConnection(host, port);
 			}
 		
 
 		try {
 			getResponse(protoSocket);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (Exception e) {
+			establishConnection(host, port);
 		}
 
 		validResponse = false;
@@ -133,7 +137,7 @@ public class Romina implements IRobot {
 	private Response getInfo() {
 		Response resp = null;
 		boolean succeded = false;
-		while (!succeded)
+		while (!succeded || resp == null || resp.getRobotPos() == null)
 			try {
 				if (!validResponse) {
 					Builder b = Command.newBuilder();
@@ -146,9 +150,10 @@ public class Romina implements IRobot {
 					resp = r;
 				}
 				succeded = true;
-			} catch (IOException e) {
+			} catch (Exception e) {
 				System.err
 						.println("Error getting response, sending command again");
+				System.err.print(e.toString());
 				establishConnection(host, port);
 			}
 
@@ -178,14 +183,14 @@ public class Romina implements IRobot {
 			try {
 				sendCommnad(c, protoSocket);
 				succeded = true;
-			} catch (IOException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		
 		try {
 			getResponse(protoSocket);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -233,7 +238,7 @@ public class Romina implements IRobot {
 		return new Point3f(r.getRobotPos().getX(), r.getRobotPos().getY(), 0);
 	}
 
-	private void sendCommnad(Command c, Socket protoSocket) throws IOException {
+	private void sendCommnad(Command c, Socket protoSocket) throws Exception {
 		c.writeTo(protoSocket.getOutputStream());
 	}
 
@@ -243,14 +248,15 @@ public class Romina implements IRobot {
 		return r.getRobotPos().getTheta();
 	}
 
-	private Response getResponse(Socket protoSocket) throws IOException {
+	private Response getResponse(Socket protoSocket) throws Exception {
 		return Response.parseDelimitedFrom(protoSocket.getInputStream());
 	}
 
 	public boolean isCloseToAFeeder() {
 		Point3f robot = getRobotPoint();
 		for (Landmark lm : getLandmarks()) {
-			if (lm.location.distance(new Point3f()) < CLOSE_TO_FOOD_THRS)
+			// Hack to avoid bug discovered that leads to feeding from wrong feeder
+			if (lm.id == 3 && lm.location.distance(new Point3f()) < CLOSE_TO_FOOD_THRS)
 				return true;
 		}
 
@@ -280,7 +286,7 @@ public class Romina implements IRobot {
 				getResponse(protoSocket);
 
 				// Sleep to wait for update to propagate
-				Thread.sleep(10000);
+				Thread.sleep(3000);
 
 				// Invalidate response object
 				validResponse = false;
@@ -288,7 +294,7 @@ public class Romina implements IRobot {
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			} catch (IOException e) {
+			} catch (Exception e) {
 				System.err
 						.println("Did not get response, reseting position again");
 				establishConnection(host, port);
@@ -310,14 +316,14 @@ public class Romina implements IRobot {
 			try {
 				sendCommnad(c, protoSocket);
 				succeded = true;
-			} catch (IOException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		
 		try {
 			getResponse(protoSocket);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

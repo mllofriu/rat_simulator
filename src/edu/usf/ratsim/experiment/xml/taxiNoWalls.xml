@@ -35,7 +35,7 @@
 				<foodReward>10000</foodReward>
 				<nonFoodReward>0</nonFoodReward>
 				<discountFactor>1</discountFactor>
-				<alpha>.8</alpha>
+				<alpha>0.8</alpha>
 				<initialValue>0</initialValue>
 				<flashingReward>10000</flashingReward>
 				<nonFlashingReward>10000</nonFlashingReward>
@@ -47,7 +47,7 @@
 			<initializer>
 				<name>feederSelector</name>
 				<params>
-					<numFeeders>4</numFeeders>
+					<numFeeders>1</numFeeders>
 				</params>
 			</initializer>
 		</initializers>
@@ -55,7 +55,7 @@
 	
 	<trial>
 		<name>training</name>
-		<reps>20</reps>
+		<reps>25</reps>
 		<groups>
 			<group>oneLayer</group>
 		</groups>
@@ -94,6 +94,10 @@
 			<!-- <task> <name>UnflashFeeder</name> </task> -->
 		</afterCycleTasks>
 		<afterTrialTasks>
+			<task>
+				<name>SavePolicy</name>
+				<params></params>
+			</task>
 		</afterTrialTasks>
 		<stopConditions>
 			<stopCondition>
