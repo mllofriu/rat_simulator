@@ -1,5 +1,12 @@
 package edu.usf.ratsim.experiment.model;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -29,6 +36,7 @@ import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQL;
 import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
 import edu.usf.ratsim.nsl.modules.qlearning.update.SingleStateQL;
 import edu.usf.ratsim.robot.IRobot;
+import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.ElementWrapper;
 import edu.usf.ratsim.support.Utiles;
 
@@ -77,6 +85,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private List<ArtificialHDCellLayer> afterHDs;
 	private LinkedList<ArtificialHDCellLayer> beforeHDs;
 	private ActiveGoalDecider afterActiveGoalDecider;
+	private PolicyDumper ql;
 
 	public MultiScaleMultiIntentionCooperativeModel(ElementWrapper params,
 			IRobot robot, ExperimentUniverse universe) {
@@ -104,8 +113,8 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 				.getChildBoolean("deterministicActionSelection");
 		boolean proportionalQl = params.getChildBoolean("proportionalQL");
 		
-		Random r = new Random();
-		long pclSeed = r.nextLong();
+		long pclSeed = checkPCLSeed();
+		
 		
 		beforePcls = new LinkedList<ArtificialPlaceCellLayer>();
 		beforePI = new LinkedList<PlaceIntention>();
@@ -264,12 +273,49 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 				numActions);
 
 		if (proportionalQl)
-			new MultiStateProportionalQL(QL_STR, this, bAll.getSize(),
+			ql = new MultiStateProportionalQL(QL_STR, this, bAll.getSize(),
 					numActions, discountFactor, alpha, initialValue, robot);
 		else
 			new SingleStateQL(QL_STR, this, bAll.getSize(), numActions,
 					discountFactor, alpha, initialValue);
 
+	}
+
+	private long checkPCLSeed() {
+		File f = new File("pclseed.obj");
+		if (f.exists() && Configuration.getBoolean("Experiment.loadSavedPolicy")){
+			
+			try {
+
+				System.out.println("Using existing seed...");
+				FileInputStream fin;
+				fin = new FileInputStream(f);
+				ObjectInputStream ois = new ObjectInputStream(fin);
+				return ((Long)ois.readObject()).longValue();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		Random r = new Random();
+		long seed = r.nextLong();
+		
+		
+		try {
+			FileOutputStream fout = new FileOutputStream("pclseed.obj");
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			oos.writeObject(new Long(seed));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return 0;
 	}
 
 	public void initSys() {
@@ -422,6 +468,10 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		}
 
 		// System.out.println("NsL model being finalized");
+	}
+
+	public void savePolicy() {
+		ql.savePolicy();
 	}
 
 }

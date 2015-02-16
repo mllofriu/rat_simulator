@@ -36,5 +36,7 @@ public interface PolicyDumper {
 	public void dumpPolicy(String trial, String groupName, String subName,
 			String rep, ArtificialPlaceCellLayerWithIntention pcl, int layer,
 			int numIntentions);
+	
+	public void savePolicy();
 
 }

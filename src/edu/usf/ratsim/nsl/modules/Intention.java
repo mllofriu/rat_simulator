@@ -20,6 +20,7 @@ public class Intention extends NslModule {
 	public void simRun() {
 		intention.set(0);
 
+//		System.out.println(goalFeeder.get());
 		if (goalFeeder.get() != -1)
 			intention.set(goalFeeder.get(), 1);
 		if (Debug.printIntention) {

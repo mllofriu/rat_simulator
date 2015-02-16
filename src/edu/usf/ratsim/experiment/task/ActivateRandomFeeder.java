@@ -19,7 +19,7 @@ public class ActivateRandomFeeder implements ExperimentTask {
 		
 		Random r = new Random();
 		int feeder = (new LinkedList<Integer>(feeders)).get(r.nextInt(feeders.size()));
-		feeder = 3;
+//		feeder = 0;
 		univ.setActiveFeeder(feeder, true);
 	}
 
