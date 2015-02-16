@@ -5,12 +5,10 @@ import java.util.Random;
 
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
 
 import nslj.src.lang.NslDinInt0;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
-import nslj.src.lang.NslNumeric0;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.robot.Landmark;

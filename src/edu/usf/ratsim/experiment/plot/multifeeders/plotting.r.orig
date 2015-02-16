@@ -146,8 +146,13 @@ plotPathOnMaze <- function (preName, name, pathData, wallData, maze){
   if (name == '')
     print(p)  
   else
+<<<<<<< HEAD
+    ggsave(plot=p,filename=paste("plots/path/",name,
+                                 ".png", sep=''), width=10, height=10)
+=======
     ggsave(plot=p,filename=paste("plots/path/",preName,name,
                                  ".pdf", sep=''), width=10, height=10)
+>>>>>>> 4b20b9da862b6dbee66df6acf4514c8945c03df4
   
   #   saveRDS(p, paste("plots/path/",name,".obj", sep=''))
 }

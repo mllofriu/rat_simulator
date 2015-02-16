@@ -20,7 +20,7 @@ import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Utiles;
 
-public class SingleStateQL extends NslModule implements PolicyDumper, QLUpdater {
+public class SingleStateQL extends NslModule implements QLAlgorithm {
 
 	private static final float INTERVAL = 0.05f;
 	// Margin for ignoring inside maze
@@ -227,4 +227,11 @@ public class SingleStateQL extends NslModule implements PolicyDumper, QLUpdater 
 	public void setUpdatesEnabled(boolean b) {
 		update = false;
 	}
+
+	@Override
+	public void savePolicy() {
+		
+	}
+
+	
 }

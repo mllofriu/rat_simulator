@@ -3,7 +3,6 @@ package edu.usf.ratsim.experiment.task;
 import java.util.Random;
 
 import javax.vecmath.Point2f;
-import javax.vecmath.Tuple2f;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;

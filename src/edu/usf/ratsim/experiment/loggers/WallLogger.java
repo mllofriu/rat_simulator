@@ -8,12 +8,8 @@ import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.vecmath.Point3f;
-import javax.vecmath.Tuple3f;
-
 import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.robot.virtual.WallNode;
 import edu.usf.ratsim.support.Configuration;
 

@@ -6,8 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.util.LinkedList;
-import java.util.List;
 
 import nslj.src.lang.NslDinFloat0;
 import nslj.src.lang.NslDinFloat1;
@@ -23,7 +21,7 @@ import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Utiles;
 
-public class MultiStateProportionalQL extends NslModule implements PolicyDumper, QLUpdater {
+public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 
 	private static final String DUMP_FILENAME = "policy.txt";
 
@@ -76,6 +74,9 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper,
 				numActions);
 		actionVotesBefore = new NslDinFloat1(this, "actionVotesBefore",
 				numActions);
+		// for (int s = 0; s < numStates; s++)
+		// for (int a = 0; a < numActions; a++)
+		// value.set(s,a,initialValue);
 
 		update = true;
 	}
@@ -115,6 +116,8 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper,
 			delta = alpha
 					* (reward.get() + discountFactor * (maxERNextState) - (val + actionVotesBefore
 							.get(a)));
+		// if (a == Utiles.eatAction)
+		// System.out.println("Updating eat with delta " + delta);
 		float newValue = statesBefore.get(sBefore) * (val + delta)
 				+ (1 - statesBefore.get(sBefore)) * val;
 
@@ -215,6 +218,11 @@ public class MultiStateProportionalQL extends NslModule implements PolicyDumper,
 
 	public void setUpdatesEnabled(boolean enabled) {
 		update = enabled;
+	}
+
+	@Override
+	public void savePolicy() {
+		
 	}
 
 }

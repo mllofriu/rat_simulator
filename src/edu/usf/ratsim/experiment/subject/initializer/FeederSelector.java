@@ -25,15 +25,17 @@ public class FeederSelector implements SubjectInitializer {
 		ExperimentUniverse univ = subject.getUniverse();
 
 		Collection<Integer> feeders = new LinkedList<Integer>();
-		while (feeders.size() < numFeeders) {
-			int i = r.nextInt(univ.getNumFeeders());
-			if (!feeders.contains(i))
-				feeders.add(i);
-		}
+//		while (feeders.size() < numFeeders) {
+//			int i = r.nextInt(univ.getNumFeeders());
+//			if (!feeders.contains(i))
+//				feeders.add(i);
+//		}
 		
 //		feeders.add(0);
 //		feeders.add(6);
 //		feeders.add(4);
+		
+		feeders.add(3);
 
 		subject.setProperty(ActivateAllFeeders.STR_ACTIVE_FEEDERS, feeders);
 	}

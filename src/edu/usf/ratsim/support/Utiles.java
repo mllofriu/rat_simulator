@@ -3,7 +3,6 @@ package edu.usf.ratsim.support;
 import java.applet.Applet;
 import java.applet.AudioClip;
 import java.awt.Color;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -28,8 +27,8 @@ public class Utiles {
 	// (float) (5 * Math.PI / 4), (float) (6 * Math.PI / 4),
 	// (float) (7 * Math.PI / 4) };
 
-	public static final float actionInterval = (float) (Math.PI / 6);
-	private static final float actionMin = (float) (-Math.PI / 6);
+	public static final float actionInterval = (float) (Math.PI / 4);
+	private static final float actionMin = (float) (-Math.PI / 4);
 	// private static final float actionMin = (float) 0;
 	public static final int numRotations = 3;
 	public static final int numActions = numRotations + 1;
@@ -400,6 +399,45 @@ public class Utiles {
 		rot1.inverse();
 		rot1.mul(rot2);
 		return rotToAngle(rot1);
+	}
+
+	public static int bestActionToRot(Quat4f rotToGoal, boolean[] affordances) {
+		// Find the desired rot
+		Quat4f rotToMake = rotToGoal;
+
+		// See if going straight isnt good enough
+		float resultingAnglePos = (float) Math.abs(rotToAngle(rotToMake));
+		float resultingAngleInv = (float) Math.abs(Math.PI * 2
+				- resultingAnglePos);
+		if (Math.min(resultingAnglePos, resultingAngleInv) < EPS_STRAIGHT) {
+			return discretizeAction(0);
+		}
+
+		int action = -1;
+		float angleDifference = (float) (Math.PI * 2);
+		for (int i = 0; i < numRotations; i++) {
+			if (affordances[i]){
+				// Make rotation for this action
+				Quat4f rotAction = angleToRot(getActionAngle(i));
+				// Invert
+				rotAction.inverse();
+				// Compose rotToMake and inverse of action.
+				Quat4f tmpRot = new Quat4f(rotToMake);
+				tmpRot.mul(rotAction);
+				// Compare axis angle. The closer to 0, the more suitable
+				// Take the min of normal and inverse
+				resultingAnglePos = (float) Math.abs(rotToAngle(tmpRot));
+				resultingAngleInv = (float) Math.abs(Math.PI * 2
+						- resultingAnglePos);
+				if (Math.min(resultingAnglePos, resultingAngleInv) < angleDifference) {
+					angleDifference = Math
+							.min(resultingAnglePos, resultingAngleInv);
+					action = i;
+				}
+			}
+		}
+
+		return action;
 	}
 
 }

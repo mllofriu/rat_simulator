@@ -23,7 +23,7 @@ public class GiveFood implements ExperimentTask {
 		else
 			stepsCloseToFeeder = feederDelay;
 		
-		if (stepsCloseToFeeder <= 0){
+		if (stepsCloseToFeeder < 0){
 			stepsCloseToFeeder = feederDelay;
 			if (Debug.printGiveFood) System.out.println("Close to a feeder for long");
 			int feeder = univ.getFoundFeeder();

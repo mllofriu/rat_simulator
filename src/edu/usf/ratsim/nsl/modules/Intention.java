@@ -1,9 +1,9 @@
 package edu.usf.ratsim.nsl.modules;
 
-import edu.usf.ratsim.support.Debug;
 import nslj.src.lang.NslDinInt0;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
+import edu.usf.ratsim.support.Debug;
 
 public class Intention extends NslModule {
 
@@ -20,6 +20,7 @@ public class Intention extends NslModule {
 	public void simRun() {
 		intention.set(0);
 
+//		System.out.println(goalFeeder.get());
 		if (goalFeeder.get() != -1)
 			intention.set(goalFeeder.get(), 1);
 		if (Debug.printIntention) {
