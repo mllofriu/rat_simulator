@@ -2,8 +2,12 @@ package edu.usf.ratsim.nsl.modules.qlearning.update;
 
 import java.awt.geom.Point2D;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
@@ -68,7 +72,28 @@ public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 		statesAfter = new NslDinFloat1(this, "statesAfter", numStates);
 
 		value = new NslDoutFloat2(this, "value", numStates, numActions);
-		value.set(initialValue);
+		File f = new File("policy.obj");
+		if (f.exists()
+				&& Configuration.getBoolean("Experiment.loadSavedPolicy")) {
+
+			try {
+				System.out.println("Reading saved policy...");
+				FileInputStream fin;
+				fin = new FileInputStream(f);
+				ObjectInputStream ois = new ObjectInputStream(fin);
+				value.set((float[][]) ois.readObject());
+			} catch (FileNotFoundException e) {
+				value.set(initialValue);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			value.set(initialValue);
+		}
 
 		actionVotesAfter = new NslDinFloat1(this, "actionVotesAfter",
 				numActions);
@@ -149,40 +174,45 @@ public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 
 			for (int intention = 0; intention < numIntentions; intention++) {
 				for (float xInc = MARGIN; xInc
-						- (univ.getBoundingRectangle().getWidth() - MARGIN/2) < 1e-8; xInc += INTERVAL) {
+						- (univ.getBoundingRectangle().getWidth() - MARGIN / 2) < 1e-8; xInc += INTERVAL) {
 					for (float yInc = MARGIN; yInc
-							- (univ.getBoundingRectangle().getHeight() - MARGIN/2) < 1e-8; yInc += INTERVAL) {
+							- (univ.getBoundingRectangle().getHeight() - MARGIN / 2) < 1e-8; yInc += INTERVAL) {
 						float x = (float) (univ.getBoundingRectangle()
 								.getMinX() + xInc);
 						float y = (float) (univ.getBoundingRectangle()
 								.getMinY() + yInc);
 
-//						List<Float> preferredAngles = new LinkedList<Float>();
+						// List<Float> preferredAngles = new
+						// LinkedList<Float>();
 						float maxVal = Float.NEGATIVE_INFINITY;
 						float bestAngle = 0;
 						for (float angle = 0; angle <= 2 * Math.PI; angle += ANGLE_INTERVAL) {
 							univ.setRobotPosition(new Point2D.Float(x, y),
 									angle);
 							rat.stepCycle();
-////							float forwardVal = ((MultiScaleMultiIntentionCooperativeModel) rat
-////									.getModel()).getQLVotes().getVotes().get(Utiles.discretizeAction(0));
-//							if( forwardVal > maxVal){
-//								maxVal = forwardVal;
-//								bestAngle = angle;
-//							}
-							for (int action = 0; action < Utiles.numActions; action++){
+							// // float forwardVal =
+							// ((MultiScaleMultiIntentionCooperativeModel) rat
+							// //
+							// .getModel()).getQLVotes().getVotes().get(Utiles.discretizeAction(0));
+							// if( forwardVal > maxVal){
+							// maxVal = forwardVal;
+							// bestAngle = angle;
+							// }
+							for (int action = 0; action < Utiles.numActions; action++) {
 								float angleVal = ((MultiScaleMultiIntentionCooperativeModel) rat
-									.getModel()).getQLVotes().getVotes().get(action);
-								if (angleVal > maxVal){
+										.getModel()).getQLVotes().getVotes()
+										.get(action);
+								if (angleVal > maxVal) {
 									maxVal = angleVal;
 									bestAngle = angle;
 								}
 							}
-								
+
 							// If goes forward, it is the preferred angle
 						}
 
-						String preferredAngleString = new Float(bestAngle).toString();
+						String preferredAngleString = new Float(bestAngle)
+								.toString();
 
 						writer.println(trial + '\t' + groupName + '\t'
 								+ subName + '\t' + rep + '\t' + x + "\t" + y
@@ -222,7 +252,17 @@ public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 
 	@Override
 	public void savePolicy() {
-		
+		FileOutputStream fout;
+		try {
+			fout = new FileOutputStream("policy.obj");
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			oos.writeObject(value._data);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }

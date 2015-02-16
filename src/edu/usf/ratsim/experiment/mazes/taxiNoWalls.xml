@@ -6,7 +6,7 @@
         <floor r='4' h='0' cr='0' cg='0' cb='0' xp='0' yp='0' zp='-0.075'/>
         
         
-        <feeder id='3' r='0.1' h='0' cr='1' cg='1' cb='0' xp='0' yp='-.95' zp='0.1'/> <!-- B -->
+        <feeder id='0' r='0.1' h='0' cr='1' cg='1' cb='0' xp='0' yp='-.95' zp='0.1'/> <!-- B -->
         
         <!-- Exterior walls -->	
         <wall cr='1' cg='1' cb='1' h='0.1' x1='1' y1='1' z1='0' x2='1' y2='-1' z2='0'/>
