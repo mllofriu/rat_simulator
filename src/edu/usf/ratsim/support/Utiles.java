@@ -330,6 +330,8 @@ public class Utiles {
 //	  System.out.println(discretizeAngle((float) (-90 * Math.PI / 180)));
 	  System.out.println(discretizeAction(90));
 	  System.out.println(discretizeAction(-90));
+	  System.out.println(getActionAngle(0));
+	  System.out.println(getActionAngle(2));
 //	 System.out.println(Math.toDegrees(actions[bestActionToRot(
 //	 angleToRot((float) Math.toRadians(135)),
 //	 angleToRot((float) Math.toRadians(90)))]));

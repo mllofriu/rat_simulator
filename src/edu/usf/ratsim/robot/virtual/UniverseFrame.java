@@ -73,6 +73,8 @@ public class UniverseFrame extends java.awt.Frame {
 	}
 
 	private void initComponents() {
+		setFocusableWindowState(false);
+		
 		java.awt.GridBagConstraints gridBagConstraints;
 
 		panel1 = new java.awt.Panel();
@@ -246,6 +248,7 @@ public class UniverseFrame extends java.awt.Frame {
 		int size = 800;
 		setBounds((screenSize.width - size) / 2, (screenSize.height - size) / 2,
 				size, size);
+		
 	}
 
 	// accion asociada al boton de girar horario

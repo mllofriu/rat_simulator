@@ -83,6 +83,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 	private JointStatesManySum jointVotes;
 	private Voter qlVotes;
 	private boolean proportionalQl;
+	private List<GoalTaxicFoodFinderSchema> taxic;
 
 	public MultiScaleMultiIntentionCooperativeModel(ElementWrapper params,
 			IRobot robot, ExperimentUniverse universe) {
@@ -107,6 +108,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		float flashingReward = params.getChildFloat("flashingReward");
 		float nonFlashingReward = params.getChildFloat("nonFlashingReward");
 		float wallFollowingVal = params.getChildFloat("wallAvoidingVal");
+		float explorationHalfLifeVal = params.getChildFloat("explorationHalfLifeVal");
 		boolean deterministic = params
 				.getChildBoolean("deterministicActionSelection");
 		proportionalQl = params.getChildBoolean("proportionalQL");
@@ -120,6 +122,7 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		afterPI = new LinkedList<PlaceIntention>();
 		qLUpdVal = new LinkedList<PolicyDumper>();
 		qLActionSel = new LinkedList<WTAVotes>();
+		taxic = new LinkedList<GoalTaxicFoodFinderSchema>();
 
 		beforeActiveGoalDecider = new ActiveGoalDecider(
 				BEFORE_ACTIVE_GOAL_DECIDER_STR, this, universe);
@@ -184,8 +187,8 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
-		new GoalTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
-				universe, numActions, nonFlashingReward);
+		taxic.add(new GoalTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
+				universe, numActions, nonFlashingReward, explorationHalfLifeVal));
 
 		// Wall following for obst. avoidance
 		new WallAvoider(BEFORE_WALLAVOID_STR, this, robot, universe,
@@ -265,8 +268,8 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
-		new GoalTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot,
-				universe, numActions, nonFlashingReward);
+		taxic.add(new GoalTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot,
+				universe, numActions, nonFlashingReward, explorationHalfLifeVal));
 
 		// Wall following for obst. avoidance
 		new WallAvoider(AFTER_WALLAVOID_STR, this, robot, universe, numActions,
@@ -423,6 +426,8 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 		beforeActiveGoalDecider.newTrial();
 		afterActiveGoalDecider.newTrial();
 		// anyGoalDecider.newTrial();
+//		for(GoalTaxicFoodFinderSchema gs : taxic)
+//			gs.newTrial();
 	}
 
 	public void deactivatePCL(List<Integer> feedersToDeactivate) {
@@ -455,5 +460,10 @@ public class MultiScaleMultiIntentionCooperativeModel extends NslModel
 
 	public Voter getQLVotes() {
 		return qlVotes;
+	}
+
+	public void newRep() {
+		for(GoalTaxicFoodFinderSchema gs : taxic)
+			gs.newRep();
 	}
 }
