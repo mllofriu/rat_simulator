@@ -49,7 +49,7 @@ mazePlot <- function(mazeFile, wantedFeeder = -1){
     r <- as.numeric(xmlGetAttr(f, "r"))
     x <- as.numeric(xmlGetAttr(f, "xp"))
     # y coordinate is -z
-    y <- - as.numeric(xmlGetAttr(f, "yp"))
+    y <- as.numeric(xmlGetAttr(f, "yp"))
     dat <- circleFun(c(x,y),2*r,npoints = 100, 0, 2, TRUE)
     #print (paste(wantedFeeder," ", as.numeric(xmlGetAttr(f, "id"))))
     if (wantedFeeder == as.numeric(xmlGetAttr(f, "id")) ){
@@ -86,22 +86,28 @@ ratEndPointPlot <- function (pathData, p){
 
 policyArrowsPlot <- function(policyData, p){
   # Compute deltax and y
-  policyDataNonNA <- policyData[!is.na(policyData['angle']),]
+  #policyDataNonNA <- policyData[!is.na(policyData['heading']),]
   
-  if (nrow(policyDataNonNA) > 0){
+  # Only keep those greater than 1% of max
+  policyDataSignificant <- policyData[policyData$val > (max(policyData$val) / 100),]
+  
+  if (nrow(policyDataSignificant) > 0){
     segLen = .0001
-    policyDataNonNA[, 'deltax'] <- cos(policyDataNonNA['angle']) * segLen
-    policyDataNonNA[, 'deltay'] <- sin(policyDataNonNA['angle']) * segLen
-    p + geom_segment(data=policyDataNonNA, aes(x = x, y = y, xend = x + deltax, yend = y + deltay), arrow = arrow(length = unit(0.1,"cm")))
+    policyDataSignificant[, 'deltax'] <- cos(policyDataSignificant['heading']) * segLen
+    policyDataSignificant[, 'deltay'] <- sin(policyDataSignificant['heading']) * segLen
+    p + geom_segment(data=policyDataSignificant, aes(x = x, y = y, xend = x + deltax, yend = y + deltay), arrow = arrow(length = unit(0.3,"cm")))
   } else {
     p
   }
 }
 
 policyDotsPlot <- function(policyData, p){
-  policyDataNA <- policyData[is.na(policyData['angle']),]
-  if (nrow(policyDataNA) > 0){
-    p + geom_point(data=policyDataNA,aes(x,y), col="black", bg="black", cex=2)
+  #policyDataNA <- policyData[is.na(policyData['heading']),]
+  
+  # Only keep those greater than 1% of max
+  policyDataNonSignificant <- policyData[policyData$val <= max(policyData$val) / 100,]
+  if (nrow(policyDataNonSignificant) > 0){
+    p + geom_point(data=policyDataNonSignificant,aes(x,y), col="black", bg="black", cex=2)
   } else {
     p
   }
@@ -123,8 +129,8 @@ plotPathOnMaze <- function (preName, name, pathData, wallData, maze){
   p <- p + maze
   p <- ratPathPlot(pathData, p)
   #  p <- ratPathPointsPlot(pathData, p)
-  p <- ratStartPointPlot(pathData, p)
-  p <- ratEndPointPlot(pathData, p)
+  # p <- ratStartPointPlot(pathData, p)
+  # p <- ratEndPointPlot(pathData, p)
 
   
   p <- wallPlot(wallData, p)
@@ -145,14 +151,11 @@ plotPathOnMaze <- function (preName, name, pathData, wallData, maze){
   #   saveRDS(p, paste("plots/path/",name,".obj", sep=''))
 }
 
-plotPolicyOnMaze <- function(name, pathData, policyData, wallData, maze){  
-  #  Take out points outside the circlle
-  eps = .01
-  policyData <- policyData[(policyData['x']^2 + policyData['y']^2 < .5^2 - eps),] 
-  
+plotPolicyOnMaze <- function(name, pathData, policyData, wallData, maze){      
   p <- ggplot()
   p <- p + maze
-  p <- ratPathPlot(pathData, p)
+  p <- wallPlot(wallData, p)
+  #p <- ratPathPlot(pathData, p)
   #  p <- ratPathPointsPlot(pathData, p)
   p <- ratStartPointPlot(pathData, p)
   p <- ratEndPointPlot(pathData, p)
@@ -191,35 +194,15 @@ incrementalPath <- function(pathData, feederData, wallData)
 
 
 
-mazeFile <- "maze.xml"
-pathFile = 'position.txt'
-camFile = 'sslposition.txt'
-feedersFile = 'wantedFeeder.txt'
-wallsFile = 'walls.txt'
-# # policyFile = 'policy.txt'
-# 
-# policyData <- read.csv(policyFile, sep='\t')
-sslpathData <- read.csv(camFile, sep='\t')
-#feederData <- read.csv(feedersFile, sep='\t')
-#wallData <- read.csv(wallsFile, sep='\t')
-#save(pathData, file='position.RData')
-#save(feederData, file='feeders.RData')
-#save(wallData, file='walls.RData')
-#file.remove(pathFile)
-#file.remove(feedersFile)
-#file.remove(wallsFile)
-
 load('position.RData')
 load('walls.RData')
-load('feeders.RData')
 #load('wantedFeeder.RData')
-
+load('policy.RData')
 
 splitPath <- split(pathData, pathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
-splitSSLPath  <- split(sslpathData, sslpathData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
-splitFeeders <- split(feederData, feederData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
-#splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
-# splitPol <- split(policyData, policyData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+#splitFeeders <- split(feederData, feederData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+splitWalls <- split(wallData, wallData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
+splitPol <- split(policyData, policyData[c('trial', 'group', 'subject', 'repetition')], drop=TRUE)
 
 # One worker per plot
 #registerDoParallel()
@@ -228,29 +211,30 @@ splitFeeders <- split(feederData, feederData[c('trial', 'group', 'subject', 'rep
 #ddply(pathData, .(trial), plotArrivalTime)
 
 #Save arrival times as a function of repetition number
-saveArrivalTime(pathData)
+#saveArrivalTime(pathData)
+
+
+maze <- mazePlot('maze.xml')
 
 # Saving image non-parallel:
-# invisible(llply(names(splitPol), function(x){
-#   # Split data by layers and intention
-#   #   splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('layer','intention')], drop=TRUE)
-#   splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('layer')], drop=TRUE)
-#   # Plot different layers with same path data
-#   lapply(names(splitPolLayer), function (y) plotPolicyOnMaze(paste(x,y,sep='.'),
-#                                                              splitPath[[x]], 
-#                                                              splitPolLayer[[y]],
-#                                                              maze))
-# }, .parallel = TRUE))
+llply(names(splitPol), function(x){
+  # Split data by layers and intention
+  splitPolLayer <- split(splitPol[[x]], splitPol[[x]][c('intention')], drop=TRUE)
+  # Plot different layers with same path data
+  lapply(names(splitPolLayer), function (y) plotPolicyOnMaze(paste(x,y,sep='.'),
+                                                             splitPath[[x]], 
+                                                             splitPolLayer[[y]],
+                                                             splitWalls[[x]],
+                                                             maze))
+})
 
 
-maze <- mazePlot(mazeFile)
+
 
 # # Plot just path
 
-invisible(llply(names(splitPath), function(x) plotPathOnMaze("slam", x,
-                                                            splitPath[[x]], splitWalls[[x]], maze), .parallel = FALSE))
-invisible(llply(names(splitSSLPath), function(x) plotPathOnMaze("ssl", x,
-                                                                splitSSLPath[[x]], splitWalls[[x]], maze), .parallel = FALSE))
+#invisible(llply(names(splitPath), function(x) plotPathOnMaze(x,
+#                                                             splitPath[[x]], splitWalls[[x]], maze), .parallel = FALSE))
 
 # for (i in 2:dim(recallPath)[1]) {
 #   + plotPathOnMaze('', recallPath[1:i,], maze)

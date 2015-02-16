@@ -8,9 +8,10 @@ import java.io.InputStreamReader;
 import org.apache.commons.io.FileUtils;
 
 import edu.usf.ratsim.experiment.plot.ExperimentPlotter;
+import edu.usf.ratsim.experiment.postproc.ExperimentPostProc;
 import edu.usf.ratsim.support.Configuration;
 
-public class MultiFeedersTrialPlotter implements ExperimentPlotter {
+public class MultiFeedersTrialPlotter implements ExperimentPlotter, ExperimentPostProc {
 	
 	private static final String PLOTTING_SCRIPT = "/edu/usf/ratsim/experiment/plot/multifeeders/plotting.r";
 	private static final String PLOT_EXECUTER = "/edu/usf/ratsim/experiment/plot/multifeeders/plot.sh";
@@ -40,7 +41,7 @@ public class MultiFeedersTrialPlotter implements ExperimentPlotter {
 
 		// Execute the plotting script
 		try {
-			System.out.println("Executing plotting scripts");
+			System.out.println("Executing bash plotting scripts");
 			Process plot = Runtime.getRuntime().exec("sh plot.sh", null,
 					new File(Configuration.getString("Log.DIRECTORY")));
 			BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -65,6 +66,11 @@ public class MultiFeedersTrialPlotter implements ExperimentPlotter {
 			e.printStackTrace();
 		}
 
+	}
+
+	@Override
+	public void perform() {
+		plot();
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import edu.usf.ratsim.experiment.ExperimentLogger;
 import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.experiment.model.RLRatModel;
+import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayerWithIntention;
 import edu.usf.ratsim.nsl.modules.qlearning.update.PolicyDumper;
 
@@ -16,11 +17,13 @@ public class PolicyDumperWithIntention implements ExperimentLogger {
 	private String trial;
 	private String groupName;
 	private int numIntentions;
+	private ExpSubject subject;
 
-	public PolicyDumperWithIntention(RLRatModel rlRatModel, String trial,
+	public PolicyDumperWithIntention(ExpSubject expSubject, String trial,
 			String groupName, String subName, String rep, int numIntentions) {
-		pclLayers = rlRatModel.getPCLLayersIntention();
-		policyDumpers = rlRatModel.getPolicyDumpers();
+		this.subject = expSubject;
+		policyDumpers = ((RLRatModel) subject.getModel()).getPolicyDumpers();
+		
 		this.trial = trial;
 		this.subName = subName;
 		this.groupName = groupName;
@@ -30,8 +33,7 @@ public class PolicyDumperWithIntention implements ExperimentLogger {
 
 	public void log(ExperimentUniverse universe) {
 		for (int i = 0; i < policyDumpers.size(); i++)
-			policyDumpers.get(i).dumpPolicy(trial, groupName, subName, rep,
-					pclLayers.get(i), i, numIntentions);
+			policyDumpers.get(i).dumpPolicy(trial, groupName, subName, rep, numIntentions, universe, subject);
 	}
 
 	public void finalizeLog() {
