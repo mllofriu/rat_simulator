@@ -23,5 +23,6 @@
 	<classpathentry kind="lib" path="/work/rat_simulator/deps/j3dport/j3dcore.jar"/>
 	<classpathentry kind="lib" path="/work/rat_simulator/deps/j3dport/gluegen.jar"/>
 	<classpathentry kind="lib" path="/work/rat_simulator/deps/j3dport/gluegen-rt.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/experiment"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
