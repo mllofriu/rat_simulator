@@ -4,7 +4,7 @@ import java.util.Random;
 
 import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.ratsim.support.Debug;
 
 /**
@@ -16,18 +16,21 @@ import edu.usf.ratsim.support.Debug;
  */
 public class FlashingOrAnyGoalDecider extends NslModule {
 
-	private ExperimentUniverse universe;
 	public NslDoutInt0 goalFeeder;
 	// Keep the goal as a static variable to be able to pass among iterations
 	public static int currentGoal;
 	private Random r;
+	private Subject subject;
+	private int numIntentions;
 	private static int lastFeeder;
 
 	public FlashingOrAnyGoalDecider(String nslName, NslModule nslParent,
-			ExperimentUniverse univ) {
+			Subject subject, int numIntentions) {
 		super(nslName, nslParent);
 
-		this.universe = univ;
+		this.subject = subject;
+		this.numIntentions = numIntentions;
+
 		goalFeeder = new NslDoutInt0(this, "goalFeeder");
 
 		r = new Random();
@@ -43,23 +46,22 @@ public class FlashingOrAnyGoalDecider extends NslModule {
 	public void simRun() {
 		if (currentGoal == -1) {
 			// currentGoal = 0;
-			currentGoal = universe.getFeeders().get(
-					r.nextInt(universe.getFeeders().size()));
+			currentGoal = r.nextInt(numIntentions);
 			// System.out.println("Goal in -1 for " + nslGetName());
 		}
 
-		if (!universe.getFlashingFeeders().isEmpty()) {
-			currentGoal = universe.getFlashingFeeders().get(0);
+		// TODO: why do we need the second term?
+		if (subject.hasEaten() || subject.hasTriedToEat()) {
+			lastFeeder = currentGoal;
+			currentGoal = subject.getRobot().getClosestFeeder(lastFeeder);
 		}
 
-		if (universe.hasRobotAte() || universe.hasRobotTriedToEat()) {
-			lastFeeder = currentGoal;
-			currentGoal = universe.getFeederInFrontOfRobot(lastFeeder);
-			
+		if (subject.getRobot().seesFlashingFeeder()) {
+			currentGoal = subject.getRobot().getFlashingFeeder().id;
 		}
 
 		goalFeeder.set(currentGoal);
-		
+
 		if (Debug.printAnyGoal)
 			System.out.println("Any GD: " + currentGoal + " "
 					+ goalFeeder.get());

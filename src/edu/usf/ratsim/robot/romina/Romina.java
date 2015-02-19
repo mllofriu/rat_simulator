@@ -10,7 +10,8 @@ import java.util.List;
 
 import javax.vecmath.Point3f;
 
-import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.ratsim.experiment.universe.virtual.UniverseFrame;
+import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.robot.Landmark;
 import edu.usf.ratsim.robot.romina.protobuf.Connector.Command;
@@ -18,8 +19,6 @@ import edu.usf.ratsim.robot.romina.protobuf.Connector.Command.Builder;
 import edu.usf.ratsim.robot.romina.protobuf.Connector.Command.CommandType;
 import edu.usf.ratsim.robot.romina.protobuf.Connector.Position;
 import edu.usf.ratsim.robot.romina.protobuf.Connector.Response;
-import edu.usf.ratsim.robot.virtual.UniverseFrame;
-import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.Debug;
 
@@ -41,7 +40,7 @@ public class Romina implements IRobot {
 	public Romina(String host, int port, ExperimentUniverse world) {
 		if (Configuration.getBoolean("UniverseFrame.display")) {
 			UniverseFrame worldFrame = new UniverseFrame(
-					(VirtualExpUniverse) world);
+					(VirtUniverse) world);
 			worldFrame.setVisible(true);
 		}
 

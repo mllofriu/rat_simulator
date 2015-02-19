@@ -3,29 +3,53 @@
 
 <experiment>
 	<universe>
-		<name>DummyUniverse</name>
+		<name>VirtUniverse</name>
+		<params>
+			<closeToFoodThrs>0.2</closeToFoodThrs>
+			<maze>src/edu/usf/ratsim/experiment/mazes/taxiNoWalls.xml</maze>
+			<display>true</display>
+		</params>
 	</universe>
 	
-	<subject>
-		<name>RatSubject</name>
-	</subject>
+	<robot>
+		<name>DummyLocalizableRobot</name>
+		<param></param>
+	</robot>
 	
 	<group>
 		<name>A</name>
 		<numMembers>1</numMembers>
-		<params></params>
-		<tasks>
-		</tasks>
-	</group>
-	<group>
-		<name>B</name>
-		<numMembers>1</numMembers>
-		<model>
-			<name>DummyModel</name>
+		<subject>
+			<name>MultiScaleArtificialPCSubject</name>
 			<params>
-				<text>Params for Group B</text>
+				<numPCLayers>3</numPCLayers>
+				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<minRadius>.05</minRadius>
+				<maxRadius>.3</maxRadius>
+				<placeCells>exponential</placeCells>
+				<numHDLayers>4</numHDLayers>
+				<minHDCellsPerLayer>1</minHDCellsPerLayer>
+				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
+				<numIntentions>1</numIntentions>
+				<deterministicActionSelection>true</deterministicActionSelection>
+				<foodReward>10000</foodReward>
+				<nonFoodReward>0</nonFoodReward>
+				<discountFactor>1</discountFactor>
+				<alpha>0.1</alpha>
+				<initialValue>0</initialValue>
+				<flashingReward>10000</flashingReward>
+				<nonFlashingReward>10000</nonFlashingReward>
+				<wallAvoidingVal>0</wallAvoidingVal>
+				<explorationHalfLifeVal>1</explorationHalfLifeVal>
+				<proportionalQL>true</proportionalQL>
+				<xmin>-1</xmin>
+				<ymin>-1</ymin>
+				<xmax>1</xmax>
+				<ymax>1</ymax>
+				<closeToFoodThrs>0.2</closeToFoodThrs>
 			</params>
-		</model>
+		</subject>
+		<params></params>
 		<tasks>
 		</tasks>
 	</group>

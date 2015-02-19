@@ -1,6 +1,5 @@
 package edu.usf.ratsim.experiment.stopcondition;
 
-import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.support.ElementWrapper;
 
 public class FoundNFoodStopCond implements StopCondition {

@@ -10,19 +10,17 @@
 	<classpathentry kind="lib" path="deps/jts-1.8.jar"/>
 	<classpathentry kind="lib" path="deps/protobuf-java-2.5.0.jar"/>
 	<classpathentry kind="lib" path="deps/jts-1.8.0.zip"/>
+	<classpathentry kind="lib" path="deps/j3dport/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="deps/j3dport/gluegen.jar"/>
+	<classpathentry kind="lib" path="deps/j3dport/j3dcore.jar"/>
+	<classpathentry kind="lib" path="deps/j3dport/j3dutils.jar"/>
+	<classpathentry kind="lib" path="deps/j3dport/joal.jar"/>
+	<classpathentry kind="lib" path="deps/j3dport/jocl.jar"/>
+	<classpathentry kind="lib" path="deps/j3dport/jogl-all.jar"/>
+	<classpathentry kind="lib" path="deps/j3dport/jogl-test.jar"/>
+	<classpathentry kind="lib" path="deps/j3dport/vecmath.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/nslj"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/work/rat_simulator/deps/j3dport/vecmath.jar"/>
-	<classpathentry kind="lib" path="/work/rat_simulator/deps/j3dport/jogl-all.jar"/>
-	<classpathentry kind="lib" path="/work/rat_simulator/deps/j3dport/jogl-all-noawt.jar"/>
-	<classpathentry kind="lib" path="/work/rat_simulator/deps/j3dport/jogl-all-mobile.jar"/>
-	<classpathentry kind="lib" path="/work/rat_simulator/deps/j3dport/jogl-all-android.jar"/>
-	<classpathentry kind="lib" path="/work/rat_simulator/deps/j3dport/jocl.jar"/>
-	<classpathentry kind="lib" path="/work/rat_simulator/deps/j3dport/joal.jar"/>
-	<classpathentry kind="lib" path="/work/rat_simulator/deps/j3dport/j3dutils.jar"/>
-	<classpathentry kind="lib" path="/work/rat_simulator/deps/j3dport/j3dcore.jar"/>
-	<classpathentry kind="lib" path="/work/rat_simulator/deps/j3dport/gluegen.jar"/>
-	<classpathentry kind="lib" path="/work/rat_simulator/deps/j3dport/gluegen-rt.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/experiment"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -14,10 +14,13 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
+import edu.usf.ratsim.experiment.universe.virtual.RobotNode;
+import edu.usf.ratsim.experiment.universe.virtual.UniverseFrame;
+import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.robot.Landmark;
 import edu.usf.ratsim.support.Configuration;
-import edu.usf.ratsim.support.Utiles;
+import edu.usf.ratsim.support.GeomUtils;
 
 public class VirtualRobot implements IRobot {
 
@@ -30,7 +33,7 @@ public class VirtualRobot implements IRobot {
 	public static final float STEP = Configuration
 			.getFloat("RobotVirtual.Step");
 
-	public VirtualExpUniverse universe;
+	public VirtUniverse universe;
 
 	// private boolean[] affordances;
 
@@ -38,7 +41,7 @@ public class VirtualRobot implements IRobot {
 
 	private Random r;
 
-	public VirtualRobot(VirtualExpUniverse world) {
+	public VirtualRobot(VirtUniverse world) {
 		this.universe = world;
 
 		if (Configuration.getBoolean("UniverseFrame.display")) {
@@ -152,7 +155,7 @@ public class VirtualRobot implements IRobot {
 				// Get relative position
 				Point3f fPos = universe.getFoodPosition(i);
 				Point3f rPos = universe.getRobotPosition();
-				Point3f relFPos = new Point3f(Utiles.pointsToVector(rPos, fPos));
+				Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos, fPos));
 				// Rotate to robots framework
 				Quat4f rRot = universe.getRobotOrientation();
 				rRot.inverse();

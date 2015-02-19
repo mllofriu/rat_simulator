@@ -6,7 +6,6 @@ import java.util.List;
 import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
 
 public class JointStatesManyConcatenate extends NslModule {
 
@@ -14,8 +13,7 @@ public class JointStatesManyConcatenate extends NslModule {
 	public List<NslDinFloat1> states;
 	public NslDoutFloat1 jointState;
 
-	public JointStatesManyConcatenate(String nslName, NslModule nslParent,
-			ExperimentUniverse universe, List<Integer> stateSizes) {
+	public JointStatesManyConcatenate(String nslName, NslModule nslParent, List<Integer> stateSizes) {
 		super(nslName, nslParent);
 
 		states = new LinkedList<NslDinFloat1>();

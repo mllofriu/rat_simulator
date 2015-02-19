@@ -1,4 +1,4 @@
-package edu.usf.ratsim.robot.virtual;
+package edu.usf.ratsim.experiment.universe.virtual;
 
 import java.awt.GraphicsConfiguration;
 import java.awt.event.ActionEvent;
@@ -9,7 +9,7 @@ import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
-import edu.usf.ratsim.experiment.Trial;
+import edu.usf.experiment.Trial;
 import edu.usf.ratsim.support.Configuration;
 
 public class UniverseFrame extends java.awt.Frame {
@@ -35,9 +35,9 @@ public class UniverseFrame extends java.awt.Frame {
 
 	private java.awt.Label posRat;
 
-	private VirtualExpUniverse expUniv;
+	private VirtUniverse expUniv;
 
-	public UniverseFrame(VirtualExpUniverse world) {
+	public UniverseFrame(VirtUniverse world) {
 		this.expUniv = world;
 
 		initComponents();
@@ -47,33 +47,31 @@ public class UniverseFrame extends java.awt.Frame {
 				.getPreferredConfiguration();
 
 		// Wide view canvases
-		if (Configuration.getBoolean("UniverseFrame.display")){
-			robotViewsCanvas = new Canvas3D[RobotNode.NUM_ROBOT_VIEWS];
-			for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++) {
-				robotViewsCanvas[i] = new Canvas3D(config);
-				robotViewsCanvas[i].setSize(80, 80);
-				world.getRobotViews()[i].addCanvas3D(robotViewsCanvas[i]);
-				wideViewPanel.add(robotViewsCanvas[i]);
-			}
-	
-			// Main robot view canvas
-//			robotViewCanvas = new Canvas3D(config);
-//			robotViewCanvas.setSize(240, 240);
-//			world.getRobotViews()[RobotNode.NUM_ROBOT_VIEWS / 2]
-//					.addCanvas3D(robotViewCanvas);
-//			robotViewPanel.add(robotViewCanvas);
-			// Top view canvas
-			topViewCanvas = new Canvas3D(config);
-			world.getTopView().addCanvas3D(topViewCanvas);
-			topViewCanvas.setSize(500, 500);
-			topViewPanel.add(topViewCanvas);
+		robotViewsCanvas = new Canvas3D[RobotNode.NUM_ROBOT_VIEWS];
+		for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++) {
+			robotViewsCanvas[i] = new Canvas3D(config);
+			robotViewsCanvas[i].setSize(80, 80);
+			world.getRobotViews()[i].addCanvas3D(robotViewsCanvas[i]);
+			wideViewPanel.add(robotViewsCanvas[i]);
 		}
+
+		// Main robot view canvas
+		// robotViewCanvas = new Canvas3D(config);
+		// robotViewCanvas.setSize(240, 240);
+		// world.getRobotViews()[RobotNode.NUM_ROBOT_VIEWS / 2]
+		// .addCanvas3D(robotViewCanvas);
+		// robotViewPanel.add(robotViewCanvas);
+		// Top view canvas
+		topViewCanvas = new Canvas3D(config);
+		world.getTopView().addCanvas3D(topViewCanvas);
+		topViewCanvas.setSize(500, 500);
+		topViewPanel.add(topViewCanvas);
 
 	}
 
 	private void initComponents() {
 		setFocusableWindowState(false);
-		
+
 		java.awt.GridBagConstraints gridBagConstraints;
 
 		panel1 = new java.awt.Panel();
@@ -107,7 +105,8 @@ public class UniverseFrame extends java.awt.Frame {
 		button1.setLabel("Publ. Space");
 		button1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Trial.cont = ! Trial.cont;
+				// TODO restore pause
+				// Trial.cont = ! Trial.cont;
 			}
 		});
 
@@ -245,9 +244,9 @@ public class UniverseFrame extends java.awt.Frame {
 		java.awt.Dimension screenSize = java.awt.Toolkit.getDefaultToolkit()
 				.getScreenSize();
 		int size = 800;
-		setBounds((screenSize.width - size) / 2, (screenSize.height - size) / 2,
-				size, size);
-		
+		setBounds((screenSize.width - size) / 2,
+				(screenSize.height - size) / 2, size, size);
+
 	}
 
 	// accion asociada al boton de girar horario
@@ -291,11 +290,11 @@ public class UniverseFrame extends java.awt.Frame {
 		System.exit(0);
 	}
 
-//	public static void main(String args[]) {
-//		VirtualExpUniverse expUniv = new VirtualExpUniverse();
-//		UniverseFrame worldFrame = new UniverseFrame(expUniv);
-//
-//		worldFrame.setVisible(true);
-//	}
+	// public static void main(String args[]) {
+	// VirtualExpUniverse expUniv = new VirtualExpUniverse();
+	// UniverseFrame worldFrame = new UniverseFrame(expUniv);
+	//
+	// worldFrame.setVisible(true);
+	// }
 
 }

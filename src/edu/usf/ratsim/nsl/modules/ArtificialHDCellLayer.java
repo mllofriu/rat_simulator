@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.ratsim.support.Debug;
 
 public class ArtificialHDCellLayer extends NslModule {
@@ -13,10 +13,10 @@ public class ArtificialHDCellLayer extends NslModule {
 
 	private LinkedList<ArtificialHDCell> cells;
 
-	private ExperimentUniverse universe;
+	private LocalizableRobot robot;
 
-	public ArtificialHDCellLayer(String nslName, NslModule nslParent,
-			ExperimentUniverse universe, int numCells) {
+
+	public ArtificialHDCellLayer(String nslName, NslModule nslParent, int numCells, LocalizableRobot robot) {
 		super(nslName, nslParent);
 
 		// Compute number of cells
@@ -34,13 +34,12 @@ public class ArtificialHDCellLayer extends NslModule {
 
 		activation = new NslDoutFloat1(this, "activation", cells.size());
 
-		// Save the universe for later
-		this.universe = universe;
+		this.robot = robot;
 	}
 
 	public void simRun() {
 		int i = 0;
-		float angle = universe.getRobotOrientationAngle();
+		float angle = robot.getOrientationAngle();
 		for (ArtificialHDCell pCell : cells) {
 			activation.set(i, pCell.getActivation(angle));
 			// System.out.print(pCell.getActivation(angle) + " ");

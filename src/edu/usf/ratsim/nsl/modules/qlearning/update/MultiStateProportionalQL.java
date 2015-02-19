@@ -16,14 +16,9 @@ import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDinInt0;
 import nslj.src.lang.NslDoutFloat2;
 import nslj.src.lang.NslModule;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.experiment.model.MultiScaleMultiIntentionCooperativeModel;
-import edu.usf.ratsim.experiment.model.RLRatModel;
-import edu.usf.ratsim.experiment.subject.ExpSubject;
-import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
-import edu.usf.ratsim.robot.IRobot;
+import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.ratsim.support.Configuration;
-import edu.usf.ratsim.support.Utiles;
 
 public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 
@@ -52,19 +47,19 @@ public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 
 	private NslDinFloat1 actionVotesBefore;
 
-	private IRobot robot;
-
 	private boolean update;
 
-	public MultiStateProportionalQL(String nslMain, NslModule nslParent,
+	private Subject subject;
+
+	public MultiStateProportionalQL(String nslMain, NslModule nslParent, Subject subject,
 			int numStates, int numActions, float discountFactor, float alpha,
-			float initialValue, IRobot robot) {
+			float initialValue) {
 		super(nslMain, nslParent);
 
 		this.discountFactor = discountFactor;
 		this.alpha = alpha;
 		this.numStates = numStates;
-		this.robot = robot;
+		this.subject = subject;
 
 		takenAction = new NslDinInt0(this, "takenAction");
 		reward = new NslDinFloat0(this, "reward");
@@ -130,11 +125,11 @@ public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 		float val = value.get(sBefore, a);
 		float delta;
 		// If eating cut the cycle - episodic ql
-		if (a == Utiles.eatAction)
+		if (a == subject.getEatActionNumber())
 			// Just look at eating future prediction
 			delta = alpha
 					* (reward.get() + discountFactor
-							* actionVotesAfter.get(Utiles.eatAction) - (val + actionVotesBefore
+							* actionVotesAfter.get(subject.getEatActionNumber()) - (val + actionVotesBefore
 							.get(a)));
 		// For all other actions - normal ql
 		else
@@ -165,11 +160,11 @@ public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 	 * @param pcl
 	 */
 	public void dumpPolicy(String trial, String groupName, String subName,
-			String rep, int numIntentions, ExperimentUniverse univ,
-			ExpSubject rat) {
-		synchronized (QLSupport.class) {
+			String rep, int numIntentions, Universe univ,
+			Subject sub) {
+		synchronized (MultiStateProportionalQL.class) {
 			// Deactivate updates
-			((RLRatModel) rat.getModel()).setPassiveMode(true);
+			sub.setPassiveMode(true);
 			PrintWriter writer = MultiStateProportionalQL.getWriter();
 
 			for (int intention = 0; intention < numIntentions; intention++) {
@@ -198,7 +193,7 @@ public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 							// maxVal = forwardVal;
 							// bestAngle = angle;
 							// }
-							for (int action = 0; action < Utiles.numActions; action++) {
+							for (int action = 0; action < subject.getNumActions(); action++) {
 								float angleVal = ((MultiScaleMultiIntentionCooperativeModel) rat
 										.getModel()).getQLVotes().getVotes()
 										.get(action);

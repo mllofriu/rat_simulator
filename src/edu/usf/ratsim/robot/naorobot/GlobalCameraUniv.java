@@ -5,10 +5,10 @@ import java.awt.geom.Point2D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
+import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.robot.naorobot.protobuf.VisionListener;
-import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 
-public class GlobalCameraUniv extends VirtualExpUniverse{
+public class GlobalCameraUniv extends VirtUniverse{
 
 	private VisionListener vision;
 

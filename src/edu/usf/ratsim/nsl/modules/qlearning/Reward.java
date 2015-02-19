@@ -2,30 +2,31 @@ package edu.usf.ratsim.nsl.modules.qlearning;
 
 import nslj.src.lang.NslDoutFloat0;
 import nslj.src.lang.NslModule;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.experiment.subject.Subject;
 
 public class Reward extends NslModule {
 
 	private NslDoutFloat0 reward;
-	private ExperimentUniverse universe;
 	private float nonFoodReward;
 	private float foodReward;
-	
-	public Reward(String nslName, NslModule nslParent, ExperimentUniverse universe, float foodReward, float nonFoodReward){
+	private Subject subject;
+
+	public Reward(String nslName, NslModule nslParent, Subject subject,
+			float foodReward, float nonFoodReward) {
 		super(nslName, nslParent);
-		
+
 		reward = new NslDoutFloat0(this, "reward");
-		
-		this.universe = universe;
+
 		this.foodReward = foodReward;
 		this.nonFoodReward = nonFoodReward;
+		this.subject = subject;
 	}
-	
-	public void simRun(){
-		if(universe.hasRobotAte()){
-//			System.out.println("Ate Food");
+
+	public void simRun() {
+		if (subject.hasEaten()) {
+			// System.out.println("Ate Food");
 			reward.set(foodReward);
-		} else 
+		} else
 			reward.set(nonFoodReward);
 	}
 }

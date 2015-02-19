@@ -12,13 +12,9 @@ import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDinInt0;
 import nslj.src.lang.NslDoutFloat2;
 import nslj.src.lang.NslModule;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.experiment.model.MultiScaleMultiIntentionCooperativeModel;
-import edu.usf.ratsim.experiment.model.RLRatModel;
-import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
 import edu.usf.ratsim.support.Configuration;
-import edu.usf.ratsim.support.Utiles;
+import edu.usf.ratsim.support.GeomUtils;
 
 public class SingleStateQL extends NslModule implements QLAlgorithm {
 
@@ -162,7 +158,7 @@ public class SingleStateQL extends NslModule implements QLAlgorithm {
 							// maxVal = forwardVal;
 							// bestAngle = angle;
 							// }
-							for (int action = 0; action < Utiles.numActions; action++) {
+							for (int action = 0; action < GeomUtils.numActions; action++) {
 								float angleVal = ((MultiScaleMultiIntentionCooperativeModel) rat
 										.getModel()).getQLVotes().getVotes()
 										.get(action);
@@ -210,10 +206,10 @@ public class SingleStateQL extends NslModule implements QLAlgorithm {
 	}
 
 	public int getMaxAngle(int s) {
-		float[] vals = new float[Utiles.numAngles];
+		float[] vals = new float[GeomUtils.numAngles];
 		int maxAngle = -1;
 		float maxVal = 0;
-		for (int angle = 0; angle < Utiles.numAngles; angle++) {
+		for (int angle = 0; angle < GeomUtils.numAngles; angle++) {
 			vals[angle] = value.get(s, angle);
 			if (vals[angle] > maxVal) {
 				maxVal = vals[angle];

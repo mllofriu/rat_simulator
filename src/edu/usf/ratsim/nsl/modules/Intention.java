@@ -10,7 +10,7 @@ public class Intention extends NslModule {
 	public NslDinInt0 goalFeeder;
 	public NslDoutFloat1 intention;
 
-	public Intention(NslModule parent, String nslName, int numIntentions) {
+	public Intention(String nslName, NslModule parent, int numIntentions) {
 		super(nslName, parent);
 
 		goalFeeder = new NslDinInt0(this, "goalFeeder");

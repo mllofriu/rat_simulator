@@ -7,15 +7,14 @@ import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.ratsim.experiment.universe.virtual.UniverseFrame;
+import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.robot.IRobot;
 import edu.usf.ratsim.robot.Landmark;
 import edu.usf.ratsim.robot.naorobot.protobuf.Connector.Command;
 import edu.usf.ratsim.robot.naorobot.protobuf.Connector.Command.Builder;
 import edu.usf.ratsim.robot.naorobot.protobuf.Connector.Command.CommandType;
 import edu.usf.ratsim.robot.naorobot.protobuf.Connector.Response;
-import edu.usf.ratsim.robot.virtual.UniverseFrame;
-import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
 import edu.usf.ratsim.support.Configuration;
 
 public class NAORobot implements IRobot {
@@ -24,7 +23,7 @@ public class NAORobot implements IRobot {
 
 	public NAORobot(String host, int port, ExperimentUniverse world) {
 		if (Configuration.getBoolean("UniverseFrame.display")) {
-			UniverseFrame worldFrame = new UniverseFrame((VirtualExpUniverse) world);
+			UniverseFrame worldFrame = new UniverseFrame((VirtUniverse) world);
 			worldFrame.setVisible(true);
 		}
 		
