@@ -5,7 +5,7 @@ import nslj.src.lang.NslDinFloat2;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.nsl.modules.Voter;
-import edu.usf.ratsim.support.Utiles;
+import edu.usf.ratsim.support.GeomUtils;
 
 public class WTAVotes extends NslModule implements Voter {
 
@@ -14,10 +14,10 @@ public class WTAVotes extends NslModule implements Voter {
 	public NslDinFloat2 value;
 	private int numActions;
 
-	public WTAVotes(String nslName, NslModule nslParent, int numStates) {
+	public WTAVotes(String nslName, NslModule nslParent, int numStates, int numActions) {
 		super(nslName, nslParent);
 
-		numActions = Utiles.numActions;
+		this.numActions = numActions;
 		
 		actionVote = new NslDoutFloat1(this, "votes", numActions);
 		states = new NslDinFloat1(this, "states", numStates);

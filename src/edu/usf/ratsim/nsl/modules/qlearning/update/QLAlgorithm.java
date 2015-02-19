@@ -1,7 +1,5 @@
 package edu.usf.ratsim.nsl.modules.qlearning.update;
 
-import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.experiment.subject.ExpSubject;
 
 public interface QLAlgorithm {
 

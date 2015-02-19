@@ -5,7 +5,6 @@ import nslj.src.lang.NslDinFloat2;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.ratsim.nsl.modules.Voter;
-import edu.usf.ratsim.support.Utiles;
 
 /**
  * Class to set the votes for actions depending both in the state activation and a value function.
@@ -19,10 +18,10 @@ public class ProportionalVotes extends NslModule implements Voter {
 	public NslDinFloat2 value;
 	private int numActions;
 
-	public ProportionalVotes(String nslName, NslModule nslParent, int numStates) {
+	public ProportionalVotes(String nslName, NslModule nslParent, int numStates, int numAction) {
 		super(nslName, nslParent);
 
-		numActions = Utiles.numActions;
+		this.numActions = numActions;
 		
 		actionVote = new NslDoutFloat1(this, "votes", numActions);
 		states = new NslDinFloat1(this, "states", numStates);

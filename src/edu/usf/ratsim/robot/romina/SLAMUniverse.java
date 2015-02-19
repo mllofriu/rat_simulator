@@ -6,9 +6,9 @@ import java.awt.geom.Point2D.Float;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
-import edu.usf.ratsim.robot.virtual.VirtualExpUniverse;
+import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 
-public class SLAMUniverse extends VirtualExpUniverse{
+public class SLAMUniverse extends VirtUniverse{
 
 	private Romina romina;
 	private boolean rominaAte;

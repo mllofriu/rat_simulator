@@ -5,9 +5,6 @@ import java.util.Map;
 import javax.vecmath.Point3f;
 import javax.vecmath.Point4f;
 
-import edu.usf.ratsim.experiment.ExperimentTask;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.support.ElementWrapper;
 
 public class PlaceWallTask implements ExperimentTask {

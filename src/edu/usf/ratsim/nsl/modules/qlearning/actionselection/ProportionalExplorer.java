@@ -7,9 +7,10 @@ import java.util.Random;
 import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.ratsim.robot.IRobot;
-import edu.usf.ratsim.support.Utiles;
+import edu.usf.ratsim.support.GeomUtils;
 
 public class ProportionalExplorer extends NslModule {
 
@@ -24,16 +25,17 @@ public class ProportionalExplorer extends NslModule {
 
 	private boolean explore;
 
-	private ExperimentUniverse universe;
+	private Universe universe;
+
+	private Subject subject;
 
 	// private float maxPossibleReward;
 
-	public ProportionalExplorer(String nslName, NslModule nslParent,
-			int numLayers, IRobot robot, ExperimentUniverse universe) {
+	public ProportionalExplorer(String nslName, NslModule nslParent, Subject subject,
+			int numLayers) {
 		super(nslName, nslParent);
 
-		this.robot = robot;
-		this.universe = universe;
+		this.subject = subject;
 
 		takenAction = new NslDoutInt0(this, "takenAction");
 
@@ -45,7 +47,7 @@ public class ProportionalExplorer extends NslModule {
 	}
 
 	public void simRun() {
-		float[] overallValues = new float[Utiles.numActions];
+		float[] overallValues = new float[subject.getNumActions()];
 		for (int i = 0; i < overallValues.length; i++)
 			overallValues[i] = 0;
 		// Add each contribution
@@ -104,11 +106,11 @@ public class ProportionalExplorer extends NslModule {
 		} while (nextRVal >= 0 && action < actions.size() - 1);
 
 		// Try the selected action
-		if (actions.get(action).getAction() == Utiles.eatAction){
+		if (actions.get(action).getAction() == subject.getEatActionNumber()){
 			System.out.println("Eating");
 			robot.eat();
 		} else {
-			robot.rotate(Utiles.getActionAngle(actions.get(action).getAction()));
+			robot.rotate(subject.getActionAngle(actions.get(action).getAction()));
 			boolean[] aff = robot.getAffordances();
 			// Random if there was no affordable positive value action
 			// lastActionRandom = actions.get(action).getValue() <=
@@ -117,7 +119,7 @@ public class ProportionalExplorer extends NslModule {
 			// } while (!aff[Utiles.discretizeAction(0)]);
 	
 			
-			if (aff[Utiles.discretizeAction(0)])
+			if (aff[subject.getActionForward()])
 				robot.forward();
 		}
 		// Publish the taken action

@@ -6,7 +6,6 @@ import java.util.List;
 import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
 
 public class JointStatesManyMultiply extends NslModule {
 
@@ -14,8 +13,7 @@ public class JointStatesManyMultiply extends NslModule {
 	public List<NslDinFloat1> states;
 	public NslDoutFloat1 jointState;
 
-	public JointStatesManyMultiply(String nslName, NslModule nslParent,
-			ExperimentUniverse universe, List<Integer> stateSizes) {
+	public JointStatesManyMultiply(String nslName, NslModule nslParent, List<Integer> stateSizes) {
 		super(nslName, nslParent);
 
 		states = new LinkedList<NslDinFloat1>();

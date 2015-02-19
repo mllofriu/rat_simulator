@@ -8,9 +8,7 @@ import java.io.PrintWriter;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.usf.ratsim.experiment.ExperimentLogger;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.robot.virtual.WallNode;
+import edu.usf.ratsim.experiment.universe.virtual.WallNode;
 import edu.usf.ratsim.support.Configuration;
 
 public class WallLogger implements ExperimentLogger {

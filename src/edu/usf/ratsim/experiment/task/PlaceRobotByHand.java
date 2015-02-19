@@ -10,13 +10,10 @@ import java.util.Map;
 import javax.vecmath.Point3f;
 import javax.vecmath.Point4f;
 
-import edu.usf.ratsim.experiment.ExperimentTask;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.robot.naorobot.protobuf.VisionListener;
 import edu.usf.ratsim.robot.romina.Romina;
 import edu.usf.ratsim.support.ElementWrapper;
-import edu.usf.ratsim.support.Utiles;
+import edu.usf.ratsim.support.GeomUtils;
 
 public class PlaceRobotByHand implements ExperimentTask {
 
@@ -76,11 +73,11 @@ public class PlaceRobotByHand implements ExperimentTask {
 			Point3f p = vl.getRobotPoint();
 			float orientToPoint = (float) Math
 					.atan2(dest.y - p.y, dest.x - p.x);
-			while (Math.abs(Utiles.angleDiff(vl.getRobotOrientation(),
+			while (Math.abs(GeomUtils.angleDiff(vl.getRobotOrientation(),
 					orientToPoint)) > EPS_ROT / 2) {
 				robot.rotate(EPS_ROT 
 
-						* Math.signum(Utiles.angleDiff(
+						* Math.signum(GeomUtils.angleDiff(
 								vl.getRobotOrientation(), orientToPoint)));
 				try {
 					vl.getRobotOrientation();
@@ -99,10 +96,10 @@ public class PlaceRobotByHand implements ExperimentTask {
 			}
 		}
 
-		while (Math.abs(Utiles.angleDiff(vl.getRobotOrientation(), destOrient)) > EPS_ROT / 4) {
+		while (Math.abs(GeomUtils.angleDiff(vl.getRobotOrientation(), destOrient)) > EPS_ROT / 4) {
 			robot.rotate(EPS_ROT 
 
-					* Math.signum(Utiles.angleDiff(vl.getRobotOrientation(),
+					* Math.signum(GeomUtils.angleDiff(vl.getRobotOrientation(),
 							destOrient)));
 			try {
 				vl.getRobotOrientation();

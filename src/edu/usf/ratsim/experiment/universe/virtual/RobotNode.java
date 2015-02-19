@@ -1,4 +1,4 @@
-package edu.usf.ratsim.robot.virtual;
+package edu.usf.ratsim.experiment.universe.virtual;
 
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
@@ -39,7 +39,7 @@ public class RobotNode extends ExpUniverseNode {
 	private Canvas3D[] offScreenCanvas;
 	private ImageComponent2D[] offScreenImages;
 
-	public RobotNode(Node node) {
+	public RobotNode(Node node, boolean display) {
 		Map<String, Float> values = readValues(node);
 
 		float x = values.get("x");
@@ -115,7 +115,7 @@ public class RobotNode extends ExpUniverseNode {
 
 		// Add off-screen views
 		// Create off-screen canvas to see through the robots views
-		if (Configuration.getBoolean("UniverseFrame.display")) {
+		if (display) {
 			offScreenCanvas = new Canvas3D[NUM_ROBOT_VIEWS];
 			offScreenImages = new ImageComponent2D[NUM_ROBOT_VIEWS];
 			GraphicsConfiguration config = SimpleUniverse

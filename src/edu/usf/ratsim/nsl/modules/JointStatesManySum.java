@@ -6,7 +6,6 @@ import java.util.List;
 import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.support.Debug;
 
 public class JointStatesManySum extends NslModule {
@@ -15,8 +14,7 @@ public class JointStatesManySum extends NslModule {
 	public NslDoutFloat1 jointState;
 	private int numStates;
 
-	public JointStatesManySum(String nslName, NslModule nslParent,
-			ExperimentUniverse universe, int numStates, int stateSizes) {
+	public JointStatesManySum(String nslName, NslModule nslParent, int numStates, int stateSizes) {
 		super(nslName, nslParent);
 
 		this.numStates = numStates;

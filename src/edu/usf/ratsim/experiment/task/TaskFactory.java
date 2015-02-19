@@ -7,8 +7,7 @@ import java.util.Map;
 
 import javax.vecmath.Point4f;
 
-import edu.usf.ratsim.experiment.ExperimentTask;
-import edu.usf.ratsim.experiment.Trial;
+import edu.usf.experiment.Trial;
 import edu.usf.ratsim.support.ElementWrapper;
 
 public class TaskFactory {

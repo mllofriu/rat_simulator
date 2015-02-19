@@ -4,7 +4,8 @@ import java.util.Random;
 
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
+import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.Universe;
 import edu.usf.ratsim.robot.IRobot;
 
 /**
@@ -19,7 +20,6 @@ public class WallAvoider extends NslModule {
 	private static final float EPS_VALUE = 1f;
 	private static final float DIMINISH_FACTOR = .8f;
 	private static final int WALL_LOOKAHEAD = 10;
-	private ExperimentUniverse univ;
 	public NslDoutFloat1 votes;
 	private float wallFollowingValue;
 	private IRobot robot;
@@ -27,37 +27,37 @@ public class WallAvoider extends NslModule {
 	private boolean active;
 	private int direction;
 	private Random r;
-//	private int number;
+	// private int number;
+	private Subject subject;
 
-	public WallAvoider(String nslName, NslModule nslParent, IRobot robot,
-			ExperimentUniverse univ, int numActions, float wallFollowingValue) {
+	public WallAvoider(String nslName, NslModule nslParent, Subject subject,
+			float wallFollowingValue) {
 		super(nslName, nslParent);
-		this.univ = univ;
-		this.robot = robot;
+		this.subject = subject;
 		this.wallFollowingValue = wallFollowingValue;
 		this.currentValue = 0f;
 		active = false;
-		
-//		number = (new Random()).nextInt();
 
-		votes = new NslDoutFloat1(this, "votes", numActions);
+		// number = (new Random()).nextInt();
+
+		votes = new NslDoutFloat1(this, "votes", subject.getNumActions());
 		r = new Random();
 
 	}
 
 	public void simRun() {
-//		System.out.println("Performing wall avoider " + number);
-		
+		// System.out.println("Performing wall avoider " + number);
+
 		votes.set(0);
 
 		boolean[] aff = robot.getAffordances(WALL_LOOKAHEAD);
-		
+
 		for (int i = 0; i < aff.length; i++)
 			if (!aff[i])
 				votes.set(i, wallFollowingValue);
-		
+
 		// Just dont allow it to go straight
-//		if (!aff[Utiles.discretizeAction(0)])
-//			votes.set(Utiles.discretizeAction(0), wallFollowingValue);
+		// if (!aff[Utiles.discretizeAction(0)])
+		// votes.set(Utiles.discretizeAction(0), wallFollowingValue);
 	}
 }

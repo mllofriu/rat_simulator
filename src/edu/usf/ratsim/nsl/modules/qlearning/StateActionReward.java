@@ -1,11 +1,12 @@
 package edu.usf.ratsim.nsl.modules.qlearning;
 
-import edu.usf.ratsim.support.Utiles;
+import edu.usf.ratsim.support.GeomUtils;
 
 public final class StateActionReward {
 	private int state;
 	private int action;
 	private float reward;
+	private int numAngles;
 
 	public float getReward() {
 		return reward;
@@ -23,10 +24,11 @@ public final class StateActionReward {
 		return action;
 	}
 
-	public StateActionReward(int state, int action, float reward) {
+	public StateActionReward(int state, int action, float reward, int numAngles) {
 		this.state = state;
 		this.action = action;
 		this.reward = reward;
+		this.numAngles = numAngles;
 	}
 	
 	public StateActionReward(int state, int action) {
@@ -45,7 +47,7 @@ public final class StateActionReward {
 	}
 
 	public int hashCode() {
-		return state * Utiles.numAngles + action;
+		return state * numAngles + action;
 	}
 
 }

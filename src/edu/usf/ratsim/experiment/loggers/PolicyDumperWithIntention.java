@@ -2,10 +2,6 @@ package edu.usf.ratsim.experiment.loggers;
 
 import java.util.List;
 
-import edu.usf.ratsim.experiment.ExperimentLogger;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.experiment.model.RLRatModel;
-import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.nsl.modules.qlearning.update.QLAlgorithm;
 
 public class PolicyDumperWithIntention implements ExperimentLogger {

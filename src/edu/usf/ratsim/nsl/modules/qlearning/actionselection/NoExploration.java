@@ -7,10 +7,10 @@ import java.util.Random;
 import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.robot.IRobot;
+import edu.usf.experiment.robot.Robot;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.ratsim.support.Debug;
-import edu.usf.ratsim.support.Utiles;
+import edu.usf.ratsim.support.GeomUtils;
 
 public class NoExploration extends NslModule {
 
@@ -19,33 +19,33 @@ public class NoExploration extends NslModule {
 	public NslDinFloat1 votes;
 	public NslDoutInt0 takenAction;
 
-	private IRobot robot;
+	private Robot robot;
 
-	private ExperimentUniverse universe;
 	private Random random;
 	private boolean lastRot;
+	private Subject sub;
 
-	public NoExploration(String nslName, NslModule nslParent, int numVotes,
-			IRobot robot, ExperimentUniverse universe) {
+	public NoExploration(String nslName, NslModule nslParent, Subject sub, int numVotes) {
 		super(nslName, nslParent);
 
-		this.robot = robot;
-		this.universe = universe;
-
-		votes = new NslDinFloat1(this, "votes", Utiles.numActions);
+		votes = new NslDinFloat1(this, "votes", sub.getNumActions());
 
 		takenAction = new NslDoutInt0(this, "takenAction");
 
 		random = new Random();
 
 		lastRot = false;
+		
+		robot = sub.getRobot();
+		
+		this.sub = sub;
 	}
 
 	public void simRun() {
 		int selectedAction;
 
 		if (lastRot) {
-			selectedAction = Utiles.discretizeAction(0);
+			selectedAction = sub.getActionForward();
 			if (Debug.moveRobot)
 				robot.forward();
 		} else {
@@ -58,10 +58,10 @@ public class NoExploration extends NslModule {
 			LinkedList<ActionValue> actions = new LinkedList<ActionValue>();
 			// Assign values to actions as a function of angles instead of
 			// viceversa
-			for (int action = 0; action < Utiles.numActions; action++) {
+			for (int action = 0; action < sub.getNumActions(); action++) {
 				// Add a small eps to forward action to prefer it in case of a
 				// tie
-				if (action == Utiles.forwardAction)
+				if (action == sub.getActionForward())
 					actions.add(new ActionValue(action, votes.get(action)
 							+ FORWARD_EPS));
 				else
@@ -84,12 +84,12 @@ public class NoExploration extends NslModule {
 			// if (actions.get(action).getAction() == Utiles.eatAction
 			// && actions.get(action).getValue() < 0)
 			// action = action - 1;
-			if (actions.get(action).getAction() == Utiles.eatAction
-					&& !universe.isRobotCloseToAFeeder())
+			if (actions.get(action).getAction() == sub.getEatActionNumber()
+					&& !robot.isFeederClose())
 				action = action - 1;
 
 			// Rotate the robot the desired angle
-			if (actions.get(action).getAction() == Utiles.eatAction) {
+			if (actions.get(action).getAction() == sub.getEatActionNumber()) {
 				if (robot.hasFoundFood()) {
 					if (Debug.printTryingToEat)
 						System.out.println("Trying to eat");
@@ -111,12 +111,12 @@ public class NoExploration extends NslModule {
 
 				if (action < 0)
 					if (random.nextFloat() > 0.5)
-						selectedAction = Utiles.discretizeAction(90);
+						selectedAction = sub.getActionLeft();
 					else
-						selectedAction = Utiles.discretizeAction(-90);
+						selectedAction = sub.getActionRight();
 				else
 					selectedAction = actions.get(action).getAction();
-				float angle = Utiles.getActionAngle(selectedAction);
+				float angle = sub.getActionAngle(selectedAction);
 				// If going forward and no affordance - rotate
 				// if (Math.abs(angle) < ANGLE_EPS
 				// && !aff[Utiles.discretizeAction(0)]) {
@@ -155,7 +155,7 @@ public class NoExploration extends NslModule {
 						if (Debug.moveRobot)
 							robot.rotate(angle);
 						aff = robot.getAffordances();
-					} while (!aff[Utiles.discretizeAction(0)]);
+					} while (!aff[sub.getActionForward()]);
 
 				else {
 					if (Debug.moveRobot)
@@ -167,6 +167,6 @@ public class NoExploration extends NslModule {
 		// Publish the taken action
 		takenAction.set(selectedAction);
 		// System.out.println(takenAction.get());
-		lastRot = selectedAction == Utiles.discretizeAction(90) || selectedAction == Utiles.discretizeAction(-90);
+		lastRot = selectedAction == sub.getActionLeft() || selectedAction == sub.getActionRight();
 	}
 }

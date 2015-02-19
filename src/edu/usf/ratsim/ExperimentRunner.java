@@ -2,7 +2,7 @@ package edu.usf.ratsim;
 
 import java.io.File;
 
-import edu.usf.ratsim.experiment.Experiment;
+import edu.usf.experiment.Experiment;
 import edu.usf.ratsim.support.Configuration;
 
 public class ExperimentRunner {

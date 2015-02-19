@@ -2,9 +2,6 @@ package edu.usf.ratsim.experiment.task;
 
 import javax.vecmath.Point2f;
 
-import edu.usf.ratsim.experiment.ExperimentTask;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
-import edu.usf.ratsim.experiment.subject.ExpSubject;
 import edu.usf.ratsim.support.ElementWrapper;
 
 public class PlaceFeederWallsTask implements ExperimentTask {

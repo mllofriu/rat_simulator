@@ -1,4 +1,4 @@
-package edu.usf.ratsim.robot.virtual;
+package edu.usf.ratsim.experiment.universe.virtual;
 
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.DirectionalLight;

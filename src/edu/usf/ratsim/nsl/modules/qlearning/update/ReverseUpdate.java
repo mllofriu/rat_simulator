@@ -1,7 +1,6 @@
 package edu.usf.ratsim.nsl.modules.qlearning.update;
 
 import nslj.src.lang.NslModule;
-import edu.usf.ratsim.experiment.ExperimentUniverse;
 import edu.usf.ratsim.nsl.modules.qlearning.QLSupport;
 import edu.usf.ratsim.nsl.modules.qlearning.StateActionReward;
 import edu.usf.ratsim.robot.IRobot;

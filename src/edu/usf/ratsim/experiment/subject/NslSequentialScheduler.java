@@ -1,4 +1,4 @@
-package edu.usf.ratsim.experiment;
+package edu.usf.ratsim.experiment.subject;
 
 import java.util.Enumeration;
 import java.util.Vector;
