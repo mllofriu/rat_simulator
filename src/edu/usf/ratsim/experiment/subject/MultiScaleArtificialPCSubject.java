@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 import nslj.src.lang.NslHierarchy;
@@ -15,11 +17,19 @@ import nslj.src.system.NslInterpreter;
 import nslj.src.system.NslSystem;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.subject.affordance.EatAffordance;
+import edu.usf.experiment.subject.affordance.ForwardAffordance;
+import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.support.Configuration;
 
 public class MultiScaleArtificialPCSubject extends Subject {
 
+	private float step;
+	private float leftAngle;
+	private float rightAngle;
+	
 	private NslSystem system;
 	private NslSequentialScheduler scheduler;
 	private NslInterpreter interpreter;
@@ -33,6 +43,10 @@ public class MultiScaleArtificialPCSubject extends Subject {
 		MultiScaleArtificialPCModel model = new MultiScaleArtificialPCModel(
 				name, (NslModule) null, params, this);
 
+		step = params.getChildFloat("step");
+		leftAngle = params.getChildFloat("leftAngle");
+		rightAngle = params.getChildFloat("rightAngle");
+		
 		system.addModel(model);
 		
 		scheduler.initRun();
@@ -115,46 +129,25 @@ public class MultiScaleArtificialPCSubject extends Subject {
 		return false;
 	}
 
-	@Override
-	public int getEatActionNumber() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getNumActions() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public float getActionAngle(int i) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getActionForward() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getActionLeft() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getActionRight() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	@Override
 	public void setPassiveMode(boolean b) {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public List<Affordance> getPossibleAffordances() {
+		List<Affordance> res = new LinkedList<Affordance>();
+		
+		res.add(new TurnAffordance(leftAngle, step));
+		res.add(new ForwardAffordance(step));
+		res.add(new TurnAffordance(rightAngle, step));
+		res.add(new EatAffordance());
+		
+		return res;
+	}
+	
+	
 
 }

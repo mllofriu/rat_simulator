@@ -5,6 +5,7 @@ import java.util.Map;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.ColoringAttributes;
 import javax.vecmath.Color3f;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import org.w3c.dom.Node;
@@ -14,7 +15,7 @@ import com.sun.j3d.utils.geometry.Primitive;
 
 public class FeederNode extends ExpUniverseNode {
 
-	private Vector3f position;
+	private Point3f position;
 	/**
 	 * Determines wheather the feeder can provide food
 	 */
@@ -99,7 +100,7 @@ public class FeederNode extends ExpUniverseNode {
 		Primitive vol = new Cylinder(r, h, app);
 		addVolume(null, vol, xp, yp, zp);
 
-		position = new Vector3f(xp, yp, zp);
+		position = new Point3f(xp, yp, zp);
 
 		flashThread = new Thread(new FlashThread());
 		flashThread.start();
@@ -133,8 +134,8 @@ public class FeederNode extends ExpUniverseNode {
 		this.flashing = flashing;
 	}
 
-	public Vector3f getPosition() {
-		return new Vector3f(position);
+	public Point3f getPosition() {
+		return position;
 	}
 
 	public boolean isWanted() {

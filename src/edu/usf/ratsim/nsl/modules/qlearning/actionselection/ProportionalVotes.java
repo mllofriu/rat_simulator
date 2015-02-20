@@ -18,14 +18,14 @@ public class ProportionalVotes extends NslModule implements Voter {
 	public NslDinFloat2 value;
 	private int numActions;
 
-	public ProportionalVotes(String nslName, NslModule nslParent, int numStates, int numAction) {
+	public ProportionalVotes(String nslName, NslModule nslParent, int numStates, int numActions) {
 		super(nslName, nslParent);
 
-		this.numActions = numActions;
-		
 		actionVote = new NslDoutFloat1(this, "votes", numActions);
 		states = new NslDinFloat1(this, "states", numStates);
 		value = new NslDinFloat2(this, "value", numStates, numActions);
+		
+		this.numActions = numActions;
 	}
 
 	public void simRun() {

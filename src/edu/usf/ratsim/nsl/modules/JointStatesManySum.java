@@ -12,18 +12,16 @@ public class JointStatesManySum extends NslModule {
 
 	public List<NslDinFloat1> states;
 	public NslDoutFloat1 jointState;
-	private int numStates;
 
-	public JointStatesManySum(String nslName, NslModule nslParent, int numStates, int stateSizes) {
+	public JointStatesManySum(String nslName, NslModule nslParent, int numStates, int statesSize) {
 		super(nslName, nslParent);
 
-		this.numStates = numStates;
 		states = new LinkedList<NslDinFloat1>();
 		for (int i = 0; i < numStates; i++) {
-			states.add(new NslDinFloat1(this, "state" + i, stateSizes));
+			states.add(new NslDinFloat1(this, "state" + i, statesSize));
 		}
 
-		int jointSize = stateSizes;
+		int jointSize = statesSize;
 		jointState = new NslDoutFloat1(this, "jointState", jointSize);
 	}
 
@@ -41,6 +39,8 @@ public class JointStatesManySum extends NslModule {
 			for (int j = 0; j < jointStatesSize; j++) {
 				if (Debug.printValues)
 					System.out.format("%.2f\t\t", states.get(i).get(j));
+				System.out.println("Joint state " + j + " " + jointState.get(j));
+				System.out.println("State " + i + " " + states.get(i).get(j));
 				jointState.set(j, jointState.get(j) + states.get(i).get(j));
 			}
 			if (Debug.printValues) System.out.println();

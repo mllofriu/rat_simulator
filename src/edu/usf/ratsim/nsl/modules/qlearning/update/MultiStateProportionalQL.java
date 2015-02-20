@@ -125,14 +125,16 @@ public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 		float val = value.get(sBefore, a);
 		float delta;
 		// If eating cut the cycle - episodic ql
-		if (a == subject.getEatActionNumber())
-			// Just look at eating future prediction
-			delta = alpha
-					* (reward.get() + discountFactor
-							* actionVotesAfter.get(subject.getEatActionNumber()) - (val + actionVotesBefore
-							.get(a)));
-		// For all other actions - normal ql
-		else
+		// TODO: get eat distinction back
+//		if (a == subject.getEatActionNumber())
+//			// Just look at eating future prediction
+//			delta = alpha
+//					* (reward.get() + discountFactor
+//							* actionVotesAfter.get(subject.getEatActionNumber()) - (val + actionVotesBefore
+//							.get(a)));
+//		// For all other actions - normal ql
+//		else
+		// TODO: get the bh expectation back
 			delta = alpha
 					* (reward.get() + discountFactor * (maxERNextState) - (val + actionVotesBefore
 							.get(a)));
@@ -162,66 +164,67 @@ public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 	public void dumpPolicy(String trial, String groupName, String subName,
 			String rep, int numIntentions, Universe univ,
 			Subject sub) {
-		synchronized (MultiStateProportionalQL.class) {
-			// Deactivate updates
-			sub.setPassiveMode(true);
-			PrintWriter writer = MultiStateProportionalQL.getWriter();
-
-			for (int intention = 0; intention < numIntentions; intention++) {
-				for (float xInc = MARGIN; xInc
-						- (univ.getBoundingRectangle().getWidth() - MARGIN / 2) < 1e-8; xInc += INTERVAL) {
-					for (float yInc = MARGIN; yInc
-							- (univ.getBoundingRectangle().getHeight() - MARGIN / 2) < 1e-8; yInc += INTERVAL) {
-						float x = (float) (univ.getBoundingRectangle()
-								.getMinX() + xInc);
-						float y = (float) (univ.getBoundingRectangle()
-								.getMinY() + yInc);
-
-						// List<Float> preferredAngles = new
-						// LinkedList<Float>();
-						float maxVal = Float.NEGATIVE_INFINITY;
-						float bestAngle = 0;
-						for (float angle = 0; angle <= 2 * Math.PI; angle += ANGLE_INTERVAL) {
-							univ.setRobotPosition(new Point2D.Float(x, y),
-									angle);
-							rat.stepCycle();
-							// // float forwardVal =
-							// ((MultiScaleMultiIntentionCooperativeModel) rat
-							// //
-							// .getModel()).getQLVotes().getVotes().get(Utiles.discretizeAction(0));
-							// if( forwardVal > maxVal){
-							// maxVal = forwardVal;
-							// bestAngle = angle;
-							// }
-							for (int action = 0; action < subject.getNumActions(); action++) {
-								float angleVal = ((MultiScaleMultiIntentionCooperativeModel) rat
-										.getModel()).getQLVotes().getVotes()
-										.get(action);
-								if (angleVal > maxVal) {
-									maxVal = angleVal;
-									bestAngle = angle;
-								}
-							}
-
-							// If goes forward, it is the preferred angle
-						}
-
-						String preferredAngleString = new Float(bestAngle)
-								.toString();
-
-						writer.println(trial + '\t' + groupName + '\t'
-								+ subName + '\t' + rep + '\t' + x + "\t" + y
-								+ "\t" + intention + "\t"
-								+ preferredAngleString + "\t" + maxVal);
-
-					}
-				}
-			}
-			// Re enable updates
-			((RLRatModel) rat.getModel()).setPassiveMode(false);
-			univ.clearRobotAte();
-
-		}
+		// TODO: get dumppolicy back
+//		synchronized (MultiStateProportionalQL.class) {
+//			// Deactivate updates
+//			sub.setPassiveMode(true);
+//			PrintWriter writer = MultiStateProportionalQL.getWriter();
+//
+//			for (int intention = 0; intention < numIntentions; intention++) {
+//				for (float xInc = MARGIN; xInc
+//						- (univ.getBoundingRectangle().getWidth() - MARGIN / 2) < 1e-8; xInc += INTERVAL) {
+//					for (float yInc = MARGIN; yInc
+//							- (univ.getBoundingRectangle().getHeight() - MARGIN / 2) < 1e-8; yInc += INTERVAL) {
+//						float x = (float) (univ.getBoundingRectangle()
+//								.getMinX() + xInc);
+//						float y = (float) (univ.getBoundingRectangle()
+//								.getMinY() + yInc);
+//
+//						// List<Float> preferredAngles = new
+//						// LinkedList<Float>();
+//						float maxVal = Float.NEGATIVE_INFINITY;
+//						float bestAngle = 0;
+//						for (float angle = 0; angle <= 2 * Math.PI; angle += ANGLE_INTERVAL) {
+//							univ.setRobotPosition(new Point2D.Float(x, y),
+//									angle);
+//							rat.stepCycle();
+//							// // float forwardVal =
+//							// ((MultiScaleMultiIntentionCooperativeModel) rat
+//							// //
+//							// .getModel()).getQLVotes().getVotes().get(Utiles.discretizeAction(0));
+//							// if( forwardVal > maxVal){
+//							// maxVal = forwardVal;
+//							// bestAngle = angle;
+//							// }
+//							for (int action = 0; action < subject.getNumActions(); action++) {
+//								float angleVal = ((MultiScaleMultiIntentionCooperativeModel) rat
+//										.getModel()).getQLVotes().getVotes()
+//										.get(action);
+//								if (angleVal > maxVal) {
+//									maxVal = angleVal;
+//									bestAngle = angle;
+//								}
+//							}
+//
+//							// If goes forward, it is the preferred angle
+//						}
+//
+//						String preferredAngleString = new Float(bestAngle)
+//								.toString();
+//
+//						writer.println(trial + '\t' + groupName + '\t'
+//								+ subName + '\t' + rep + '\t' + x + "\t" + y
+//								+ "\t" + intention + "\t"
+//								+ preferredAngleString + "\t" + maxVal);
+//
+//					}
+//				}
+//			}
+//			// Re enable updates
+//			((RLRatModel) rat.getModel()).setPassiveMode(false);
+//			univ.clearRobotAte();
+//
+//		}
 	}
 
 	private static PrintWriter getWriter() {

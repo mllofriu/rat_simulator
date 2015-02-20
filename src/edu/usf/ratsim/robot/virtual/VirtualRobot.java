@@ -1,123 +1,59 @@
 package edu.usf.ratsim.robot.virtual;
 
-//import Rat;
-
-import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import javax.media.j3d.Canvas3D;
-import javax.media.j3d.ImageComponent2D;
 import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
-import edu.usf.ratsim.experiment.universe.virtual.RobotNode;
-import edu.usf.ratsim.experiment.universe.virtual.UniverseFrame;
+import edu.usf.experiment.robot.Landmark;
+import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.subject.affordance.EatAffordance;
+import edu.usf.experiment.subject.affordance.ForwardAffordance;
+import edu.usf.experiment.subject.affordance.TurnAffordance;
+import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
-import edu.usf.ratsim.robot.IRobot;
-import edu.usf.ratsim.robot.Landmark;
-import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.GeomUtils;
 
-public class VirtualRobot implements IRobot {
-
-	// private final int MAX_PIXEL_LATERAL = Configuration
-	// .getInt("RobotVirtual.MAX_PIXEL_LATERAL");
-	// private final int MAX_PIXEL_DIAGONAL = Configuration
-	// .getInt("RobotVirtual.MAX_PIXEL_DIAGONAL");
-	// private final int MAX_PIXEL_FRENTE = Configuration
-	// .getInt("RobotVirtual.MAX_PIXEL_FRENTE");
-	public static final float STEP = Configuration
-			.getFloat("RobotVirtual.Step");
+public class VirtualRobot extends LocalizableRobot {
 
 	public VirtUniverse universe;
 
-	// private boolean[] affordances;
-
-	private boolean validCachedAffordances;
-
 	private Random r;
 
-	public VirtualRobot(VirtUniverse world) {
-		this.universe = world;
+	private float noise;
 
-		if (Configuration.getBoolean("UniverseFrame.display")) {
-			UniverseFrame worldFrame = new UniverseFrame(world);
-			worldFrame.setVisible(true);
-		}
+	private int lookaheadSteps;
 
-		validCachedAffordances = false;
+	private float visionDist;
+
+	private float halfFieldOfView;
+
+	private float closeThrs;
+
+	public VirtualRobot(ElementWrapper params) {
+		super(params);
+
+		noise = params.getChildFloat("noise");
+		lookaheadSteps = params.getChildInt("lookaheadSteps");
+		halfFieldOfView = params.getChildFloat("halfFieldOfView");
+		visionDist = params.getChildFloat("visionDist");
+		closeThrs = params.getChildFloat("closeThrs");
 		
+		universe = VirtUniverse.getInstance();
+		if (universe == null)
+			throw new RuntimeException("A virtual universe must be created"
+					+ " before Virtual Robot is created");
+
 		r = new Random();
 	}
 
-	public boolean[] getAffordances() {
-		// Use cache if robot has not moved
-		// if (!validCachedAffordances){
-		// BufferedImage[] pan = getPanoramica();
-		//
-		// affordances = new boolean[IRobot.NUM_POSSIBLE_ACTIONS];
-		//
-		// affordances[Utiles.discretizeAction(-90)] = Utiles.contador(
-		// pan[0], Color.red) < MAX_PIXEL_LATERAL;
-		// affordances[Utiles.discretizeAction(90)] = Utiles.contador(
-		// pan[4], Color.red) < MAX_PIXEL_LATERAL;
-		// affordances[Utiles.discretizeAction(0)] = Utiles.contador(
-		// pan[2], Color.red) < MAX_PIXEL_FRENTE;
-		// affordances[Utiles.discretizeAction(-45)] = Utiles.contador(
-		// pan[1], Color.red) < MAX_PIXEL_DIAGONAL;
-		// affordances[Utiles.discretizeAction(45)] = Utiles.contador(
-		// pan[3], Color.red) < MAX_PIXEL_DIAGONAL;
-		//
-		// affordances[Utiles.discretizeAction(-180)] = true;
-		// affordances[Utiles.discretizeAction(180)] = true;
-		// affordances[Utiles.discretizeAction(-135)] = true;
-		// affordances[Utiles.discretizeAction(135)] = true;
-		//
-		// validCachedAffordances = true;
-		// }
-		//
-		// return affordances;
-
-		// Lighter version of the affordance checking
-		// long time = System.currentTimeMillis();
-		// boolean[] ret = universe.getRobotAffordances();
-		// System.out.println("Affordances took " + (System.currentTimeMillis()
-		// - time));
-		// return ret;
-		return universe.getRobotAffordances();
-	}
-
-	synchronized public BufferedImage[] getPanoramica() {
-		BufferedImage[] panoramica = new BufferedImage[RobotNode.NUM_ROBOT_VIEWS];
-
-		Canvas3D[] offScreenCanvas = universe.getRobotOffscreenCanvas();
-		ImageComponent2D[] offScreenImages = universe.getRobotOffscreenImages();
-
-		if (Configuration.getBoolean("UniverseFrame.display")){
-			long time = System.currentTimeMillis();
-			// First schedulle all renderings
-			for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++) {
-				offScreenCanvas[i].renderOffScreenBuffer();
-			}
-	
-			for (int i = 0; i < RobotNode.NUM_ROBOT_VIEWS; i++) {
-				offScreenCanvas[i].waitForOffScreenRendering();
-				panoramica[i] = offScreenImages[i].getImage();
-			}
-			System.out.println((System.currentTimeMillis() - time));
-		}
-
-		
-		return panoramica;
-	}
-
 	public void rotate(float grados) {
-		universe.rotateRobot(grados + .2f * r.nextFloat() * grados);
-		validCachedAffordances = false;
+		universe.rotateRobot(grados + noise * r.nextFloat() * grados);
 	}
 
 	public void startRobot() {
@@ -127,35 +63,52 @@ public class VirtualRobot implements IRobot {
 		return universe.hasRobotFoundFood();
 	}
 
-	public void forward() {
-		universe.moveRobot(new Vector3f(STEP + STEP * r.nextFloat() * .2f, 0f, 0f));
-		validCachedAffordances = false;
-	}
-
-	@Override
-	public boolean[] getAffordances(int lookahead) {
-		return universe.getRobotAffordances(lookahead);
+	public void forward(float dist) {
+		universe.moveRobot(new Vector3f(dist + dist * r.nextFloat() * noise, 0f,
+				0f));
 	}
 
 	@Override
 	public void eat() {
 		universe.robotEat();
 	}
+	
+	public List<Landmark> getLandmarks() {
+		return getLandmarks(-1);
+	}
 
-	@Override
-	public boolean hasTriedToEat() {
-		return universe.hasRobotTriedToEat();
+	public List<Landmark> getLandmarks(int except) {
+		List<Landmark> res = new LinkedList<Landmark>();
+		for (Integer i : universe.getFeeders())
+			if (i != except)
+				if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
+					// Get relative position
+					Point3f fPos = universe.getFoodPosition(i);
+					Point3f rPos = universe.getRobotPosition();
+					Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos,
+							fPos));
+					// Rotate to robots framework
+					Quat4f rRot = universe.getRobotOrientation();
+					rRot.inverse();
+					Transform3D t = new Transform3D();
+					t.setRotation(rRot);
+					t.transform(relFPos);
+					// Return the landmark
+					res.add(new Landmark(i, relFPos));
+				}
+
+		return res;
 	}
 
 	@Override
-	public List<Landmark> getLandmarks() {
-		List<Landmark> res = new LinkedList<Landmark>();
-		for(Integer i : universe.getFeeders())
-			if(universe.canRobotSeeFeeder(i)){
+	public edu.usf.experiment.robot.Landmark getFlashingFeeder() {
+		for (Integer i : universe.getFeeders())
+			if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist) && universe.isFeederFlashing(i)) {
 				// Get relative position
 				Point3f fPos = universe.getFoodPosition(i);
 				Point3f rPos = universe.getRobotPosition();
-				Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos, fPos));
+				Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos,
+						fPos));
 				// Rotate to robots framework
 				Quat4f rRot = universe.getRobotOrientation();
 				rRot.inverse();
@@ -163,11 +116,69 @@ public class VirtualRobot implements IRobot {
 				t.setRotation(rRot);
 				t.transform(relFPos);
 				// Return the landmark
-				res.add(new Landmark(i, relFPos));
+				return new Landmark(i, relFPos);
 			}
-				
+		return null;
+	}
+
+	@Override
+	public boolean seesFlashingFeeder() {
+		return getFlashingFeeder() != null;
+	}
+
+	@Override
+	public Landmark getClosestFeeder(int lastFeeder) {
+		List<Landmark> lms = getLandmarks(lastFeeder);
+
+		if (lms.isEmpty())
+			return null;
 		
-		return res;
+		Landmark closest = lms.get(0);
+		Point3f zero = new Point3f(0,0,0);
+		for (Landmark lm : lms)
+			if (lm.location.distance(zero) < closest.location.distance(zero))
+				closest = lm;
+		
+		return closest;
+	}
+
+	@Override
+	public boolean isFeederClose() {
+		Landmark lm = getClosestFeeder(-1);
+		return lm != null && lm.location.distance(new Point3f()) < closeThrs;
+	}
+
+	@Override
+	public Point3f getPosition() {
+		return universe.getRobotPosition();
+	}
+
+	@Override
+	public float getOrientationAngle() {
+		return universe.getRobotOrientationAngle();
+	}
+
+	@Override
+	public Quat4f getOrientation() {
+		return universe.getRobotOrientation();
+	}
+
+	@Override
+	public List<Affordance> checkAffordances(List<Affordance> affs){
+		return universe.getRobotAffordances(affs, lookaheadSteps, closeThrs);
+	}
+
+	@Override
+	public void executeAffordance(Affordance af) {
+		if (af instanceof TurnAffordance){
+			TurnAffordance ta = (TurnAffordance) af;
+			rotate(ta.getAngle());
+		} else if (af instanceof ForwardAffordance)
+			forward(((ForwardAffordance)af).getDistance());
+		else if (af instanceof EatAffordance){
+		} else
+			throw new RuntimeException("Affordance "
+					+ af.getClass().getName() + " not supported by robot");
 	}
 
 }

@@ -1,12 +1,13 @@
 package edu.usf.ratsim.nsl.modules;
 
+import java.util.List;
 import java.util.Random;
 
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.Universe;
-import edu.usf.ratsim.robot.IRobot;
+import edu.usf.experiment.subject.affordance.Affordance;
 
 /**
  * Sets the dopaminergic votes for both a flashing feeder and a non flashing
@@ -22,7 +23,7 @@ public class WallAvoider extends NslModule {
 	private static final int WALL_LOOKAHEAD = 10;
 	public NslDoutFloat1 votes;
 	private float wallFollowingValue;
-	private IRobot robot;
+	private Robot robot;
 	private float currentValue;
 	private boolean active;
 	private int direction;
@@ -31,7 +32,7 @@ public class WallAvoider extends NslModule {
 	private Subject subject;
 
 	public WallAvoider(String nslName, NslModule nslParent, Subject subject,
-			float wallFollowingValue) {
+			float wallFollowingValue, int numActions) {
 		super(nslName, nslParent);
 		this.subject = subject;
 		this.wallFollowingValue = wallFollowingValue;
@@ -40,9 +41,11 @@ public class WallAvoider extends NslModule {
 
 		// number = (new Random()).nextInt();
 
-		votes = new NslDoutFloat1(this, "votes", subject.getNumActions());
+		votes = new NslDoutFloat1(this, "votes", numActions);
 		r = new Random();
 
+		robot = subject.getRobot();
+		this.subject = subject;
 	}
 
 	public void simRun() {
@@ -50,14 +53,12 @@ public class WallAvoider extends NslModule {
 
 		votes.set(0);
 
-		boolean[] aff = robot.getAffordances(WALL_LOOKAHEAD);
-
-		for (int i = 0; i < aff.length; i++)
-			if (!aff[i])
-				votes.set(i, wallFollowingValue);
-
-		// Just dont allow it to go straight
-		// if (!aff[Utiles.discretizeAction(0)])
-		// votes.set(Utiles.discretizeAction(0), wallFollowingValue);
+		List<Affordance> affs = robot.checkAffordances(subject.getPossibleAffordances());
+		int index = 0;
+		for (Affordance af : affs){
+			if (!af.isRealizable())
+				votes.set(index, wallFollowingValue);
+			index++;
+		}
 	}
 }

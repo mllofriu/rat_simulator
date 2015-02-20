@@ -3,7 +3,6 @@ package edu.usf.ratsim.nsl.modules;
 import java.util.List;
 import java.util.Random;
 
-import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
 import nslj.src.lang.NslDinInt0;
@@ -12,6 +11,10 @@ import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.Landmark;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.subject.affordance.EatAffordance;
+import edu.usf.experiment.subject.affordance.ForwardAffordance;
+import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.ratsim.support.GeomUtils;
 
@@ -39,7 +42,8 @@ public class GoalTaxicFoodFinderSchema extends NslModule {
 		this.closeToFoodThrs = closeToFoodThrs;
 
 		goalFeeder = new NslDinInt0(this, "goalFeeder");
-		votes = new NslDoutFloat1(this, "votes", subject.getNumActions());
+		votes = new NslDoutFloat1(this, "votes", subject
+				.getPossibleAffordances().size());
 
 		r = new Random();
 
@@ -52,50 +56,51 @@ public class GoalTaxicFoodFinderSchema extends NslModule {
 	public void simRun() {
 		votes.set(0);
 
-		Landmark lm = getLM(goalFeeder.get(), robot.getLandmarks());
-		boolean[] aff = robot.getAffordances();
-		if (lm != null) {
-			if (Debug.printTaxicBh)
-				System.out.println("Found Food - executing taxic");
-			if (lm.location.distance(new Point3f(0, 0, 0)) < closeToFoodThrs) {
-				votes.set(subject.getEatActionNumber(), maxReward);
-			} else {
-				Quat4f rotToFood = GeomUtils.angleToPoint(lm.location);
-
-				for (int i = 0; i < aff.length; i++) {
-					Quat4f robOrient = robot.getOrientation();
-					Quat4f actionAngle = GeomUtils.angleToRot(subject
-							.getActionAngle(i));
-					robOrient.mul(actionAngle);
-
-					// Set the votes proportional to the error in heading
-					// Max heading error should be PI
-					votes.set(
-							i,
-							maxReward
-									* (1 - Math.abs(GeomUtils.angleDiff(
-											robOrient, rotToFood)) / Math.PI));
-				}
+		List<Affordance> affs = robot.checkAffordances(subject
+				.getPossibleAffordances());
+		int voteIndex = 0;
+		for (Affordance af : affs) {
+			float value = 0;
+			if(af.isRealizable()){
+				if (af instanceof TurnAffordance) {
+					if (robot.hasFoundFood()){
+						TurnAffordance ta = (TurnAffordance) af;
+						float angleDiff = diffAfterRot(ta.getAngle());
+	
+						// Set the votes proportional to the error in heading
+						// Max heading error should be PI
+						value = (float) (maxReward * (1 - angleDiff) / Math.PI);
+					}
+				} else if (af instanceof ForwardAffordance){
+					if (robot.hasFoundFood()){
+						float angleDiff = diffAfterRot(0);
+	
+						// Set the votes proportional to the error in heading
+						// Max heading error should be PI
+						value = (float) (maxReward * (1 - angleDiff) / Math.PI);
+					}
+				} else if (af instanceof EatAffordance) {
+					value = maxReward;
+				} else
+					throw new RuntimeException("Affordance "
+							+ af.getClass().getName() + " not supported by robot");
 			}
-		} else {
-			// Give a forward impulse
-			double explorationValue = maxReward * Math.exp(-repCount * alpha);
-			// System.out.println(explorationValue);
-			if (r.nextFloat() > .8)
-				votes.set(subject.getActionForward(), explorationValue);
-			else if (r.nextFloat() > .5)
-				votes.set(subject.getActionLeft(), explorationValue);
-			else
-				votes.set(subject.getActionRight(), explorationValue);
+			
+			votes.set(voteIndex, value);
+			voteIndex++;
 		}
+
 	}
 
-	private Landmark getLM(int id, List<Landmark> list) {
-		for (Landmark lm : list)
-			if (lm.id == id)
-				return lm;
-
-		return null;
+	private float diffAfterRot(float angle) {
+		Quat4f rotToFood = GeomUtils.angleToPoint(robot.getClosestFeeder(-1).location);
+		
+		Quat4f robOrient = robot.getOrientation();
+		Quat4f actionAngle = GeomUtils.angleToRot(angle);
+		robOrient.mul(actionAngle);
+		
+		return Math.abs(GeomUtils
+				.angleDiff(robOrient, rotToFood));
 	}
 
 	public void newRep() {

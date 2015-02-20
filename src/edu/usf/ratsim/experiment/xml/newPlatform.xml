@@ -3,7 +3,7 @@
 
 <experiment>
 	<universe>
-		<name>VirtUniverse</name>
+		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
 			<closeToFoodThrs>0.2</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/taxiNoWalls.xml</maze>
@@ -12,16 +12,25 @@
 	</universe>
 	
 	<robot>
-		<name>DummyLocalizableRobot</name>
-		<param></param>
+		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
+		<params>
+			<noise>.2</noise>
+			<lookaheadSteps>3</lookaheadSteps>
+			<halfFieldOfView>1.57</halfFieldOfView>
+			<visionDist>.5</visionDist>
+			<closeThrs>.2</closeThrs>
+		</params>
 	</robot>
 	
 	<group>
 		<name>A</name>
 		<numMembers>1</numMembers>
 		<subject>
-			<name>MultiScaleArtificialPCSubject</name>
+			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
+				<step>.1</step>
+				<leftAngle>0.39</leftAngle>
+				<rightAngle>-0.39</rightAngle>
 				<numPCLayers>3</numPCLayers>
 				<numPCCellsPerLayer>100</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
@@ -56,7 +65,7 @@
 	
 	<beforeTasks>
 		<task>
-			<name>DummyTask</name>
+			<name>edu.usf.experiment.task.DummyTask</name>
 			<params>
 				<text>Initial Experiment Task</text>
 			</params>
@@ -71,17 +80,17 @@
 		</groups>
 		<beforeTasks>
 			<task>
-				<name>DummyTask</name>
+				<name>edu.usf.experiment.task.DummyTask</name>
 				<params>
 					<text>Initial Trial Task</text>
 				</params>
 			</task>
 		</beforeTasks>
 		<episodes>
-			<number>2</number>
+			<number>1</number>
 			<beforeTasks>
 				<task>
-					<name>DummyTask</name>
+					<name>edu.usf.experiment.task.DummyTask</name>
 					<params>
 						<text>Initial Episode Task</text>
 					</params>
@@ -89,7 +98,7 @@
 			</beforeTasks>
 			<beforeCycleTasks>
 				<task>
-					<name>DummyTask</name>
+					<name>edu.usf.experiment.task.DummyTask</name>
 					<params>
 						<text>Before Cycle Task</text>
 					</params>
@@ -97,7 +106,7 @@
 			</beforeCycleTasks>
 			<afterCycleTasks>
 				<task>
-					<name>DummyTask</name>
+					<name>edu.usf.experiment.task.DummyTask</name>
 					<params>
 						<text>After Cycle Task</text>
 					</params>
@@ -105,13 +114,13 @@
 			</afterCycleTasks>
 			<loggers>
 				<logger>
-					<name>SubjectPositionLogger</name>
+					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
 					<params></params>
 				</logger>
 			</loggers>
 			<afterTasks>
 				<task>
-					<name>DummyTask</name>
+					<name>edu.usf.experiment.task.DummyTask</name>
 					<params>
 						<text>After Episode Task</text>
 					</params>
@@ -119,39 +128,39 @@
 			</afterTasks>
 			<stopConditions>
 				<condition>
-					<name>MaxCycles</name>
+					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>100</max>
+						<max>5000</max>
 					</params>
 				</condition>
 			</stopConditions>
 			<loggers>
 				<logger>
-					<name>DummyLogger</name>
+					<name>edu.usf.experiment.log.DummyLogger</name>
 				</logger>
 			</loggers>
 			<plotters>
 				<plotter>
-					<name>DummyPlotter</name>
+					<name>edu.usf.experiment.plot.DummyPlotter</name>
 				</plotter>
 			</plotters>
 		</episodes>
 		
 		<afterTasks>
 			<task>
-				<name>DummyTask</name>
+				<name>edu.usf.experiment.task.DummyTask</name>
 				<params>
 				</params>
 			</task>
 		</afterTasks>
 		<loggers>
 			<logger>
-				<name>DummyLogger</name>
+				<name>edu.usf.experiment.log.DummyLogger</name>
 			</logger>
 		</loggers>
 		<plotters>
 			<plotter>
-				<name>DummyPlotter</name>
+				<name>edu.usf.experiment.plot.DummyPlotter</name>
 			</plotter>
 		</plotters>
 	</trial>
@@ -159,7 +168,7 @@
 	<!-- 4 testing trials -->
 	<afterTasks>
 		<task>
-			<name>DummyTask</name>
+			<name>edu.usf.experiment.task.DummyTask</name>
 			<params>
 				<text>After Experiment Task</text>
 			</params>
@@ -167,12 +176,12 @@
 	</afterTasks>
 	<loggers>
 		<logger>
-			<name>DummyLogger</name>
+			<name>edu.usf.experiment.log.DummyLogger</name>
 		</logger>
 	</loggers>
 	<plotters>
 		<plotter>
-			<name>DummyPlotter</name>
+			<name>edu.usf.experiment.plot.DummyPlotter</name>
 		</plotter>
 	</plotters>
 </experiment>

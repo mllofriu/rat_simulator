@@ -53,7 +53,7 @@ public class FlashingOrAnyGoalDecider extends NslModule {
 		// TODO: why do we need the second term?
 		if (subject.hasEaten() || subject.hasTriedToEat()) {
 			lastFeeder = currentGoal;
-			currentGoal = subject.getRobot().getClosestFeeder(lastFeeder);
+			currentGoal = subject.getRobot().getClosestFeeder(lastFeeder).id;
 		}
 
 		if (subject.getRobot().seesFlashingFeeder()) {
