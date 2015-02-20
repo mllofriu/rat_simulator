@@ -28,7 +28,6 @@ import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQL;
 import edu.usf.ratsim.nsl.modules.qlearning.update.QLAlgorithm;
-import edu.usf.ratsim.nsl.modules.qlearning.update.SingleStateQL;
 
 public class MultiScaleArtificialPCModel extends NslModel {
 
@@ -117,8 +116,9 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		float xmax = params.getChildFloat("xmax");
 		float ymax = params.getChildFloat("ymax");
 		float closeToFoodThrs = params.getChildFloat("closeToFoodThrs");
-
 		proportionalQl = params.getChildBoolean("proportionalQL");
+		
+		int numActions = subject.getPossibleAffordances().size();
 
 		Random r = new Random();
 		long pclSeed = r.nextLong();
@@ -186,10 +186,10 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// Take the value of each state and vote for an action
 		if (proportionalQl)
 			qlVotes = new ProportionalVotes(BEFORE_ACTION_SELECTION_STR, this,
-					bAll.getSize(), subject.getNumActions());
+					bAll.getSize(), numActions);
 		else
 			qlVotes = new WTAVotes(BEFORE_ACTION_SELECTION_STR, this,
-					bAll.getSize(), subject.getNumActions());
+					bAll.getSize(), numActions);
 
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
@@ -199,11 +199,11 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				closeToFoodThrs));
 
 		// Wall following for obst. avoidance
-		new WallAvoider(BEFORE_WALLAVOID_STR, this, subject, wallFollowingVal);
+		new WallAvoider(BEFORE_WALLAVOID_STR, this, subject, wallFollowingVal, numActions);
 
 		// Three joint states - QL Votes, Taxic, WallAvoider
 		jointVotes = new JointStatesManySum(BEFORE_JOINT_VOTES, this, 3,
-				subject.getNumActions());
+				numActions);
 
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf
@@ -267,10 +267,10 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// Take the value of each state and vote for an action
 		if (proportionalQl)
 			new ProportionalVotes(AFTER_ACTION_SELECTION_STR, this,
-					aAll.getSize(), subject.getNumActions());
+					aAll.getSize(), numActions);
 		else
 			new WTAVotes(AFTER_ACTION_SELECTION_STR, this, aAll.getSize(),
-					subject.getNumActions());
+					numActions);
 
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot,
@@ -280,25 +280,26 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				closeToFoodThrs));
 
 		// Wall following for obst. avoidance
-		new WallAvoider(AFTER_WALLAVOID_STR, this, subject, wallFollowingVal);
+		new WallAvoider(AFTER_WALLAVOID_STR, this, subject, wallFollowingVal, numActions);
 
 		// Three joint states - QL Votes, Taxic, WallAvoider
 		new JointStatesManySum(AFTER_JOINT_VOTES, this, 3,
-				subject.getNumActions());
+				numActions);
 
 		if (proportionalQl) {
 			MultiStateProportionalQL mspql = new MultiStateProportionalQL(
 					QL_STR, this, subject, bAll.getSize(),
-					subject.getNumActions(), discountFactor, alpha,
+					numActions, discountFactor, alpha,
 					initialValue);
 			ql = mspql;
 			qLUpdVal.add(mspql);
 		} else {
-			SingleStateQL ssql = new SingleStateQL(QL_STR, this,
-					bAll.getSize(), subject.getNumActions(), discountFactor,
-					alpha, initialValue);
-			ql = ssql;
-			qLUpdVal.add(ssql);
+			// TODO: get back
+//			SingleStateQL ssql = new SingleStateQL(QL_STR, this,
+//					bAll.getSize(), numActions, discountFactor,
+//					alpha, initialValue);
+//			ql = ssql;
+//			qLUpdVal.add(ssql);
 		}
 	}
 

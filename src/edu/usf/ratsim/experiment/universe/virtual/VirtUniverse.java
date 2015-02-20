@@ -25,7 +25,10 @@ import com.vividsolutions.jts.geom.LineSegment;
 import com.vividsolutions.jts.geom.Polygon;
 
 import edu.usf.experiment.PropertyHolder;
-import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.subject.affordance.EatAffordance;
+import edu.usf.experiment.subject.affordance.ForwardAffordance;
+import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.IOUtils;
@@ -42,6 +45,7 @@ import edu.usf.ratsim.support.XMLDocReader;
  */
 public class VirtUniverse extends Universe {
 
+	private static VirtUniverse instance = null;
 	private View topView;
 	private RobotNode robot;
 	private List<FeederNode> feeders;
@@ -54,10 +58,11 @@ public class VirtUniverse extends Universe {
 
 	private List<WallNode> wallNodes;
 
-
 	public VirtUniverse(ElementWrapper params) {
 		super(params);
-		
+
+		instance = this;
+
 		String mazeFile = params.getChildText("maze");
 		boolean display = params.getChildBoolean("display");
 
@@ -82,8 +87,6 @@ public class VirtUniverse extends Universe {
 		list = doc.getElementsByTagName("pool");
 		if (list.getLength() != 0)
 			pool = new PoolNode(list.item(0));
-		
-	
 
 		// Walls
 		list = doc.getElementsByTagName("wall");
@@ -102,29 +105,29 @@ public class VirtUniverse extends Universe {
 
 		if (display) {
 			VirtualUniverse vu = new VirtualUniverse();
-			Locale l = new Locale(vu);			
-			
+			Locale l = new Locale(vu);
+
 			bg = new BranchGroup();
 			bg.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
 			bg.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
 			l.addBranchGraph(bg);
-			
+
 			// Add previously created elements, but not added to the 3d universe
 			list = doc.getElementsByTagName("pool");
 			if (list.getLength() != 0)
 				bg.addChild(pool);
-			for(WallNode w : wallNodes)
+			for (WallNode w : wallNodes)
 				bg.addChild(w);
 			list = doc.getElementsByTagName("robotview");
 			if (list.getLength() != 0)
 				bg.addChild(robot);
-			for(FeederNode f : feeders)
+			for (FeederNode f : feeders)
 				bg.addChild(f);
-			
+
 			list = doc.getElementsByTagName("floor");
 			if (list.getLength() != 0)
 				bg.addChild(new CylinderNode(list.item(0)));
-			
+
 			// Spheres
 			list = doc.getElementsByTagName("sphere");
 			for (int i = 0; i < list.getLength(); i++) {
@@ -164,7 +167,7 @@ public class VirtUniverse extends Universe {
 					new Color3f(.5f, .5f, .5f)));
 			bg.addChild(new DirectionalLightNode(new Vector3f(0f, -5, 0),
 					new Color3f(1f, 1f, 1f)));
-			
+
 			UniverseFrame frame = new UniverseFrame(this);
 			frame.setVisible(true);
 		}
@@ -291,66 +294,76 @@ public class VirtUniverse extends Universe {
 	// new VirtualExpUniverse();
 	// }
 
-//	public boolean[] getRobotAffordances() {
-//
-//		return getRobotAffordances(LOOKAHEADSTEPS);
-//	}
+	public List<Affordance> getRobotAffordances(List<Affordance> affs,
+			int lookaheadSteps, float step) {
+		for (Affordance af : affs) {
+			boolean realizable;
+			if (af instanceof TurnAffordance){
+				TurnAffordance ta = (TurnAffordance) af;
+				realizable = canMove(ta.getAngle(), ta.getDistance());
+			} else if (af instanceof ForwardAffordance)
+				realizable = canMove(0, ((ForwardAffordance)af).getDistance());
+			else if (af instanceof EatAffordance)
+				realizable = hasRobotFoundFood();
+			else
+				throw new RuntimeException("Affordance "
+						+ af.getClass().getName() + " not supported by robot");
+
+			af.setRealizable(realizable);
+		}
+
+		return affs;
+	}
+
+	private boolean canMove(float angle, float step) {
+		// The current position with rotation
+		Transform3D rPos = new Transform3D();
+		robot.getTransformGroup().getTransform(rPos);
+		Vector3f p = new Vector3f();
+		rPos.get(p);
+		Coordinate initCoordinate = new Coordinate(p.x, p.y);
+		// A translation vector to calc affordances
+		Transform3D trans = new Transform3D();
+		trans.setTranslation(new Vector3f(step, 0f, 0f));
+		// The rotatio of the action
+		Transform3D rot = new Transform3D();
+		rot.rotZ(angle);
+		// Apply hipotetical transformations
+		rPos.mul(rot);
+		rPos.mul(trans);
+		// Get the new position
+		Vector3f finalPos = new Vector3f();
+		rPos.get(finalPos);
+		Coordinate finalCoordinate = new Coordinate(finalPos.x, finalPos.y);
+		// Check it's in the maze
+		boolean insideMaze = (pool == null)
+				|| pool.isInside(new Point3f(finalPos));
+		// Check if crosses any wall
+		boolean intesectsWall = false;
+		LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
+		for (WallNode wallNode : wallNodes) {
+			// System.out.println(path);
+			// System.out.println(wallNode.segment);
+			// System.out.println(path.intersection(wallNode.segment));
+			intesectsWall = intesectsWall
+					|| (path.intersection(wallNode.segment) != null);
+		}
+
+		return insideMaze && !intesectsWall;
+	}
 
 	public Rectangle2D.Float getBoundingRectangle() {
 		return boundingRect.getRect();
 	}
 
-//	public boolean isRobotParallelToWall() {
-//		boolean aff[] = getRobotAffordances();
-//
-//		// If I cannot move to any of the perpendicular directions I am near a
-//		// wall
-//		return !aff[GeomUtils.discretizeAction(-90)]
-//				|| !aff[GeomUtils.discretizeAction(90)];
-//	}
-
-//	public boolean[] getRobotAffordances(int lookahead) {
-//		boolean[] affordances = new boolean[GeomUtils.numActions];
-//		for (int action = 0; action < GeomUtils.numActions; action++) {
-//			// The current position with rotation
-//			Transform3D rPos = new Transform3D();
-//			robot.getTransformGroup().getTransform(rPos);
-//			Vector3f p = new Vector3f();
-//			rPos.get(p);
-//			Coordinate initCoordinate = new Coordinate(p.x, p.y);
-//			// A translation vector to calc affordances
-//			Transform3D trans = new Transform3D();
-//			trans.setTranslation(new Vector3f(VirtualRobot.STEP * lookahead,
-//					0f, 0f));
-//			// The rotatio of the action
-//			Transform3D rot = new Transform3D();
-//			rot.rotZ(GeomUtils.getActionAngle(action));
-//			// Apply hipotetical transformations
-//			rPos.mul(rot);
-//			rPos.mul(trans);
-//			// Get the new position
-//			Vector3f finalPos = new Vector3f();
-//			rPos.get(finalPos);
-//			Coordinate finalCoordinate = new Coordinate(finalPos.x, finalPos.y);
-//			// Check it's in the maze
-//			boolean insideMaze = (pool == null)
-//					|| pool.isInside(new Point3f(finalPos));
-//			// Check if crosses any wall
-//			boolean intesectsWall = false;
-//			LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
-//			for (WallNode wallNode : wallNodes) {
-//				// System.out.println(path);
-//				// System.out.println(wallNode.segment);
-//				// System.out.println(path.intersection(wallNode.segment));
-//				intesectsWall = intesectsWall
-//						|| (path.intersection(wallNode.segment) != null);
-//			}
-//
-//			affordances[action] = insideMaze && !intesectsWall;
-//		}
-//
-//		return affordances;
-//	}
+	// public boolean isRobotParallelToWall() {
+	// boolean aff[] = getRobotAffordances();
+	//
+	// // If I cannot move to any of the perpendicular directions I am near a
+	// // wall
+	// return !aff[GeomUtils.discretizeAction(-90)]
+	// || !aff[GeomUtils.discretizeAction(90)];
+	// }
 
 	public void setWantedFeeder(int feeder, boolean wanted) {
 		feeders.get(feeder).setWanted(wanted);
@@ -361,17 +374,17 @@ public class VirtUniverse extends Universe {
 			f.setWanted(false);
 	}
 
-//	@Override
-//	public int getWantedFeeder() {
-//		int wantedFeeder = -1;
-//		for (int i = 0; i < feeders.size(); i++)
-//			if (feeders.get(i).isWanted()) {
-//				wantedFeeder = i;
-//				break;
-//			}
-//
-//		return wantedFeeder;
-//	}
+	// @Override
+	// public int getWantedFeeder() {
+	// int wantedFeeder = -1;
+	// for (int i = 0; i < feeders.size(); i++)
+	// if (feeders.get(i).isWanted()) {
+	// wantedFeeder = i;
+	// break;
+	// }
+	//
+	// return wantedFeeder;
+	// }
 
 	public List<WallNode> getWalls() {
 		return wallNodes;
@@ -411,7 +424,7 @@ public class VirtUniverse extends Universe {
 	public float wallDistanceToFeeders(LineSegment wall) {
 		float minDist = Float.MAX_VALUE;
 		for (FeederNode fn : feeders) {
-			Vector3f pos = fn.getPosition();
+			Point3f pos = fn.getPosition();
 			Coordinate c = new Coordinate(pos.x, pos.y);
 			if (wall.distance(c) < minDist)
 				minDist = (float) wall.distance(c);
@@ -419,24 +432,32 @@ public class VirtUniverse extends Universe {
 		return minDist;
 	}
 
-//	public boolean canRobotSeeFeeder(Integer fn) {
-//		float angleToFeeder = angleToFeeder(fn);
-//		boolean inField = angleToFeeder <= HALF_FIELD_OF_VIEW;
-//
-//		boolean intersects = false;
-//		Coordinate rPos = new Coordinate(getRobotPosition().x,
-//				getRobotPosition().y);
-//		Vector3f fPosV = feeders.get(fn).getPosition();
-//		Coordinate fPos = new Coordinate(fPosV.x, fPosV.y);
-//		LineSegment lineOfSight = new LineSegment(rPos, fPos);
-//		for (WallNode w : wallNodes)
-//			intersects = intersects || w.intersects(lineOfSight);
-//
-//		boolean closeEnough = getRobotPosition().distance(
-//				new Point3f(feeders.get(fn).getPosition())) < VISION_DIST;
-//
-//		return inField && !intersects && closeEnough;
-//	}
+	public boolean canRobotSeeFeeder(Integer fn, float halfFieldOfView,
+			float visionDist) {
+		float angleToFeeder = angleToFeeder(fn);
+		boolean inField = angleToFeeder <= halfFieldOfView;
+
+		boolean intersects = false;
+		Coordinate rPos = new Coordinate(getRobotPosition().x,
+				getRobotPosition().y);
+		Point3f fPosV = feeders.get(fn).getPosition();
+		Coordinate fPos = new Coordinate(fPosV.x, fPosV.y);
+		LineSegment lineOfSight = new LineSegment(rPos, fPos);
+		for (WallNode w : wallNodes)
+			intersects = intersects || w.intersects(lineOfSight);
+
+		boolean closeEnough = getRobotPosition().distance(
+				new Point3f(feeders.get(fn).getPosition())) < visionDist;
+
+		return inField && !intersects && closeEnough;
+	}
+
+	private float angleToFeeder(Integer fn) {
+		return Math.abs(GeomUtils.angleToPointWithOrientation(
+				getRobotOrientation(), getRobotPosition(), feeders.get(fn)
+						.getPosition()));
+
+	}
 
 	public boolean hasFoodFeeder(int feeder) {
 		return feeders.get(feeder).hasFood();
@@ -449,12 +470,20 @@ public class VirtUniverse extends Universe {
 
 		return intersects;
 	}
-	
+
 	@Override
 	protected void finalize() throws Throwable {
 		// TODO Auto-generated method stub
 		super.finalize();
 
 		// System.out.println("Finalizing Virtual Universe");
+	}
+
+	public static VirtUniverse getInstance() {
+		return instance;
+	}
+
+	public boolean isFeederFlashing(Integer i) {
+		return feeders.get(i).isFlashing();
 	}
 }
