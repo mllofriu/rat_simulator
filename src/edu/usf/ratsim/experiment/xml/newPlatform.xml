@@ -6,7 +6,7 @@
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
 			<closeToFoodThrs>0.2</closeToFoodThrs>
-			<maze>src/edu/usf/ratsim/experiment/mazes/taxiNoWalls.xml</maze>
+			<maze>src/edu/usf/ratsim/experiment/mazes/newPlatform.xml</maze>
 			<display>true</display>
 		</params>
 	</universe>
@@ -16,8 +16,8 @@
 		<params>
 			<noise>.2</noise>
 			<lookaheadSteps>3</lookaheadSteps>
-			<halfFieldOfView>1.57</halfFieldOfView>
-			<visionDist>.5</visionDist>
+			<halfFieldOfView>3.15</halfFieldOfView>
+			<visionDist>4.5</visionDist>
 			<closeThrs>.2</closeThrs>
 		</params>
 	</robot>

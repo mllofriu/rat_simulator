@@ -181,4 +181,9 @@ public class VirtualRobot extends LocalizableRobot {
 					+ af.getClass().getName() + " not supported by robot");
 	}
 
+	@Override
+	public boolean seesFeeder() {
+		return getClosestFeeder(-1) != null;
+	}
+
 }

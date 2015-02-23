@@ -1,28 +1,24 @@
 package edu.usf.ratsim.experiment.universe.virtual;
 
-import java.util.Map;
-
 import javax.media.j3d.Appearance;
 import javax.media.j3d.ColoringAttributes;
 import javax.vecmath.Color3f;
 
-import org.w3c.dom.Node;
-
 import com.sun.j3d.utils.geometry.Cylinder;
 import com.sun.j3d.utils.geometry.Primitive;
 
+import edu.usf.experiment.utils.ElementWrapper;
+
 public class CylinderNode extends ExpUniverseNode {
 
-	public CylinderNode(Node node) {
-		Map<String, Float> values = readValues(node);
-
-		Color3f color = new Color3f(values.get("cr"), values.get("cg"),
-				values.get("cb"));
-		float xp = values.get("xp");
-		float yp = values.get("yp");
-		float zp = values.get("zp");
-		float r = values.get("r");
-		float h = values.get("h");
+	public CylinderNode(ElementWrapper params) {
+		Color3f color = new Color3f(params.getChildFloat("cr"),
+				params.getChildFloat("cg"), params.getChildFloat("cb"));
+		float xp = params.getChildFloat("x");
+		float yp = params.getChildFloat("y");
+		float zp = params.getChildFloat("z");
+		float r = params.getChildFloat("r");
+		float h = params.getChildFloat("h");
 
 		Appearance app = new Appearance();
 		app.setColoringAttributes(new ColoringAttributes(color, 1));

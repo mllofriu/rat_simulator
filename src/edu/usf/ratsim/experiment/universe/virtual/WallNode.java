@@ -13,8 +13,11 @@ import com.vividsolutions.jts.geom.LineSegment;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Polygon;
 
+import edu.usf.experiment.utils.ElementWrapper;
+
 public class WallNode extends ExpUniverseNode {
 
+	private static final float WALL_HEIGHT = 0.1f;
 	final float RADIO = 0.005f;
 	public float x1;
 	public float y1;
@@ -25,18 +28,16 @@ public class WallNode extends ExpUniverseNode {
 
 	public LineSegment segment;
 
-	public WallNode(Node node) {
-		Map<String, Float> values = readValues(node);
+	public WallNode(ElementWrapper params) {
 
-		Color3f color = new Color3f(values.get("cr"), values.get("cg"),
-				values.get("cb"));
-		x1 = values.get("x1");
-		y1 = values.get("y1");
-		z1 = values.get("z1");
-		x2 = values.get("x2");
-		y2 = values.get("y2");
-		z2 = values.get("z2");
-		float h = values.get("h");
+		Color3f color = new Color3f(1, 1, 1);
+		x1 = params.getChildFloat("x1");
+		y1 = params.getChildFloat("y1");
+		z1 = params.getChildFloat("z1");
+		x2 = params.getChildFloat("x2");
+		y2 = params.getChildFloat("y2");
+		z2 = params.getChildFloat("z2");
+		float h = WALL_HEIGHT;
 
 		float wallLength = new Point3f(x1, y1, z1).distance(new Point3f(x2, y2,
 				z2));

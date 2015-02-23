@@ -48,7 +48,7 @@ public class VirtUniverse extends Universe {
 	private static VirtUniverse instance = null;
 	private View topView;
 	private RobotNode robot;
-	private List<FeederNode> feeders;
+	private List<FeederNode> feederNodes;
 
 	private BranchGroup bg;
 
@@ -57,51 +57,25 @@ public class VirtUniverse extends Universe {
 	private BoundingRectNode boundingRect;
 
 	private List<WallNode> wallNodes;
+	private boolean display;
 
 	public VirtUniverse(ElementWrapper params) {
 		super(params);
 
-		instance = this;
-
 		String mazeFile = params.getChildText("maze");
-		boolean display = params.getChildBoolean("display");
+		display = params.getChildBoolean("display");
 
 		wallNodes = new LinkedList<WallNode>();
 
 		// Just initialize the nodes we need
-		NodeList list;
-		org.w3c.dom.Node nodeParams;
-
 		PropertyHolder props = PropertyHolder.getInstance();
 		String dstMazeFile = props.getProperty("log.directory") + "maze.xml";
 		IOUtils.copyFile(mazeFile, dstMazeFile);
 		Document doc = XMLDocReader.readDocument(dstMazeFile);
+		ElementWrapper maze = new ElementWrapper(doc.getDocumentElement());
+		List<ElementWrapper> list;
 
-		boundingRect = new BoundingRectNode(doc.getElementsByTagName(
-				"boundingRect").item(0));
-
-		list = doc.getElementsByTagName("robotview");
-		nodeParams = list.item(0);
-		robot = new RobotNode(nodeParams, display);
-
-		list = doc.getElementsByTagName("pool");
-		if (list.getLength() != 0)
-			pool = new PoolNode(list.item(0));
-
-		// Walls
-		list = doc.getElementsByTagName("wall");
-		for (int i = 0; i < list.getLength(); i++) {
-			WallNode w = new WallNode(list.item(i));
-			wallNodes.add(w);
-		}
-
-		list = doc.getElementsByTagName("feeder");
-		feeders = new LinkedList<FeederNode>();
-		for (int i = 0; i < list.getLength(); i++) {
-			nodeParams = list.item(i);
-			FeederNode feeder = new FeederNode(nodeParams);
-			feeders.add(feeder);
-		}
+		robot = new RobotNode(maze.getChild("robotview"), display);
 
 		if (display) {
 			VirtualUniverse vu = new VirtualUniverse();
@@ -113,43 +87,31 @@ public class VirtUniverse extends Universe {
 			l.addBranchGraph(bg);
 
 			// Add previously created elements, but not added to the 3d universe
-			list = doc.getElementsByTagName("pool");
-			if (list.getLength() != 0)
-				bg.addChild(pool);
-			for (WallNode w : wallNodes)
-				bg.addChild(w);
-			list = doc.getElementsByTagName("robotview");
-			if (list.getLength() != 0)
-				bg.addChild(robot);
-			for (FeederNode f : feeders)
-				bg.addChild(f);
+			bg.addChild(robot);
 
-			list = doc.getElementsByTagName("floor");
-			if (list.getLength() != 0)
-				bg.addChild(new CylinderNode(list.item(0)));
-
-			// Spheres
-			list = doc.getElementsByTagName("sphere");
-			for (int i = 0; i < list.getLength(); i++) {
-				bg.addChild(new SphereNode(list.item(i)));
+			// Walls
+			list = maze.getChildren("wall");
+			for (ElementWrapper wn : list){
+				WallNode w = new WallNode(wn);
+				wallNodes.add(w);
 			}
 
-			// Cylinders
-			list = doc.getElementsByTagName("cylinder");
-			for (int i = 0; i < list.getLength(); i++) {
-				bg.addChild(new CylinderNode(list.item(i)));
+			
+			list = maze.getChildren("feeder");
+			feederNodes = new LinkedList<FeederNode>();
+			for (ElementWrapper fn : list){
+				FeederNode feeder = new FeederNode(fn);
+				feederNodes.add(feeder);
 			}
 
-			// Boxes
-			list = doc.getElementsByTagName("box");
-			for (int i = 0; i < list.getLength(); i++) {
-				bg.addChild(new BoxNode(list.item(i)));
-			}
+			ElementWrapper floor = maze.getChild("floor");
+			if (floor != null)
+				bg.addChild(new CylinderNode(floor));
+
 
 			// Top view
-			list = doc.getElementsByTagName("topview");
-			nodeParams = list.item(0);
-			ViewNode vn = new ViewNode(nodeParams);
+			ElementWrapper tv = maze.getChild("topview");
+			ViewNode vn = new ViewNode(tv);
 			topView = vn.getView();
 			bg.addChild(vn);
 
@@ -172,6 +134,7 @@ public class VirtUniverse extends Universe {
 			frame.setVisible(true);
 		}
 
+		instance = this;
 	}
 
 	public void addWall(float x1, float y1, float x2, float y2) {
@@ -366,11 +329,12 @@ public class VirtUniverse extends Universe {
 	// }
 
 	public void setWantedFeeder(int feeder, boolean wanted) {
-		feeders.get(feeder).setWanted(wanted);
+		if (display)
+			feederNodes.get(feeder).setWanted(wanted);
 	}
 
 	public void clearWantedFeeders() {
-		for (FeederNode f : feeders)
+		for (FeederNode f : feederNodes)
 			f.setWanted(false);
 	}
 
@@ -417,14 +381,14 @@ public class VirtUniverse extends Universe {
 	}
 
 	public void dispose() {
-		for (FeederNode f : feeders)
+		for (FeederNode f : feederNodes)
 			f.terminate();
 	}
 
 	public float wallDistanceToFeeders(LineSegment wall) {
 		float minDist = Float.MAX_VALUE;
-		for (FeederNode fn : feeders) {
-			Point3f pos = fn.getPosition();
+		for (Integer fn : getFeeders()) {
+			Point3f pos = getFoodPosition(fn);
 			Coordinate c = new Coordinate(pos.x, pos.y);
 			if (wall.distance(c) < minDist)
 				minDist = (float) wall.distance(c);
@@ -440,27 +404,22 @@ public class VirtUniverse extends Universe {
 		boolean intersects = false;
 		Coordinate rPos = new Coordinate(getRobotPosition().x,
 				getRobotPosition().y);
-		Point3f fPosV = feeders.get(fn).getPosition();
+		Point3f fPosV = getFoodPosition(fn);
 		Coordinate fPos = new Coordinate(fPosV.x, fPosV.y);
 		LineSegment lineOfSight = new LineSegment(rPos, fPos);
 		for (WallNode w : wallNodes)
 			intersects = intersects || w.intersects(lineOfSight);
 
 		boolean closeEnough = getRobotPosition().distance(
-				new Point3f(feeders.get(fn).getPosition())) < visionDist;
+				new Point3f(getFoodPosition(fn))) < visionDist;
 
 		return inField && !intersects && closeEnough;
 	}
 
 	private float angleToFeeder(Integer fn) {
 		return Math.abs(GeomUtils.angleToPointWithOrientation(
-				getRobotOrientation(), getRobotPosition(), feeders.get(fn)
-						.getPosition()));
+				getRobotOrientation(), getRobotPosition(), getFoodPosition(fn)));
 
-	}
-
-	public boolean hasFoodFeeder(int feeder) {
-		return feeders.get(feeder).hasFood();
 	}
 
 	public boolean placeIntersectsWalls(Polygon c) {
@@ -481,9 +440,5 @@ public class VirtUniverse extends Universe {
 
 	public static VirtUniverse getInstance() {
 		return instance;
-	}
-
-	public boolean isFeederFlashing(Integer i) {
-		return feeders.get(i).isFlashing();
 	}
 }

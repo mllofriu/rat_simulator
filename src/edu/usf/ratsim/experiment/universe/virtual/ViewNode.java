@@ -13,16 +13,16 @@ import javax.vecmath.Vector3f;
 
 import org.w3c.dom.Node;
 
+import edu.usf.experiment.utils.ElementWrapper;
+
 public class ViewNode extends ExpUniverseNode {
 
 	private View view;
 
-	public ViewNode(Node node) {
-		Map<String, Float> values = readValues(node);
-
-		float x = values.get("x");
-		float y = values.get("y");
-		float z = values.get("z");
+	public ViewNode(ElementWrapper params) {
+		float x = params.getChildFloat("x");
+		float y = params.getChildFloat("y");
+		float z = params.getChildFloat("z");
 
 		Transform3D rPos = new Transform3D();
 		rPos.setTranslation(new Vector3f(x, y, z));
