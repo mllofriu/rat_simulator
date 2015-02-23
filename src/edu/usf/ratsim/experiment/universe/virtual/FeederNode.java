@@ -13,6 +13,8 @@ import org.w3c.dom.Node;
 import com.sun.j3d.utils.geometry.Cylinder;
 import com.sun.j3d.utils.geometry.Primitive;
 
+import edu.usf.experiment.utils.ElementWrapper;
+
 public class FeederNode extends ExpUniverseNode {
 
 	private Point3f position;
@@ -30,14 +32,12 @@ public class FeederNode extends ExpUniverseNode {
 	private Color3f wantedColor;
 	private Appearance app;
 	private boolean wanted;
-	
+
 	private boolean terminated;
 	private Thread flashThread;
 	private boolean hasFood;
 
 	class FlashThread implements Runnable {
-
-		
 
 		public void run() {
 			terminated = false;
@@ -56,7 +56,7 @@ public class FeederNode extends ExpUniverseNode {
 						}
 						if (flashing) {
 							Thread.sleep(50);
-//							System.out.println("flashing");
+							// System.out.println("flashing");
 						}
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
@@ -76,23 +76,21 @@ public class FeederNode extends ExpUniverseNode {
 
 	}
 
-	public FeederNode(Node node) {
+	public FeederNode(ElementWrapper params) {
 		active = false;
 		flashing = false;
 		wanted = false;
 		hasFood = false;
 
-		Map<String, Float> values = readValues(node);
-
-		normalColor = new Color3f(values.get("cr"), values.get("cg"),
-				values.get("cb"));
+		normalColor = new Color3f(params.getChildFloat("cr"),
+				params.getChildFloat("cg"), params.getChildFloat("cb"));
 		flashingColor = new Color3f(1f, 1f, 1f);
 		wantedColor = new Color3f(1f, .4f, 0f);
-		float xp = values.get("xp");
-		float yp = values.get("yp");
-		float zp = values.get("zp");
-		float r = values.get("r");
-		float h = values.get("h");
+		float xp = params.getChildFloat("x");
+		float yp = params.getChildFloat("y");
+		float zp = params.getChildFloat("z");
+		float r = params.getChildFloat("r");
+		float h = params.getChildFloat("h");
 
 		app = new Appearance();
 		app.setColoringAttributes(new ColoringAttributes(normalColor, 1));
@@ -141,8 +139,8 @@ public class FeederNode extends ExpUniverseNode {
 	public boolean isWanted() {
 		return wanted;
 	}
-	
-	public void terminate(){
+
+	public void terminate() {
 		terminated = true;
 		try {
 			flashThread.join();
@@ -150,14 +148,14 @@ public class FeederNode extends ExpUniverseNode {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		flashThread = null;
 	}
 
 	public void releaseFood() {
 		hasFood = true;
 	}
-	
+
 	public void clearFood() {
 		hasFood = false;
 	}

@@ -63,7 +63,7 @@ public class GoalTaxicFoodFinderSchema extends NslModule {
 			float value = 0;
 			if(af.isRealizable()){
 				if (af instanceof TurnAffordance) {
-					if (robot.hasFoundFood()){
+					if (robot.seesFeeder()){
 						TurnAffordance ta = (TurnAffordance) af;
 						float angleDiff = diffAfterRot(ta.getAngle());
 	
@@ -72,7 +72,7 @@ public class GoalTaxicFoodFinderSchema extends NslModule {
 						value = (float) (maxReward * (1 - angleDiff) / Math.PI);
 					}
 				} else if (af instanceof ForwardAffordance){
-					if (robot.hasFoundFood()){
+					if (robot.seesFeeder()){
 						float angleDiff = diffAfterRot(0);
 	
 						// Set the votes proportional to the error in heading

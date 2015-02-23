@@ -3,7 +3,6 @@ package edu.usf.ratsim.experiment.universe.virtual;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.image.BufferedImage;
-import java.util.Map;
 
 import javax.media.j3d.Appearance;
 import javax.media.j3d.BranchGroup;
@@ -18,13 +17,11 @@ import javax.vecmath.Color3f;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
-import org.w3c.dom.Node;
-
 import com.sun.j3d.utils.geometry.Cone;
 import com.sun.j3d.utils.geometry.Cylinder;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
-import edu.usf.ratsim.support.Configuration;
+import edu.usf.experiment.utils.ElementWrapper;
 
 public class RobotNode extends ExpUniverseNode {
 
@@ -39,13 +36,11 @@ public class RobotNode extends ExpUniverseNode {
 	private Canvas3D[] offScreenCanvas;
 	private ImageComponent2D[] offScreenImages;
 
-	public RobotNode(Node node, boolean display) {
-		Map<String, Float> values = readValues(node);
-
-		float x = values.get("x");
-		float y = values.get("y");
-		float z = values.get("z");
-		float theta = values.get("theta");
+	public RobotNode(ElementWrapper params, boolean display) {
+		float x = params.getChildFloat("x");
+		float y = params.getChildFloat("y");
+		float z = params.getChildFloat("z");
+		float theta = params.getChildFloat("theta");
 		
 		// Initialize the transform group
 		// Keep it public to move the robot in the future
