@@ -8,6 +8,10 @@ import java.util.Map;
 import javax.vecmath.Point4f;
 
 import edu.usf.experiment.Trial;
+import edu.usf.experiment.task.ActivateAllFeeders;
+import edu.usf.experiment.task.ActivateRandomFeeder;
+import edu.usf.experiment.task.DeactivateAllFeeders;
+import edu.usf.experiment.task.DeactivateFeeder;
 import edu.usf.ratsim.support.ElementWrapper;
 
 public class TaskFactory {

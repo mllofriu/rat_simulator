@@ -9,9 +9,6 @@ import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
-import edu.usf.experiment.Trial;
-import edu.usf.ratsim.support.Configuration;
-
 public class UniverseFrame extends java.awt.Frame {
 
 	private static final long serialVersionUID = -698020368303861261L;

@@ -4,7 +4,6 @@ import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDinFloat2;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
-import edu.usf.ratsim.support.GeomUtils;
 
 public class ProportionalMaxVotes extends NslModule {
 

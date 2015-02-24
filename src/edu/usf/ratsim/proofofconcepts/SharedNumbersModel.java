@@ -5,6 +5,7 @@ import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
 import nslj.src.system.NslInterpreter;
 import nslj.src.system.NslSystem;
+import edu.usf.ratsim.experiment.subject.NslSequentialScheduler;
 
 public class SharedNumbersModel extends NslModel {
 

@@ -1,6 +1,5 @@
 package edu.usf.ratsim.nsl.modules.qlearning.update;
 
-import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

@@ -1,14 +1,9 @@
 package edu.usf.ratsim.experiment.universe.virtual;
 
-import java.util.Map;
-
 import javax.media.j3d.Appearance;
 import javax.media.j3d.ColoringAttributes;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
-import javax.vecmath.Vector3f;
-
-import org.w3c.dom.Node;
 
 import com.sun.j3d.utils.geometry.Cylinder;
 import com.sun.j3d.utils.geometry.Primitive;
