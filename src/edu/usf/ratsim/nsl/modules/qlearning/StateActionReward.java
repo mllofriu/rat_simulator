@@ -1,6 +1,5 @@
 package edu.usf.ratsim.nsl.modules.qlearning;
 
-import edu.usf.ratsim.support.GeomUtils;
 
 public final class StateActionReward {
 	private int state;

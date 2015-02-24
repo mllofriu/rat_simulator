@@ -12,7 +12,6 @@ import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.ratsim.support.Debug;
-import edu.usf.ratsim.support.GeomUtils;
 
 public class NoExploration extends NslModule {
 
@@ -60,6 +59,8 @@ public class NoExploration extends NslModule {
 
 		// Publish the taken action
 		takenAction.set(aff.indexOf(selectedAction));
+		if (Debug.printSelectedValues)
+			System.out.println(selectedAction.toString());
 		robot.executeAffordance(selectedAction);
 		// TODO: get the rotation -> forward back
 //		// System.out.println(takenAction.get());

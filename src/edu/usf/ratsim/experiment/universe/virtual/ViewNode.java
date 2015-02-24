@@ -1,7 +1,5 @@
 package edu.usf.ratsim.experiment.universe.virtual;
 
-import java.util.Map;
-
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.PhysicalBody;
 import javax.media.j3d.PhysicalEnvironment;
@@ -10,8 +8,6 @@ import javax.media.j3d.TransformGroup;
 import javax.media.j3d.View;
 import javax.media.j3d.ViewPlatform;
 import javax.vecmath.Vector3f;
-
-import org.w3c.dom.Node;
 
 import edu.usf.experiment.utils.ElementWrapper;
 

@@ -1,7 +1,5 @@
 package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
 import nslj.src.lang.NslDinFloat1;
@@ -10,7 +8,6 @@ import nslj.src.lang.NslModule;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.ratsim.robot.IRobot;
-import edu.usf.ratsim.support.GeomUtils;
 
 public class ProportionalExplorer extends NslModule {
 

@@ -18,7 +18,6 @@ import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
@@ -58,12 +57,14 @@ public class VirtUniverse extends Universe {
 
 	private List<WallNode> wallNodes;
 	private boolean display;
+	private long sleep;
 
 	public VirtUniverse(ElementWrapper params) {
 		super(params);
 
 		String mazeFile = params.getChildText("maze");
 		display = params.getChildBoolean("display");
+		sleep = params.getChildInt("sleep");
 
 		wallNodes = new LinkedList<WallNode>();
 
@@ -91,15 +92,14 @@ public class VirtUniverse extends Universe {
 
 			// Walls
 			list = maze.getChildren("wall");
-			for (ElementWrapper wn : list){
+			for (ElementWrapper wn : list) {
 				WallNode w = new WallNode(wn);
 				wallNodes.add(w);
 			}
 
-			
 			list = maze.getChildren("feeder");
 			feederNodes = new LinkedList<FeederNode>();
-			for (ElementWrapper fn : list){
+			for (ElementWrapper fn : list) {
 				FeederNode feeder = new FeederNode(fn);
 				feederNodes.add(feeder);
 			}
@@ -107,7 +107,6 @@ public class VirtUniverse extends Universe {
 			ElementWrapper floor = maze.getChild("floor");
 			if (floor != null)
 				bg.addChild(new CylinderNode(floor));
-
 
 			// Top view
 			ElementWrapper tv = maze.getChild("topview");
@@ -211,6 +210,14 @@ public class VirtUniverse extends Universe {
 		rPos.mul(trans);
 		// Set the new transform
 		robot.getTransformGroup().setTransform(rPos);
+
+		if (sleep != 0)
+			try {
+				Thread.sleep(sleep);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 
 	/**
@@ -230,6 +237,14 @@ public class VirtUniverse extends Universe {
 		rPos.mul(trans);
 		// Set the new transform
 		robot.getTransformGroup().setTransform(rPos);
+
+		if (sleep != 0)
+			try {
+				Thread.sleep(sleep);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 
 	public Quat4f getRobotOrientation() {
@@ -258,14 +273,16 @@ public class VirtUniverse extends Universe {
 	// }
 
 	public List<Affordance> getRobotAffordances(List<Affordance> affs,
-			int lookaheadSteps, float step) {
+			float lookaheadSteps, float step) {
 		for (Affordance af : affs) {
 			boolean realizable;
-			if (af instanceof TurnAffordance){
+			if (af instanceof TurnAffordance) {
 				TurnAffordance ta = (TurnAffordance) af;
-				realizable = canMove(ta.getAngle(), ta.getDistance());
+				realizable = canMove(ta.getAngle(),
+						lookaheadSteps * ta.getDistance());
 			} else if (af instanceof ForwardAffordance)
-				realizable = canMove(0, ((ForwardAffordance)af).getDistance());
+				realizable = canMove(0, lookaheadSteps
+						* ((ForwardAffordance) af).getDistance());
 			else if (af instanceof EatAffordance)
 				realizable = hasRobotFoundFood();
 			else
@@ -417,8 +434,10 @@ public class VirtUniverse extends Universe {
 	}
 
 	private float angleToFeeder(Integer fn) {
-		return Math.abs(GeomUtils.angleToPointWithOrientation(
-				getRobotOrientation(), getRobotPosition(), getFoodPosition(fn)));
+		return Math
+				.abs(GeomUtils.angleToPointWithOrientation(
+						getRobotOrientation(), getRobotPosition(),
+						getFoodPosition(fn)));
 
 	}
 

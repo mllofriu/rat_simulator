@@ -1,11 +1,7 @@
 package edu.usf.ratsim.experiment.universe.virtual;
 
-import java.util.Map;
-
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
-
-import org.w3c.dom.Node;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;

@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Random;
 
-import edu.usf.ratsim.experiment.task.ActivateAllFeeders;
+import edu.usf.experiment.task.ActivateAllFeeders;
 import edu.usf.ratsim.support.ElementWrapper;
 
 public class FeederSelector implements SubjectInitializer {

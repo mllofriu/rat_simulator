@@ -27,7 +27,7 @@ public class VirtualRobot extends LocalizableRobot {
 
 	private float noise;
 
-	private int lookaheadSteps;
+	private float lookaheadSteps;
 
 	private float visionDist;
 
@@ -39,7 +39,7 @@ public class VirtualRobot extends LocalizableRobot {
 		super(params);
 
 		noise = params.getChildFloat("noise");
-		lookaheadSteps = params.getChildInt("lookaheadSteps");
+		lookaheadSteps = params.getChildFloat("lookaheadSteps");
 		halfFieldOfView = params.getChildFloat("halfFieldOfView");
 		visionDist = params.getChildFloat("visionDist");
 		closeThrs = params.getChildFloat("closeThrs");
