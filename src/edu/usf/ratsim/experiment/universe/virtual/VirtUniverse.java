@@ -95,6 +95,7 @@ public class VirtUniverse extends Universe {
 			for (ElementWrapper wn : list) {
 				WallNode w = new WallNode(wn);
 				wallNodes.add(w);
+				bg.addChild(w);
 			}
 
 			list = maze.getChildren("feeder");
@@ -102,6 +103,7 @@ public class VirtUniverse extends Universe {
 			for (ElementWrapper fn : list) {
 				FeederNode feeder = new FeederNode(fn);
 				feederNodes.add(feeder);
+				bg.addChild(feeder);
 			}
 
 			ElementWrapper floor = maze.getChild("floor");
@@ -278,8 +280,9 @@ public class VirtUniverse extends Universe {
 			boolean realizable;
 			if (af instanceof TurnAffordance) {
 				TurnAffordance ta = (TurnAffordance) af;
-				realizable = canMove(ta.getAngle(),
-						lookaheadSteps * ta.getDistance());
+//				realizable = canMove(ta.getAngle(),
+//						lookaheadSteps * ta.getDistance());
+				realizable = true;
 			} else if (af instanceof ForwardAffordance)
 				realizable = canMove(0, lookaheadSteps
 						* ((ForwardAffordance) af).getDistance());
