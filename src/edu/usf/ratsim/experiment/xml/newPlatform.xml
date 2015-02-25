@@ -8,7 +8,7 @@
 			<closeToFoodThrs>0.2</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/newPlatform.xml</maze>
 			<display>true</display>
-			<sleep>0</sleep>
+			<sleep>500</sleep>
 		</params>
 	</universe>
 	
@@ -16,7 +16,7 @@
 		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
 		<params>
 			<noise>.2</noise>
-			<lookaheadSteps>.5</lookaheadSteps>
+			<lookaheadSteps>1</lookaheadSteps>
 			<halfFieldOfView>3.15</halfFieldOfView>
 			<visionDist>4.5</visionDist>
 			<closeThrs>.2</closeThrs>
