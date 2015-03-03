@@ -8,7 +8,7 @@
 			<closeToFoodThrs>0.2</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/newPlatform.xml</maze>
 			<display>true</display>
-			<sleep>100</sleep>
+			<sleep>0</sleep>
 		</params>
 	</universe>
 	
@@ -18,7 +18,7 @@
 			<noise>.2</noise>
 			<lookaheadSteps>2</lookaheadSteps>
 			<halfFieldOfView>3.15</halfFieldOfView>
-			<visionDist>4.5</visionDist>
+			<visionDist>.5</visionDist>
 			<closeThrs>.3</closeThrs>
 		</params>
 	</robot>
@@ -49,7 +49,7 @@
 				<initialValue>0</initialValue>
 				<flashingReward>10000</flashingReward>
 				<nonFlashingReward>10000</nonFlashingReward>
-				<explorationReward>0</explorationReward>
+				<explorationReward>1000</explorationReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<proportionalQL>true</proportionalQL>
@@ -84,11 +84,21 @@
 			</task>
 		</beforeTasks>
 		<episodes>
-			<number>1</number>
+			<number>100</number>
 			<beforeTasks>
 				<task>
 					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
 					<params>
+					</params>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<params>
+						<point>
+							<x>0</x>
+							<y>0</y>
+							<theta>0</theta>
+						</point>
 					</params>
 				</task>
 			</beforeTasks>
