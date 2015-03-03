@@ -8,7 +8,7 @@
 			<closeToFoodThrs>0.2</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/newPlatform.xml</maze>
 			<display>true</display>
-			<sleep>500</sleep>
+			<sleep>100</sleep>
 		</params>
 	</universe>
 	
@@ -16,10 +16,10 @@
 		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
 		<params>
 			<noise>.2</noise>
-			<lookaheadSteps>1</lookaheadSteps>
+			<lookaheadSteps>2</lookaheadSteps>
 			<halfFieldOfView>3.15</halfFieldOfView>
 			<visionDist>4.5</visionDist>
-			<closeThrs>.2</closeThrs>
+			<closeThrs>.3</closeThrs>
 		</params>
 	</robot>
 	
@@ -49,6 +49,7 @@
 				<initialValue>0</initialValue>
 				<flashingReward>10000</flashingReward>
 				<nonFlashingReward>10000</nonFlashingReward>
+				<explorationReward>0</explorationReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<proportionalQL>true</proportionalQL>
@@ -59,18 +60,14 @@
 				<closeToFoodThrs>0.2</closeToFoodThrs>
 			</params>
 		</subject>
-		<params></params>
+		<params>
+		</params>
 		<tasks>
 		</tasks>
 	</group>
 	
 	<beforeTasks>
-		<task>
-			<name>edu.usf.experiment.task.DummyTask</name>
-			<params>
-				<text>Initial Experiment Task</text>
-			</params>
-		</task>
+		
 	</beforeTasks>
 	
 	<trial>
@@ -81,9 +78,8 @@
 		</groups>
 		<beforeTasks>
 			<task>
-				<name>edu.usf.experiment.task.DummyTask</name>
+				<name>edu.usf.experiment.task.EnableAllFeeders</name>
 				<params>
-					<text>Initial Trial Task</text>
 				</params>
 			</task>
 		</beforeTasks>
@@ -91,41 +87,26 @@
 			<number>1</number>
 			<beforeTasks>
 				<task>
-					<name>edu.usf.experiment.task.DummyTask</name>
+					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
 					<params>
-						<text>Initial Episode Task</text>
 					</params>
 				</task>
 			</beforeTasks>
 			<beforeCycleTasks>
-				<task>
-					<name>edu.usf.experiment.task.DummyTask</name>
-					<params>
-						<text>Before Cycle Task</text>
-					</params>
-				</task>
 			</beforeCycleTasks>
 			<afterCycleTasks>
 				<task>
-					<name>edu.usf.experiment.task.DummyTask</name>
-					<params>
-						<text>After Cycle Task</text>
-					</params>
+					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
 				</task>
 			</afterCycleTasks>
 			<loggers>
 				<logger>
 					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
-					<params></params>
+					<params>
+					</params>
 				</logger>
 			</loggers>
 			<afterTasks>
-				<task>
-					<name>edu.usf.experiment.task.DummyTask</name>
-					<params>
-						<text>After Episode Task</text>
-					</params>
-				</task>
 			</afterTasks>
 			<stopConditions>
 				<condition>
@@ -134,55 +115,27 @@
 						<max>5000</max>
 					</params>
 				</condition>
+				<condition>
+					<name>edu.usf.experiment.condition.FoundFoodStopCond</name>
+				</condition>
 			</stopConditions>
-			<loggers>
-				<logger>
-					<name>edu.usf.experiment.log.DummyLogger</name>
-				</logger>
-			</loggers>
 			<plotters>
-				<plotter>
-					<name>edu.usf.experiment.plot.DummyPlotter</name>
-				</plotter>
 			</plotters>
 		</episodes>
 		
 		<afterTasks>
-			<task>
-				<name>edu.usf.experiment.task.DummyTask</name>
-				<params>
-				</params>
-			</task>
 		</afterTasks>
 		<loggers>
-			<logger>
-				<name>edu.usf.experiment.log.DummyLogger</name>
-			</logger>
 		</loggers>
 		<plotters>
-			<plotter>
-				<name>edu.usf.experiment.plot.DummyPlotter</name>
-			</plotter>
 		</plotters>
 	</trial>
 	
 	<!-- 4 testing trials -->
 	<afterTasks>
-		<task>
-			<name>edu.usf.experiment.task.DummyTask</name>
-			<params>
-				<text>After Experiment Task</text>
-			</params>
-		</task>
 	</afterTasks>
 	<loggers>
-		<logger>
-			<name>edu.usf.experiment.log.DummyLogger</name>
-		</logger>
 	</loggers>
 	<plotters>
-		<plotter>
-			<name>edu.usf.experiment.plot.DummyPlotter</name>
-		</plotter>
 	</plotters>
 </experiment>

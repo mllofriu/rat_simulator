@@ -8,7 +8,7 @@ public class Debug {
 	
 	public static boolean print = true;
 	
-	public static boolean printValues = print && true;
+	public static boolean printValues = print && false;
 	public static boolean printEndCycle = print && false;
 	public static boolean printAnyGoal = print && false;
 	public static boolean printTaxic = print && false;
@@ -20,6 +20,6 @@ public class Debug {
 	public static boolean printHDCells = print && false;
 	public static boolean printGiveFood = print && false;
 	public static boolean printTaxicBh = print && false;
-	public static boolean printSelectedValues = print && true;	
+	public static boolean printSelectedValues = print && false;	
 	
 }

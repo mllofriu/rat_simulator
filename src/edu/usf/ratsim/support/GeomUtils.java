@@ -59,11 +59,13 @@ public class GeomUtils {
 			 * arbitrary orthogonal axis. Axis normalisation can happen later,
 			 * when we normalise the quaternion.
 			 */
-			real_part = 0.0f;
-			if (Math.abs(from.x) > Math.abs(from.z))
-				w = new Vector3f(-from.y, from.x, 0.f);
-			else
-				w = new Vector3f(0.f, -from.z, from.y);
+			real_part = (float) 0;
+//			if (Math.abs(from.x) > Math.abs(from.z))
+//				w = new Vector3f(-from.y, from.x, 0.f);
+//			else
+//				w = new Vector3f(0.f, -from.z, from.y);
+			// We know rotations are always using Z axis
+			w = new Vector3f(0,0,1);
 		} else {
 			/* Otherwise, build quaternion the standard way. */
 			w = new Vector3f();
@@ -117,10 +119,16 @@ public class GeomUtils {
 		return rotTo;
 	}
 	
+	/**
+	 * Angle from rot1 to rot2
+	 * @param rot1
+	 * @param rot2
+	 * @return
+	 */
 	public static float angleDiff(Quat4f rot1, Quat4f rot2){
 		rot1.inverse();
-		rot1.mul(rot2);
-		return rotToAngle(rot1);
+		rot2.mul(rot1);
+		return rotToAngle(rot2);
 	}
 
 	public static float angleDiff(float a1, float a2) {

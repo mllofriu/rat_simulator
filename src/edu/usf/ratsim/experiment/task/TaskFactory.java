@@ -8,7 +8,7 @@ import java.util.Map;
 import javax.vecmath.Point4f;
 
 import edu.usf.experiment.Trial;
-import edu.usf.experiment.task.ActivateAllFeeders;
+import edu.usf.experiment.task.ActivateAllEnabledFeeders;
 import edu.usf.experiment.task.ActivateRandomFeeder;
 import edu.usf.experiment.task.DeactivateAllFeeders;
 import edu.usf.experiment.task.DeactivateFeeder;
@@ -42,7 +42,7 @@ public class TaskFactory {
 //			} else if (taskName.equals("PolicyValueUpdater")) {
 //				res.add(new PolicyValueUpdater(model));
 			} else if (taskName.equals("ActivateFeeders")) {
-				res.add(new ActivateAllFeeders());
+				res.add(new ActivateAllEnabledFeeders());
 			} else if (taskName.equals("ActivateRandomFeeder")) {
 				res.add(new ActivateRandomFeeder());
 			} else if (taskName.equals("GiveFood")) {
