@@ -39,13 +39,13 @@ public class MultiScaleArtificialPCSubject extends Subject {
 		super(name, group, params, robot);
 		
 		initNSL();
-
-		MultiScaleArtificialPCModel model = new MultiScaleArtificialPCModel(
-				name, (NslModule) null, params, this);
-
+		
 		step = params.getChildFloat("step");
 		leftAngle = params.getChildFloat("leftAngle");
 		rightAngle = params.getChildFloat("rightAngle");
+
+		MultiScaleArtificialPCModel model = new MultiScaleArtificialPCModel(
+				name, (NslModule) null, params, this);
 		
 		system.addModel(model);
 		
@@ -146,6 +146,11 @@ public class MultiScaleArtificialPCSubject extends Subject {
 		res.add(new EatAffordance());
 		
 		return res;
+	}
+
+	@Override
+	public float getMinAngle() {
+		return leftAngle;
 	}
 	
 	

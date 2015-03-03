@@ -10,8 +10,10 @@ import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.ratsim.experiment.task.ExplorationIncRepTask;
 import edu.usf.ratsim.nsl.modules.ArtificialHDCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
+import edu.usf.ratsim.nsl.modules.DecayingExplorationSchema;
 import edu.usf.ratsim.nsl.modules.FlashingOrAnyGoalDecider;
 import edu.usf.ratsim.nsl.modules.GoalTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.Intention;
@@ -57,6 +59,8 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	private static final String AFTER_CONCAT = "AALL";
 	private static final String BEFORE_JOINT_VOTES = "BJVOTES";
 	private static final String AFTER_JOINT_VOTES = "AJVOTES";
+	private static final String BEFORE_EXPLORATION = "BEXP";
+	private static final String AFTER_EXPLORATION = "AEXP";
 	private List<ArtificialPlaceCellLayer> beforePcls;
 	private List<QLAlgorithm> qLUpdVal;
 	// private ProportionalExplorer actionPerformerVote;
@@ -74,7 +78,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	private JointStatesManySum jointVotes;
 	private Voter qlVotes;
 	private boolean proportionalQl;
-	private List<GoalTaxicFoodFinderSchema> taxic;
+	private List<DecayingExplorationSchema> exploration;
 
 	public MultiScaleArtificialPCModel(String name, NslModule parent) {
 		super(name, parent);
@@ -106,6 +110,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		int numIntentions = params.getChildInt("numIntentions");
 		float flashingReward = params.getChildFloat("flashingReward");
 		float nonFlashingReward = params.getChildFloat("nonFlashingReward");
+		float explorationReward = params.getChildFloat("explorationReward");
 		float wallFollowingVal = params.getChildFloat("wallAvoidingVal");
 		float explorationHalfLifeVal = params
 				.getChildFloat("explorationHalfLifeVal");
@@ -117,7 +122,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		float ymax = params.getChildFloat("ymax");
 		float closeToFoodThrs = params.getChildFloat("closeToFoodThrs");
 		proportionalQl = params.getChildBoolean("proportionalQL");
-		
+
 		int numActions = subject.getPossibleAffordances().size();
 
 		Random r = new Random();
@@ -129,7 +134,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		afterPI = new LinkedList<PlaceIntention>();
 		qLUpdVal = new LinkedList<QLAlgorithm>();
 		qLActionSel = new LinkedList<WTAVotes>();
-		taxic = new LinkedList<GoalTaxicFoodFinderSchema>();
+		exploration = new LinkedList<DecayingExplorationSchema>();
 
 		// beforeActiveGoalDecider = new ActiveGoalDecider(
 		// BEFORE_ACTIVE_GOAL_DECIDER_STR, this);
@@ -194,15 +199,19 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
-		taxic.add(new GoalTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this,
-				subject, lRobot, nonFlashingReward, explorationHalfLifeVal,
-				closeToFoodThrs));
+		new GoalTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, subject,
+				lRobot, nonFlashingReward,
+				closeToFoodThrs, subject.getMinAngle());
+
+		exploration.add(new DecayingExplorationSchema(BEFORE_EXPLORATION, this,
+				subject, lRobot, explorationReward, explorationHalfLifeVal));
 
 		// Wall following for obst. avoidance
-		new WallAvoider(BEFORE_WALLAVOID_STR, this, subject, wallFollowingVal, numActions);
+		new WallAvoider(BEFORE_WALLAVOID_STR, this, subject, wallFollowingVal,
+				numActions);
 
 		// Three joint states - QL Votes, Taxic, WallAvoider
-		jointVotes = new JointStatesManySum(BEFORE_JOINT_VOTES, this, 3,
+		jointVotes = new JointStatesManySum(BEFORE_JOINT_VOTES, this, 4,
 				numActions);
 
 		// Get votes from QL and other behaviors and perform an action
@@ -275,31 +284,33 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
-		taxic.add(new GoalTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this,
-				subject, lRobot, nonFlashingReward, explorationHalfLifeVal,
-				closeToFoodThrs));
+		new GoalTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, subject,
+				lRobot, nonFlashingReward,
+				closeToFoodThrs, subject.getMinAngle());
 
 		// Wall following for obst. avoidance
-		new WallAvoider(AFTER_WALLAVOID_STR, this, subject, wallFollowingVal, numActions);
+		new WallAvoider(AFTER_WALLAVOID_STR, this, subject, wallFollowingVal,
+				numActions);
+
+		exploration.add(new DecayingExplorationSchema(AFTER_EXPLORATION, this,
+				subject, lRobot, explorationReward, explorationHalfLifeVal));
 
 		// Three joint states - QL Votes, Taxic, WallAvoider
-		new JointStatesManySum(AFTER_JOINT_VOTES, this, 3,
-				numActions);
+		new JointStatesManySum(AFTER_JOINT_VOTES, this, 4, numActions);
 
 		if (proportionalQl) {
 			MultiStateProportionalQL mspql = new MultiStateProportionalQL(
-					QL_STR, this, subject, bAll.getSize(),
-					numActions, discountFactor, alpha,
-					initialValue);
+					QL_STR, this, subject, bAll.getSize(), numActions,
+					discountFactor, alpha, initialValue);
 			ql = mspql;
 			qLUpdVal.add(mspql);
 		} else {
 			// TODO: get back
-//			SingleStateQL ssql = new SingleStateQL(QL_STR, this,
-//					bAll.getSize(), numActions, discountFactor,
-//					alpha, initialValue);
-//			ql = ssql;
-//			qLUpdVal.add(ssql);
+			// SingleStateQL ssql = new SingleStateQL(QL_STR, this,
+			// bAll.getSize(), numActions, discountFactor,
+			// alpha, initialValue);
+			// ql = ssql;
+			// qLUpdVal.add(ssql);
 		}
 	}
 
@@ -314,10 +325,14 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				getChild(BEFORE_JOINT_VOTES), "state" + 0);
 		nslConnect(getChild(BEFORE_WALLAVOID_STR), "votes",
 				getChild(BEFORE_JOINT_VOTES), "state" + 1);
+		nslConnect(getChild(BEFORE_EXPLORATION), "votes",
+				getChild(BEFORE_JOINT_VOTES), "state" + 3);
 		nslConnect(getChild(AFTER_FOOD_FINDER_STR), "votes",
 				getChild(AFTER_JOINT_VOTES), "state" + 0);
 		nslConnect(getChild(AFTER_WALLAVOID_STR), "votes",
 				getChild(AFTER_JOINT_VOTES), "state" + 1);
+		nslConnect(getChild(AFTER_EXPLORATION), "votes",
+				getChild(AFTER_JOINT_VOTES), "state" + 3);
 		// Connect active goal to intention
 		nslConnect(getChild(BEFORE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(BEFORE_INTENTION_STR), "goalFeeder");
@@ -449,7 +464,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	}
 
 	public void newRep() {
-		for (GoalTaxicFoodFinderSchema gs : taxic)
-			gs.newRep();
+		for (DecayingExplorationSchema gs : exploration)
+			gs.newEpisode();
 	}
 }

@@ -11,6 +11,7 @@ import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.ratsim.support.Debug;
 
 public class NoExploration extends NslModule {
@@ -62,6 +63,7 @@ public class NoExploration extends NslModule {
 		if (Debug.printSelectedValues)
 			System.out.println(selectedAction.toString());
 		robot.executeAffordance(selectedAction);
+		
 		// TODO: get the rotation -> forward back
 //		// System.out.println(takenAction.get());
 //		lastRot = selectedAction == sub.getActionLeft()

@@ -7,7 +7,7 @@ public class ExplorationIncRepTask implements ExperimentTask {
 	}
 
 	public void perform(ExperimentUniverse univ, ExpSubject subject) {
-		((MultiScaleMultiIntentionCooperativeModel)subject.getModel()).newRep();
+		((MultiScaleMultiIntentionCooperativeModel)subject.getModel()).newEpisode();
 	}
 
 }

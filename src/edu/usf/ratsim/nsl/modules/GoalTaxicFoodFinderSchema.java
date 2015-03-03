@@ -18,6 +18,7 @@ import edu.usf.ratsim.support.GeomUtils;
 
 public class GoalTaxicFoodFinderSchema extends NslModule {
 
+	private double forwardBias;
 	public NslDinInt0 goalFeeder;
 	public NslDoutFloat1 votes;
 	private float maxReward;
@@ -28,16 +29,14 @@ public class GoalTaxicFoodFinderSchema extends NslModule {
 	private double alpha;
 
 	private Subject subject;
-	private float closeToFoodThrs;
 	private LocalizableRobot robot;
 
 	public GoalTaxicFoodFinderSchema(String nslName, NslModule nslParent,
 			Subject subject, LocalizableRobot robot, float maxReward,
-			float explorationHalfLifeVal, float closeToFoodThrs) {
+			float closeToFoodThrs, float minAngle) {
 		super(nslName, nslParent);
 		this.maxReward = maxReward;
-		this.alpha = -Math.log(.5) / explorationHalfLifeVal;
-		this.closeToFoodThrs = closeToFoodThrs;
+		this.forwardBias = minAngle/2;
 
 		goalFeeder = new NslDinInt0(this, "goalFeeder");
 		votes = new NslDoutFloat1(this, "votes", subject
@@ -54,6 +53,7 @@ public class GoalTaxicFoodFinderSchema extends NslModule {
 	public void simRun() {
 		votes.set(0);
 
+		// TODO: include goal!
 		List<Affordance> affs = robot.checkAffordances(subject
 				.getPossibleAffordances());
 		int voteIndex = 0;
@@ -63,19 +63,24 @@ public class GoalTaxicFoodFinderSchema extends NslModule {
 				if (af instanceof TurnAffordance) {
 					if (robot.seesFeeder()){
 						TurnAffordance ta = (TurnAffordance) af;
+						System.out.println(ta.getAngle());
 						float angleDiff = diffAfterRot(ta.getAngle());
 	
 						// Set the votes proportional to the error in heading
 						// Max heading error should be PI
-						value = (float) (maxReward * (1 - angleDiff) / Math.PI);
+						System.out.println(angleDiff);
+						value = (float) (maxReward * (1 - angleDiff / Math.PI));
 					}
 				} else if (af instanceof ForwardAffordance){
 					if (robot.seesFeeder()){
 						float angleDiff = diffAfterRot(0);
-	
+						System.out.println(0);
+						System.out.println(angleDiff);
+						System.out.println(Math.max(angleDiff - forwardBias, 0));
 						// Set the votes proportional to the error in heading
 						// Max heading error should be PI
-						value = (float) (maxReward * (1 - angleDiff) / Math.PI);
+						
+						value = (float) (maxReward * (1 - (Math.max(angleDiff - forwardBias, 0)) / Math.PI));
 					}
 				} else if (af instanceof EatAffordance) {
 					value = maxReward;
@@ -93,21 +98,10 @@ public class GoalTaxicFoodFinderSchema extends NslModule {
 	private float diffAfterRot(float angle) {
 		Quat4f rotToFood = GeomUtils.angleToPoint(robot.getClosestFeeder(-1).location);
 		
-		Quat4f robOrient = robot.getOrientation();
 		Quat4f actionAngle = GeomUtils.angleToRot(angle);
-		robOrient.mul(actionAngle);
 		
 		return Math.abs(GeomUtils
-				.angleDiff(robOrient, rotToFood));
-	}
-
-	public void newRep() {
-		repCount++;
-		// System.out.println("Increasing rep" + repCount);
-	}
-
-	public void newTrial() {
-		repCount = 0;
+				.angleDiff(actionAngle, rotToFood));
 	}
 
 }
