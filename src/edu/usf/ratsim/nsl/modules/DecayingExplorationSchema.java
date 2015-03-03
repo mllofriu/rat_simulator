@@ -1,5 +1,6 @@
 package edu.usf.ratsim.nsl.modules;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -26,6 +27,7 @@ public class DecayingExplorationSchema extends NslModule {
 	private Subject subject;
 	private LocalizableRobot robot;
 	private int episodeCount;
+	private Affordance lastPicked;
 
 	public DecayingExplorationSchema(String nslName, NslModule nslParent,
 			Subject subject, LocalizableRobot robot, float maxReward,
@@ -43,21 +45,39 @@ public class DecayingExplorationSchema extends NslModule {
 
 		this.subject = subject;
 		this.robot = robot;
+
+		this.lastPicked = null;
 	}
 
 	public void simRun() {
 		votes.set(0);
 
-		double explorationValue =  maxReward * Math.exp(-episodeCount * alpha);
-		List<Affordance> affs = robot.checkAffordances(subject.getPossibleAffordances());
-		
+		double explorationValue = maxReward * Math.exp(-episodeCount * alpha);
+		List<Affordance> affs = robot.checkAffordances(subject
+				.getPossibleAffordances());
+
+		if (lastPicked != null && lastPicked instanceof TurnAffordance)
+			affs = removeOtherTurns(affs, (TurnAffordance) lastPicked);
+
 		Affordance pickedAffordance;
-		do{
-			pickedAffordance = affs.get(r.nextInt(affs.size()));  
+		do {
+			pickedAffordance = affs.get(r.nextInt(affs.size()));
 		} while (!pickedAffordance.isRealizable());
-		
+
 		votes.set(pickedAffordance.getIndex(), explorationValue);
 
+		lastPicked = pickedAffordance;
+	}
+
+	private List<Affordance> removeOtherTurns(List<Affordance> affs, TurnAffordance turn) {
+		for (Iterator<Affordance> iter = affs.iterator(); iter.hasNext();) {
+			Affordance aff = iter.next();
+			if (aff instanceof TurnAffordance
+					&& ((TurnAffordance) aff).getAngle() != turn.getAngle())
+				iter.remove();
+		}
+
+		return affs;
 	}
 
 	public void newEpisode() {
