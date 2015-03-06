@@ -10,7 +10,6 @@ import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.ratsim.experiment.task.ExplorationIncRepTask;
 import edu.usf.ratsim.nsl.modules.ArtificialHDCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.DecayingExplorationSchema;
@@ -25,7 +24,6 @@ import edu.usf.ratsim.nsl.modules.Voter;
 import edu.usf.ratsim.nsl.modules.WallAvoider;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.NoExploration;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalExplorer;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQL;
@@ -219,9 +217,10 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		if (deterministic) {
 			actionPerformer = new NoExploration(ACTION_PERFORMER_STR, this,
 					subject, 1 + 2);
-		} else {
-			new ProportionalExplorer(ACTION_PERFORMER_STR, this, subject, 1 + 2);
-		}
+		} 
+//		else {
+//			new ProportionalExplorer(ACTION_PERFORMER_STR, this, subject, 1 + 2);
+//		}
 
 		new Reward(REWARD_STR, this, subject, foodReward, nonFoodReward);
 
