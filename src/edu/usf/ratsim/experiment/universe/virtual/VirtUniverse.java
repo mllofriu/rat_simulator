@@ -331,10 +331,6 @@ public class VirtUniverse extends Universe {
 		return !intesectsWall;
 	}
 
-	public Rectangle2D.Float getBoundingRectangle() {
-		return boundingRect.getRect();
-	}
-
 	// public boolean isRobotParallelToWall() {
 	// boolean aff[] = getRobotAffordances();
 	//

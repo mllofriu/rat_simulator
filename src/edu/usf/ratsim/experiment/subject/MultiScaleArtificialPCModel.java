@@ -5,10 +5,16 @@ import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 
+import javax.vecmath.Point3f;
+
+import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModel;
 import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.subject.affordance.ForwardAffordance;
+import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.nsl.modules.ArtificialHDCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
@@ -77,6 +83,9 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	private Voter qlVotes;
 	private boolean proportionalQl;
 	private List<DecayingExplorationSchema> exploration;
+	private JointStatesManyConcatenate bAll;
+	private Intention intention;
+	private LinkedList<JointStatesManyMultiply> jStateList;
 
 	public MultiScaleArtificialPCModel(String name, NslModule parent) {
 		super(name, parent);
@@ -139,7 +148,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		anyGoalDecider = new FlashingOrAnyGoalDecider(BEFORE_GOAL_DECIDER_STR,
 				this, subject, numIntentions);
 
-		new Intention(BEFORE_INTENTION_STR, this, numIntentions);
+		intention = new Intention(BEFORE_INTENTION_STR, this, numIntentions);
 
 		// Create the layers
 		float radius = minRadius;
@@ -166,6 +175,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		}
 
 		List<Integer> bpihdSizes = new LinkedList<Integer>();
+		jStateList = new LinkedList<JointStatesManyMultiply>();
 		for (int i = 0; i < numPCLayers; i++)
 			for (int j = 0; j < numHDLayers; j++) {
 				// JointStates jStates = new JointStates(BEFORE_PIHD
@@ -178,13 +188,13 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				statesSizes.add(beforePcls.get(i).getSize());
 				JointStatesManyMultiply jStates = new JointStatesManyMultiply(
 						BEFORE_PIHD + (i * numHDLayers + j), this, statesSizes);
+				jStateList.add(jStates);
 				bpihdSizes.add(jStates.getSize());
 
 			}
 
 		// Concatenate all layers
-		JointStatesManyConcatenate bAll = new JointStatesManyConcatenate(
-				BEFORE_CONCAT, this, bpihdSizes);
+		bAll = new JointStatesManyConcatenate(BEFORE_CONCAT, this, bpihdSizes);
 
 		// Take the value of each state and vote for an action
 		if (proportionalQl)
@@ -198,8 +208,8 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
 		new GoalTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, subject,
-				lRobot, nonFlashingReward,
-				closeToFoodThrs, subject.getMinAngle());
+				lRobot, nonFlashingReward, closeToFoodThrs,
+				subject.getMinAngle());
 
 		exploration.add(new DecayingExplorationSchema(BEFORE_EXPLORATION, this,
 				subject, lRobot, explorationReward, explorationHalfLifeVal));
@@ -217,10 +227,10 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		if (deterministic) {
 			actionPerformer = new NoExploration(ACTION_PERFORMER_STR, this,
 					subject, 1 + 2);
-		} 
-//		else {
-//			new ProportionalExplorer(ACTION_PERFORMER_STR, this, subject, 1 + 2);
-//		}
+		}
+		// else {
+		// new ProportionalExplorer(ACTION_PERFORMER_STR, this, subject, 1 + 2);
+		// }
 
 		new Reward(REWARD_STR, this, subject, foodReward, nonFoodReward);
 
@@ -284,8 +294,8 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// new GeneralTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
 		new GoalTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, subject,
-				lRobot, nonFlashingReward,
-				closeToFoodThrs, subject.getMinAngle());
+				lRobot, nonFlashingReward, closeToFoodThrs,
+				subject.getMinAngle());
 
 		// Wall following for obst. avoidance
 		new WallAvoider(AFTER_WALLAVOID_STR, this, subject, wallFollowingVal,
@@ -465,5 +475,47 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	public void newEpisode() {
 		for (DecayingExplorationSchema gs : exploration)
 			gs.newEpisode();
+	}
+
+	/**
+	 * Simulates being at position pos with heading theta and returns the action
+	 * the model would perform
+	 * 
+	 * @param pos
+	 * @param theta
+	 * @param affs
+	 * @param intention
+	 * @return
+	 */
+	public Affordance getHypotheticAction(Point3f pos, float theta,
+			List<Affordance> affs, int inte) {
+		intention.simRun(inte);
+
+		for (ArtificialPlaceCellLayer pcl : beforePcls)
+			pcl.simRun(pos);
+		for (ArtificialHDCellLayer hdcl : beforeHDs)
+			hdcl.simRun(theta);
+		
+		for (JointStatesManyMultiply jsmm : jStateList)
+			jsmm.simRun();
+
+		bAll.simRun();
+
+		qlVotes.simRun();
+
+		NslDoutFloat1 votes = qlVotes.getVotes();
+		float max = Float.NEGATIVE_INFINITY;
+		int maxIndex = 0;
+		for (int i = 0; i < votes.getSize(); i++)
+			// Only consider motion affordances
+			if ((affs.get(i) instanceof TurnAffordance || affs.get(i) instanceof ForwardAffordance)
+					&& votes.get(i) > max) {
+				max = votes.get(i);
+				maxIndex = i;
+			}
+
+		Affordance picked = affs.get(maxIndex);
+		picked.setValue(max);
+		return picked;
 	}
 }

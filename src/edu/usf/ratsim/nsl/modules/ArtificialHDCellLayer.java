@@ -15,7 +15,6 @@ public class ArtificialHDCellLayer extends NslModule {
 
 	private LocalizableRobot robot;
 
-
 	public ArtificialHDCellLayer(String nslName, NslModule nslParent, int numCells, LocalizableRobot robot) {
 		super(nslName, nslParent);
 
@@ -38,18 +37,23 @@ public class ArtificialHDCellLayer extends NslModule {
 	}
 
 	public void simRun() {
-		int i = 0;
 		float angle = robot.getOrientationAngle();
-		for (ArtificialHDCell pCell : cells) {
-			activation.set(i, pCell.getActivation(angle));
-			// System.out.print(pCell.getActivation(angle) + " ");
-			i++;
-		}
-		// System.out.println();
+		simRun(angle);
 	}
 
 	public int getSize() {
 		return activation.getSize();
+	}
+
+	public void simRun(float theta) {
+		int i = 0;
+		
+		for (ArtificialHDCell pCell : cells) {
+			activation.set(i, pCell.getActivation(theta));
+			// System.out.print(pCell.getActivation(angle) + " ");
+			i++;
+		}
+		// System.out.println();
 	}
 
 }

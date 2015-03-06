@@ -30,4 +30,9 @@ public class Intention extends NslModule {
 		}
 
 	}
+	
+	public void simRun(int inte){
+		intention.set(0);
+		intention.set(inte, 1);
+	}
 }

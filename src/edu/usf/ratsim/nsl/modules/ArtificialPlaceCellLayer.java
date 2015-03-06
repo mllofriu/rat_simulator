@@ -77,15 +77,7 @@ public class ArtificialPlaceCellLayer extends NslModule {
 	}
 
 	public void simRun() {
-		if (active) {
-			int i = 0;
-			for (ArtificialPlaceCell pCell : cells) {
-				activation.set(i, pCell.getActivation(robot.getPosition()));
-				i++;
-			}
-		} else {
-			activation.set(0);
-		}
+		simRun(robot.getPosition());
 	}
 
 	public float[] getActivationValues(Point3f pos) {
@@ -108,6 +100,18 @@ public class ArtificialPlaceCellLayer extends NslModule {
 
 	public void deactivate() {
 		active = false;
+	}
+
+	public void simRun(Point3f pos) {
+		if (active) {
+			int i = 0;
+			for (ArtificialPlaceCell pCell : cells) {
+				activation.set(i, pCell.getActivation(pos));
+				i++;
+			}
+		} else {
+			activation.set(0);
+		}
 	}
 
 }
