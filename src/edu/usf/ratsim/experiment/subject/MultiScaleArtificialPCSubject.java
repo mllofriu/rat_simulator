@@ -11,6 +11,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import javax.vecmath.Point3f;
+
 import nslj.src.lang.NslHierarchy;
 import nslj.src.lang.NslModule;
 import nslj.src.system.NslInterpreter;
@@ -158,6 +160,12 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	@Override
 	public void newTrial() {
 		model.newTrial();
+	}
+
+	@Override
+	public Affordance getHypotheticAction(Point3f pos, float theta,
+			int intention) {
+		return model.getHypotheticAction(pos, theta, getPossibleAffordances(), intention);
 	}
 	
 	

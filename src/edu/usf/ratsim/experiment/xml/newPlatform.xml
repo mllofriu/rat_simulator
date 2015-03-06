@@ -121,6 +121,17 @@
 					</params>
 				</logger>
 			</loggers>
+			
+			<afterLoggers>
+				<logger>
+					<name>edu.usf.experiment.log.PolicyLogger</name>
+					<params>
+						<interval>.15</interval>
+						<angleInterval>.37</angleInterval>
+						<numIntentions>1</numIntentions>
+					</params>
+				</logger>
+			</afterLoggers>
 			<afterTasks>
 			</afterTasks>
 			<stopConditions>
@@ -147,6 +158,9 @@
 			</plotter>
 			<plotter>
 				<name>edu.usf.experiment.plot.PathPlotter</name>
+			</plotter>
+			<plotter>
+				<name>edu.usf.experiment.plot.PolicyPlotter</name>
 			</plotter>
 		</plotters>
 		<afterTasks>
