@@ -7,7 +7,7 @@
 		<params>
 			<closeToFoodThrs>0.2</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/newPlatform.xml</maze>
-			<display>true</display>
+			<display>false</display>
 			<sleep>0</sleep>
 		</params>
 	</universe>
@@ -45,13 +45,13 @@
 				<foodReward>10000</foodReward>
 				<nonFoodReward>0</nonFoodReward>
 				<discountFactor>1</discountFactor>
-				<alpha>0.1</alpha>
+				<alpha>0.8</alpha>
 				<initialValue>0</initialValue>
 				<flashingReward>10000</flashingReward>
 				<nonFlashingReward>10000</nonFlashingReward>
-				<explorationReward>1000</explorationReward>
+				<explorationReward>5000</explorationReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
-				<explorationHalfLifeVal>1</explorationHalfLifeVal>
+				<explorationHalfLifeVal>2</explorationHalfLifeVal>
 				<proportionalQL>true</proportionalQL>
 				<xmin>-1</xmin>
 				<ymin>-1</ymin>
@@ -84,7 +84,7 @@
 			</task>
 		</beforeTasks>
 		<episodes>
-			<number>100</number>
+			<number>40</number>
 			<beforeTasks>
 				<task>
 					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
@@ -115,6 +115,11 @@
 					<params>
 					</params>
 				</logger>
+				<logger>
+					<name>edu.usf.experiment.log.WallLogger</name>
+					<params>
+					</params>
+				</logger>
 			</loggers>
 			<afterTasks>
 			</afterTasks>
@@ -133,12 +138,22 @@
 			</plotters>
 		</episodes>
 		
+		<plotters>
+			<plotter>
+				<name>edu.usf.experiment.plot.CSVConverter</name>
+			</plotter>
+			<plotter>
+				<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+			</plotter>
+			<plotter>
+				<name>edu.usf.experiment.plot.PathPlotter</name>
+			</plotter>
+		</plotters>
 		<afterTasks>
 		</afterTasks>
 		<loggers>
 		</loggers>
-		<plotters>
-		</plotters>
+		
 	</trial>
 	
 	<!-- 4 testing trials -->
