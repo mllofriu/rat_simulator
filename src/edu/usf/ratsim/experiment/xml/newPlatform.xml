@@ -126,7 +126,7 @@
 				<logger>
 					<name>edu.usf.experiment.log.PolicyLogger</name>
 					<params>
-						<interval>.15</interval>
+						<interval>.1</interval>
 						<angleInterval>.37</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
