@@ -33,6 +33,7 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	private NslSystem system;
 	private NslSequentialScheduler scheduler;
 	private NslInterpreter interpreter;
+	private MultiScaleArtificialPCModel model;
 
 	public MultiScaleArtificialPCSubject(String name, String group,
 			ElementWrapper params, Robot robot) {
@@ -44,7 +45,7 @@ public class MultiScaleArtificialPCSubject extends Subject {
 		leftAngle = params.getChildFloat("leftAngle");
 		rightAngle = params.getChildFloat("rightAngle");
 
-		MultiScaleArtificialPCModel model = new MultiScaleArtificialPCModel(
+		model = new MultiScaleArtificialPCModel(
 				name, (NslModule) null, params, this);
 		
 		system.addModel(model);
@@ -53,13 +54,9 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	}
 
 	@Override
-	public boolean hasEaten() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public void stepCycle() {
+		setHasEaten(false);
+		
 		scheduler.stepCycle();
 	}
 
@@ -151,6 +148,16 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	@Override
 	public float getMinAngle() {
 		return leftAngle;
+	}
+
+	@Override
+	public void newEpisode() {
+		model.newEpisode();
+	}
+
+	@Override
+	public void newTrial() {
+		model.newTrial();
 	}
 	
 	

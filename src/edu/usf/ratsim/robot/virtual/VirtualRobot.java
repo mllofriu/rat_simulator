@@ -11,6 +11,7 @@ import javax.vecmath.Vector3f;
 
 import edu.usf.experiment.robot.Landmark;
 import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
@@ -169,13 +170,23 @@ public class VirtualRobot extends LocalizableRobot {
 	}
 
 	@Override
-	public void executeAffordance(Affordance af) {
+	public void executeAffordance(Affordance af, Subject sub) {
 		if (af instanceof TurnAffordance){
 			TurnAffordance ta = (TurnAffordance) af;
-			rotate(ta.getAngle());
+			List<Affordance> forward = new LinkedList<Affordance>();
+			forward.add(new ForwardAffordance(ta.getDistance()));
+			// Turn until can move forward (there is no wall on front)
+			do {
+				rotate(ta.getAngle());
+				forward = checkAffordances(forward);
+			} while (!forward.get(0).isRealizable());
+			
 		} else if (af instanceof ForwardAffordance)
 			forward(((ForwardAffordance)af).getDistance());
 		else if (af instanceof EatAffordance){
+			sub.setHasEaten(true);
+			// Updates food in universe
+			eat();
 		} else
 			throw new RuntimeException("Affordance "
 					+ af.getClass().getName() + " not supported by robot");

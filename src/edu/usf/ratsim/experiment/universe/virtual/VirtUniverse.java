@@ -29,6 +29,7 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.universe.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.IOUtils;
 import edu.usf.ratsim.support.Configuration;
@@ -213,7 +214,7 @@ public class VirtUniverse extends Universe {
 		// Set the new transform
 		robot.getTransformGroup().setTransform(rPos);
 
-		if (sleep != 0)
+		if (sleep != 0 && display)
 			try {
 				Thread.sleep(sleep);
 			} catch (InterruptedException e) {
@@ -284,7 +285,7 @@ public class VirtUniverse extends Universe {
 //						lookaheadSteps * ta.getDistance());
 				realizable = true;
 			} else if (af instanceof ForwardAffordance)
-				realizable = canMove(0, lookaheadSteps
+				realizable = canRobotMove(0, lookaheadSteps
 						* ((ForwardAffordance) af).getDistance());
 			else if (af instanceof EatAffordance)
 				realizable = hasRobotFoundFood();
@@ -297,11 +298,12 @@ public class VirtUniverse extends Universe {
 
 		return affs;
 	}
-
-	private boolean canMove(float angle, float step) {
+	
+	public boolean canRobotMove(float angle, float step) {
 		// The current position with rotation
 		Transform3D rPos = new Transform3D();
 		robot.getTransformGroup().getTransform(rPos);
+		
 		Vector3f p = new Vector3f();
 		rPos.get(p);
 		Coordinate initCoordinate = new Coordinate(p.x, p.y);
@@ -318,21 +320,15 @@ public class VirtUniverse extends Universe {
 		Vector3f finalPos = new Vector3f();
 		rPos.get(finalPos);
 		Coordinate finalCoordinate = new Coordinate(finalPos.x, finalPos.y);
-		// Check it's in the maze
-		boolean insideMaze = (pool == null)
-				|| pool.isInside(new Point3f(finalPos));
 		// Check if crosses any wall
 		boolean intesectsWall = false;
 		LineSegment path = new LineSegment(initCoordinate, finalCoordinate);
-		for (WallNode wallNode : wallNodes) {
-			// System.out.println(path);
-			// System.out.println(wallNode.segment);
-			// System.out.println(path.intersection(wallNode.segment));
+		for (Wall wall : getWalls()) {
 			intesectsWall = intesectsWall
-					|| (path.intersection(wallNode.segment) != null);
+					|| (path.intersection(wall.s) != null);
 		}
 
-		return insideMaze && !intesectsWall;
+		return !intesectsWall;
 	}
 
 	public Rectangle2D.Float getBoundingRectangle() {
@@ -370,9 +366,9 @@ public class VirtUniverse extends Universe {
 	// return wantedFeeder;
 	// }
 
-	public List<WallNode> getWalls() {
-		return wallNodes;
-	}
+//	public List<WallNode> getWalls() {
+//		return wallNodes;
+//	}
 
 	public boolean wallIntersectsOtherWalls(LineSegment wall) {
 		boolean intersects = false;

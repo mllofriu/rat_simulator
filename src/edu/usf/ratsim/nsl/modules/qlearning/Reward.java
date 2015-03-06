@@ -24,9 +24,10 @@ public class Reward extends NslModule {
 
 	public void simRun() {
 		if (subject.hasEaten()) {
-			// System.out.println("Ate Food");
 			reward.set(foodReward);
-		} else
+		} else {
 			reward.set(nonFoodReward);
+		}
+			
 	}
 }
