@@ -6,4 +6,5 @@ public interface Voter {
 
 	public NslDoutFloat1 getVotes();
 	
+	public void simRun();
 }
