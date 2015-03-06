@@ -62,7 +62,7 @@ public class NoExploration extends NslModule {
 		takenAction.set(aff.indexOf(selectedAction));
 		if (Debug.printSelectedValues)
 			System.out.println(selectedAction.toString());
-		robot.executeAffordance(selectedAction);
+		robot.executeAffordance(selectedAction, sub);
 		
 		// TODO: get the rotation -> forward back
 //		// System.out.println(takenAction.get());

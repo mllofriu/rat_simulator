@@ -463,7 +463,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		return qlVotes;
 	}
 
-	public void newRep() {
+	public void newEpisode() {
 		for (DecayingExplorationSchema gs : exploration)
 			gs.newEpisode();
 	}
