@@ -52,8 +52,6 @@ public class VirtUniverse extends Universe {
 
 	private BranchGroup bg;
 
-	private PoolNode pool;
-
 	private BoundingRectNode boundingRect;
 
 	private List<WallNode> wallNodes;
@@ -92,8 +90,7 @@ public class VirtUniverse extends Universe {
 			bg.addChild(robot);
 
 			// Walls
-			list = maze.getChildren("wall");
-			for (ElementWrapper wn : list) {
+			for (Wall wn : getWalls()) {
 				WallNode w = new WallNode(wn);
 				wallNodes.add(w);
 				bg.addChild(w);
@@ -380,16 +377,7 @@ public class VirtUniverse extends Universe {
 			if (w.distanceTo(wall) < shortestDistance)
 				shortestDistance = w.distanceTo(wall);
 
-		float distanceToPool = pool.distanceToWall(wall);
-
-		return Math.min(shortestDistance, distanceToPool);
-	}
-
-	public boolean wallInsidePool(LineSegment wall2) {
-		return pool.isInside(new Point3f((float) wall2.p0.x,
-				(float) wall2.p0.y, 0))
-				&& pool.isInside(new Point3f((float) wall2.p1.x,
-						(float) wall2.p1.y, 0));
+		return shortestDistance;
 	}
 
 	public void dispose() {

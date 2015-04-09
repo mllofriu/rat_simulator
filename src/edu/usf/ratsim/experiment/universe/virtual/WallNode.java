@@ -9,6 +9,7 @@ import com.vividsolutions.jts.geom.LineSegment;
 import com.vividsolutions.jts.geom.LineString;
 import com.vividsolutions.jts.geom.Polygon;
 
+import edu.usf.experiment.universe.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
 
 public class WallNode extends ExpUniverseNode {
@@ -70,6 +71,28 @@ public class WallNode extends ExpUniverseNode {
 		segment = new LineSegment(new Coordinate(x1, y1),
 				new Coordinate(x2, y2));
 
+	}
+
+	public WallNode(Wall wn) {
+		Color3f color = new Color3f(1, 0, 0);
+
+		this.x1 = wn.getX1();
+		this.x2 = wn.getX2();
+		this.y1 = wn.getY1();
+		this.y2 = wn.getY2();
+		this.z1 = 0;
+		this.z2 = 0;
+
+		float wallLength = new Point3f(x1, y1, z1).distance(new Point3f(x2, y2,
+				z2));
+		for (int cylinder = 0; cylinder < wallLength / RADIO; cylinder++) {
+			float lambda = cylinder / (wallLength / RADIO);
+			addChild(new CylinderNode(RADIO, .1f, color, x1 + (x2 - x1) * lambda,
+					y1 + (y2 - y1) * lambda, z1 + (z2 - z1) * lambda));
+		}
+
+		segment = new LineSegment(new Coordinate(x1, y1),
+				new Coordinate(x2, y2));
 	}
 
 	public boolean intersects(LineSegment wall) {
