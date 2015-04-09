@@ -1,4 +1,4 @@
-package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
+package edu.usf.ratsim.nsl.modules;
 
 import java.util.Collections;
 import java.util.LinkedList;
