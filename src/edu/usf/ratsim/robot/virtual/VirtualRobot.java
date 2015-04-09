@@ -16,6 +16,7 @@ import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
+import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.support.GeomUtils;
@@ -96,6 +97,29 @@ public class VirtualRobot extends LocalizableRobot {
 					t.transform(relFPos);
 					// Return the landmark
 					res.add(new Landmark(i, relFPos));
+				}
+
+		return res;
+	}
+	
+	public List<Feeder> getFeeders(int except) {
+		List<Feeder> res = new LinkedList<Feeder>();
+		for (Integer i : universe.getFeeders())
+			if (i != except)
+				if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
+					// Get relative position
+					Point3f fPos = universe.getFoodPosition(i);
+					Point3f rPos = universe.getRobotPosition();
+					Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos,
+							fPos));
+					// Rotate to robots framework
+					Quat4f rRot = universe.getRobotOrientation();
+					rRot.inverse();
+					Transform3D t = new Transform3D();
+					t.setRotation(rRot);
+					t.transform(relFPos);
+					// Return the landmark
+					res.add(new Feeder(relFPos));
 				}
 
 		return res;
@@ -196,5 +220,6 @@ public class VirtualRobot extends LocalizableRobot {
 	public boolean seesFeeder() {
 		return getClosestFeeder(-1) != null;
 	}
+
 
 }

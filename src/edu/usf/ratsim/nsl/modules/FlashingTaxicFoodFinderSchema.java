@@ -1,83 +1,100 @@
-//package edu.usf.ratsim.nsl.modules;
-//
-//import javax.vecmath.Point3f;
-//import javax.vecmath.Quat4f;
-//import javax.vecmath.Vector3f;
-//
-//import nslj.src.lang.NslDinInt0;
-//import nslj.src.lang.NslDoutFloat1;
-//import nslj.src.lang.NslModule;
-//import edu.usf.experiment.utils.Utiles;
-//import edu.usf.ratsim.experiment.ExperimentUniverse;
-//import edu.usf.ratsim.robot.IRobot;
-//
-//public class FlashingTaxicFoodFinderSchema extends NslModule {
-//
-//	private IRobot robot;
-//	private ExperimentUniverse univ;
-//	public NslDinInt0 goalFeeder;
-//	public NslDoutFloat1 votes;
-//	private float maxReward;
-//
-//	public FlashingTaxicFoodFinderSchema(String nslName, NslModule nslParent,
-//			IRobot robot, ExperimentUniverse univ, int numActions,
-//			float maxReward) {
-//		super(nslName, nslParent);
-//		this.robot = robot;
-//		this.univ = univ;
-//		this.maxReward = maxReward;
-//
-//		goalFeeder = new NslDinInt0(this, "goalFeeder");
-//		votes = new NslDoutFloat1(this, "votes", numActions);
-//
-//	}
-//
-//	public void simRun() {
-//		// If the current goal is flashing override other modules actions
-//		// (this module should come after others)
-//		votes.set(0);
-//		if (goalFeeder.get() != -1
-//				&& univ.getFlashingFeeders().contains(goalFeeder.get())) {
-//
-//			System.out.println("Should I eat?");
-//			if (univ.isRobotCloseToFeeder(goalFeeder.get())){
-//				votes.set(GeomUtils.eatAction, maxReward);
-////				System.out.println("Setting votes to eat");
-//			} else {
-//				// Get angle to food
-//				Point3f rPos = univ.getRobotPosition();
-//				Point3f fPos = univ.getFoodPosition(goalFeeder.get());
-//				Quat4f rRot = univ.getRobotOrientation();
-//
-//				// Get the vector food - robot
-//				Vector3f vToFood = GeomUtils.pointsToVector(rPos, fPos);
-//
-//				// Build quat4d for angle to food
-//				// Use (1,0,0) to get absolute orientation
-//				Quat4f rotToFood = GeomUtils.rotBetweenVectors(new Vector3f(1, 0, 0),
-//						vToFood);
-//
-//				// Get affordances
-//				// boolean[] affordances;
-//
-//				// Get best action to food
-//				// int action = Utiles.bestActionToRot(rotToFood, rRot);
-//
-//				// System.out.println(goalFeeder.get() + " " +
-//				// Utiles.discretizeAngle(new Vector3f(1, 0,
-//				// 0).angle(vToFood)));
-//
-//				votes.set(GeomUtils.discretizeAngle(rotToFood), maxReward);
-//
-//				// if (action == -1)
-//				// System.out.println("No affordances available");
-//				// else {
-//				// robot.rotate(Utiles.actions[action]);
-//				// affordances = robot.getAffordances();
-//				// if (affordances[Utiles.discretizeAction(0)])
-//				// robot.forward();
-//				// }
-//			}
-//		}
-//	}
-//}
+package edu.usf.ratsim.nsl.modules;
+
+import java.util.List;
+import java.util.Random;
+
+import javax.vecmath.Quat4f;
+
+import nslj.src.lang.NslDinInt0;
+import nslj.src.lang.NslDoutFloat1;
+import nslj.src.lang.NslModule;
+import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.subject.affordance.EatAffordance;
+import edu.usf.experiment.subject.affordance.ForwardAffordance;
+import edu.usf.experiment.subject.affordance.TurnAffordance;
+import edu.usf.ratsim.support.GeomUtils;
+
+public class FlashingTaxicFoodFinderSchema extends NslModule {
+
+	private double forwardBias;
+	public NslDinInt0 goalFeeder;
+	public NslDoutFloat1 votes;
+	private float maxReward;
+	private Random r;
+
+	private int repCount;
+
+	private double alpha;
+
+	private Subject subject;
+	private LocalizableRobot robot;
+
+	public FlashingTaxicFoodFinderSchema(String nslName, NslModule nslParent,
+			Subject subject, LocalizableRobot robot, float maxReward,
+			float closeToFoodThrs, float minAngle) {
+		super(nslName, nslParent);
+		this.maxReward = maxReward;
+		this.forwardBias = minAngle/2;
+
+		goalFeeder = new NslDinInt0(this, "goalFeeder");
+		votes = new NslDoutFloat1(this, "votes", subject
+				.getPossibleAffordances().size());
+
+		r = new Random();
+
+		repCount = 0;
+
+		this.subject = subject;
+		this.robot = robot;
+	}
+
+	public void simRun() {
+		votes.set(0);
+
+		// TODO: include goal!
+		List<Affordance> affs = robot.checkAffordances(subject
+				.getPossibleAffordances());
+		int voteIndex = 0;
+		for (Affordance af : affs) {
+			float value = 0;
+			if(af.isRealizable()){
+				if (af instanceof TurnAffordance) {
+					if (robot.seesFlashingFeeder()){
+						TurnAffordance ta = (TurnAffordance) af;
+						float angleDiff = diffAfterRot(ta.getAngle());
+
+						value = (float) (maxReward * (1 - angleDiff / Math.PI));
+					}
+				} else if (af instanceof ForwardAffordance){
+					if (robot.seesFlashingFeeder()){
+						float angleDiff = diffAfterRot(0);
+
+						// Set the votes proportional to the error in heading
+						// Max heading error should be PI
+						value = (float) (maxReward * (1 - (Math.max(angleDiff - forwardBias, 0)) / Math.PI));
+					}
+				} else if (af instanceof EatAffordance) {
+					value = maxReward;
+				} else
+					throw new RuntimeException("Affordance "
+							+ af.getClass().getName() + " not supported by robot");
+			}
+			
+			votes.set(voteIndex, value);
+			voteIndex++;
+		}
+
+	}
+
+	private float diffAfterRot(float angle) {
+		Quat4f rotToFood = GeomUtils.angleToPoint(robot.getFlashingFeeder().location);
+		
+		Quat4f actionAngle = GeomUtils.angleToRot(angle);
+		
+		return Math.abs(GeomUtils
+				.angleDiff(actionAngle, rotToFood));
+	}
+
+}

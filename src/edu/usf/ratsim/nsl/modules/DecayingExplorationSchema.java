@@ -51,22 +51,25 @@ public class DecayingExplorationSchema extends NslModule {
 
 	public void simRun() {
 		votes.set(0);
-
-		double explorationValue = maxReward * Math.exp(-episodeCount * alpha);
-		List<Affordance> affs = robot.checkAffordances(subject
-				.getPossibleAffordances());
-
-		if (lastPicked != null && lastPicked instanceof TurnAffordance)
-			affs = removeOtherTurns(affs, (TurnAffordance) lastPicked);
-
-		Affordance pickedAffordance;
-		do {
-			pickedAffordance = affs.get(r.nextInt(affs.size()));
-		} while (!pickedAffordance.isRealizable());
-
-		votes.set(pickedAffordance.getIndex(), explorationValue);
-
-		lastPicked = pickedAffordance;
+		
+		// Flashing feeder prevents exploration
+		if (!robot.seesFlashingFeeder()){
+			double explorationValue = maxReward * Math.exp(-episodeCount * alpha);
+			List<Affordance> affs = robot.checkAffordances(subject
+					.getPossibleAffordances());
+	
+			if (lastPicked != null && lastPicked instanceof TurnAffordance)
+				affs = removeOtherTurns(affs, (TurnAffordance) lastPicked);
+	
+			Affordance pickedAffordance;
+			do {
+				pickedAffordance = affs.get(r.nextInt(affs.size()));
+			} while (!pickedAffordance.isRealizable());
+	
+			votes.set(pickedAffordance.getIndex(), explorationValue);
+	
+			lastPicked = pickedAffordance;
+		}
 	}
 
 	private List<Affordance> removeOtherTurns(List<Affordance> affs, TurnAffordance turn) {

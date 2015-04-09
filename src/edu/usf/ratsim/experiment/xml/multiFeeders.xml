@@ -8,7 +8,7 @@
 			<closeToFoodThrs>0.2</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
 			<display>true</display>
-			<sleep>0</sleep>
+			<sleep>1000</sleep>
 		</params>
 	</universe>
 	
@@ -88,7 +88,7 @@
 			<number>40</number>
 			<beforeTasks>
 				<task>
-					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
+					<name>edu.usf.experiment.task.FlashActivateRandomFeeder</name>
 					<params>
 					</params>
 				</task>
