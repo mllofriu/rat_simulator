@@ -17,8 +17,8 @@
 		<params>
 			<noise>.2</noise>
 			<lookaheadSteps>2</lookaheadSteps>
-			<halfFieldOfView>3.15</halfFieldOfView>
-			<visionDist>.5</visionDist>
+			<halfFieldOfView>1.57</halfFieldOfView>
+			<visionDist>1</visionDist>
 			<closeThrs>.3</closeThrs>
 		</params>
 	</robot>
@@ -48,15 +48,15 @@
 				<alpha>0.8</alpha>
 				<initialValue>0</initialValue>
 				<flashingReward>10000</flashingReward>
-				<nonFlashingReward>10000</nonFlashingReward>
+				<nonFlashingReward>1000</nonFlashingReward>
 				<explorationReward>5000</explorationReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
 				<explorationHalfLifeVal>4</explorationHalfLifeVal>
 				<proportionalQL>true</proportionalQL>
-				<xmin>-1</xmin>
-				<ymin>-1</ymin>
-				<xmax>1</xmax>
-				<ymax>1</ymax>
+				<xmin>-.5</xmin>
+				<ymin>-.5</ymin>
+				<xmax>.5</xmax>
+				<ymax>.5</ymax>
 				<closeToFoodThrs>0.2</closeToFoodThrs>
 			</params>
 		</subject>
@@ -78,8 +78,9 @@
 		</groups>
 		<beforeTasks>
 			<task>
-				<name>edu.usf.experiment.task.EnableAllFeeders</name>
+				<name>edu.usf.experiment.task.EnableRandomFeeders</name>
 				<params>
+					<numFeeders>1</numFeeders>
 				</params>
 			</task>
 		</beforeTasks>

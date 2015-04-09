@@ -278,9 +278,11 @@ public class VirtUniverse extends Universe {
 			boolean realizable;
 			if (af instanceof TurnAffordance) {
 				TurnAffordance ta = (TurnAffordance) af;
-//				realizable = canMove(ta.getAngle(),
-//						lookaheadSteps * ta.getDistance());
-				realizable = true;
+				realizable = !canRobotMove(0, lookaheadSteps
+						* ta.getDistance())
+						|| canRobotMove(ta.getAngle(),
+								lookaheadSteps * ta.getDistance());
+				// realizable = true;
 			} else if (af instanceof ForwardAffordance)
 				realizable = canRobotMove(0, lookaheadSteps
 						* ((ForwardAffordance) af).getDistance());
@@ -295,12 +297,12 @@ public class VirtUniverse extends Universe {
 
 		return affs;
 	}
-	
+
 	public boolean canRobotMove(float angle, float step) {
 		// The current position with rotation
 		Transform3D rPos = new Transform3D();
 		robot.getTransformGroup().getTransform(rPos);
-		
+
 		Vector3f p = new Vector3f();
 		rPos.get(p);
 		Coordinate initCoordinate = new Coordinate(p.x, p.y);
@@ -359,9 +361,9 @@ public class VirtUniverse extends Universe {
 	// return wantedFeeder;
 	// }
 
-//	public List<WallNode> getWalls() {
-//		return wallNodes;
-//	}
+	// public List<WallNode> getWalls() {
+	// return wallNodes;
+	// }
 
 	public boolean wallIntersectsOtherWalls(LineSegment wall) {
 		boolean intersects = false;
