@@ -21,12 +21,14 @@ import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.DecayingExplorationSchema;
 import edu.usf.ratsim.nsl.modules.FlashingOrAnyGoalDecider;
 import edu.usf.ratsim.nsl.modules.FlashingTaxicFoodFinderSchema;
-import edu.usf.ratsim.nsl.modules.TaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.Intention;
 import edu.usf.ratsim.nsl.modules.JointStatesManyConcatenate;
 import edu.usf.ratsim.nsl.modules.JointStatesManyMultiply;
 import edu.usf.ratsim.nsl.modules.JointStatesManySum;
+import edu.usf.ratsim.nsl.modules.LastAteIntention;
+import edu.usf.ratsim.nsl.modules.NoIntention;
 import edu.usf.ratsim.nsl.modules.PlaceIntention;
+import edu.usf.ratsim.nsl.modules.TaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.Voter;
 import edu.usf.ratsim.nsl.modules.WallAvoider;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
@@ -152,8 +154,9 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		anyGoalDecider = new FlashingOrAnyGoalDecider(BEFORE_GOAL_DECIDER_STR,
 				this, subject, numIntentions);
 
-		intention = new Intention(BEFORE_INTENTION_STR, this, numIntentions);
-
+//		intention = new LastAteIntention(BEFORE_INTENTION_STR, this, numIntentions);
+		intention = new NoIntention(BEFORE_INTENTION_STR, this, numIntentions);
+		
 		// Create the layers
 		float radius = minRadius;
 		// For each layer
@@ -248,8 +251,9 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		anyGoalDecider = new FlashingOrAnyGoalDecider(AFTER_GOAL_DECIDER_STR,
 				this, subject, numIntentions);
 
-		new Intention(AFTER_INTENTION_STR, this, numIntentions);
-
+//		new LastAteIntention(AFTER_INTENTION_STR, this, numIntentions);
+		new NoIntention(AFTER_INTENTION_STR, this, numIntentions);
+		
 		radius = minRadius;
 		for (int i = 0; i < numPCLayers; i++) {
 			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer(

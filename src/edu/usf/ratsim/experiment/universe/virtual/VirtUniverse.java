@@ -437,7 +437,8 @@ public class VirtUniverse extends Universe {
 	public void setFlashingFeeder(int i, boolean flashing){
 		super.setFlashingFeeder(i, flashing);
 		
-		feederNodes.get(i).setFlashing(true);
+		if (display)
+			feederNodes.get(i).setFlashing(flashing);
 	}
 
 	@Override

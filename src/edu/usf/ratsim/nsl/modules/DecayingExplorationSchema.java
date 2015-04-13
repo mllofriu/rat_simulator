@@ -53,7 +53,7 @@ public class DecayingExplorationSchema extends NslModule {
 		votes.set(0);
 		
 		// Flashing feeder prevents exploration
-		if (!robot.seesFlashingFeeder()){
+//		if (!robot.seesFlashingFeeder()){
 			double explorationValue = maxReward * Math.exp(-episodeCount * alpha);
 			List<Affordance> affs = robot.checkAffordances(subject
 					.getPossibleAffordances());
@@ -69,7 +69,7 @@ public class DecayingExplorationSchema extends NslModule {
 			votes.set(pickedAffordance.getIndex(), explorationValue);
 	
 			lastPicked = pickedAffordance;
-		}
+//		}
 	}
 
 	private List<Affordance> removeOtherTurns(List<Affordance> affs, TurnAffordance turn) {
