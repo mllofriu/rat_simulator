@@ -24,7 +24,50 @@
 	</robot>
 	
 	<group>
-		<name>A</name>
+		<name>Learned</name>
+		<numMembers>1</numMembers>
+		<subject>
+			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
+			<params>
+				<step>.1</step>
+				<leftAngle>0.39</leftAngle>
+				<rightAngle>-0.39</rightAngle>
+				<numPCLayers>3</numPCLayers>
+				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<minRadius>.05</minRadius>
+				<maxRadius>.3</maxRadius>
+				<placeCells>exponential</placeCells>
+				<numHDLayers>4</numHDLayers>
+				<minHDCellsPerLayer>1</minHDCellsPerLayer>
+				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
+				<numIntentions>1</numIntentions>
+				<deterministicActionSelection>true</deterministicActionSelection>
+				<foodReward>10000</foodReward>
+				<nonFoodReward>0</nonFoodReward>
+				<discountFactor>1</discountFactor>
+				<alpha>0.8</alpha>
+				<initialValue>0</initialValue>
+				<flashingReward>10000</flashingReward>
+				<nonFlashingReward>1000</nonFlashingReward>
+				<explorationReward>1000</explorationReward>
+				<wallAvoidingVal>0</wallAvoidingVal>
+				<explorationHalfLifeVal>4</explorationHalfLifeVal>
+				<proportionalQL>true</proportionalQL>
+				<xmin>-.5</xmin>
+				<ymin>-.5</ymin>
+				<xmax>.5</xmax>
+				<ymax>.5</ymax>
+				<closeToFoodThrs>0.2</closeToFoodThrs>
+			</params>
+		</subject>
+		<params>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
+	<group>
+		<name>Naive</name>
 		<numMembers>1</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
@@ -67,25 +110,23 @@
 	</group>
 	
 	<beforeTasks>
-		
+		<task>
+			<name>edu.usf.experiment.task.EnableRandomFeeders</name>
+			<params>
+				<numFeeders>1</numFeeders>
+			</params>
+		</task>
 	</beforeTasks>
 	
 	<trial>
 		<name>Training</name>
 		<groups>
-			<group>A</group>
-			<group>B</group>
+			<group>Learned</group>
 		</groups>
 		<beforeTasks>
-			<task>
-				<name>edu.usf.experiment.task.EnableRandomFeeders</name>
-				<params>
-					<numFeeders>1</numFeeders>
-				</params>
-			</task>
 		</beforeTasks>
 		<episodes>
-			<number>1</number>
+			<number>20</number>
 			<beforeTasks>
 				<task>
 					<name>edu.usf.experiment.task.FlashActivateRandomFeeder</name>
@@ -151,18 +192,6 @@
 		</episodes>
 		
 		<plotters>
-<!--			<plotter
-				<name>edu.usf.experiment.plot.CSVConverter</name>
-			</plotter>
-			<plotter>
-				<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
-			</plotter>
-			<plotter>
-				<name>edu.usf.experiment.plot.PathPlotter</name>
-			</plotter>
-			<plotter>
-				<name>edu.usf.experiment.plot.PolicyPlotter</name>
-			</plotter>-->
 		</plotters>
 		<afterTasks>
 		</afterTasks>
@@ -174,8 +203,8 @@
 	<trial>
 		<name>Testing</name>
 		<groups>
-			<group>A</group>
-			<group>B</group>
+			<group>Learned</group>
+			<group>Naive</group>
 		</groups>
 		<beforeTasks>
 		</beforeTasks>
@@ -184,6 +213,11 @@
 			<beforeTasks>
 				<task>
 					<name>edu.usf.experiment.task.UnFlashAllFeeders</name>
+					<params>
+					</params>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
 					<params>
 					</params>
 				</task>
@@ -246,18 +280,6 @@
 		</episodes>
 		
 		<plotters>
-			<plotter>
-				<name>edu.usf.experiment.plot.CSVConverter</name>
-			</plotter>
-			<plotter>
-				<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
-			</plotter>
-			<plotter>
-				<name>edu.usf.experiment.plot.PathPlotter</name>
-			</plotter>
-			<plotter>
-				<name>edu.usf.experiment.plot.PolicyPlotter</name>
-			</plotter>
 		</plotters>
 		<afterTasks>
 		</afterTasks>
@@ -272,5 +294,17 @@
 	<loggers>
 	</loggers>
 	<plotters>
+		<plotter>
+			<name>edu.usf.experiment.plot.CSVConverter</name>
+		</plotter>
+		<plotter>
+			<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+		</plotter>
+		<plotter>
+			<name>edu.usf.experiment.plot.PathPlotter</name>
+		</plotter>
+		<plotter>
+			<name>edu.usf.experiment.plot.PolicyPlotter</name>
+		</plotter>
 	</plotters>
 </experiment>

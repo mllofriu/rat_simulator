@@ -37,7 +37,7 @@ public class TaxicFoodFinderSchema extends NslModule {
 			float closeToFoodThrs, float minAngle) {
 		super(nslName, nslParent);
 		this.maxReward = maxReward;
-		this.forwardBias = minAngle/2;
+		this.forwardBias = minAngle;
 
 		goalFeeder = new NslDinInt0(this, "goalFeeder");
 		votes = new NslDoutFloat1(this, "votes", subject
