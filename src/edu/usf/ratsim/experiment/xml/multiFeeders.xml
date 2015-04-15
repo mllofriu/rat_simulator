@@ -5,7 +5,7 @@
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
-			<closeToFoodThrs>0.2</closeToFoodThrs>
+			<closeToFoodThrs>0.1</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
 			<display>true</display>
 			<sleep>100</sleep>
@@ -19,19 +19,19 @@
 			<lookaheadSteps>2</lookaheadSteps>
 			<halfFieldOfView>1.57</halfFieldOfView>
 			<visionDist>1</visionDist>
-			<closeThrs>.3</closeThrs>
+			<closeThrs>.1</closeThrs>
 		</params>
 	</robot>
 	
 	<group>
 		<name>Learned</name>
-		<numMembers>1</numMembers>
+		<numMembers>50</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
-				<step>.1</step>
-				<leftAngle>0.39</leftAngle>
-				<rightAngle>-0.39</rightAngle>
+				<step>.05</step>
+				<leftAngle>0.2</leftAngle>
+				<rightAngle>-0.2</rightAngle>
 				<numPCLayers>3</numPCLayers>
 				<numPCCellsPerLayer>100</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
@@ -68,13 +68,13 @@
 	
 	<group>
 		<name>Naive</name>
-		<numMembers>1</numMembers>
+		<numMembers>50</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
-				<step>.1</step>
-				<leftAngle>0.39</leftAngle>
-				<rightAngle>-0.39</rightAngle>
+				<step>.05</step>
+				<leftAngle>0.2</leftAngle>
+				<rightAngle>-0.2</rightAngle>
 				<numPCLayers>3</numPCLayers>
 				<numPCCellsPerLayer>100</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>

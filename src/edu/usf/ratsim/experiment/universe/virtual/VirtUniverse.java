@@ -45,6 +45,7 @@ import edu.usf.ratsim.support.XMLDocReader;
  */
 public class VirtUniverse extends Universe {
 
+	private static final float ROBOT_LENGTH = .2f;
 	private static VirtUniverse instance = null;
 	private View topView;
 	private RobotNode robot;
@@ -278,14 +279,12 @@ public class VirtUniverse extends Universe {
 			boolean realizable;
 			if (af instanceof TurnAffordance) {
 				TurnAffordance ta = (TurnAffordance) af;
-				realizable = !canRobotMove(0, lookaheadSteps
-						* ta.getDistance())
+				realizable = !canRobotMove(0, ROBOT_LENGTH)
 						|| canRobotMove(ta.getAngle(),
-								lookaheadSteps * ta.getDistance());
+								ROBOT_LENGTH);
 				// realizable = true;
 			} else if (af instanceof ForwardAffordance)
-				realizable = canRobotMove(0, lookaheadSteps
-						* ((ForwardAffordance) af).getDistance());
+				realizable = canRobotMove(0, ROBOT_LENGTH);
 			else if (af instanceof EatAffordance)
 				realizable = hasRobotFoundFood();
 			else
