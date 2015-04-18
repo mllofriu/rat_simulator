@@ -48,7 +48,7 @@ public class VirtUniverse extends Universe {
 	private static final float ROBOT_LENGTH = .2f;
 	private static VirtUniverse instance = null;
 	private View topView;
-	private RobotNode robot;
+	private RobotNode robotNode;
 	private List<FeederNode> feederNodes;
 
 	private BranchGroup bg;
@@ -76,7 +76,7 @@ public class VirtUniverse extends Universe {
 		ElementWrapper maze = new ElementWrapper(doc.getDocumentElement());
 		List<ElementWrapper> list;
 
-		robot = new RobotNode(maze.getChild("robotview"), display);
+		
 
 		if (display) {
 			VirtualUniverse vu = new VirtualUniverse();
@@ -88,7 +88,8 @@ public class VirtUniverse extends Universe {
 			l.addBranchGraph(bg);
 
 			// Add previously created elements, but not added to the 3d universe
-			bg.addChild(robot);
+			robotNode = new RobotNode(maze.getChild("robotview"), display);
+			bg.addChild(robotNode);
 
 			// Walls
 			for (Wall wn : getWalls()) {
@@ -153,15 +154,15 @@ public class VirtUniverse extends Universe {
 	}
 
 	public View[] getRobotViews() {
-		return robot.getRobotViews();
+		return robotNode.getRobotViews();
 	}
 
 	public Canvas3D[] getRobotOffscreenCanvas() {
-		return robot.getOffScreenCanvas();
+		return robotNode.getOffScreenCanvas();
 	}
 
 	public ImageComponent2D[] getRobotOffscreenImages() {
-		return robot.getOffScreenImages();
+		return robotNode.getOffScreenImages();
 	}
 
 	/**
@@ -171,7 +172,7 @@ public class VirtUniverse extends Universe {
 	 */
 	public Point3f getRobotPosition() {
 		Transform3D t = new Transform3D();
-		robot.getTransformGroup().getTransform(t);
+		robotNode.getTransformGroup().getTransform(t);
 		Vector3f pos = new Vector3f();
 		t.get(pos);
 
@@ -191,7 +192,7 @@ public class VirtUniverse extends Universe {
 		Transform3D rot = new Transform3D();
 		rot.rotZ(angle);
 		translate.mul(rot);
-		robot.getTransformGroup().setTransform(translate);
+		robotNode.getTransformGroup().setTransform(translate);
 	}
 
 	/**
@@ -206,11 +207,11 @@ public class VirtUniverse extends Universe {
 		trans.rotZ(degrees);
 		// Get the old pos transform
 		Transform3D rPos = new Transform3D();
-		robot.getTransformGroup().getTransform(rPos);
+		robotNode.getTransformGroup().getTransform(rPos);
 		// Apply translation to old transform
 		rPos.mul(trans);
 		// Set the new transform
-		robot.getTransformGroup().setTransform(rPos);
+		robotNode.getTransformGroup().setTransform(rPos);
 
 		if (sleep != 0 && display)
 			try {
@@ -233,11 +234,11 @@ public class VirtUniverse extends Universe {
 		trans.setTranslation(vector);
 		// Get the old pos transform
 		Transform3D rPos = new Transform3D();
-		robot.getTransformGroup().getTransform(rPos);
+		robotNode.getTransformGroup().getTransform(rPos);
 		// Apply translation to old transform
 		rPos.mul(trans);
 		// Set the new transform
-		robot.getTransformGroup().setTransform(rPos);
+		robotNode.getTransformGroup().setTransform(rPos);
 
 		if (sleep != 0)
 			try {
@@ -250,7 +251,7 @@ public class VirtUniverse extends Universe {
 
 	public Quat4f getRobotOrientation() {
 		Transform3D t = new Transform3D();
-		robot.getTransformGroup().getTransform(t);
+		robotNode.getTransformGroup().getTransform(t);
 		// Get the rotation from the quaternion
 		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 		Quat4f rot = new Quat4f();
@@ -261,7 +262,7 @@ public class VirtUniverse extends Universe {
 
 	public float getRobotOrientationAngle() {
 		Transform3D t = new Transform3D();
-		robot.getTransformGroup().getTransform(t);
+		robotNode.getTransformGroup().getTransform(t);
 		// Get the rotation from the quaternion
 		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 		Quat4f rot = new Quat4f();
@@ -300,7 +301,7 @@ public class VirtUniverse extends Universe {
 	public boolean canRobotMove(float angle, float step) {
 		// The current position with rotation
 		Transform3D rPos = new Transform3D();
-		robot.getTransformGroup().getTransform(rPos);
+		robotNode.getTransformGroup().getTransform(rPos);
 
 		Vector3f p = new Vector3f();
 		rPos.get(p);

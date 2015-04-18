@@ -7,8 +7,8 @@
 		<params>
 			<closeToFoodThrs>0.1</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
-			<display>true</display>
-			<sleep>100</sleep>
+			<display>false</display>
+			<sleep>0</sleep>
 		</params>
 	</universe>
 	
