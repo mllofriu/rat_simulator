@@ -11,6 +11,10 @@ public class Robot {
 		this.t = t;
 	}
 
+	public Robot() {
+		this(new Transform3D());
+	}
+
 	public Transform3D getT() {
 		return t;
 	}

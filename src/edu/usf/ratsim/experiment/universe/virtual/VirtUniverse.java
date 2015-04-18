@@ -49,6 +49,7 @@ public class VirtUniverse extends Universe {
 	private static VirtUniverse instance = null;
 	private View topView;
 	private RobotNode robotNode;
+	private Robot robot;
 	private List<FeederNode> feederNodes;
 
 	private BranchGroup bg;
@@ -75,8 +76,8 @@ public class VirtUniverse extends Universe {
 		Document doc = XMLDocReader.readDocument(dstMazeFile);
 		ElementWrapper maze = new ElementWrapper(doc.getDocumentElement());
 		List<ElementWrapper> list;
-
-		
+	
+		robot = new Robot();
 
 		if (display) {
 			VirtualUniverse vu = new VirtualUniverse();
@@ -171,8 +172,7 @@ public class VirtUniverse extends Universe {
 	 * @return
 	 */
 	public Point3f getRobotPosition() {
-		Transform3D t = new Transform3D();
-		robotNode.getTransformGroup().getTransform(t);
+		Transform3D t = new Transform3D(robot.getT());
 		Vector3f pos = new Vector3f();
 		t.get(pos);
 
@@ -192,7 +192,9 @@ public class VirtUniverse extends Universe {
 		Transform3D rot = new Transform3D();
 		rot.rotZ(angle);
 		translate.mul(rot);
-		robotNode.getTransformGroup().setTransform(translate);
+		robot.setT(translate);
+		if (display)
+			robotNode.getTransformGroup().setTransform(translate);
 	}
 
 	/**
@@ -206,12 +208,13 @@ public class VirtUniverse extends Universe {
 		Transform3D trans = new Transform3D();
 		trans.rotZ(degrees);
 		// Get the old pos transform
-		Transform3D rPos = new Transform3D();
-		robotNode.getTransformGroup().getTransform(rPos);
+		Transform3D rPos = new Transform3D(robot.getT());
 		// Apply translation to old transform
 		rPos.mul(trans);
 		// Set the new transform
-		robotNode.getTransformGroup().setTransform(rPos);
+		robot.setT(rPos);
+		if (display)
+			robotNode.getTransformGroup().setTransform(rPos);
 
 		if (sleep != 0 && display)
 			try {
@@ -233,12 +236,13 @@ public class VirtUniverse extends Universe {
 		Transform3D trans = new Transform3D();
 		trans.setTranslation(vector);
 		// Get the old pos transform
-		Transform3D rPos = new Transform3D();
-		robotNode.getTransformGroup().getTransform(rPos);
+		Transform3D rPos = new Transform3D(robot.getT());
 		// Apply translation to old transform
 		rPos.mul(trans);
 		// Set the new transform
-		robotNode.getTransformGroup().setTransform(rPos);
+		robot.setT(rPos);
+		if(display)
+			robotNode.getTransformGroup().setTransform(rPos);
 
 		if (sleep != 0)
 			try {
@@ -250,8 +254,7 @@ public class VirtUniverse extends Universe {
 	}
 
 	public Quat4f getRobotOrientation() {
-		Transform3D t = new Transform3D();
-		robotNode.getTransformGroup().getTransform(t);
+		Transform3D t = new Transform3D(robot.getT());
 		// Get the rotation from the quaternion
 		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 		Quat4f rot = new Quat4f();
@@ -261,8 +264,7 @@ public class VirtUniverse extends Universe {
 	}
 
 	public float getRobotOrientationAngle() {
-		Transform3D t = new Transform3D();
-		robotNode.getTransformGroup().getTransform(t);
+		Transform3D t = new Transform3D(robot.getT());
 		// Get the rotation from the quaternion
 		// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
 		Quat4f rot = new Quat4f();
@@ -300,8 +302,7 @@ public class VirtUniverse extends Universe {
 
 	public boolean canRobotMove(float angle, float step) {
 		// The current position with rotation
-		Transform3D rPos = new Transform3D();
-		robotNode.getTransformGroup().getTransform(rPos);
+		Transform3D rPos = new Transform3D(robot.getT());
 
 		Vector3f p = new Vector3f();
 		rPos.get(p);
