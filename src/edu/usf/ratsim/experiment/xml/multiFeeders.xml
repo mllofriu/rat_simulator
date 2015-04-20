@@ -5,10 +5,10 @@
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
-			<closeToFoodThrs>0.1</closeToFoodThrs>
+			<closeToFoodThrs>0.2</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
 			<display>false</display>
-			<sleep>0</sleep>
+			<sleep>100</sleep>
 		</params>
 	</universe>
 	
@@ -19,19 +19,19 @@
 			<lookaheadSteps>2</lookaheadSteps>
 			<halfFieldOfView>1.57</halfFieldOfView>
 			<visionDist>1</visionDist>
-			<closeThrs>.1</closeThrs>
+			<closeThrs>.3</closeThrs>
 		</params>
 	</robot>
 	
 	<group>
 		<name>Learned</name>
-		<numMembers>50</numMembers>
+		<numMembers>16</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
-				<step>.05</step>
-				<leftAngle>0.2</leftAngle>
-				<rightAngle>-0.2</rightAngle>
+				<step>.1</step>
+				<leftAngle>0.37</leftAngle>
+				<rightAngle>-0.37</rightAngle>
 				<numPCLayers>3</numPCLayers>
 				<numPCCellsPerLayer>100</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
@@ -58,6 +58,8 @@
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<closeToFoodThrs>0.2</closeToFoodThrs>
+				<maxActionsSinceForward>5</maxActionsSinceForward>
+				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
@@ -68,13 +70,13 @@
 	
 	<group>
 		<name>Naive</name>
-		<numMembers>50</numMembers>
+		<numMembers>16</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
-				<step>.05</step>
-				<leftAngle>0.2</leftAngle>
-				<rightAngle>-0.2</rightAngle>
+				<step>.1</step>
+				<leftAngle>.37</leftAngle>
+				<rightAngle>-.37</rightAngle>
 				<numPCLayers>3</numPCLayers>
 				<numPCCellsPerLayer>100</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
@@ -101,6 +103,8 @@
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<closeToFoodThrs>0.2</closeToFoodThrs>
+				<maxActionsSinceForward>5</maxActionsSinceForward>
+				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
@@ -165,14 +169,14 @@
 			</loggers>
 			
 			<afterLoggers>
-				<logger>
+				<!--<logger>
 					<name>edu.usf.experiment.log.PolicyLogger</name>
 					<params>
 						<interval>.1</interval>
 						<angleInterval>.37</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
-				</logger>
+				</logger> -->
 			</afterLoggers>
 			<afterTasks>
 			</afterTasks>
@@ -253,14 +257,14 @@
 			</loggers>
 			
 			<afterLoggers>
-				<logger>
+				<!-- <logger>
 					<name>edu.usf.experiment.log.PolicyLogger</name>
 					<params>
 						<interval>.1</interval>
 						<angleInterval>.37</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
-				</logger>
+				</logger> -->
 			</afterLoggers>
 			<afterTasks>
 			</afterTasks>
@@ -303,8 +307,8 @@
 		<plotter>
 			<name>edu.usf.experiment.plot.PathPlotter</name>
 		</plotter>
-		<plotter>
+		<!-- <plotter>
 			<name>edu.usf.experiment.plot.PolicyPlotter</name>
-		</plotter>
+		</plotter> -->
 	</plotters>
 </experiment>
