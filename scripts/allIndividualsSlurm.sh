@@ -1,8 +1,9 @@
-export DISPLAY=:0.0
+#!/bin/sh
+
+#SBATCH --array=0-256
 
 experiment=$1
 logPath=$2
 numIndividuals=$3
-for i in `seq 0 $numIndividuals`; do
-  srun ./scripts/execPinky.sh $experiment $logPath $i
-done
+
+./scripts/execPinky.sh $experiment $logPath $SLURM_ARRAY_TASK_ID 
