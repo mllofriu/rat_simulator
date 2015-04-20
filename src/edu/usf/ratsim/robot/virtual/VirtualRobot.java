@@ -190,7 +190,7 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public List<Affordance> checkAffordances(List<Affordance> affs){
-		return universe.getRobotAffordances(affs, lookaheadSteps, closeThrs);
+		return universe.getRobotAffordances(affs);
 	}
 
 	@Override

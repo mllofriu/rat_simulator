@@ -276,8 +276,7 @@ public class VirtUniverse extends Universe {
 	// new VirtualExpUniverse();
 	// }
 
-	public List<Affordance> getRobotAffordances(List<Affordance> affs,
-			float lookaheadSteps, float step) {
+	public List<Affordance> getRobotAffordances(List<Affordance> affs) {
 		for (Affordance af : affs) {
 			boolean realizable;
 			if (af instanceof TurnAffordance) {
