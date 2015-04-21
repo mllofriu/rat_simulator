@@ -5,10 +5,10 @@
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
-			<closeToFoodThrs>0.2</closeToFoodThrs>
+			<closeToFoodThrs>0.15</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
-			<display>false</display>
-			<sleep>100</sleep>
+			<display>true</display>
+			<sleep>10</sleep>
 		</params>
 	</universe>
 	
@@ -19,12 +19,12 @@
 			<lookaheadSteps>2</lookaheadSteps>
 			<halfFieldOfView>1.57</halfFieldOfView>
 			<visionDist>1</visionDist>
-			<closeThrs>.3</closeThrs>
+			<closeThrs>.1</closeThrs>
 		</params>
 	</robot>
 	
 	<group>
-		<name>Learned</name>
+		<name>Control</name>
 		<numMembers>16</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
@@ -40,7 +40,7 @@
 				<numHDLayers>4</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
-				<numIntentions>1</numIntentions>
+				<numIntentions>8</numIntentions>
 				<deterministicActionSelection>true</deterministicActionSelection>
 				<foodReward>10000</foodReward>
 				<nonFoodReward>0</nonFoodReward>
@@ -51,13 +51,13 @@
 				<nonFlashingReward>1000</nonFlashingReward>
 				<explorationReward>1000</explorationReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
-				<explorationHalfLifeVal>4</explorationHalfLifeVal>
+				<explorationHalfLifeVal>.5</explorationHalfLifeVal>
 				<proportionalQL>true</proportionalQL>
 				<xmin>-.5</xmin>
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
-				<closeToFoodThrs>0.2</closeToFoodThrs>
+				<closeToFoodThrs>0.1</closeToFoodThrs>
 				<maxActionsSinceForward>5</maxActionsSinceForward>
 				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
@@ -69,14 +69,14 @@
 	</group>
 	
 	<group>
-		<name>Naive</name>
+		<name>TimeoutControl</name>
 		<numMembers>16</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
 				<step>.1</step>
-				<leftAngle>.37</leftAngle>
-				<rightAngle>-.37</rightAngle>
+				<leftAngle>0.37</leftAngle>
+				<rightAngle>-0.37</rightAngle>
 				<numPCLayers>3</numPCLayers>
 				<numPCCellsPerLayer>100</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
@@ -85,7 +85,7 @@
 				<numHDLayers>4</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
-				<numIntentions>1</numIntentions>
+				<numIntentions>8</numIntentions>
 				<deterministicActionSelection>true</deterministicActionSelection>
 				<foodReward>10000</foodReward>
 				<nonFoodReward>0</nonFoodReward>
@@ -96,13 +96,13 @@
 				<nonFlashingReward>1000</nonFlashingReward>
 				<explorationReward>1000</explorationReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
-				<explorationHalfLifeVal>4</explorationHalfLifeVal>
+				<explorationHalfLifeVal>.5</explorationHalfLifeVal>
 				<proportionalQL>true</proportionalQL>
 				<xmin>-.5</xmin>
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
-				<closeToFoodThrs>0.2</closeToFoodThrs>
+				<closeToFoodThrs>0.1</closeToFoodThrs>
 				<maxActionsSinceForward>5</maxActionsSinceForward>
 				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
@@ -117,7 +117,7 @@
 		<task>
 			<name>edu.usf.experiment.task.EnableRandomFeeders</name>
 			<params>
-				<numFeeders>1</numFeeders>
+				<numFeeders>3</numFeeders>
 			</params>
 		</task>
 	</beforeTasks>
@@ -125,12 +125,12 @@
 	<trial>
 		<name>Training</name>
 		<groups>
-			<group>Learned</group>
+			<group>Control</group>
 		</groups>
 		<beforeTasks>
 		</beforeTasks>
 		<episodes>
-			<number>20</number>
+			<number>1</number>
 			<beforeTasks>
 				<task>
 					<name>edu.usf.experiment.task.FlashActivateRandomFeeder</name>
@@ -153,6 +153,9 @@
 			<afterCycleTasks>
 				<task>
 					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.SwitchFlashingFeeder</name>
 				</task>
 			</afterCycleTasks>
 			<loggers>
@@ -184,11 +187,14 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>5000</max>
+						<max>15000</max>
 					</params>
 				</condition>
 				<condition>
-					<name>edu.usf.experiment.condition.FoundFoodStopCond</name>
+					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
+					<params>
+						<n>1000</n>
+					</params>
 				</condition>
 			</stopConditions>
 			<plotters>
@@ -207,13 +213,13 @@
 	<trial>
 		<name>Testing</name>
 		<groups>
-			<group>Learned</group>
-			<group>Naive</group>
+			<group>Control</group>
+			<group>TimeoutControl</group>
 		</groups>
 		<beforeTasks>
 		</beforeTasks>
 		<episodes>
-			<number>20</number>
+			<number>1</number>
 			<beforeTasks>
 				<task>
 					<name>edu.usf.experiment.task.UnFlashAllFeeders</name>
@@ -241,6 +247,9 @@
 			<afterCycleTasks>
 				<task>
 					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.SwitchFeeder</name>
 				</task>
 			</afterCycleTasks>
 			<loggers>
@@ -272,11 +281,15 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>5000</max>
+						<max>15000</max>
 					</params>
 				</condition>
 				<condition>
-					<name>edu.usf.experiment.condition.FoundFoodStopCond</name>
+					<name>edu.usf.experiment.condition.FoundNFoodNoMistakesStopCond</name>
+					<params>
+						<n>15</n>
+						<timeout>200</timeout>
+					</params>
 				</condition>
 			</stopConditions>
 			<plotters>

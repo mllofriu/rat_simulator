@@ -1,3 +1,4 @@
+slurm-*
 hs_err*
 logs/
 target

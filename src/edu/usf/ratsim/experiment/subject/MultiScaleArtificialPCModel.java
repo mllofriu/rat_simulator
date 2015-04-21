@@ -138,7 +138,8 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		float ymax = params.getChildFloat("ymax");
 		float closeToFoodThrs = params.getChildFloat("closeToFoodThrs");
 		proportionalQl = params.getChildBoolean("proportionalQL");
-		int maxActionsSinceForward = params.getChildInt("maxActionsSinceForward");
+		int maxActionsSinceForward = params
+				.getChildInt("maxActionsSinceForward");
 		float stillExplorationVal = params.getChildFloat("stillExplorationVal");
 
 		int numActions = subject.getPossibleAffordances().size();
@@ -159,9 +160,12 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		anyGoalDecider = new FlashingOrAnyGoalDecider(BEFORE_GOAL_DECIDER_STR,
 				this, subject, numIntentions);
 
-		// intention = new LastAteIntention(BEFORE_INTENTION_STR, this,
-		// numIntentions);
-		intention = new NoIntention(BEFORE_INTENTION_STR, this, numIntentions);
+		if (numIntentions > 1)
+			intention = new LastAteIntention(BEFORE_INTENTION_STR, this,
+					numIntentions);
+		else
+			intention = new NoIntention(BEFORE_INTENTION_STR, this,
+					numIntentions);
 
 		// Create the layers
 		float radius = minRadius;
@@ -260,8 +264,10 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		anyGoalDecider = new FlashingOrAnyGoalDecider(AFTER_GOAL_DECIDER_STR,
 				this, subject, numIntentions);
 
-		// new LastAteIntention(AFTER_INTENTION_STR, this, numIntentions);
-		new NoIntention(AFTER_INTENTION_STR, this, numIntentions);
+		if (numIntentions > 1)
+			new LastAteIntention(AFTER_INTENTION_STR, this, numIntentions);
+		else
+			new NoIntention(AFTER_INTENTION_STR, this, numIntentions);
 
 		radius = minRadius;
 		for (int i = 0; i < numPCLayers; i++) {

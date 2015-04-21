@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.ratsim.support.Debug;
+import edu.usf.experiment.utils.Debug;
 
 public class ArtificialHDCellLayer extends NslModule {
 

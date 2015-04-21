@@ -6,7 +6,7 @@ import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.Landmark;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.ratsim.support.Debug;
+import edu.usf.experiment.utils.Debug;
 
 /**
  * Sets the goal to be the flashing feeder (if any) or any feeder if there is

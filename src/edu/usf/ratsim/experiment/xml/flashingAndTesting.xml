@@ -5,7 +5,7 @@
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
-			<closeToFoodThrs>0.2</closeToFoodThrs>
+			<closeToFoodThrs>0.15</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
 			<display>false</display>
 			<sleep>100</sleep>
@@ -19,25 +19,25 @@
 			<lookaheadSteps>2</lookaheadSteps>
 			<halfFieldOfView>1.57</halfFieldOfView>
 			<visionDist>1</visionDist>
-			<closeThrs>.3</closeThrs>
+			<closeThrs>.1</closeThrs>
 		</params>
 	</robot>
 	
 	<group>
 		<name>Learned</name>
-		<numMembers>16</numMembers>
+		<numMembers>128</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
-				<step>.1</step>
-				<leftAngle>0.37</leftAngle>
-				<rightAngle>-0.37</rightAngle>
+				<step>.05</step>
+				<leftAngle>0.185</leftAngle>
+				<rightAngle>-0.185</rightAngle>
 				<numPCLayers>3</numPCLayers>
 				<numPCCellsPerLayer>100</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
 				<maxRadius>.3</maxRadius>
 				<placeCells>exponential</placeCells>
-				<numHDLayers>4</numHDLayers>
+				<numHDLayers>5</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
 				<numIntentions>1</numIntentions>
@@ -57,7 +57,7 @@
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
-				<closeToFoodThrs>0.2</closeToFoodThrs>
+				<closeToFoodThrs>0.1</closeToFoodThrs>
 				<maxActionsSinceForward>5</maxActionsSinceForward>
 				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
@@ -70,13 +70,13 @@
 	
 	<group>
 		<name>Naive</name>
-		<numMembers>16</numMembers>
+		<numMembers>128</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
-				<step>.1</step>
-				<leftAngle>.37</leftAngle>
-				<rightAngle>-.37</rightAngle>
+				<step>.05</step>
+				<leftAngle>.185</leftAngle>
+				<rightAngle>-.185</rightAngle>
 				<numPCLayers>3</numPCLayers>
 				<numPCCellsPerLayer>100</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
@@ -102,7 +102,7 @@
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
-				<closeToFoodThrs>0.2</closeToFoodThrs>
+				<closeToFoodThrs>0.1</closeToFoodThrs>
 				<maxActionsSinceForward>5</maxActionsSinceForward>
 				<stillExplorationVal>5000</stillExplorationVal>
 			</params>

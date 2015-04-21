@@ -12,7 +12,7 @@ import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.ratsim.support.Debug;
+import edu.usf.experiment.utils.Debug;
 
 public class NoExploration extends NslModule {
 

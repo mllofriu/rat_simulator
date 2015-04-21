@@ -3,7 +3,7 @@ package edu.usf.ratsim.nsl.modules;
 import nslj.src.lang.NslDinInt0;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
-import edu.usf.ratsim.support.Debug;
+import edu.usf.experiment.utils.Debug;
 
 public class LastAteIntention extends NslModule implements Intention{
 
