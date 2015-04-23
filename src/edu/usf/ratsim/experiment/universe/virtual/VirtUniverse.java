@@ -45,7 +45,7 @@ import edu.usf.ratsim.support.XMLDocReader;
  */
 public class VirtUniverse extends Universe {
 
-	private static final float ROBOT_LENGTH = .2f;
+	private static final float ROBOT_LENGTH = .1f;
 	private static VirtUniverse instance = null;
 	private View topView;
 	private RobotNode robotNode;
@@ -76,7 +76,7 @@ public class VirtUniverse extends Universe {
 		Document doc = XMLDocReader.readDocument(dstMazeFile);
 		ElementWrapper maze = new ElementWrapper(doc.getDocumentElement());
 		List<ElementWrapper> list;
-	
+
 		robot = new Robot();
 
 		if (display) {
@@ -241,10 +241,10 @@ public class VirtUniverse extends Universe {
 		rPos.mul(trans);
 		// Set the new transform
 		robot.setT(rPos);
-		if(display)
+		if (display)
 			robotNode.getTransformGroup().setTransform(rPos);
 
-		if (sleep != 0)
+		if (sleep != 0 && display)
 			try {
 				Thread.sleep(sleep);
 			} catch (InterruptedException e) {
@@ -281,14 +281,16 @@ public class VirtUniverse extends Universe {
 			boolean realizable;
 			if (af instanceof TurnAffordance) {
 				TurnAffordance ta = (TurnAffordance) af;
-				realizable = !canRobotMove(0, ROBOT_LENGTH)
-						|| canRobotMove(ta.getAngle(),
-								ROBOT_LENGTH);
+				// Either it can move there, or it cannot move forward and the other angle is not an option
+				realizable = !canRobotMove(0, ROBOT_LENGTH) 
+//						&& !canRobotMove(-ta.getAngle(), ROBOT_LENGTH))
+						|| canRobotMove(ta.getAngle(), ROBOT_LENGTH);
 				// realizable = true;
 			} else if (af instanceof ForwardAffordance)
 				realizable = canRobotMove(0, ROBOT_LENGTH);
 			else if (af instanceof EatAffordance)
 				realizable = hasRobotFoundFood();
+//				realizable = isRobotCloseToAFeeder();
 			else
 				throw new RuntimeException("Affordance "
 						+ af.getClass().getName() + " not supported by robot");
@@ -297,6 +299,14 @@ public class VirtUniverse extends Universe {
 		}
 
 		return affs;
+	}
+
+	@Override
+	public void setActiveFeeder(int i, boolean val) {
+		super.setActiveFeeder(i, val);
+
+		if (display)
+			feederNodes.get(i).setActive(val);
 	}
 
 	public boolean canRobotMove(float angle, float step) {
@@ -418,6 +428,12 @@ public class VirtUniverse extends Universe {
 		return inField && !intersects && closeEnough;
 	}
 
+	/**
+	 * Returns the absolute angle to the feeder
+	 * 
+	 * @param fn
+	 * @return
+	 */
 	private float angleToFeeder(Integer fn) {
 		return Math
 				.abs(GeomUtils.angleToPointWithOrientation(
@@ -433,10 +449,10 @@ public class VirtUniverse extends Universe {
 
 		return intersects;
 	}
-	
-	public void setFlashingFeeder(int i, boolean flashing){
+
+	public void setFlashingFeeder(int i, boolean flashing) {
 		super.setFlashingFeeder(i, flashing);
-		
+
 		if (display)
 			feederNodes.get(i).setFlashing(flashing);
 	}
