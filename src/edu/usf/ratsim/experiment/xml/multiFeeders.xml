@@ -5,9 +5,9 @@
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
-			<closeToFoodThrs>0.15</closeToFoodThrs>
+			<closeToFoodThrs>0.1</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
-			<display>true</display>
+			<display>false</display>
 			<sleep>10</sleep>
 		</params>
 	</universe>
@@ -17,8 +17,8 @@
 		<params>
 			<noise>.2</noise>
 			<lookaheadSteps>2</lookaheadSteps>
-			<halfFieldOfView>1.57</halfFieldOfView>
-			<visionDist>1</visionDist>
+			<halfFieldOfView>1.83</halfFieldOfView>
+			<visionDist>10</visionDist>
 			<closeThrs>.1</closeThrs>
 		</params>
 	</robot>
@@ -29,15 +29,15 @@
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
-				<step>.1</step>
-				<leftAngle>0.37</leftAngle>
-				<rightAngle>-0.37</rightAngle>
+				<step>.05</step>
+				<leftAngle>0.185</leftAngle>
+				<rightAngle>-0.185</rightAngle>
 				<numPCLayers>3</numPCLayers>
 				<numPCCellsPerLayer>100</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
 				<maxRadius>.3</maxRadius>
 				<placeCells>exponential</placeCells>
-				<numHDLayers>4</numHDLayers>
+				<numHDLayers>5</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
 				<numIntentions>8</numIntentions>
@@ -47,18 +47,17 @@
 				<discountFactor>1</discountFactor>
 				<alpha>0.8</alpha>
 				<initialValue>0</initialValue>
-				<flashingReward>10000</flashingReward>
+				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>1000</explorationReward>
+				<explorationReward>200</explorationReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
-				<explorationHalfLifeVal>.5</explorationHalfLifeVal>
+				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<proportionalQL>true</proportionalQL>
 				<xmin>-.5</xmin>
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
-				<closeToFoodThrs>0.1</closeToFoodThrs>
-				<maxActionsSinceForward>5</maxActionsSinceForward>
+				<maxActionsSinceForward>20</maxActionsSinceForward>
 				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
 		</subject>
@@ -74,15 +73,15 @@
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
-				<step>.1</step>
-				<leftAngle>0.37</leftAngle>
-				<rightAngle>-0.37</rightAngle>
+				<step>.05</step>
+				<leftAngle>0.185</leftAngle>
+				<rightAngle>-0.185</rightAngle>
 				<numPCLayers>3</numPCLayers>
 				<numPCCellsPerLayer>100</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
 				<maxRadius>.3</maxRadius>
 				<placeCells>exponential</placeCells>
-				<numHDLayers>4</numHDLayers>
+				<numHDLayers>5</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
 				<numIntentions>8</numIntentions>
@@ -92,18 +91,17 @@
 				<discountFactor>1</discountFactor>
 				<alpha>0.8</alpha>
 				<initialValue>0</initialValue>
-				<flashingReward>10000</flashingReward>
+				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>1000</explorationReward>
+				<explorationReward>200</explorationReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
-				<explorationHalfLifeVal>.5</explorationHalfLifeVal>
+				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<proportionalQL>true</proportionalQL>
 				<xmin>-.5</xmin>
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
-				<closeToFoodThrs>0.1</closeToFoodThrs>
-				<maxActionsSinceForward>5</maxActionsSinceForward>
+				<maxActionsSinceForward>20</maxActionsSinceForward>
 				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
 		</subject>
@@ -114,10 +112,16 @@
 	</group>
 	
 	<beforeTasks>
-		<task>
+		<!-- <task>
 			<name>edu.usf.experiment.task.EnableRandomFeeders</name>
 			<params>
-				<numFeeders>3</numFeeders>
+				<numFeeders>2</numFeeders>
+			</params>
+		</task> -->
+		<task>
+			<name>edu.usf.experiment.task.EnableFeeders</name>
+			<params>
+				<feeders>2,6,0</feeders>
 			</params>
 		</task>
 	</beforeTasks>
@@ -187,13 +191,13 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>15000</max>
+						<max>45000</max>
 					</params>
 				</condition>
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
 					<params>
-						<n>1000</n>
+						<n>100</n>
 					</params>
 				</condition>
 			</stopConditions>
