@@ -33,10 +33,10 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 
 	public FlashingTaxicFoodFinderSchema(String nslName, NslModule nslParent,
 			Subject subject, LocalizableRobot robot, float maxReward,
-			float closeToFoodThrs, float minAngle) {
+			float minAngle) {
 		super(nslName, nslParent);
 		this.maxReward = maxReward;
-		this.forwardBias = minAngle/2;
+		this.forwardBias = minAngle/4;
 
 		goalFeeder = new NslDinInt0(this, "goalFeeder");
 		votes = new NslDoutFloat1(this, "votes", subject
@@ -76,7 +76,9 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 						value = (float) (maxReward * (1 - (Math.max(angleDiff - forwardBias, 0)) / Math.PI));
 					}
 				} else if (af instanceof EatAffordance) {
-					value = maxReward;
+					if (robot.seesFlashingFeeder()){
+						value = maxReward;
+					}
 				} else
 					throw new RuntimeException("Affordance "
 							+ af.getClass().getName() + " not supported by robot");

@@ -33,11 +33,10 @@ public class TaxicFoodFinderSchema extends NslModule {
 	private LocalizableRobot robot;
 
 	public TaxicFoodFinderSchema(String nslName, NslModule nslParent,
-			Subject subject, LocalizableRobot robot, float maxReward,
-			float closeToFoodThrs, float minAngle) {
+			Subject subject, LocalizableRobot robot, float maxReward, float minAngle) {
 		super(nslName, nslParent);
 		this.maxReward = maxReward;
-		this.forwardBias = minAngle;
+		this.forwardBias = minAngle/2;
 
 		goalFeeder = new NslDinInt0(this, "goalFeeder");
 		votes = new NslDoutFloat1(this, "votes", subject
@@ -62,17 +61,18 @@ public class TaxicFoodFinderSchema extends NslModule {
 			float value = 0;
 			if(af.isRealizable()){
 				if (af instanceof TurnAffordance) {
-					if (robot.seesFeeder()){
+					if (robot.seesFeeder() && !robot.seesFlashingFeeder()){
 						TurnAffordance ta = (TurnAffordance) af;
 						value = valAfterRot(ta.getAngle(), goalFeeder.get());
 
 					}
 				} else if (af instanceof ForwardAffordance){
-					if (robot.seesFeeder()){
+					if (robot.seesFeeder() && !robot.seesFlashingFeeder()){
 						value = valAfterRot(0, goalFeeder.get());
 					}
 				} else if (af instanceof EatAffordance) {
-					value = maxReward;
+					if (!robot.seesFlashingFeeder())
+						value = maxReward;
 				} else
 					throw new RuntimeException("Affordance "
 							+ af.getClass().getName() + " not supported by robot");
