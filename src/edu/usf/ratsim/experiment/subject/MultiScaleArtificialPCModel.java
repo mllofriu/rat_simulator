@@ -25,6 +25,7 @@ import edu.usf.ratsim.nsl.modules.Intention;
 import edu.usf.ratsim.nsl.modules.JointStatesManyConcatenate;
 import edu.usf.ratsim.nsl.modules.JointStatesManyMultiply;
 import edu.usf.ratsim.nsl.modules.JointStatesManySum;
+import edu.usf.ratsim.nsl.modules.LastAteGoalDecider;
 import edu.usf.ratsim.nsl.modules.LastAteIntention;
 import edu.usf.ratsim.nsl.modules.NoIntention;
 import edu.usf.ratsim.nsl.modules.PlaceIntention;
@@ -82,7 +83,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	private int numPCLayers;
 	private LinkedList<PlaceIntention> beforePI;
 	private LinkedList<PlaceIntention> afterPI;
-	private FlashingOrAnyGoalDecider anyGoalDecider;
+	private LastAteGoalDecider anyGoalDecider;
 	private int numHDLayers;
 	private List<ArtificialHDCellLayer> afterHDs;
 	private LinkedList<ArtificialHDCellLayer> beforeHDs;
@@ -136,7 +137,6 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		float ymin = params.getChildFloat("ymin");
 		float xmax = params.getChildFloat("xmax");
 		float ymax = params.getChildFloat("ymax");
-		float closeToFoodThrs = params.getChildFloat("closeToFoodThrs");
 		proportionalQl = params.getChildBoolean("proportionalQL");
 		int maxActionsSinceForward = params
 				.getChildInt("maxActionsSinceForward");
@@ -157,8 +157,8 @@ public class MultiScaleArtificialPCModel extends NslModel {
 
 		// beforeActiveGoalDecider = new ActiveGoalDecider(
 		// BEFORE_ACTIVE_GOAL_DECIDER_STR, this);
-		anyGoalDecider = new FlashingOrAnyGoalDecider(BEFORE_GOAL_DECIDER_STR,
-				this, subject, numIntentions);
+		anyGoalDecider = new LastAteGoalDecider(BEFORE_GOAL_DECIDER_STR,
+				this, subject);
 
 		if (numIntentions > 1)
 			intention = new LastAteIntention(BEFORE_INTENTION_STR, this,
@@ -225,12 +225,10 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
 		new TaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, subject,
-				lRobot, nonFlashingReward, closeToFoodThrs,
-				subject.getMinAngle());
+				lRobot, nonFlashingReward, subject.getMinAngle());
 
 		new FlashingTaxicFoodFinderSchema(BEFORE_FLASHING_FOOD_FINDER_STR,
-				this, subject, lRobot, flashingReward, closeToFoodThrs,
-				subject.getMinAngle());
+				this, subject, lRobot, flashingReward, subject.getMinAngle());
 
 		exploration.add(new DecayingExplorationSchema(BEFORE_EXPLORATION, this,
 				subject, lRobot, explorationReward, explorationHalfLifeVal));
@@ -261,8 +259,8 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// Second goal deciders after the robot has moved
 		// afterActiveGoalDecider = new ActiveGoalDecider(
 		// AFTER_ACTIVE_GOAL_DECIDER_STR, this, universe);
-		anyGoalDecider = new FlashingOrAnyGoalDecider(AFTER_GOAL_DECIDER_STR,
-				this, subject, numIntentions);
+		anyGoalDecider = new LastAteGoalDecider(AFTER_GOAL_DECIDER_STR,
+				this, subject);
 
 		if (numIntentions > 1)
 			new LastAteIntention(AFTER_INTENTION_STR, this, numIntentions);
@@ -321,11 +319,10 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// new GeneralTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
 		new TaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, subject, lRobot,
-				nonFlashingReward, closeToFoodThrs, subject.getMinAngle());
+				nonFlashingReward, subject.getMinAngle());
 
 		new FlashingTaxicFoodFinderSchema(AFTER_FLASHING_FOOD_FINDER_STR, this,
-				subject, lRobot, flashingReward, closeToFoodThrs,
-				subject.getMinAngle());
+				subject, lRobot, flashingReward, subject.getMinAngle());
 
 		// Wall following for obst. avoidance
 		new WallAvoider(AFTER_WALLAVOID_STR, this, subject, wallFollowingVal,
