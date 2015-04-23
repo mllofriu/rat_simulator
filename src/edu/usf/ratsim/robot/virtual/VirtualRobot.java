@@ -17,6 +17,7 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.utils.Debug;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.support.GeomUtils;
@@ -72,6 +73,8 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public void eat() {
+		if (Debug.printRobotAte)
+			System.out.println("Robot ate");
 		universe.robotEat();
 	}
 	
@@ -148,6 +151,8 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public boolean seesFlashingFeeder() {
+//		if(getFlashingFeeder() != null)
+//			System.out.println("Seeing flashing feeder");
 		return getFlashingFeeder() != null;
 	}
 

@@ -167,6 +167,11 @@ public class MultiScaleArtificialPCSubject extends Subject {
 			int intention) {
 		return model.getHypotheticAction(pos, theta, getPossibleAffordances(), intention);
 	}
+
+	@Override
+	public int getFeedingFeeder() {
+		return getRobot().getClosestFeeder(-1).id;
+	}
 	
 	
 
