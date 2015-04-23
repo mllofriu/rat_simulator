@@ -51,28 +51,30 @@ public class DecayingExplorationSchema extends NslModule {
 
 	public void simRun() {
 		votes.set(0);
-		
+
 		// Flashing feeder prevents exploration
-//		if (!robot.seesFlashingFeeder()){
-			double explorationValue = maxReward * Math.exp(-episodeCount * alpha);
-			List<Affordance> affs = robot.checkAffordances(subject
-					.getPossibleAffordances());
-	
-			if (lastPicked != null && lastPicked instanceof TurnAffordance)
-				affs = removeOtherTurns(affs, (TurnAffordance) lastPicked);
-	
-			Affordance pickedAffordance;
-			do {
-				pickedAffordance = affs.get(r.nextInt(affs.size()));
-			} while (!pickedAffordance.isRealizable());
-	
-			votes.set(pickedAffordance.getIndex(), explorationValue);
-	
-			lastPicked = pickedAffordance;
-//		}
+		// if (!robot.seesFlashingFeeder()){
+		double explorationValue = maxReward * Math.exp(-episodeCount * alpha);
+		List<Affordance> affs = robot.checkAffordances(subject
+				.getPossibleAffordances());
+
+		// Avoid alternating rotations as exploration
+//		if (lastPicked != null && lastPicked instanceof TurnAffordance && turnRealizable(affs, (TurnAffordance)lastPicked))
+//			affs = removeOtherTurns(affs, (TurnAffordance) lastPicked);
+
+		Affordance pickedAffordance;
+		do {
+			pickedAffordance = affs.get(r.nextInt(affs.size()));
+		} while (!pickedAffordance.isRealizable());
+
+		votes.set(pickedAffordance.getIndex(), explorationValue);
+
+		lastPicked = pickedAffordance;
+		// }
 	}
 
-	private List<Affordance> removeOtherTurns(List<Affordance> affs, TurnAffordance turn) {
+	private List<Affordance> removeOtherTurns(List<Affordance> affs,
+			TurnAffordance turn) {
 		for (Iterator<Affordance> iter = affs.iterator(); iter.hasNext();) {
 			Affordance aff = iter.next();
 			if (aff instanceof TurnAffordance
