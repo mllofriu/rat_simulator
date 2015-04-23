@@ -24,7 +24,7 @@ public class FeederNode extends ExpUniverseNode {
 	private boolean flashing;
 	private Color3f flashingColor;
 	private Color3f normalColor;
-	private Color3f wantedColor;
+	private Color3f activeColor;
 	private Appearance app;
 	private boolean wanted;
 
@@ -34,37 +34,33 @@ public class FeederNode extends ExpUniverseNode {
 
 	class FlashThread implements Runnable {
 
+		private boolean lightsUp;
+
 		public void run() {
 			terminated = false;
+			lightsUp = false;
 			while (!terminated) {
-				if (flashing) {
-					try {
-						app.setColoringAttributes(new ColoringAttributes(
-								flashingColor, 1));
-						Thread.sleep(50);
-						if (!wanted)
-							app.setColoringAttributes(new ColoringAttributes(
-									normalColor, 1));
-						else {
-							app.setColoringAttributes(new ColoringAttributes(
-									wantedColor, 1));
-						}
-						if (flashing) {
-							Thread.sleep(50);
-							// System.out.println("flashing");
-						}
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-
+				if (flashing && !lightsUp) {
+					app.setColoringAttributes(new ColoringAttributes(
+							flashingColor, 1));
+					lightsUp = true;
+				} else if (!active) {
+					app.setColoringAttributes(new ColoringAttributes(
+							normalColor, 1));
+					lightsUp = false;
+				} else {
+					app.setColoringAttributes(new ColoringAttributes(
+							activeColor, 1));
+					lightsUp = false;
 				}
+
 				try {
-					Thread.sleep(50);
+					Thread.sleep(250);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+
 			}
 
 		}
@@ -76,11 +72,12 @@ public class FeederNode extends ExpUniverseNode {
 		flashing = false;
 		wanted = false;
 		hasFood = false;
+		
 
 		normalColor = new Color3f(params.getChildFloat("cr"),
 				params.getChildFloat("cg"), params.getChildFloat("cb"));
 		flashingColor = new Color3f(1f, 1f, 1f);
-		wantedColor = new Color3f(1f, .4f, 0f);
+		activeColor = new Color3f(1f, .4f, 0f);
 		float xp = params.getChildFloat("x");
 		float yp = params.getChildFloat("y");
 		float zp = params.getChildFloat("z");
@@ -106,17 +103,18 @@ public class FeederNode extends ExpUniverseNode {
 	public void setActive(boolean active) {
 		this.active = active;
 		// flashing = active;
+		if (!flashing)
+			if (!active)
+				app.setColoringAttributes(new ColoringAttributes(normalColor, 1));
+			else {
+				app.setColoringAttributes(new ColoringAttributes(activeColor, 1));
+			}
 	}
 
 	public void setWanted(boolean wanted) {
 		this.wanted = wanted;
 		// When flashing, just let the node do the work
-		if (!flashing)
-			if (!wanted)
-				app.setColoringAttributes(new ColoringAttributes(normalColor, 1));
-			else {
-				app.setColoringAttributes(new ColoringAttributes(wantedColor, 1));
-			}
+
 	}
 
 	public boolean isFlashing() {
