@@ -25,6 +25,7 @@ public class StillExplorer extends NslModule {
 	private Random r;
 	private NslDoutFloat1 votes;
 	private float stillExploringVal;
+	private int timeToExplore;
 
 	public StillExplorer(String nslName, NslModule nslParent,
 			int maxActionsSinceForward, Subject sub, float stillExploringVal) {
@@ -41,6 +42,7 @@ public class StillExplorer extends NslModule {
 
 		actionsSinceForward = 0;
 		r = new Random();
+		timeToExplore = 0;
 	}
 
 	public void simRun() {
@@ -55,7 +57,12 @@ public class StillExplorer extends NslModule {
 
 		// When the agent hasnt moved for a while, add exploring value to random
 		// action
-		if (actionsSinceForward > maxActionsSinceForward){
+		if (timeToExplore > 0 || actionsSinceForward > maxActionsSinceForward){
+			if (timeToExplore == 0)
+				timeToExplore = 20;
+			else
+				timeToExplore--;
+			
 			votes.set(r.nextInt(votes.getSize()), stillExploringVal);
 		}
 	}
