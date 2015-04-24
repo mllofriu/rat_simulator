@@ -25,17 +25,105 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>128</numMembers>
+		<numMembers>16</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
 				<step>.05</step>
 				<leftAngle>0.185</leftAngle>
 				<rightAngle>-0.185</rightAngle>
-				<numPCLayers>3</numPCLayers>
+				<numPCLayers>5</numPCLayers>
 				<numPCCellsPerLayer>100</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
-				<maxRadius>.3</maxRadius>
+				<maxRadius>.5</maxRadius>
+				<placeCells>exponential</placeCells>
+				<numHDLayers>5</numHDLayers>
+				<minHDCellsPerLayer>1</minHDCellsPerLayer>
+				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
+				<numIntentions>8</numIntentions>
+				<deterministicActionSelection>true</deterministicActionSelection>
+				<foodReward>10000</foodReward>
+				<nonFoodReward>0</nonFoodReward>
+				<discountFactor>1</discountFactor>
+				<alpha>0.8</alpha>
+				<initialValue>0</initialValue>
+				<flashingReward>5000</flashingReward>
+				<nonFlashingReward>1000</nonFlashingReward>
+				<explorationReward>200</explorationReward>
+				<wallAvoidingVal>0</wallAvoidingVal>
+				<explorationHalfLifeVal>1</explorationHalfLifeVal>
+				<proportionalQL>true</proportionalQL>
+				<xmin>-.5</xmin>
+				<ymin>-.5</ymin>
+				<xmax>.5</xmax>
+				<ymax>.5</ymax>
+				<maxActionsSinceForward>20</maxActionsSinceForward>
+				<stillExplorationVal>5000</stillExplorationVal>
+			</params>
+		</subject>
+		<params>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
+	<group>
+		<name>Dorsal</name>
+		<numMembers>16</numMembers>
+		<subject>
+			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
+			<params>
+				<step>.05</step>
+				<leftAngle>0.185</leftAngle>
+				<rightAngle>-0.185</rightAngle>
+				<numPCLayers>5</numPCLayers>
+				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<minRadius>.05</minRadius>
+				<maxRadius>.5</maxRadius>
+				<placeCells>exponential</placeCells>
+				<numHDLayers>5</numHDLayers>
+				<minHDCellsPerLayer>1</minHDCellsPerLayer>
+				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
+				<numIntentions>8</numIntentions>
+				<deterministicActionSelection>true</deterministicActionSelection>
+				<foodReward>10000</foodReward>
+				<nonFoodReward>0</nonFoodReward>
+				<discountFactor>1</discountFactor>
+				<alpha>0.8</alpha>
+				<initialValue>0</initialValue>
+				<flashingReward>5000</flashingReward>
+				<nonFlashingReward>1000</nonFlashingReward>
+				<explorationReward>200</explorationReward>
+				<wallAvoidingVal>0</wallAvoidingVal>
+				<explorationHalfLifeVal>1</explorationHalfLifeVal>
+				<proportionalQL>true</proportionalQL>
+				<xmin>-.5</xmin>
+				<ymin>-.5</ymin>
+				<xmax>.5</xmax>
+				<ymax>.5</ymax>
+				<maxActionsSinceForward>20</maxActionsSinceForward>
+				<stillExplorationVal>5000</stillExplorationVal>
+			</params>
+		</subject>
+		<params>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
+	<group>
+		<name>Ventral</name>
+		<numMembers>16</numMembers>
+		<subject>
+			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
+			<params>
+				<step>.05</step>
+				<leftAngle>0.185</leftAngle>
+				<rightAngle>-0.185</rightAngle>
+				<numPCLayers>5</numPCLayers>
+				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<minRadius>.05</minRadius>
+				<maxRadius>.5</maxRadius>
 				<placeCells>exponential</placeCells>
 				<numHDLayers>5</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
@@ -69,17 +157,17 @@
 	
 	<group>
 		<name>TimeoutControl</name>
-		<numMembers>128</numMembers>
+		<numMembers>16</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
 				<step>.05</step>
 				<leftAngle>0.185</leftAngle>
 				<rightAngle>-0.185</rightAngle>
-				<numPCLayers>3</numPCLayers>
+				<numPCLayers>5</numPCLayers>
 				<numPCCellsPerLayer>100</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
-				<maxRadius>.3</maxRadius>
+				<maxRadius>.5</maxRadius>
 				<placeCells>exponential</placeCells>
 				<numHDLayers>5</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
@@ -112,24 +200,26 @@
 	</group>
 	
 	<beforeTasks>
-		<!-- <task>
+		<task>
 			<name>edu.usf.experiment.task.EnableRandomFeeders</name>
 			<params>
-				<numFeeders>2</numFeeders>
+				<numFeeders>3</numFeeders>
 			</params>
-		</task> -->
-		<task>
+		</task> 
+		<!-- <task>
 			<name>edu.usf.experiment.task.EnableFeeders</name>
 			<params>
 				<feeders>2,6,0</feeders>
 			</params>
-		</task>
+		</task>-->
 	</beforeTasks>
 	
 	<trial>
 		<name>Training</name>
 		<groups>
 			<group>Control</group>
+			<group>Dorsal</group>
+			<group>Ventral</group>
 		</groups>
 		<beforeTasks>
 		</beforeTasks>
@@ -219,8 +309,24 @@
 		<groups>
 			<group>Control</group>
 			<group>TimeoutControl</group>
+			<group>Dorsal</group>
+			<group>Ventral</group>
 		</groups>
 		<beforeTasks>
+			<task>
+				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
+				<params>
+					<group>Dorsal</group>
+					<layers>0,1</layers>
+				</params>
+			</task>
+			<task>
+				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
+				<params>
+					<group>Ventral</group>
+					<layers>3,4</layers>
+				</params>
+			</task>
 		</beforeTasks>
 		<episodes>
 			<number>1</number>

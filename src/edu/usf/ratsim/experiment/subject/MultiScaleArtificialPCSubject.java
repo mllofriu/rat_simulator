@@ -170,7 +170,15 @@ public class MultiScaleArtificialPCSubject extends Subject {
 
 	@Override
 	public int getFeedingFeeder() {
-		return getRobot().getClosestFeeder(-1).id;
+		if (getRobot().getClosestFeeder(-1) != null)
+			return getRobot().getClosestFeeder(-1).id;
+		else
+			return -1;
+	}
+
+	@Override
+	public void deactivateHPCLayers(LinkedList<Integer> indexList) {
+		model.deactivatePCL(indexList);
 	}
 	
 	
