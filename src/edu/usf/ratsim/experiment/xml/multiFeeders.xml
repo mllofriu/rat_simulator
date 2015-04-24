@@ -25,7 +25,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>16</numMembers>
+		<numMembers>128</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
@@ -69,7 +69,7 @@
 	
 	<group>
 		<name>TimeoutControl</name>
-		<numMembers>16</numMembers>
+		<numMembers>128</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>

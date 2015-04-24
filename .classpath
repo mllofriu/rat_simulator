@@ -21,8 +21,8 @@
 	<classpathentry kind="lib" path="deps/j3dport/vecmath.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/experiment"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/nslj"/>
 	<classpathentry kind="lib" path="deps/tcljava1.4.1/jacl.jar"/>
 	<classpathentry kind="lib" path="deps/tcljava1.4.1/tcljava.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/nslj"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
