@@ -4,8 +4,8 @@ import java.util.Random;
 
 import nslj.src.lang.NslDoutInt0;
 import nslj.src.lang.NslModule;
-import edu.usf.experiment.robot.Landmark;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.Debug;
 
 /**
@@ -54,15 +54,15 @@ public class FlashingOrAnyGoalDecider extends NslModule {
 		// TODO: why do we need the second term?
 		if (subject.hasEaten() || subject.hasTriedToEat()) {
 			lastFeeder = currentGoal;
-			Landmark newFeeder = subject.getRobot().getClosestFeeder(lastFeeder);
+			Feeder newFeeder = subject.getRobot().getClosestFeeder(lastFeeder);
 			if (newFeeder == null)
 				currentGoal = -1;
 			else
-				currentGoal = newFeeder.id;
+				currentGoal = newFeeder.getId();
 		}
 
 		if (subject.getRobot().seesFlashingFeeder()) {
-			currentGoal = subject.getRobot().getFlashingFeeder().id;
+			currentGoal = subject.getRobot().getFlashingFeeder().getId();
 		}
 
 		goalFeeder.set(currentGoal);

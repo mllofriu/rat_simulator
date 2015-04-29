@@ -3,6 +3,7 @@ package edu.usf.ratsim.nsl.modules;
 import java.util.List;
 import java.util.Random;
 
+import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 
 import nslj.src.lang.NslDinInt0;
@@ -23,28 +24,23 @@ public class TaxicFoodFinderSchema extends NslModule {
 	public NslDinInt0 goalFeeder;
 	public NslDoutFloat1 votes;
 	private float maxReward;
-	private Random r;
-
-	private int repCount;
-
-	private double alpha;
 
 	private Subject subject;
 	private LocalizableRobot robot;
 
+	// If previous execution tried to eat, no reward is expected - the
+	// individual is fixated in the feeder
+
 	public TaxicFoodFinderSchema(String nslName, NslModule nslParent,
-			Subject subject, LocalizableRobot robot, float maxReward, float minAngle) {
+			Subject subject, LocalizableRobot robot, float maxReward,
+			float minAngle) {
 		super(nslName, nslParent);
 		this.maxReward = maxReward;
-		this.forwardBias = minAngle/2;
+		this.forwardBias = minAngle / 2;
 
 		goalFeeder = new NslDinInt0(this, "goalFeeder");
 		votes = new NslDoutFloat1(this, "votes", subject
 				.getPossibleAffordances().size());
-
-		r = new Random();
-
-		repCount = 0;
 
 		this.subject = subject;
 		this.robot = robot;
@@ -59,25 +55,52 @@ public class TaxicFoodFinderSchema extends NslModule {
 		int voteIndex = 0;
 		for (Affordance af : affs) {
 			float value = 0;
-			if(af.isRealizable()){
+			if (af.isRealizable()) {
 				if (af instanceof TurnAffordance) {
-					if (robot.seesFeeder() && !robot.seesFlashingFeeder()){
+					if (!subject.hasTriedToEat()
+							&& !subject.getRobot().isFeederClose()
+							&& robot.seesFeeder()
+							&& !robot.seesFlashingFeeder()) {
 						TurnAffordance ta = (TurnAffordance) af;
 						value = valAfterRot(ta.getAngle(), goalFeeder.get());
 
-					}
-				} else if (af instanceof ForwardAffordance){
-					if (robot.seesFeeder() && !robot.seesFlashingFeeder()){
+					} else if (subject.hasTriedToEat())
+						if (!subject.hasEaten())
+							value = -maxReward;
+				} else if (af instanceof ForwardAffordance) {
+					if (!subject.hasTriedToEat()
+							&& !subject.getRobot().isFeederClose()
+							&& robot.seesFeeder()
+							&& !robot.seesFlashingFeeder()) {
 						value = valAfterRot(0, goalFeeder.get());
-					}
+					} else if (subject.hasTriedToEat())
+						if (!subject.hasEaten())
+							value = -maxReward;
 				} else if (af instanceof EatAffordance) {
-					if (!robot.seesFlashingFeeder())
+					// If not feeding from the last tried feeder
+					// Once tried to eat from it, goal feeder will change and
+					// reward will no longer be predicted
+					// like dopamine decay after expected reward not appearing
+					// goalFeeder will regulate this
+					if (!subject.hasTriedToEat()
+							&& subject.getRobot().getClosestFeeder().getId() != goalFeeder
+									.get()
+							&& subject.getRobot().isFeederClose()
+							&& !robot.seesFlashingFeeder()) {
 						value = maxReward;
+					} else if (subject.hasTriedToEat())
+						if (!subject.hasEaten())
+							value = -maxReward;
+					// else if (subject.getRobot().getClosestFeeder().getId() ==
+					// goalFeeder
+					// .get())
+					// value = -maxReward;
 				} else
 					throw new RuntimeException("Affordance "
-							+ af.getClass().getName() + " not supported by robot");
+							+ af.getClass().getName()
+							+ " not supported by robot");
 			}
-			
+
 			votes.set(voteIndex, value);
 			voteIndex++;
 		}
@@ -86,17 +109,18 @@ public class TaxicFoodFinderSchema extends NslModule {
 
 	private float valAfterRot(float angle, int except) {
 		float val = 0;
-		for (Feeder f : robot.getFeeders(except)){
+		for (Feeder f : robot.getFeeders(except)) {
 			Quat4f rotToFood = GeomUtils.angleToPoint(f.getPosition());
-			
+
 			Quat4f actionAngle = GeomUtils.angleToRot(angle);
-			
-			float angleDiff = Math.abs(GeomUtils
-					.angleDiff(actionAngle, rotToFood));
-			
-			val += maxReward * (1 - (Math.max(angleDiff - forwardBias, 0)) / Math.PI);
+
+			float angleDiff = Math.abs(GeomUtils.angleDiff(actionAngle,
+					rotToFood));
+
+			val += maxReward
+					* (1 - (Math.max(angleDiff - forwardBias, 0)) / Math.PI);
 		}
-		
+
 		return val / robot.getFeeders(-1).size();
 	}
 

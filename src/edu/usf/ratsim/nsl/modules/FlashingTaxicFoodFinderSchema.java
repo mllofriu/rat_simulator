@@ -36,7 +36,7 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 			float minAngle) {
 		super(nslName, nslParent);
 		this.maxReward = maxReward;
-		this.forwardBias = minAngle/4;
+		this.forwardBias = minAngle / 4;
 
 		goalFeeder = new NslDinInt0(this, "goalFeeder");
 		votes = new NslDoutFloat1(this, "votes", subject
@@ -59,31 +59,36 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 		int voteIndex = 0;
 		for (Affordance af : affs) {
 			float value = 0;
-			if(af.isRealizable()){
+			if (af.isRealizable()) {
 				if (af instanceof TurnAffordance) {
-					if (robot.seesFlashingFeeder()){
+					if (robot.seesFlashingFeeder() && robot.getFlashingFeeder().getId() != goalFeeder.get()) {
 						TurnAffordance ta = (TurnAffordance) af;
 						float angleDiff = diffAfterRot(ta.getAngle());
 
 						value = (float) (maxReward * (1 - angleDiff / Math.PI));
 					}
-				} else if (af instanceof ForwardAffordance){
-					if (robot.seesFlashingFeeder()){
+				} else if (af instanceof ForwardAffordance) {
+					if (robot.seesFlashingFeeder() && robot.getFlashingFeeder().getId() != goalFeeder.get()) {
 						float angleDiff = diffAfterRot(0);
 
 						// Set the votes proportional to the error in heading
 						// Max heading error should be PI
-						value = (float) (maxReward * (1 - (Math.max(angleDiff - forwardBias, 0)) / Math.PI));
+						value = (float) (maxReward * (1 - (Math.max(angleDiff
+								- forwardBias, 0))
+								/ Math.PI));
 					}
 				} else if (af instanceof EatAffordance) {
-					if (robot.seesFlashingFeeder()){
+					if (robot.seesFlashingFeeder()
+							&& robot.getFlashingFeeder().getId() == robot
+									.getClosestFeeder().getId() && robot.getFlashingFeeder().getId() != goalFeeder.get()) {
 						value = maxReward;
 					}
 				} else
 					throw new RuntimeException("Affordance "
-							+ af.getClass().getName() + " not supported by robot");
+							+ af.getClass().getName()
+							+ " not supported by robot");
 			}
-			
+
 			votes.set(voteIndex, value);
 			voteIndex++;
 		}
@@ -91,12 +96,12 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 	}
 
 	private float diffAfterRot(float angle) {
-		Quat4f rotToFood = GeomUtils.angleToPoint(robot.getFlashingFeeder().location);
-		
+		Quat4f rotToFood = GeomUtils.angleToPoint(robot.getFlashingFeeder()
+				.getPosition());
+
 		Quat4f actionAngle = GeomUtils.angleToRot(angle);
-		
-		return Math.abs(GeomUtils
-				.angleDiff(actionAngle, rotToFood));
+
+		return Math.abs(GeomUtils.angleDiff(actionAngle, rotToFood));
 	}
 
 }

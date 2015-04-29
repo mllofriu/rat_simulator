@@ -23,13 +23,12 @@ public class LastAteGoalDecider extends NslModule {
 
 	public void simRun() {
 		if (sub.hasEaten()) {
-			currentGoal = sub.getFeedingFeeder();
+			currentGoal = sub.getRobot().getClosestFeeder().getId();
 		}
 
 		goalFeeder.set(currentGoal);
 		if (Debug.printActiveGoal)
-			System.out.println("Active GD: " + goalFeeder.get() + " "
-					+ currentGoal);
+			System.out.println("Last Ate GD: " + currentGoal);
 	}
 
 	public void newTrial() {

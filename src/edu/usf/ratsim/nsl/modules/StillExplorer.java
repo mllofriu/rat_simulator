@@ -7,6 +7,7 @@ import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 
 /**
@@ -30,7 +31,7 @@ public class StillExplorer extends NslModule {
 	public StillExplorer(String nslName, NslModule nslParent,
 			int maxActionsSinceForward, Subject sub, float stillExploringVal) {
 		super(nslName, nslParent);
-		
+
 		takenAction = new NslDinInt0(this, "takenAction");
 
 		votes = new NslDoutFloat1(this, "votes", sub.getPossibleAffordances()
@@ -48,22 +49,28 @@ public class StillExplorer extends NslModule {
 	public void simRun() {
 		votes.set(0);
 
-		Affordance taken = sub.getPossibleAffordances().get(takenAction.get());
-
-		if (taken instanceof ForwardAffordance)
-			actionsSinceForward = 0;
-		else
+		if (takenAction.get() != -1){
+			Affordance taken = sub.getPossibleAffordances().get(takenAction.get());
+	
+			if (taken instanceof ForwardAffordance)
+				actionsSinceForward = 0;
+			else
+				actionsSinceForward++;
+		} else 
 			actionsSinceForward++;
 
 		// When the agent hasnt moved for a while, add exploring value to random
 		// action
-		if (timeToExplore > 0 || actionsSinceForward > maxActionsSinceForward){
+		if (timeToExplore > 0 || actionsSinceForward > maxActionsSinceForward) {
 			if (timeToExplore == 0)
 				timeToExplore = 20;
 			else
 				timeToExplore--;
-			
-			votes.set(r.nextInt(votes.getSize()), stillExploringVal);
+			int selectedAction;
+			do {
+				selectedAction = r.nextInt(votes.getSize());
+			} while ((sub.getPossibleAffordances().get(selectedAction) instanceof EatAffordance));
+			votes.set(selectedAction, stillExploringVal);
 		}
 	}
 }

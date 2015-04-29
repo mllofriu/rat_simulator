@@ -65,7 +65,7 @@ public class DecayingExplorationSchema extends NslModule {
 		Affordance pickedAffordance;
 		do {
 			pickedAffordance = affs.get(r.nextInt(affs.size()));
-		} while (!pickedAffordance.isRealizable());
+		} while (!pickedAffordance.isRealizable() || (pickedAffordance instanceof EatAffordance));
 
 		votes.set(pickedAffordance.getIndex(), explorationValue);
 
@@ -91,6 +91,10 @@ public class DecayingExplorationSchema extends NslModule {
 
 	public void newTrial() {
 		episodeCount = 0;
+	}
+
+	public void setExplorationVal(float val) {
+		maxReward = val;
 	}
 
 }
