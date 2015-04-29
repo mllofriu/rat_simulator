@@ -115,12 +115,13 @@ public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 			// Do the update once for each state
 			for (int stateBefore = 0; stateBefore < numStates; stateBefore++)
 				// Dont bother if the activation is to small
-				if (statesBefore.get(stateBefore) > EPS)
+				if (statesBefore.get(stateBefore) > EPS && a != -1)
 					updateLastAction(stateBefore, a, maxExpectedR);
 		}
 	}
 
 	private void updateLastAction(int sBefore, int a, float maxERNextState) {
+		
 		float val = value.get(sBefore, a);
 		float delta;
 		// If eating cut the cycle - episodic ql

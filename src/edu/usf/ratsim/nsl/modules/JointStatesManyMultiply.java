@@ -6,6 +6,7 @@ import java.util.List;
 import nslj.src.lang.NslDinFloat1;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
+import edu.usf.experiment.utils.Debug;
 
 public class JointStatesManyMultiply extends NslModule {
 
@@ -13,7 +14,8 @@ public class JointStatesManyMultiply extends NslModule {
 	public List<NslDinFloat1> states;
 	public NslDoutFloat1 jointState;
 
-	public JointStatesManyMultiply(String nslName, NslModule nslParent, List<Integer> stateSizes) {
+	public JointStatesManyMultiply(String nslName, NslModule nslParent,
+			List<Integer> stateSizes) {
 		super(nslName, nslParent);
 
 		states = new LinkedList<NslDinFloat1>();
@@ -32,8 +34,19 @@ public class JointStatesManyMultiply extends NslModule {
 		// Iterate over all states
 
 		int jointStatesSize = jointState.getSize();
-		
-		for (int i = 0; i < jointStatesSize; i++) {
+
+		if (Debug.printJointMultiply) {
+			if (jointState.getSize() == 64) {
+				System.out.println("Multiply States");
+				for (NslDinFloat1 state : states) {
+					for (int i = 0; i < state.getSize(); i++)
+						System.out.print(state.get(i) + " ");
+					System.out.println();
+				}
+				System.out.println("End Multiply States");
+			}
+		}
+		for (int i = 0; i < jointStatesSize;) {
 			float jointActivation = 1;
 			int remainingSize = jointState.getSize();
 			boolean broke = false;
@@ -44,7 +57,7 @@ public class JointStatesManyMultiply extends NslModule {
 				float activation = state.get(index);
 
 				jointActivation *= activation;
-				
+
 				// If I see a zero activation, I can skip all states involving
 				// this one
 				// Optimiziation to speed up execution
@@ -56,32 +69,30 @@ public class JointStatesManyMultiply extends NslModule {
 				}
 			}
 
-			// Only update if not zero above at any point and breaked
+			// Only update if not zero above at any point and didnt brake
 			if (!broke) {
 				jointState.set(i, jointActivation);
-//				if (jointActivation > .5) {
-//					remainingSize = jointState.getSize();
-//					int j = 1;
-//					for (NslDinFloat1 state : states) {
-//						remainingSize /= state.getSize();
-//						int index = (i / remainingSize) % state.getSize();
-//						System.out.print("State " + j++ + ": " + index
-//								+ " Activ: " + state.get(index) + "\t");
-//					}
-//					System.out.print("Activation: " + jointActivation);
-//					System.out.println();
-//				}
+				i++;
 			}
 
 		}
+
+		if (Debug.printJointMultiply)
+			if (jointState.getSize() == 64) {
+				System.out.println("Multiply States Joint");
+				for (int i = 0; i < jointState.getSize(); i++)
+					System.out.print(jointState.get(i) + " ");
+				System.out.println();
+				System.out.println("End Multiply States Joint");
+			}
 	}
 
 	@Override
 	protected void finalize() {
 		// TODO Auto-generated method stub
 		super.finalize();
-		
-//		System.out.println("Finalized JointStates");
+
+		// System.out.println("Finalized JointStates");
 	}
 
 	public int getSize() {

@@ -16,6 +16,8 @@ import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.ratsim.nsl.modules.ArtificialFeederCell;
+import edu.usf.ratsim.nsl.modules.ArtificialFeederCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialHDCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.DecayingExplorationSchema;
@@ -27,6 +29,7 @@ import edu.usf.ratsim.nsl.modules.JointStatesManyMultiply;
 import edu.usf.ratsim.nsl.modules.JointStatesManySum;
 import edu.usf.ratsim.nsl.modules.LastAteGoalDecider;
 import edu.usf.ratsim.nsl.modules.LastAteIntention;
+import edu.usf.ratsim.nsl.modules.LastTriedToEatGoalDecider;
 import edu.usf.ratsim.nsl.modules.NoIntention;
 import edu.usf.ratsim.nsl.modules.PlaceIntention;
 import edu.usf.ratsim.nsl.modules.StillExplorer;
@@ -53,8 +56,8 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	private static final String QL_STR = "NQL";
 	private static final String TAKEN_ACTION_STR = "TA";
 	private static final String REWARD_STR = "R";
-	private static final String BEFORE_GOAL_DECIDER_STR = "BANYGD";
-	private static final String AFTER_GOAL_DECIDER_STR = "AANYGD";
+	private static final String BEFORE_LASTATE_GOAL_DECIDER_STR = "BANYGD";
+	private static final String AFTER_LASTATE_GOAL_DECIDER_STR = "AANYGD";
 	private static final String AFTER_PLACE_INTENTION_STR = "API";
 	private static final String BEFORE_PLACE_INTENTION_STR = "BPI";
 	private static final String BEFORE_WALLAVOID_STR = "B_WALL_AVOID";
@@ -74,6 +77,10 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	private static final String AFTER_FLASHING_FOOD_FINDER_STR = "AFFF";
 	private static final String BEFORE_FLASHING_FOOD_FINDER_STR = "BFFF";
 	private static final String BEFORE_STILL_EXPLORATION = "BSE";
+	private static final String BEFORE_LASTTRIEDTOEAT_GOAL_DECIDER_STR = "BLTTEGD";
+	private static final String AFTER_LASTTRIEDTOEAT_GOAL_DECIDER_STR = "ALTTEGD";
+	private static final String BEFORE_FEEDER_CELL_LAYER = "BFCL";
+	private static final String AFTER_FEEDER_CELL_LAYER = "AFCL";
 
 	private List<ArtificialPlaceCellLayer> beforePcls;
 	private List<QLAlgorithm> qLUpdVal;
@@ -83,7 +90,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	private int numPCLayers;
 	private LinkedList<PlaceIntention> beforePI;
 	private LinkedList<PlaceIntention> afterPI;
-	private LastAteGoalDecider anyGoalDecider;
+	private LastAteGoalDecider lastAteGoalDecider;
 	private int numHDLayers;
 	private List<ArtificialHDCellLayer> afterHDs;
 	private LinkedList<ArtificialHDCellLayer> beforeHDs;
@@ -157,8 +164,9 @@ public class MultiScaleArtificialPCModel extends NslModel {
 
 		// beforeActiveGoalDecider = new ActiveGoalDecider(
 		// BEFORE_ACTIVE_GOAL_DECIDER_STR, this);
-		anyGoalDecider = new LastAteGoalDecider(BEFORE_GOAL_DECIDER_STR,
+		lastAteGoalDecider = new LastAteGoalDecider(BEFORE_LASTATE_GOAL_DECIDER_STR,
 				this, subject);
+		new LastTriedToEatGoalDecider(BEFORE_LASTTRIEDTOEAT_GOAL_DECIDER_STR, this, subject);
 
 		if (numIntentions > 1)
 			intention = new LastAteIntention(BEFORE_INTENTION_STR, this,
@@ -183,6 +191,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 			radius += (maxRadius - minRadius) / (numPCLayers - 1);
 		}
 
+		//TODO: seed?
 		beforeHDs = new LinkedList<ArtificialHDCellLayer>();
 		int numHDCells = minHDCellsPerLayer;
 		for (int i = 0; i < numHDLayers; i++) {
@@ -210,6 +219,17 @@ public class MultiScaleArtificialPCModel extends NslModel {
 
 			}
 
+		// Add feeder cells
+		// TODO: pcl seed?
+		new ArtificialFeederCellLayer(BEFORE_FEEDER_CELL_LAYER, this, lRobot, numIntentions, pclSeed);
+		List<Integer> statesSizes = new LinkedList<Integer>();
+		statesSizes.add(numIntentions);
+		statesSizes.add(numIntentions);
+		JointStatesManyMultiply jStates = new JointStatesManyMultiply(
+				BEFORE_PIHD + (numPCLayers * numHDLayers), this, statesSizes);
+		jStateList.add(jStates);
+		bpihdSizes.add(jStates.getSize());
+		
 		// Concatenate all layers
 		bAll = new JointStatesManyConcatenate(BEFORE_CONCAT, this, bpihdSizes);
 
@@ -248,7 +268,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// One vote per layer (one now) + taxic + wf
 		if (deterministic) {
 			actionPerformer = new NoExploration(ACTION_PERFORMER_STR, this,
-					subject, 1 + 2);
+					subject, 4);
 		}
 		// else {
 		// new ProportionalExplorer(ACTION_PERFORMER_STR, this, subject, 1 + 2);
@@ -259,8 +279,9 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// Second goal deciders after the robot has moved
 		// afterActiveGoalDecider = new ActiveGoalDecider(
 		// AFTER_ACTIVE_GOAL_DECIDER_STR, this, universe);
-		anyGoalDecider = new LastAteGoalDecider(AFTER_GOAL_DECIDER_STR,
+		lastAteGoalDecider = new LastAteGoalDecider(AFTER_LASTATE_GOAL_DECIDER_STR,
 				this, subject);
+		new LastTriedToEatGoalDecider(AFTER_LASTTRIEDTOEAT_GOAL_DECIDER_STR, this, subject);
 
 		if (numIntentions > 1)
 			new LastAteIntention(AFTER_INTENTION_STR, this, numIntentions);
@@ -295,15 +316,27 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				// + (i * numHDLayers + j), this, universe, afterPcls.get(
 				// i).getSize()
 				// * numIntentions, afterHDs.get(j).getSize());
-				List<Integer> statesSizes = new LinkedList<Integer>();
+				statesSizes = new LinkedList<Integer>();
 				statesSizes.add(numIntentions);
 				statesSizes.add(afterHDs.get(j).getSize());
 				statesSizes.add(afterPcls.get(i).getSize());
-				JointStatesManyMultiply jStates = new JointStatesManyMultiply(
+				jStates = new JointStatesManyMultiply(
 						AFTER_PIHD + (i * numHDLayers + j), this, statesSizes);
 				apihdSizes.add(jStates.getSize());
 
 			}
+		
+		// Add feeder cells
+		// TODO: pcl seed?
+		new ArtificialFeederCellLayer(AFTER_FEEDER_CELL_LAYER, this, lRobot, numIntentions, pclSeed);
+		statesSizes = new LinkedList<Integer>();
+		statesSizes.add(numIntentions);
+		statesSizes.add(numIntentions);
+		jStates = new JointStatesManyMultiply(
+				AFTER_PIHD + (numPCLayers * numHDLayers), this, statesSizes);
+		jStateList.add(jStates);
+		apihdSizes.add(jStates.getSize());
+		
 		JointStatesManyConcatenate aAll = new JointStatesManyConcatenate(
 				AFTER_CONCAT, this, apihdSizes);
 
@@ -328,11 +361,11 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		new WallAvoider(AFTER_WALLAVOID_STR, this, subject, wallFollowingVal,
 				numActions);
 
-		exploration.add(new DecayingExplorationSchema(AFTER_EXPLORATION, this,
-				subject, lRobot, explorationReward, explorationHalfLifeVal));
+//		exploration.add(new DecayingExplorationSchema(AFTER_EXPLORATION, this,
+//				subject, lRobot, explorationReward, explorationHalfLifeVal));
 
 		// Three joint states - QL Votes, Taxic, WallAvoider
-		new JointStatesManySum(AFTER_JOINT_VOTES, this, 5, numActions);
+		new JointStatesManySum(AFTER_JOINT_VOTES, this, 6, numActions);
 
 		if (proportionalQl) {
 			// MultiStateProportionalQLReplay mspql = new
@@ -355,11 +388,15 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	}
 
 	public void makeConn() {
-		// Connect anygoal to taxic bh
-		nslConnect(getChild(BEFORE_GOAL_DECIDER_STR), "goalFeeder",
+		// Connect tried to eat to taxic bh
+		nslConnect(getChild(BEFORE_LASTTRIEDTOEAT_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(BEFORE_FOOD_FINDER_STR), "goalFeeder");
-		nslConnect(getChild(AFTER_GOAL_DECIDER_STR), "goalFeeder",
+		nslConnect(getChild(AFTER_LASTTRIEDTOEAT_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(AFTER_FOOD_FINDER_STR), "goalFeeder");
+		nslConnect(getChild(BEFORE_LASTATE_GOAL_DECIDER_STR), "goalFeeder",
+				getChild(BEFORE_FLASHING_FOOD_FINDER_STR), "goalFeeder");
+		nslConnect(getChild(AFTER_LASTATE_GOAL_DECIDER_STR), "goalFeeder",
+				getChild(AFTER_FLASHING_FOOD_FINDER_STR), "goalFeeder");
 		// Connect taxic behaviors to vote_adder
 		nslConnect(getChild(BEFORE_FOOD_FINDER_STR), "votes",
 				getChild(BEFORE_JOINT_VOTES), "state" + 0);
@@ -377,12 +414,15 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				getChild(AFTER_JOINT_VOTES), "state" + 1);
 		nslConnect(getChild(AFTER_WALLAVOID_STR), "votes",
 				getChild(AFTER_JOINT_VOTES), "state" + 2);
-		nslConnect(getChild(AFTER_EXPLORATION), "votes",
+		// BEFORE exploration is connected to after votes to nullify value estimation
+		nslConnect(getChild(BEFORE_EXPLORATION), "votes",
 				getChild(AFTER_JOINT_VOTES), "state" + 4);
+		nslConnect(getChild(BEFORE_STILL_EXPLORATION), "votes",
+				getChild(AFTER_JOINT_VOTES), "state" + 5);
 		// Connect active goal to intention
-		nslConnect(getChild(BEFORE_GOAL_DECIDER_STR), "goalFeeder",
+		nslConnect(getChild(BEFORE_LASTATE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(BEFORE_INTENTION_STR), "goalFeeder");
-		nslConnect(getChild(AFTER_GOAL_DECIDER_STR), "goalFeeder",
+		nslConnect(getChild(AFTER_LASTATE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(AFTER_INTENTION_STR), "goalFeeder");
 
 		// Build intention hd place layers
@@ -404,11 +444,26 @@ public class MultiScaleArtificialPCModel extends NslModel {
 						getChild(AFTER_PIHD + (i * numHDLayers + j)), "state1");
 				nslConnect(getChild(AFTER_HD_LAYER_STR + j), "activation",
 						getChild(AFTER_PIHD + (i * numHDLayers + j)), "state2");
-				this.nslConnect(getChild(AFTER_PIHD + (i * numHDLayers + j)),
+				nslConnect(getChild(AFTER_PIHD + (i * numHDLayers + j)),
 						"jointState", getChild(AFTER_CONCAT), "state"
 								+ (i * numHDLayers + j));
 
 			}
+		
+		nslConnect(getChild(BEFORE_FEEDER_CELL_LAYER), "activation",
+				getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)), "state1");
+		nslConnect(getChild(BEFORE_INTENTION_STR), "intention",
+				getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)), "state2");
+		nslConnect(getChild(AFTER_FEEDER_CELL_LAYER), "activation",
+				getChild(AFTER_PIHD + (numPCLayers * numHDLayers)), "state1");
+		nslConnect(getChild(AFTER_INTENTION_STR), "intention",
+				getChild(AFTER_PIHD + (numPCLayers * numHDLayers)), "state2");
+		nslConnect(getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)),
+				"jointState", getChild(BEFORE_CONCAT), "state"
+						+ (numPCLayers * numHDLayers));
+		nslConnect(getChild(AFTER_PIHD + (numPCLayers * numHDLayers)),
+				"jointState", getChild(AFTER_CONCAT), "state"
+						+ (numPCLayers * numHDLayers));
 
 		// Connect the joint states to the QL system
 		nslConnect(getChild(BEFORE_CONCAT), "jointState",
@@ -442,9 +497,13 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// "actionVotesBefore");
 		//
 		if (proportionalQl) {
-			nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes",
+//			nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes",
+//					getChild(QL_STR), "actionVotesAfter");
+//			nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes",
+//					getChild(QL_STR), "actionVotesBefore");
+			nslConnect(getChild(AFTER_JOINT_VOTES), "jointState",
 					getChild(QL_STR), "actionVotesAfter");
-			nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes",
+			nslConnect(getChild(BEFORE_JOINT_VOTES), "jointState",
 					getChild(QL_STR), "actionVotesBefore");
 		}
 		// nslConnect(getChild(AFTER_JOINT_VOTES), "jointState",
@@ -531,7 +590,8 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		intention.simRun(inte);
 
 		for (ArtificialPlaceCellLayer pcl : beforePcls)
-			pcl.simRun(pos);
+			// TODO: add feeder cells to policies
+			pcl.simRun(pos, false);
 		for (ArtificialHDCellLayer hdcl : beforeHDs)
 			hdcl.simRun(theta);
 
@@ -556,5 +616,11 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		Affordance picked = affs.get(maxIndex);
 		picked.setValue(max);
 		return picked;
+	}
+
+	public void setExplorationVal(float val) {
+		for (DecayingExplorationSchema e : exploration)
+			e.setExplorationVal(val);
+			
 	}
 }

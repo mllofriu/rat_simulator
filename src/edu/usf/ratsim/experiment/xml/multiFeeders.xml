@@ -5,9 +5,9 @@
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
-			<closeToFoodThrs>0.1</closeToFoodThrs>
+			<closeToFoodThrs>0.15</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
-			<display>false</display>
+			<display>true</display>
 			<sleep>10</sleep>
 		</params>
 	</universe>
@@ -25,7 +25,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>16</numMembers>
+		<numMembers>64</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
@@ -42,14 +42,14 @@
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
 				<numIntentions>8</numIntentions>
 				<deterministicActionSelection>true</deterministicActionSelection>
-				<foodReward>10000</foodReward>
+				<foodReward>100000</foodReward>
 				<nonFoodReward>0</nonFoodReward>
 				<discountFactor>1</discountFactor>
 				<alpha>0.8</alpha>
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>200</explorationReward>
+				<explorationReward>500</explorationReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<proportionalQL>true</proportionalQL>
@@ -69,7 +69,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>16</numMembers>
+		<numMembers>64</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
@@ -113,7 +113,7 @@
 	
 	<group>
 		<name>Ventral</name>
-		<numMembers>16</numMembers>
+		<numMembers>64</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
@@ -157,7 +157,7 @@
 	
 	<group>
 		<name>TimeoutControl</name>
-		<numMembers>16</numMembers>
+		<numMembers>64</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
@@ -201,9 +201,8 @@
 	
 	<beforeTasks>
 		<task>
-			<name>edu.usf.experiment.task.EnableRandomFeeders</name>
+			<name>edu.usf.experiment.task.EnableRandomFeedersTriangle</name>
 			<params>
-				<numFeeders>3</numFeeders>
 			</params>
 		</task> 
 		<!-- <task>
@@ -227,6 +226,11 @@
 			<number>1</number>
 			<beforeTasks>
 				<task>
+					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
+					<params>
+					</params>
+				</task>
+				<task>
 					<name>edu.usf.experiment.task.FlashActivateRandomFeeder</name>
 					<params>
 					</params>
@@ -246,10 +250,10 @@
 			</beforeCycleTasks>
 			<afterCycleTasks>
 				<task>
-					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+					<name>edu.usf.experiment.task.SwitchFlashingFeeder</name>
 				</task>
 				<task>
-					<name>edu.usf.experiment.task.SwitchFlashingFeeder</name>
+					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
 				</task>
 			</afterCycleTasks>
 			<loggers>
@@ -327,6 +331,10 @@
 					<layers>3,4</layers>
 				</params>
 			</task>
+			<task>
+				<name>edu.usf.experiment.task.DisableExploration</name>
+				<params></params>
+			</task>
 		</beforeTasks>
 		<episodes>
 			<number>1</number>
@@ -356,11 +364,12 @@
 			</beforeCycleTasks>
 			<afterCycleTasks>
 				<task>
-					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
-				</task>
-				<task>
 					<name>edu.usf.experiment.task.SwitchFeeder</name>
 				</task>
+				<task>
+					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+				</task>
+				
 			</afterCycleTasks>
 			<loggers>
 				<logger>
@@ -398,7 +407,7 @@
 					<name>edu.usf.experiment.condition.FoundNFoodNoMistakesStopCond</name>
 					<params>
 						<n>15</n>
-						<timeout>200</timeout>
+						<timeout>100</timeout>
 					</params>
 				</condition>
 			</stopConditions>

@@ -58,6 +58,7 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	@Override
 	public void stepCycle() {
 		setHasEaten(false);
+		clearTriedToEAt();
 		
 		scheduler.stepCycle();
 	}
@@ -122,12 +123,6 @@ public class MultiScaleArtificialPCSubject extends Subject {
 		NslHierarchy.nslSetSystem(system);
 	}
 
-	@Override
-	public boolean hasTriedToEat() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 
 	@Override
 	public void setPassiveMode(boolean b) {
@@ -169,18 +164,14 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	}
 
 	@Override
-	public int getFeedingFeeder() {
-		if (getRobot().getClosestFeeder(-1) != null)
-			return getRobot().getClosestFeeder(-1).id;
-		else
-			return -1;
-	}
-
-	@Override
 	public void deactivateHPCLayers(LinkedList<Integer> indexList) {
 		model.deactivatePCL(indexList);
 	}
-	
+
+	@Override
+	public void setExplorationVal(float val) {
+		model.setExplorationVal(val);
+	}
 	
 
 }
