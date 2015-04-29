@@ -23,6 +23,8 @@ import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.support.GeomUtils;
 
 public class VirtualRobot extends LocalizableRobot {
+	
+	private static final float ROBOT_LENGTH = .1f;
 
 	public VirtUniverse universe;
 
@@ -122,14 +124,16 @@ public class VirtualRobot extends LocalizableRobot {
 					t.setRotation(rRot);
 					t.transform(relFPos);
 					// Return the landmark
-					res.add(new Feeder(relFPos));
+					Feeder relFeeder = new Feeder(universe.getFeeder(i));
+					relFeeder.setPosition(relFPos);
+					res.add(relFeeder);
 				}
 
 		return res;
 	}
 
 	@Override
-	public edu.usf.experiment.robot.Landmark getFlashingFeeder() {
+	public Feeder getFlashingFeeder() {
 		for (Integer i : universe.getFeeders())
 			if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist) && universe.isFeederFlashing(i)) {
 				// Get relative position
@@ -143,8 +147,9 @@ public class VirtualRobot extends LocalizableRobot {
 				Transform3D t = new Transform3D();
 				t.setRotation(rRot);
 				t.transform(relFPos);
-				// Return the landmark
-				return new Landmark(i, relFPos);
+				Feeder relFeeder = new Feeder(universe.getFeeder(i));
+				relFeeder.setPosition(relFPos);
+				return relFeeder;
 			}
 		return null;
 	}
@@ -157,25 +162,25 @@ public class VirtualRobot extends LocalizableRobot {
 	}
 
 	@Override
-	public Landmark getClosestFeeder(int lastFeeder) {
-		List<Landmark> lms = getLandmarks(lastFeeder);
+	public Feeder getClosestFeeder(int lastFeeder) {
+		List<Feeder> feeders = getFeeders(lastFeeder);
 
-		if (lms.isEmpty())
+		if (feeders.isEmpty())
 			return null;
 		
-		Landmark closest = lms.get(0);
+		Feeder closest = feeders.get(0);
 		Point3f zero = new Point3f(0,0,0);
-		for (Landmark lm : lms)
-			if (lm.location.distance(zero) < closest.location.distance(zero))
-				closest = lm;
+		for (Feeder feeder : feeders)
+			if (feeder.getPosition().distance(zero) < closest.getPosition().distance(zero))
+				closest = feeder;
 		
 		return closest;
 	}
 
 	@Override
 	public boolean isFeederClose() {
-		Landmark lm = getClosestFeeder(-1);
-		return lm != null && lm.location.distance(new Point3f()) < closeThrs;
+		Feeder f = getClosestFeeder(-1);
+		return f != null && f.getPosition().distance(new Point3f()) < closeThrs;
 	}
 
 	@Override
@@ -195,7 +200,31 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public List<Affordance> checkAffordances(List<Affordance> affs){
-		return universe.getRobotAffordances(affs);
+		for (Affordance af : affs) {
+			boolean realizable;
+			if (af instanceof TurnAffordance) {
+				TurnAffordance ta = (TurnAffordance) af;
+				// Either it can move there, or it cannot move forward and the other angle is not an option
+				realizable = !universe.canRobotMove(0, ROBOT_LENGTH) 
+//						&& !canRobotMove(-ta.getAngle(), ROBOT_LENGTH))
+						|| universe.canRobotMove(ta.getAngle(), ROBOT_LENGTH);
+				// realizable = true;
+			} else if (af instanceof ForwardAffordance)
+				realizable = universe.canRobotMove(0, ROBOT_LENGTH);
+			else if (af instanceof EatAffordance)
+//				realizable = hasRobotFoundFood();
+				if (getClosestFeeder() != null)
+					realizable = getClosestFeeder().getPosition().distance(new Point3f()) < closeThrs;
+				else
+					realizable = false;
+			else
+				throw new RuntimeException("Affordance "
+						+ af.getClass().getName() + " not supported by robot");
+
+			af.setRealizable(realizable);
+		}
+
+		return affs;
 	}
 
 	@Override
@@ -213,9 +242,17 @@ public class VirtualRobot extends LocalizableRobot {
 		} else if (af instanceof ForwardAffordance)
 			forward(((ForwardAffordance)af).getDistance());
 		else if (af instanceof EatAffordance){
-			sub.setHasEaten(true);
 			// Updates food in universe
-			eat();
+			sub.setTriedToEat();
+			if (getClosestFeeder().hasFood()){
+				eat();
+				sub.setHasEaten(true);
+				if (Debug.printTryingToEat)
+					System.out.println("Ate from a feeder with food");
+			} else {
+				if (Debug.printTryingToEat)
+					System.out.println("Trying to eat from empty feeder");
+			}
 		} else
 			throw new RuntimeException("Affordance "
 					+ af.getClass().getName() + " not supported by robot");

@@ -45,7 +45,7 @@ import edu.usf.ratsim.support.XMLDocReader;
  */
 public class VirtUniverse extends Universe {
 
-	private static final float ROBOT_LENGTH = .1f;
+
 	private static VirtUniverse instance = null;
 	private View topView;
 	private RobotNode robotNode;
@@ -272,34 +272,6 @@ public class VirtUniverse extends Universe {
 		return (float) (2 * Math.acos(rot.w) * Math.signum(rot.z));
 	}
 
-	// public static void main(String[] args) {
-	// new VirtualExpUniverse();
-	// }
-
-	public List<Affordance> getRobotAffordances(List<Affordance> affs) {
-		for (Affordance af : affs) {
-			boolean realizable;
-			if (af instanceof TurnAffordance) {
-				TurnAffordance ta = (TurnAffordance) af;
-				// Either it can move there, or it cannot move forward and the other angle is not an option
-				realizable = !canRobotMove(0, ROBOT_LENGTH) 
-//						&& !canRobotMove(-ta.getAngle(), ROBOT_LENGTH))
-						|| canRobotMove(ta.getAngle(), ROBOT_LENGTH);
-				// realizable = true;
-			} else if (af instanceof ForwardAffordance)
-				realizable = canRobotMove(0, ROBOT_LENGTH);
-			else if (af instanceof EatAffordance)
-				realizable = hasRobotFoundFood();
-//				realizable = isRobotCloseToAFeeder();
-			else
-				throw new RuntimeException("Affordance "
-						+ af.getClass().getName() + " not supported by robot");
-
-			af.setRealizable(realizable);
-		}
-
-		return affs;
-	}
 
 	@Override
 	public void setActiveFeeder(int i, boolean val) {
