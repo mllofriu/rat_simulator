@@ -61,26 +61,30 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 			float value = 0;
 			if (af.isRealizable()) {
 				if (af instanceof TurnAffordance) {
-					if (robot.seesFlashingFeeder() && robot.getFlashingFeeder().getId() != goalFeeder.get()) {
+					if (robot.seesFlashingFeeder()
+							&& robot.getFlashingFeeder().getId() != goalFeeder
+									.get()) {
 						TurnAffordance ta = (TurnAffordance) af;
-						float angleDiff = diffAfterRot(ta.getAngle());
 
-						value = (float) (maxReward * (1 - angleDiff / Math.PI));
+						value = GeomUtils.getFeederReward(robot
+								.getFlashingFeeder().getPosition(), ta
+								.getAngle(), maxReward, subject, robot);
 					}
 				} else if (af instanceof ForwardAffordance) {
-					if (robot.seesFlashingFeeder() && robot.getFlashingFeeder().getId() != goalFeeder.get()) {
-						float angleDiff = diffAfterRot(0);
-
+					if (robot.seesFlashingFeeder()&& 
+							robot.getFlashingFeeder().getId() != goalFeeder
+									.get()) {
 						// Set the votes proportional to the error in heading
 						// Max heading error should be PI
-						value = (float) (maxReward * (1 - (Math.max(angleDiff
-								- forwardBias, 0))
-								/ Math.PI));
+						value = GeomUtils.getFeederReward(robot
+								.getFlashingFeeder().getPosition(), 0, maxReward, subject, robot);
 					}
 				} else if (af instanceof EatAffordance) {
 					if (robot.seesFlashingFeeder()
 							&& robot.getFlashingFeeder().getId() == robot
-									.getClosestFeeder().getId() && robot.getFlashingFeeder().getId() != goalFeeder.get()) {
+									.getClosestFeeder().getId()
+							&& robot.getFlashingFeeder().getId() != goalFeeder
+									.get()) {
 						value = maxReward;
 					}
 				} else
@@ -94,14 +98,4 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 		}
 
 	}
-
-	private float diffAfterRot(float angle) {
-		Quat4f rotToFood = GeomUtils.angleToPoint(robot.getFlashingFeeder()
-				.getPosition());
-
-		Quat4f actionAngle = GeomUtils.angleToRot(angle);
-
-		return Math.abs(GeomUtils.angleDiff(actionAngle, rotToFood));
-	}
-
 }

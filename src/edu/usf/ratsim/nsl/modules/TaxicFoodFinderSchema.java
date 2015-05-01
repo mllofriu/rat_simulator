@@ -55,12 +55,14 @@ public class TaxicFoodFinderSchema extends NslModule {
 		int voteIndex = 0;
 		for (Affordance af : affs) {
 			float value = 0;
-			if (af.isRealizable()) {
+			if (af.isRealizable()
+					|| (subject.hasTriedToEat() && !subject.hasEaten())) {
 				if (af instanceof TurnAffordance) {
 					if (!subject.hasTriedToEat()
 							&& !subject.getRobot().isFeederClose()
 							&& robot.seesFeeder()
-							&& !robot.seesFlashingFeeder()) {
+//							&& !robot.seesFlashingFeeder()
+							) {
 						TurnAffordance ta = (TurnAffordance) af;
 						value = valAfterRot(ta.getAngle(), goalFeeder.get());
 
@@ -71,7 +73,8 @@ public class TaxicFoodFinderSchema extends NslModule {
 					if (!subject.hasTriedToEat()
 							&& !subject.getRobot().isFeederClose()
 							&& robot.seesFeeder()
-							&& !robot.seesFlashingFeeder()) {
+//							&& !robot.seesFlashingFeeder()
+							) {
 						value = valAfterRot(0, goalFeeder.get());
 					} else if (subject.hasTriedToEat())
 						if (!subject.hasEaten())
@@ -86,7 +89,8 @@ public class TaxicFoodFinderSchema extends NslModule {
 							&& subject.getRobot().getClosestFeeder().getId() != goalFeeder
 									.get()
 							&& subject.getRobot().isFeederClose()
-							&& !robot.seesFlashingFeeder()) {
+//							&& !robot.seesFlashingFeeder()
+							) {
 						value = maxReward;
 					} else if (subject.hasTriedToEat())
 						if (!subject.hasEaten())
@@ -109,19 +113,11 @@ public class TaxicFoodFinderSchema extends NslModule {
 
 	private float valAfterRot(float angle, int except) {
 		float val = 0;
-		for (Feeder f : robot.getFeeders(except)) {
-			Quat4f rotToFood = GeomUtils.angleToPoint(f.getPosition());
-
-			Quat4f actionAngle = GeomUtils.angleToRot(angle);
-
-			float angleDiff = Math.abs(GeomUtils.angleDiff(actionAngle,
-					rotToFood));
-
-			val += maxReward
-					* (1 - (Math.max(angleDiff - forwardBias, 0)) / Math.PI);
+		for (Feeder f : robot.getVisibleFeeders(except)) {
+			val += GeomUtils.getFeederReward(f.getPosition(), angle, maxReward, subject, robot);
 		}
 
-		return val / robot.getFeeders(-1).size();
+		return val / robot.getVisibleFeeders(-1).size();
 	}
 
 }

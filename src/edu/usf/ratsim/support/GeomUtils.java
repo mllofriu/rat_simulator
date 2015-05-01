@@ -8,6 +8,9 @@ import javax.vecmath.Point3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
+import edu.usf.experiment.robot.LocalizableRobot;
+import edu.usf.experiment.subject.Subject;
+
 public class GeomUtils {
 
 	public static String getCurrentDirectoryAbsolute() {
@@ -135,5 +138,28 @@ public class GeomUtils {
 		Quat4f rot1 = angleToRot(a1);
 		Quat4f rot2 = angleToRot(a2);
 		return angleDiff(rot1, rot2);
+	}
+
+	public static float distanceToPoint(Point3f p) {
+		return (float) Math.sqrt(Math.pow(p.x, 2) + Math.pow(p.y, 2) + Math.pow(p.z, 2));
+	}
+
+	public static float getFeederReward(Point3f position, float rotationAngle, float maxReward,
+			Subject subject, LocalizableRobot robot) {
+		Quat4f rotToFood = GeomUtils.angleToPoint(position);
+
+		Quat4f actionAngle = GeomUtils.angleToRot(rotationAngle);
+
+		float angleDiff = Math.abs(GeomUtils.angleDiff(actionAngle,
+				rotToFood));
+
+		float rotationSteps = angleDiff / subject.getMinAngle();
+
+		float dist = GeomUtils.distanceToPoint(position);
+
+		float forwardSteps = dist / subject.getStepLenght();
+
+		// TODO: improve this function
+		return (float) (maxReward * Math.exp(-(forwardSteps + rotationSteps) / 10));
 	}
 }
