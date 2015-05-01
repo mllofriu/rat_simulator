@@ -35,21 +35,22 @@
 				<numPCLayers>5</numPCLayers>
 				<numPCCellsPerLayer>100</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
-				<maxRadius>.5</maxRadius>
-				<placeCells>exponential</placeCells>
+				<maxRadius>.25</maxRadius>
+				<placeCells>goalExponential</placeCells>
+				<goalCellProportion>.3</goalCellProportion>
 				<numHDLayers>5</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
 				<numIntentions>8</numIntentions>
 				<deterministicActionSelection>true</deterministicActionSelection>
-				<foodReward>100000</foodReward>
+				<foodReward>10000</foodReward>
 				<nonFoodReward>0</nonFoodReward>
 				<discountFactor>1</discountFactor>
 				<alpha>0.8</alpha>
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>500</explorationReward>
+				<explorationReward>0</explorationReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<proportionalQL>true</proportionalQL>
@@ -200,17 +201,17 @@
 	</group>
 	
 	<beforeTasks>
-		<task>
+		<!-- <task>
 			<name>edu.usf.experiment.task.EnableRandomFeedersTriangle</name>
 			<params>
 			</params>
-		</task> 
-		<!-- <task>
+		</task> -->
+		<task>
 			<name>edu.usf.experiment.task.EnableFeeders</name>
 			<params>
-				<feeders>2,6,0</feeders>
+				<feeders>4,0</feeders>
 			</params>
-		</task>-->
+		</task>
 	</beforeTasks>
 	
 	<trial>

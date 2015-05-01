@@ -371,7 +371,7 @@ public class VirtUniverse extends Universe {
 
 	public float wallDistanceToFeeders(LineSegment wall) {
 		float minDist = Float.MAX_VALUE;
-		for (Integer fn : getFeeders()) {
+		for (Integer fn : getFeederNums()) {
 			Point3f pos = getFoodPosition(fn);
 			Coordinate c = new Coordinate(pos.x, pos.y);
 			if (wall.distance(c) < minDist)
@@ -384,7 +384,8 @@ public class VirtUniverse extends Universe {
 			float visionDist) {
 		float angleToFeeder = angleToFeeder(fn);
 		boolean inField = angleToFeeder <= halfFieldOfView;
-
+//		System.out.println(fn + " " + angleToFeeder);
+		
 		boolean intersects = false;
 		Coordinate rPos = new Coordinate(getRobotPosition().x,
 				getRobotPosition().y);
