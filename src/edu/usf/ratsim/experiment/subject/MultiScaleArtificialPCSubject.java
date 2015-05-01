@@ -17,12 +17,14 @@ import nslj.src.lang.NslHierarchy;
 import nslj.src.lang.NslModule;
 import nslj.src.system.NslInterpreter;
 import nslj.src.system.NslSystem;
+import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
+import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.support.Configuration;
 
@@ -46,9 +48,14 @@ public class MultiScaleArtificialPCSubject extends Subject {
 		step = params.getChildFloat("step");
 		leftAngle = params.getChildFloat("leftAngle");
 		rightAngle = params.getChildFloat("rightAngle");
+		
+		if (!(robot instanceof LocalizableRobot))
+			throw new RuntimeException("MultiScaleArtificialPCSubject "
+					+ "needs a Localizable Robot");
+		LocalizableRobot lRobot = (LocalizableRobot) robot;
 
 		model = new MultiScaleArtificialPCModel(
-				name, (NslModule) null, params, this);
+				name, (NslModule) null, params, this, lRobot);
 		
 		system.addModel(model);
 		
@@ -171,6 +178,11 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	@Override
 	public void setExplorationVal(float val) {
 		model.setExplorationVal(val);
+	}
+
+	@Override
+	public float getStepLenght() {
+		return step;
 	}
 	
 

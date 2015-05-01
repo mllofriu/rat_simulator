@@ -15,6 +15,7 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
+import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.nsl.modules.ArtificialFeederCell;
 import edu.usf.ratsim.nsl.modules.ArtificialFeederCellLayer;
@@ -109,13 +110,8 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	}
 
 	public MultiScaleArtificialPCModel(String name, NslModule parent,
-			ElementWrapper params, Subject subject) {
+			ElementWrapper params, Subject subject, LocalizableRobot lRobot) {
 		super(name, parent);
-
-		if (!(subject.getRobot() instanceof LocalizableRobot))
-			throw new RuntimeException("MultiScaleArtificialPCSubject "
-					+ "needs a Localizable Robot");
-		LocalizableRobot lRobot = (LocalizableRobot) subject.getRobot();
 
 		// Get some configuration values for place cells + qlearning
 		float minRadius = params.getChildFloat("minRadius");
@@ -124,6 +120,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		int numPCCellsPerLayer = params.getChildInt("numPCCellsPerLayer");
 		numHDLayers = params.getChildInt("numHDLayers");
 		String placeCellType = params.getChildText("placeCells");
+		float goalCellProportion = params.getChildFloat("goalCellProportion");
 		int minHDCellsPerLayer = params.getChildInt("minHDCellsPerLayer");
 		int stepHDCellsPerLayer = params.getChildInt("stepHDCellsPerLayer");
 		float discountFactor = params.getChildFloat("discountFactor");
@@ -182,7 +179,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer(
 					BEFORE_STATE_STR + i, this, lRobot, radius,
 					numPCCellsPerLayer, pclSeed, placeCellType, xmin, ymin,
-					xmax, ymax);
+					xmax, ymax, lRobot.getAllFeeders(), goalCellProportion);
 			beforePcls.add(pcl);
 			// JointStates placeIntention = new JointStates(
 			// BEFORE_PLACE_INTENTION_STR + i, this, universe,
@@ -221,14 +218,14 @@ public class MultiScaleArtificialPCModel extends NslModel {
 
 		// Add feeder cells
 		// TODO: pcl seed?
-		new ArtificialFeederCellLayer(BEFORE_FEEDER_CELL_LAYER, this, lRobot, numIntentions, pclSeed);
-		List<Integer> statesSizes = new LinkedList<Integer>();
-		statesSizes.add(numIntentions);
-		statesSizes.add(numIntentions);
-		JointStatesManyMultiply jStates = new JointStatesManyMultiply(
-				BEFORE_PIHD + (numPCLayers * numHDLayers), this, statesSizes);
-		jStateList.add(jStates);
-		bpihdSizes.add(jStates.getSize());
+//		new ArtificialFeederCellLayer(BEFORE_FEEDER_CELL_LAYER, this, lRobot, numIntentions, pclSeed);
+//		List<Integer> statesSizes = new LinkedList<Integer>();
+//		statesSizes.add(numIntentions);
+//		statesSizes.add(numIntentions);
+//		JointStatesManyMultiply jStates = new JointStatesManyMultiply(
+//				BEFORE_PIHD + (numPCLayers * numHDLayers), this, statesSizes);
+//		jStateList.add(jStates);
+//		bpihdSizes.add(jStates.getSize());
 		
 		// Concatenate all layers
 		bAll = new JointStatesManyConcatenate(BEFORE_CONCAT, this, bpihdSizes);
@@ -293,7 +290,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer(
 					AFTER_STATE_STR + i, this, lRobot, radius,
 					numPCCellsPerLayer, pclSeed, placeCellType, xmin, ymin,
-					xmax, ymax);
+					xmax, ymax, lRobot.getAllFeeders(), goalCellProportion);
 			afterPcls.add(pcl);
 			// JointStates placeIntention = new JointStates(
 			// AFTER_PLACE_INTENTION_STR + i, this, universe,
@@ -310,6 +307,8 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		}
 
 		List<Integer> apihdSizes = new LinkedList<Integer>();
+		LinkedList<Integer> statesSizes;
+		JointStatesManyMultiply jStates;
 		for (int i = 0; i < numPCLayers; i++)
 			for (int j = 0; j < numHDLayers; j++) {
 				// JointStates pihd = new JointStates(AFTER_PIHD
@@ -328,14 +327,14 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		
 		// Add feeder cells
 		// TODO: pcl seed?
-		new ArtificialFeederCellLayer(AFTER_FEEDER_CELL_LAYER, this, lRobot, numIntentions, pclSeed);
-		statesSizes = new LinkedList<Integer>();
-		statesSizes.add(numIntentions);
-		statesSizes.add(numIntentions);
-		jStates = new JointStatesManyMultiply(
-				AFTER_PIHD + (numPCLayers * numHDLayers), this, statesSizes);
-		jStateList.add(jStates);
-		apihdSizes.add(jStates.getSize());
+//		new ArtificialFeederCellLayer(AFTER_FEEDER_CELL_LAYER, this, lRobot, numIntentions, pclSeed);
+//		statesSizes = new LinkedList<Integer>();
+//		statesSizes.add(numIntentions);
+//		statesSizes.add(numIntentions);
+//		jStates = new JointStatesManyMultiply(
+//				AFTER_PIHD + (numPCLayers * numHDLayers), this, statesSizes);
+//		jStateList.add(jStates);
+//		apihdSizes.add(jStates.getSize());
 		
 		JointStatesManyConcatenate aAll = new JointStatesManyConcatenate(
 				AFTER_CONCAT, this, apihdSizes);
@@ -450,20 +449,20 @@ public class MultiScaleArtificialPCModel extends NslModel {
 
 			}
 		
-		nslConnect(getChild(BEFORE_FEEDER_CELL_LAYER), "activation",
-				getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)), "state1");
-		nslConnect(getChild(BEFORE_INTENTION_STR), "intention",
-				getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)), "state2");
-		nslConnect(getChild(AFTER_FEEDER_CELL_LAYER), "activation",
-				getChild(AFTER_PIHD + (numPCLayers * numHDLayers)), "state1");
-		nslConnect(getChild(AFTER_INTENTION_STR), "intention",
-				getChild(AFTER_PIHD + (numPCLayers * numHDLayers)), "state2");
-		nslConnect(getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)),
-				"jointState", getChild(BEFORE_CONCAT), "state"
-						+ (numPCLayers * numHDLayers));
-		nslConnect(getChild(AFTER_PIHD + (numPCLayers * numHDLayers)),
-				"jointState", getChild(AFTER_CONCAT), "state"
-						+ (numPCLayers * numHDLayers));
+//		nslConnect(getChild(BEFORE_FEEDER_CELL_LAYER), "activation",
+//				getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)), "state1");
+//		nslConnect(getChild(BEFORE_INTENTION_STR), "intention",
+//				getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)), "state2");
+//		nslConnect(getChild(AFTER_FEEDER_CELL_LAYER), "activation",
+//				getChild(AFTER_PIHD + (numPCLayers * numHDLayers)), "state1");
+//		nslConnect(getChild(AFTER_INTENTION_STR), "intention",
+//				getChild(AFTER_PIHD + (numPCLayers * numHDLayers)), "state2");
+//		nslConnect(getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)),
+//				"jointState", getChild(BEFORE_CONCAT), "state"
+//						+ (numPCLayers * numHDLayers));
+//		nslConnect(getChild(AFTER_PIHD + (numPCLayers * numHDLayers)),
+//				"jointState", getChild(AFTER_CONCAT), "state"
+//						+ (numPCLayers * numHDLayers));
 
 		// Connect the joint states to the QL system
 		nslConnect(getChild(BEFORE_CONCAT), "jointState",
@@ -497,14 +496,14 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// "actionVotesBefore");
 		//
 		if (proportionalQl) {
-//			nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes",
-//					getChild(QL_STR), "actionVotesAfter");
-//			nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes",
-//					getChild(QL_STR), "actionVotesBefore");
-			nslConnect(getChild(AFTER_JOINT_VOTES), "jointState",
+			nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes",
 					getChild(QL_STR), "actionVotesAfter");
-			nslConnect(getChild(BEFORE_JOINT_VOTES), "jointState",
+			nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes",
 					getChild(QL_STR), "actionVotesBefore");
+//			nslConnect(getChild(AFTER_JOINT_VOTES), "jointState",
+//					getChild(QL_STR), "actionVotesAfter");
+//			nslConnect(getChild(BEFORE_JOINT_VOTES), "jointState",
+//					getChild(QL_STR), "actionVotesBefore");
 		}
 		// nslConnect(getChild(AFTER_JOINT_VOTES), "jointState",
 		// getChild(QL_STR),

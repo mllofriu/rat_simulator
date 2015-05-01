@@ -86,7 +86,7 @@ public class VirtualRobot extends LocalizableRobot {
 
 	public List<Landmark> getLandmarks(int except) {
 		List<Landmark> res = new LinkedList<Landmark>();
-		for (Integer i : universe.getFeeders())
+		for (Integer i : universe.getFeederNums())
 			if (i != except)
 				if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
 					// Get relative position
@@ -107,9 +107,9 @@ public class VirtualRobot extends LocalizableRobot {
 		return res;
 	}
 	
-	public List<Feeder> getFeeders(int except) {
+	public List<Feeder> getVisibleFeeders(int except) {
 		List<Feeder> res = new LinkedList<Feeder>();
-		for (Integer i : universe.getFeeders())
+		for (Integer i : universe.getFeederNums())
 			if (i != except)
 				if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
 					// Get relative position
@@ -134,7 +134,7 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public Feeder getFlashingFeeder() {
-		for (Integer i : universe.getFeeders())
+		for (Integer i : universe.getFeederNums())
 			if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist) && universe.isFeederFlashing(i)) {
 				// Get relative position
 				Point3f fPos = universe.getFoodPosition(i);
@@ -163,7 +163,7 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public Feeder getClosestFeeder(int lastFeeder) {
-		List<Feeder> feeders = getFeeders(lastFeeder);
+		List<Feeder> feeders = getVisibleFeeders(lastFeeder);
 
 		if (feeders.isEmpty())
 			return null;
@@ -261,6 +261,11 @@ public class VirtualRobot extends LocalizableRobot {
 	@Override
 	public boolean seesFeeder() {
 		return getClosestFeeder(-1) != null;
+	}
+
+	@Override
+	public List<Feeder> getAllFeeders() {
+		return universe.getFeeders();
 	}
 
 
