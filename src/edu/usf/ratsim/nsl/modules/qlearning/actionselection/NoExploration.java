@@ -49,7 +49,7 @@ public class NoExploration extends NslModule {
 		List<Affordance> aff = robot.checkAffordances(sub
 				.getPossibleAffordances());
 		
-		for (int action = 0; action < votes.getSize(); action++)
+		for (int action = 0; action < aff.size(); action++)
 			aff.get(action).setValue(votes.get(action));
 
 		

@@ -41,7 +41,7 @@ public class WallAvoider extends NslModule {
 
 		// number = (new Random()).nextInt();
 
-		votes = new NslDoutFloat1(this, "votes", numActions);
+		votes = new NslDoutFloat1(this, "votes", numActions + 1);
 		r = new Random();
 
 		robot = subject.getRobot();

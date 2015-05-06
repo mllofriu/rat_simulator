@@ -10,6 +10,9 @@ import javax.vecmath.Vector3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.subject.affordance.ForwardAffordance;
+import edu.usf.experiment.subject.affordance.TurnAffordance;
 
 public class GeomUtils {
 
@@ -161,5 +164,47 @@ public class GeomUtils {
 
 		// TODO: improve this function
 		return (float) (maxReward * Math.exp(-(forwardSteps + rotationSteps) / 10));
+	}
+
+	/**
+	 * Returns the steps needed to get to a feeder
+	 * @param feederPos
+	 * @param subject
+	 * @return
+	 */
+	public static float getStepsToFeeder(Point3f feederPos, Subject subject) {
+		Quat4f rotToFood = GeomUtils.angleToPoint(feederPos);
+
+		float angleDiff = Math.abs(GeomUtils.rotToAngle(rotToFood)); 
+
+		float rotationSteps = angleDiff / subject.getMinAngle();
+
+		float dist = GeomUtils.distanceToPoint(feederPos);
+
+		float forwardSteps = dist / subject.getStepLenght();
+
+		return forwardSteps + rotationSteps;
+	}
+	
+	/**
+	 * Simulate the inverse movement of a feeder based on its position and affordance to execute
+	 * @param position
+	 * @param af
+	 * @return
+	 */
+	public static Point3f simulate(Point3f position, Affordance af) {
+		if (af instanceof ForwardAffordance) {
+			ForwardAffordance fw = (ForwardAffordance) af;
+			position.add(new Point3f(-fw.getDistance(), 0, 0));
+			return position;
+		} else if (af instanceof TurnAffordance) {
+			TurnAffordance ta = (TurnAffordance) af;
+			Quat4f rot = GeomUtils.angleToRot(-ta.getAngle());
+			Transform3D t = new Transform3D();
+			t.set(rot);
+			t.transform(position);
+			return position;
+		} else 
+			throw new RuntimeException("Simulation of non-movement affordance");
 	}
 }

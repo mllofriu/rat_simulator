@@ -15,15 +15,10 @@ import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
-import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.ratsim.nsl.modules.ArtificialFeederCell;
-import edu.usf.ratsim.nsl.modules.ArtificialFeederCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialHDCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.DecayingExplorationSchema;
-import edu.usf.ratsim.nsl.modules.FlashingOrAnyGoalDecider;
-import edu.usf.ratsim.nsl.modules.FlashingTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.Intention;
 import edu.usf.ratsim.nsl.modules.JointStatesManyConcatenate;
 import edu.usf.ratsim.nsl.modules.JointStatesManyMultiply;
@@ -34,16 +29,17 @@ import edu.usf.ratsim.nsl.modules.LastTriedToEatGoalDecider;
 import edu.usf.ratsim.nsl.modules.NoIntention;
 import edu.usf.ratsim.nsl.modules.PlaceIntention;
 import edu.usf.ratsim.nsl.modules.StillExplorer;
-import edu.usf.ratsim.nsl.modules.TaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.Voter;
 import edu.usf.ratsim.nsl.modules.WallAvoider;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.NoExploration;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
+import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalAC;
 import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQL;
-import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQLReplay;
 import edu.usf.ratsim.nsl.modules.qlearning.update.QLAlgorithm;
+import edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicFoodFinderSchema;
+import edu.usf.ratsim.nsl.modules.taxic.TaxicFoodFinderSchema;
 
 public class MultiScaleArtificialPCModel extends NslModel {
 
@@ -54,7 +50,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	private static final String AFTER_FOOD_FINDER_STR = "ATD";
 	private static final String BEFORE_STATE_STR = "BeforePCL";
 	private static final String AFTER_STATE_STR = "AfterPCL";
-	private static final String QL_STR = "NQL";
+	private static final String RL_STR = "NQL";
 	private static final String TAKEN_ACTION_STR = "TA";
 	private static final String REWARD_STR = "R";
 	private static final String BEFORE_LASTATE_GOAL_DECIDER_STR = "BANYGD";
@@ -99,7 +95,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	private NoExploration actionPerformer;
 	private JointStatesManySum jointVotes;
 	private Voter qlVotes;
-	private boolean proportionalQl;
+	private String rlType;
 	private List<DecayingExplorationSchema> exploration;
 	private JointStatesManyConcatenate bAll;
 	private Intention intention;
@@ -141,7 +137,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		float ymin = params.getChildFloat("ymin");
 		float xmax = params.getChildFloat("xmax");
 		float ymax = params.getChildFloat("ymax");
-		proportionalQl = params.getChildBoolean("proportionalQL");
+		rlType = params.getChildText("rlType");
 		int maxActionsSinceForward = params
 				.getChildInt("maxActionsSinceForward");
 		float stillExplorationVal = params.getChildFloat("stillExplorationVal");
@@ -231,21 +227,27 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		bAll = new JointStatesManyConcatenate(BEFORE_CONCAT, this, bpihdSizes);
 
 		// Take the value of each state and vote for an action
-		if (proportionalQl)
+		if (rlType.equals("proportionalQl"))
+		
 			qlVotes = new ProportionalVotes(BEFORE_ACTION_SELECTION_STR, this,
 					bAll.getSize(), numActions);
-		else
+		else if (rlType.equals("actorCritic"))
+			qlVotes = new ProportionalVotes(BEFORE_ACTION_SELECTION_STR, this,
+					bAll.getSize(), numActions+1);
+		else if (rlType.equals("wtaQl"))
 			qlVotes = new WTAVotes(BEFORE_ACTION_SELECTION_STR, this,
 					bAll.getSize(), numActions);
+		else
+			throw new RuntimeException("RL mechanism not implemented");
 
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
 		new TaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, subject,
-				lRobot, nonFlashingReward, subject.getMinAngle());
+				lRobot, nonFlashingReward, discountFactor);
 
 		new FlashingTaxicFoodFinderSchema(BEFORE_FLASHING_FOOD_FINDER_STR,
-				this, subject, lRobot, flashingReward, subject.getMinAngle());
+				this, subject, lRobot, flashingReward, discountFactor);
 
 		exploration.add(new DecayingExplorationSchema(BEFORE_EXPLORATION, this,
 				subject, lRobot, explorationReward, explorationHalfLifeVal));
@@ -259,13 +261,13 @@ public class MultiScaleArtificialPCModel extends NslModel {
 
 		// Three joint states - QL Votes, Taxic, WallAvoider
 		jointVotes = new JointStatesManySum(BEFORE_JOINT_VOTES, this, 6,
-				numActions);
+				numActions + 1);
 
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf
 		if (deterministic) {
 			actionPerformer = new NoExploration(ACTION_PERFORMER_STR, this,
-					subject, 4);
+					subject, numActions);
 		}
 		// else {
 		// new ProportionalExplorer(ACTION_PERFORMER_STR, this, subject, 1 + 2);
@@ -340,21 +342,26 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				AFTER_CONCAT, this, apihdSizes);
 
 		// Take the value of each state and vote for an action
-		if (proportionalQl)
+		if (rlType.equals("proportionalQl"))
 			new ProportionalVotes(AFTER_ACTION_SELECTION_STR, this,
 					aAll.getSize(), numActions);
-		else
+		else if (rlType.equals("actorCritic"))
+			new ProportionalVotes(AFTER_ACTION_SELECTION_STR, this,
+					aAll.getSize(), numActions+1);
+		else if (rlType.equals("wtaQl"))
 			new WTAVotes(AFTER_ACTION_SELECTION_STR, this, aAll.getSize(),
 					numActions);
+		else
+			throw new RuntimeException("RL mechanism not implemented");
 
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
 		new TaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, subject, lRobot,
-				nonFlashingReward, subject.getMinAngle());
+				nonFlashingReward, discountFactor);
 
 		new FlashingTaxicFoodFinderSchema(AFTER_FLASHING_FOOD_FINDER_STR, this,
-				subject, lRobot, flashingReward, subject.getMinAngle());
+				subject, lRobot, flashingReward, discountFactor);
 
 		// Wall following for obst. avoidance
 		new WallAvoider(AFTER_WALLAVOID_STR, this, subject, wallFollowingVal,
@@ -364,26 +371,34 @@ public class MultiScaleArtificialPCModel extends NslModel {
 //				subject, lRobot, explorationReward, explorationHalfLifeVal));
 
 		// Three joint states - QL Votes, Taxic, WallAvoider
-		new JointStatesManySum(AFTER_JOINT_VOTES, this, 6, numActions);
+		new JointStatesManySum(AFTER_JOINT_VOTES, this, 6, numActions + 1);
 
-		if (proportionalQl) {
+		if (rlType.equals("proportionalQl")) {
 			// MultiStateProportionalQLReplay mspql = new
 			// MultiStateProportionalQLReplay(
 			// QL_STR, this, subject, bAll.getSize(), numActions,
 			// discountFactor, alpha, initialValue);
 			MultiStateProportionalQL mspql = new MultiStateProportionalQL(
-					QL_STR, this, subject, bAll.getSize(), numActions,
+					RL_STR, this, subject, bAll.getSize(), numActions,
 					discountFactor, alpha, initialValue);
 			ql = mspql;
 			qLUpdVal.add(mspql);
-		} else {
+		} else if (rlType.equals("actorCritic")) {
+			MultiStateProportionalAC mspac = new MultiStateProportionalAC(
+					RL_STR, this, subject, bAll.getSize(), numActions,
+					discountFactor, alpha, discountFactor, initialValue);
+			// TODO: recover this assginments
+//			ql = mspql;
+//			qLUpdVal.add(mspql);
+		} else if (rlType.equals("wtaQl")) {
 			// TODO: get back
 			// SingleStateQL ssql = new SingleStateQL(QL_STR, this,
 			// bAll.getSize(), numActions, discountFactor,
 			// alpha, initialValue);
 			// ql = ssql;
 			// qLUpdVal.add(ssql);
-		}
+		} else 
+			throw new RuntimeException("RL mechanism not implemented");
 	}
 
 	public void makeConn() {
@@ -469,9 +484,9 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				getChild(BEFORE_ACTION_SELECTION_STR), "states");
 		nslConnect(getChild(AFTER_CONCAT), "jointState",
 				getChild(AFTER_ACTION_SELECTION_STR), "states");
-		nslConnect(getChild(QL_STR), "value",
+		nslConnect(getChild(RL_STR), "value",
 				getChild(BEFORE_ACTION_SELECTION_STR), "value");
-		nslConnect(getChild(QL_STR), "value",
+		nslConnect(getChild(RL_STR), "value",
 				getChild(AFTER_ACTION_SELECTION_STR), "value");
 		nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes",
 				getChild(BEFORE_JOINT_VOTES), "state" + 3);
@@ -480,31 +495,37 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		nslConnect(getChild(BEFORE_JOINT_VOTES), "jointState",
 				getChild(ACTION_PERFORMER_STR), "votes");
 		nslConnect(getChild(ACTION_PERFORMER_STR), "takenAction",
-				getChild(QL_STR), "takenAction");
+				getChild(RL_STR), "takenAction");
 		nslConnect(getChild(ACTION_PERFORMER_STR), "takenAction",
 				getChild(BEFORE_STILL_EXPLORATION), "takenAction");
 		// nslConnect(getChild(BEFORE_FOOD_FINDER_STR), "votes",
 		// getChild(QL_STR),
 		// "taxonExpectedValues");
-		nslConnect(getChild(REWARD_STR), "reward", getChild(QL_STR), "reward");
-		nslConnect(getChild(BEFORE_CONCAT), "jointState", getChild(QL_STR),
+		nslConnect(getChild(REWARD_STR), "reward", getChild(RL_STR), "reward");
+		nslConnect(getChild(BEFORE_CONCAT), "jointState", getChild(RL_STR),
 				"statesBefore");
-		nslConnect(getChild(AFTER_CONCAT), "jointState", getChild(QL_STR),
+		nslConnect(getChild(AFTER_CONCAT), "jointState", getChild(RL_STR),
 				"statesAfter");
 		// nslConnect(getChild(BEFORE_FOOD_FINDER_STR), "votes",
 		// getChild(QL_STR),
 		// "actionVotesBefore");
 		//
-		if (proportionalQl) {
-			nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes",
-					getChild(QL_STR), "actionVotesAfter");
-			nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes",
-					getChild(QL_STR), "actionVotesBefore");
-//			nslConnect(getChild(AFTER_JOINT_VOTES), "jointState",
-//					getChild(QL_STR), "actionVotesAfter");
-//			nslConnect(getChild(BEFORE_JOINT_VOTES), "jointState",
-//					getChild(QL_STR), "actionVotesBefore");
-		}
+		if (rlType.equals("proportionalQl")) {
+//			nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes",
+//					getChild(RL_STR), "actionVotesAfter");
+//			nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes",
+//					getChild(RL_STR), "actionVotesBefore");
+			nslConnect(getChild(AFTER_JOINT_VOTES), "jointState",
+					getChild(RL_STR), "actionVotesAfter");
+			nslConnect(getChild(BEFORE_JOINT_VOTES), "jointState",
+					getChild(RL_STR), "actionVotesBefore");
+		} else if (rlType.equals("actorCritic")){
+			nslConnect(getChild(AFTER_JOINT_VOTES), "jointState",
+					getChild(RL_STR), "actionVotesAfter");
+			nslConnect(getChild(BEFORE_JOINT_VOTES), "jointState",
+					getChild(RL_STR), "actionVotesBefore");
+		} else 
+			throw new RuntimeException("RL mechanism not implemented");
 		// nslConnect(getChild(AFTER_JOINT_VOTES), "jointState",
 		// getChild(QL_STR),
 		// "actionVotesAfter");

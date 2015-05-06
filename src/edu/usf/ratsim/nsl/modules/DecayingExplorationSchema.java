@@ -37,7 +37,7 @@ public class DecayingExplorationSchema extends NslModule {
 		this.alpha = -Math.log(.5) / explorationHalfLifeVal;
 
 		votes = new NslDoutFloat1(this, "votes", subject
-				.getPossibleAffordances().size());
+				.getPossibleAffordances().size() + 1);
 
 		r = new Random();
 

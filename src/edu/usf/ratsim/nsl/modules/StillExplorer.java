@@ -35,7 +35,7 @@ public class StillExplorer extends NslModule {
 		takenAction = new NslDinInt0(this, "takenAction");
 
 		votes = new NslDoutFloat1(this, "votes", sub.getPossibleAffordances()
-				.size());
+				.size() + 1);
 
 		this.maxActionsSinceForward = maxActionsSinceForward;
 		this.sub = sub;
@@ -68,7 +68,7 @@ public class StillExplorer extends NslModule {
 				timeToExplore--;
 			int selectedAction;
 			do {
-				selectedAction = r.nextInt(votes.getSize());
+				selectedAction = r.nextInt(sub.getPossibleAffordances().size());
 			} while ((sub.getPossibleAffordances().get(selectedAction) instanceof EatAffordance));
 			votes.set(selectedAction, stillExploringVal);
 		}
