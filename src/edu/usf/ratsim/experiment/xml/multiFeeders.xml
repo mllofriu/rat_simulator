@@ -409,7 +409,7 @@
 					<name>edu.usf.experiment.condition.FoundNFoodNoMistakesStopCond</name>
 					<params>
 						<n>15</n>
-						<timeout>100</timeout>
+						<timeout>50</timeout>
 					</params>
 				</condition>
 			</stopConditions>

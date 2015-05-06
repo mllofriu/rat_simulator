@@ -19,6 +19,7 @@ import edu.usf.experiment.subject.affordance.ForwardAffordance;
  */
 public class StillExplorer extends NslModule {
 
+	private static final int TIME_EXPLORING = 5;
 	private NslDinInt0 takenAction;
 	private int maxActionsSinceForward;
 	private Subject sub;
@@ -63,7 +64,7 @@ public class StillExplorer extends NslModule {
 		// action
 		if (timeToExplore > 0 || actionsSinceForward > maxActionsSinceForward) {
 			if (timeToExplore == 0)
-				timeToExplore = 20;
+				timeToExplore = TIME_EXPLORING;
 			else
 				timeToExplore--;
 			int selectedAction;

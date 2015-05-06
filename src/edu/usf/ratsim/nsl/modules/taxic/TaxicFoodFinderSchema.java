@@ -59,24 +59,25 @@ public class TaxicFoodFinderSchema extends NslModule {
 		List<Affordance> affs = robot.checkAffordances(subject
 				.getPossibleAffordances());
 		int voteIndex = 0;
+		boolean feederToEat = robot.isFeederClose()
+				&& robot.getClosestFeeder().getId() != goalFeeder.get();
 		for (Affordance af : affs) {
 			float value = 0;
 			if (af.isRealizable()) {
 				if (af instanceof TurnAffordance) {
-					if (!robot.isFeederClose())
+					if (!feederToEat)
 						for (Feeder f : robot.getVisibleFeeders(goalFeeder.get())) {
 							value += getFeederValue(GeomUtils.simulate(
 									f.getPosition(), af));
 						}
 				} else if (af instanceof ForwardAffordance) {
-					if (!robot.isFeederClose())
+					if (!feederToEat)
 						for (Feeder f : robot.getVisibleFeeders(goalFeeder.get())) {
 							value += getFeederValue(GeomUtils.simulate(
 									f.getPosition(), af));
 						}
 				} else if (af instanceof EatAffordance) {
-					if (robot.isFeederClose()
-							&& robot.getClosestFeeder().getId() != goalFeeder.get()) {
+					if (feederToEat) {
 //						value += getFeederValue(robot.getClosestFeeder()
 //								.getPosition());
 						value += reward;
