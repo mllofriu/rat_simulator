@@ -50,7 +50,7 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>0</explorationReward>
+				<explorationReward>200</explorationReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
@@ -59,7 +59,7 @@
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<maxActionsSinceForward>20</maxActionsSinceForward>
-				<stillExplorationVal>5000</stillExplorationVal>
+				<stillExplorationVal>500</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
