@@ -1,6 +1,6 @@
 #!/bin/sh
 
-#SBATCH --array=0-256
+#SBATCH --array=0-512
 
 experiment=$1
 logPath=$2
