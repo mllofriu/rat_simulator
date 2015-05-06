@@ -87,12 +87,17 @@ public class WallNode extends ExpUniverseNode {
 				z2));
 		for (int cylinder = 0; cylinder < wallLength / RADIO; cylinder++) {
 			float lambda = cylinder / (wallLength / RADIO);
-			addChild(new CylinderNode(RADIO, .1f, color, x1 + (x2 - x1) * lambda,
-					y1 + (y2 - y1) * lambda, z1 + (z2 - z1) * lambda));
+			addChild(new CylinderNode(RADIO, .1f, color, x1 + (x2 - x1)
+					* lambda, y1 + (y2 - y1) * lambda, z1 + (z2 - z1) * lambda));
 		}
 
 		segment = new LineSegment(new Coordinate(x1, y1),
 				new Coordinate(x2, y2));
+	}
+
+	public WallNode(LineSegment wSegment, float h) {
+		this((float) wSegment.p0.x, (float) wSegment.p0.y, 0,
+				(float) wSegment.p1.x, (float) wSegment.p1.y, 0, h);
 	}
 
 	public boolean intersects(LineSegment wall) {
