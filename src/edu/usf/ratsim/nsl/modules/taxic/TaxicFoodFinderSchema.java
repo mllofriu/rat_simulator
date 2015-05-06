@@ -63,15 +63,17 @@ public class TaxicFoodFinderSchema extends NslModule {
 			float value = 0;
 			if (af.isRealizable()) {
 				if (af instanceof TurnAffordance) {
-					for (Feeder f : robot.getVisibleFeeders(goalFeeder.get())) {
-						value += getFeederValue(GeomUtils.simulate(
-								f.getPosition(), af));
-					}
+					if (!robot.isFeederClose())
+						for (Feeder f : robot.getVisibleFeeders(goalFeeder.get())) {
+							value += getFeederValue(GeomUtils.simulate(
+									f.getPosition(), af));
+						}
 				} else if (af instanceof ForwardAffordance) {
-					for (Feeder f : robot.getVisibleFeeders(goalFeeder.get())) {
-						value += getFeederValue(GeomUtils.simulate(
-								f.getPosition(), af));
-					}
+					if (!robot.isFeederClose())
+						for (Feeder f : robot.getVisibleFeeders(goalFeeder.get())) {
+							value += getFeederValue(GeomUtils.simulate(
+									f.getPosition(), af));
+						}
 				} else if (af instanceof EatAffordance) {
 					if (robot.isFeederClose()
 							&& robot.getClosestFeeder().getId() != goalFeeder.get()) {

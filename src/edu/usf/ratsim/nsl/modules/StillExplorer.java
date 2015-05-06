@@ -67,6 +67,7 @@ public class StillExplorer extends NslModule {
 			else
 				timeToExplore--;
 			int selectedAction;
+			
 			do {
 				selectedAction = r.nextInt(sub.getPossibleAffordances().size());
 			} while ((sub.getPossibleAffordances().get(selectedAction) instanceof EatAffordance));
