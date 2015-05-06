@@ -40,10 +40,13 @@ public class VirtualRobot extends LocalizableRobot {
 
 	private float closeThrs;
 
+	private float translationRotationNoise;
+
 	public VirtualRobot(ElementWrapper params) {
 		super(params);
 
 		noise = params.getChildFloat("noise");
+		translationRotationNoise = params.getChildFloat("translationRotationNoise");
 		lookaheadSteps = params.getChildFloat("lookaheadSteps");
 		halfFieldOfView = params.getChildFloat("halfFieldOfView");
 		visionDist = params.getChildFloat("visionDist");
@@ -71,6 +74,7 @@ public class VirtualRobot extends LocalizableRobot {
 	public void forward(float dist) {
 		universe.moveRobot(new Vector3f(dist + dist * r.nextFloat() * noise, 0f,
 				0f));
+		universe.rotateRobot(r.nextFloat() * translationRotationNoise);
 	}
 
 	@Override
