@@ -7,7 +7,7 @@
 		<params>
 			<closeToFoodThrs>0.15</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
-			<display>true</display>
+			<display>false</display>
 		</params>
 	</universe>
 	
@@ -52,7 +52,8 @@
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
 				<explorationReward>0</explorationReward>
-				<wallFollowingVal>0</wallFollowingVal>
+				<attentionExploringVal>1000</attentionExploringVal>
+				<maxAttentionSpan>40</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
 				<voteType>gradientConnection</voteType>
@@ -69,7 +70,7 @@
 		<tasks>
 		</tasks>
 	</group>
-	<!--
+	
 	<group>
 		<name>Dorsal</name>
 		<numMembers>5</numMembers>
@@ -143,8 +144,9 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>500</explorationReward>
-				<wallAvoidingVal>0</wallAvoidingVal>
+				<explorationReward>0</explorationReward>
+				<attentionExploringVal>1000</attentionExploringVal>
+				<maxAttentionSpan>40</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
 				<voteType>gradientConnection</voteType>
@@ -152,7 +154,7 @@
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
-				<maxActionsSinceForward>20</maxActionsSinceForward>
+				<maxActionsSinceForward>100</maxActionsSinceForward>
 				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
 		</subject>
@@ -161,7 +163,6 @@
 		<tasks>
 		</tasks>
 	</group>
-	
 
 	<group>
 		<name>NegControl</name>
@@ -238,8 +239,9 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>250</explorationReward>
-				<wallFollowingVal>750</wallFollowingVal>
+				<explorationReward>0</explorationReward>
+				<attentionExploringVal>1000</attentionExploringVal>
+				<maxAttentionSpan>40</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
 				<voteType>gradientConnection</voteType>
@@ -247,7 +249,7 @@
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
-				<maxActionsSinceForward>20</maxActionsSinceForward>
+				<maxActionsSinceForward>100</maxActionsSinceForward>
 				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
 		</subject>
@@ -409,7 +411,7 @@
 		</beforeTasks>
 		<episodes>
 			<number>1</number>
-			<sleep>10</sleep>
+			<sleep>00</sleep>
 			<beforeTasks>
 				<task>
 					<name>edu.usf.experiment.task.UnFlashAllFeeders</name>

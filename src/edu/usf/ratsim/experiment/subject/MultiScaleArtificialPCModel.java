@@ -18,6 +18,7 @@ import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.nsl.modules.ArtificialHDCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
+import edu.usf.ratsim.nsl.modules.AttentionalExplorer;
 import edu.usf.ratsim.nsl.modules.DecayingExplorationSchema;
 import edu.usf.ratsim.nsl.modules.Intention;
 import edu.usf.ratsim.nsl.modules.JointStatesManyConcatenate;
@@ -79,6 +80,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	private static final String AFTER_LASTTRIEDTOEAT_GOAL_DECIDER_STR = "ALTTEGD";
 	private static final String BEFORE_FEEDER_CELL_LAYER = "BFCL";
 	private static final String AFTER_FEEDER_CELL_LAYER = "AFCL";
+	private static final String BEFORE_ATTENTIONAL = "BATT";
 
 	private List<ArtificialPlaceCellLayer> beforePcls;
 	private List<QLAlgorithm> qLUpdVal;
@@ -130,7 +132,10 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		float flashingReward = params.getChildFloat("flashingReward");
 		float nonFlashingReward = params.getChildFloat("nonFlashingReward");
 		explorationReward = params.getChildFloat("explorationReward");
-		float wallFollowingVal = params.getChildFloat("wallFollowingVal");
+		//float wallFollowingVal = params.getChildFloat("wallFollowingVal");
+		float attentionExploringVal = params.getChildFloat("attentionExploringVal");
+		int maxAttentionSpan = params.getChildInt("maxAttentionSpan");
+		
 		float explorationHalfLifeVal = params
 				.getChildFloat("explorationHalfLifeVal");
 		boolean deterministic = params
@@ -266,8 +271,9 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// Wall following for obst. avoidance
 //		new WallAvoider(BEFORE_WALLAVOID_STR, this, subject, wallFollowingVal,
 //				numActions);
-		new TaxicWallOpeningsSchema(BEFORE_WALLFOLLOW_STR, this, subject, lRobot, wallFollowingVal);
+//		new TaxicWallOpeningsSchema(BEFORE_WALLFOLLOW_STR, this, subject, lRobot, wallFollowingVal);
 
+		new AttentionalExplorer(BEFORE_ATTENTIONAL, this, subject, attentionExploringVal, maxAttentionSpan);
 		// Three joint states - QL Votes, Taxic, WallAvoider
 		jointVotes = new JointStatesManySum(BEFORE_JOINT_VOTES, this, 6,
 				numActions + 1);
@@ -377,7 +383,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// Wall following for obst. avoidance
 //		new WallAvoider(AFTER_WALLAVOID_STR, this, subject, wallFollowingVal,
 //				numActions);
-		new TaxicWallOpeningsSchema(AFTER_WALLFOLLOW_STR, this, subject, lRobot, wallFollowingVal);
+//		new TaxicWallOpeningsSchema(AFTER_WALLFOLLOW_STR, this, subject, lRobot, wallFollowingVal);
 		// exploration.add(new DecayingExplorationSchema(AFTER_EXPLORATION,
 		// this,
 		// subject, lRobot, explorationReward, explorationHalfLifeVal));
@@ -428,8 +434,11 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				getChild(BEFORE_JOINT_VOTES), "state" + 0);
 		nslConnect(getChild(BEFORE_FLASHING_FOOD_FINDER_STR), "votes",
 				getChild(BEFORE_JOINT_VOTES), "state" + 1);
-		nslConnect(getChild(BEFORE_WALLFOLLOW_STR), "votes",
+//		nslConnect(getChild(BEFORE_WALLFOLLOW_STR), "votes",
+//				getChild(BEFORE_JOINT_VOTES), "state" + 2);
+		nslConnect(getChild(BEFORE_ATTENTIONAL), "votes",
 				getChild(BEFORE_JOINT_VOTES), "state" + 2);
+		
 		nslConnect(getChild(BEFORE_EXPLORATION), "votes",
 				getChild(BEFORE_JOINT_VOTES), "state" + 4);
 		nslConnect(getChild(BEFORE_STILL_EXPLORATION), "votes",
@@ -438,7 +447,9 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				getChild(AFTER_JOINT_VOTES), "state" + 0);
 		nslConnect(getChild(AFTER_FLASHING_FOOD_FINDER_STR), "votes",
 				getChild(AFTER_JOINT_VOTES), "state" + 1);
-		nslConnect(getChild(AFTER_WALLFOLLOW_STR), "votes",
+//		nslConnect(getChild(AFTER_WALLFOLLOW_STR), "votes",
+//				getChild(AFTER_JOINT_VOTES), "state" + 2);
+		nslConnect(getChild(BEFORE_ATTENTIONAL), "votes",
 				getChild(AFTER_JOINT_VOTES), "state" + 2);
 		// BEFORE exploration is connected to after votes to nullify value
 		// estimation
@@ -511,6 +522,8 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				getChild(RL_STR), "takenAction");
 		nslConnect(getChild(ACTION_PERFORMER_STR), "takenAction",
 				getChild(BEFORE_STILL_EXPLORATION), "takenAction");
+		nslConnect(getChild(ACTION_PERFORMER_STR), "takenAction",
+				getChild(BEFORE_ATTENTIONAL), "takenAction");
 		// nslConnect(getChild(BEFORE_FOOD_FINDER_STR), "votes",
 		// getChild(QL_STR),
 		// "taxonExpectedValues");

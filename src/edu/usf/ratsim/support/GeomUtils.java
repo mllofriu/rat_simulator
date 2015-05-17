@@ -11,6 +11,7 @@ import javax.vecmath.Vector3f;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 
@@ -204,7 +205,9 @@ public class GeomUtils {
 			t.set(rot);
 			t.transform(position);
 			return position;
+		} else if (af instanceof EatAffordance){
+			return position;
 		} else 
-			throw new RuntimeException("Simulation of non-movement affordance");
+			throw new RuntimeException("Simulation of unknown affordance");
 	}
 }
