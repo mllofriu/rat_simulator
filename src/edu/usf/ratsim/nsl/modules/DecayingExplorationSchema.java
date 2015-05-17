@@ -54,7 +54,7 @@ public class DecayingExplorationSchema extends NslModule {
 
 		// Flashing feeder prevents exploration
 		// if (!robot.seesFlashingFeeder()){
-		double explorationValue = maxReward * Math.exp(-episodeCount * alpha);
+		double explorationValue = maxReward * Math.exp(-(episodeCount-1) * alpha);
 		List<Affordance> affs = robot.checkAffordances(subject
 				.getPossibleAffordances());
 
@@ -64,6 +64,8 @@ public class DecayingExplorationSchema extends NslModule {
 
 		Affordance pickedAffordance;
 		do {
+			if (containForward(affs) && r.nextBoolean())
+				pickedAffordance = getForward(affs);
 			pickedAffordance = affs.get(r.nextInt(affs.size()));
 		} while (!pickedAffordance.isRealizable() || (pickedAffordance instanceof EatAffordance));
 
@@ -71,6 +73,21 @@ public class DecayingExplorationSchema extends NslModule {
 
 		lastPicked = pickedAffordance;
 		// }
+	}
+
+	private Affordance getForward(List<Affordance> affs) {
+		for (Affordance aff : affs)
+			if (aff instanceof ForwardAffordance)
+				return aff;
+						
+		return null;
+	}
+
+	private boolean containForward(List<Affordance> affs) {
+		boolean contain = false;
+		for (Affordance aff : affs)
+			contain = contain || aff instanceof ForwardAffordance;
+		return contain;
 	}
 
 	private List<Affordance> removeOtherTurns(List<Affordance> affs,

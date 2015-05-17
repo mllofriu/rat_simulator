@@ -184,6 +184,11 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	public float getStepLenght() {
 		return step;
 	}
+
+	@Override
+	public void restoreExploration() {
+		model.restoreExplorationVal();
+	}
 	
 
 }

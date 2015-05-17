@@ -40,6 +40,7 @@ import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQL;
 import edu.usf.ratsim.nsl.modules.qlearning.update.QLAlgorithm;
 import edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.taxic.TaxicFoodFinderSchema;
+import edu.usf.ratsim.nsl.modules.taxic.TaxicWallOpeningsSchema;
 
 public class MultiScaleArtificialPCModel extends NslModel {
 
@@ -57,8 +58,8 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	private static final String AFTER_LASTATE_GOAL_DECIDER_STR = "AANYGD";
 	private static final String AFTER_PLACE_INTENTION_STR = "API";
 	private static final String BEFORE_PLACE_INTENTION_STR = "BPI";
-	private static final String BEFORE_WALLAVOID_STR = "B_WALL_AVOID";
-	private static final String AFTER_WALLAVOID_STR = "A_WALL_AVOID";
+	private static final String BEFORE_WALLFOLLOW_STR = "B_WALL_AVOID";
+	private static final String AFTER_WALLFOLLOW_STR = "A_WALL_AVOID";
 	private static final String BEFORE_INTENTION_STR = "BINT";
 	private static final String AFTER_INTENTION_STR = "AINT";
 	private static final String BEFORE_HD_LAYER_STR = "BHDL";
@@ -100,6 +101,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	private JointStatesManyConcatenate bAll;
 	private Intention intention;
 	private LinkedList<JointStatesManyMultiply> jStateList;
+	private float explorationReward;
 
 	public MultiScaleArtificialPCModel(String name, NslModule parent) {
 		super(name, parent);
@@ -127,8 +129,8 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		int numIntentions = params.getChildInt("numIntentions");
 		float flashingReward = params.getChildFloat("flashingReward");
 		float nonFlashingReward = params.getChildFloat("nonFlashingReward");
-		float explorationReward = params.getChildFloat("explorationReward");
-		float wallFollowingVal = params.getChildFloat("wallAvoidingVal");
+		explorationReward = params.getChildFloat("explorationReward");
+		float wallFollowingVal = params.getChildFloat("wallFollowingVal");
 		float explorationHalfLifeVal = params
 				.getChildFloat("explorationHalfLifeVal");
 		boolean deterministic = params
@@ -138,6 +140,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		float xmax = params.getChildFloat("xmax");
 		float ymax = params.getChildFloat("ymax");
 		rlType = params.getChildText("rlType");
+		String voteType = params.getChildText("voteType");
 		int maxActionsSinceForward = params
 				.getChildInt("maxActionsSinceForward");
 		float stillExplorationVal = params.getChildFloat("stillExplorationVal");
@@ -157,9 +160,10 @@ public class MultiScaleArtificialPCModel extends NslModel {
 
 		// beforeActiveGoalDecider = new ActiveGoalDecider(
 		// BEFORE_ACTIVE_GOAL_DECIDER_STR, this);
-		lastAteGoalDecider = new LastAteGoalDecider(BEFORE_LASTATE_GOAL_DECIDER_STR,
+		lastAteGoalDecider = new LastAteGoalDecider(
+				BEFORE_LASTATE_GOAL_DECIDER_STR, this, subject);
+		new LastTriedToEatGoalDecider(BEFORE_LASTTRIEDTOEAT_GOAL_DECIDER_STR,
 				this, subject);
-		new LastTriedToEatGoalDecider(BEFORE_LASTTRIEDTOEAT_GOAL_DECIDER_STR, this, subject);
 
 		if (numIntentions > 1)
 			intention = new LastAteIntention(BEFORE_INTENTION_STR, this,
@@ -184,7 +188,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 			radius += (maxRadius - minRadius) / (numPCLayers - 1);
 		}
 
-		//TODO: seed?
+		// TODO: seed?
 		beforeHDs = new LinkedList<ArtificialHDCellLayer>();
 		int numHDCells = minHDCellsPerLayer;
 		for (int i = 0; i < numHDLayers; i++) {
@@ -214,31 +218,35 @@ public class MultiScaleArtificialPCModel extends NslModel {
 
 		// Add feeder cells
 		// TODO: pcl seed?
-//		new ArtificialFeederCellLayer(BEFORE_FEEDER_CELL_LAYER, this, lRobot, numIntentions, pclSeed);
-//		List<Integer> statesSizes = new LinkedList<Integer>();
-//		statesSizes.add(numIntentions);
-//		statesSizes.add(numIntentions);
-//		JointStatesManyMultiply jStates = new JointStatesManyMultiply(
-//				BEFORE_PIHD + (numPCLayers * numHDLayers), this, statesSizes);
-//		jStateList.add(jStates);
-//		bpihdSizes.add(jStates.getSize());
-		
+		// new ArtificialFeederCellLayer(BEFORE_FEEDER_CELL_LAYER, this, lRobot,
+		// numIntentions, pclSeed);
+		// List<Integer> statesSizes = new LinkedList<Integer>();
+		// statesSizes.add(numIntentions);
+		// statesSizes.add(numIntentions);
+		// JointStatesManyMultiply jStates = new JointStatesManyMultiply(
+		// BEFORE_PIHD + (numPCLayers * numHDLayers), this, statesSizes);
+		// jStateList.add(jStates);
+		// bpihdSizes.add(jStates.getSize());
+
 		// Concatenate all layers
 		bAll = new JointStatesManyConcatenate(BEFORE_CONCAT, this, bpihdSizes);
 
 		// Take the value of each state and vote for an action
-		if (rlType.equals("proportionalQl"))
-		
-			qlVotes = new ProportionalVotes(BEFORE_ACTION_SELECTION_STR, this,
-					bAll.getSize(), numActions);
-		else if (rlType.equals("actorCritic"))
-			qlVotes = new ProportionalVotes(BEFORE_ACTION_SELECTION_STR, this,
-					bAll.getSize(), numActions+1);
-		else if (rlType.equals("wtaQl"))
+		if (voteType.equals("proportional"))
+			if (rlType.equals("actorCritic"))
+				qlVotes = new ProportionalVotes(BEFORE_ACTION_SELECTION_STR,
+						this, bAll.getSize(), numActions + 1);
+			else
+				qlVotes = new ProportionalVotes(BEFORE_ACTION_SELECTION_STR,
+						this, bAll.getSize(), numActions);
+		else if (voteType.equals("gradientConnection"))
+			qlVotes = new GradientVotes(BEFORE_ACTION_SELECTION_STR,
+						this, bAll.getSize(), numActions);
+		else if (voteType.equals("wta"))
 			qlVotes = new WTAVotes(BEFORE_ACTION_SELECTION_STR, this,
 					bAll.getSize(), numActions);
 		else
-			throw new RuntimeException("RL mechanism not implemented");
+			throw new RuntimeException("Vote mechanism not implemented");
 
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
@@ -256,8 +264,9 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				maxActionsSinceForward, subject, stillExplorationVal);
 
 		// Wall following for obst. avoidance
-		new WallAvoider(BEFORE_WALLAVOID_STR, this, subject, wallFollowingVal,
-				numActions);
+//		new WallAvoider(BEFORE_WALLAVOID_STR, this, subject, wallFollowingVal,
+//				numActions);
+		new TaxicWallOpeningsSchema(BEFORE_WALLFOLLOW_STR, this, subject, lRobot, wallFollowingVal);
 
 		// Three joint states - QL Votes, Taxic, WallAvoider
 		jointVotes = new JointStatesManySum(BEFORE_JOINT_VOTES, this, 6,
@@ -278,9 +287,10 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// Second goal deciders after the robot has moved
 		// afterActiveGoalDecider = new ActiveGoalDecider(
 		// AFTER_ACTIVE_GOAL_DECIDER_STR, this, universe);
-		lastAteGoalDecider = new LastAteGoalDecider(AFTER_LASTATE_GOAL_DECIDER_STR,
+		lastAteGoalDecider = new LastAteGoalDecider(
+				AFTER_LASTATE_GOAL_DECIDER_STR, this, subject);
+		new LastTriedToEatGoalDecider(AFTER_LASTTRIEDTOEAT_GOAL_DECIDER_STR,
 				this, subject);
-		new LastTriedToEatGoalDecider(AFTER_LASTTRIEDTOEAT_GOAL_DECIDER_STR, this, subject);
 
 		if (numIntentions > 1)
 			new LastAteIntention(AFTER_INTENTION_STR, this, numIntentions);
@@ -321,23 +331,24 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				statesSizes.add(numIntentions);
 				statesSizes.add(afterHDs.get(j).getSize());
 				statesSizes.add(afterPcls.get(i).getSize());
-				jStates = new JointStatesManyMultiply(
-						AFTER_PIHD + (i * numHDLayers + j), this, statesSizes);
+				jStates = new JointStatesManyMultiply(AFTER_PIHD
+						+ (i * numHDLayers + j), this, statesSizes);
 				apihdSizes.add(jStates.getSize());
 
 			}
-		
+
 		// Add feeder cells
 		// TODO: pcl seed?
-//		new ArtificialFeederCellLayer(AFTER_FEEDER_CELL_LAYER, this, lRobot, numIntentions, pclSeed);
-//		statesSizes = new LinkedList<Integer>();
-//		statesSizes.add(numIntentions);
-//		statesSizes.add(numIntentions);
-//		jStates = new JointStatesManyMultiply(
-//				AFTER_PIHD + (numPCLayers * numHDLayers), this, statesSizes);
-//		jStateList.add(jStates);
-//		apihdSizes.add(jStates.getSize());
-		
+		// new ArtificialFeederCellLayer(AFTER_FEEDER_CELL_LAYER, this, lRobot,
+		// numIntentions, pclSeed);
+		// statesSizes = new LinkedList<Integer>();
+		// statesSizes.add(numIntentions);
+		// statesSizes.add(numIntentions);
+		// jStates = new JointStatesManyMultiply(
+		// AFTER_PIHD + (numPCLayers * numHDLayers), this, statesSizes);
+		// jStateList.add(jStates);
+		// apihdSizes.add(jStates.getSize());
+
 		JointStatesManyConcatenate aAll = new JointStatesManyConcatenate(
 				AFTER_CONCAT, this, apihdSizes);
 
@@ -347,7 +358,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 					aAll.getSize(), numActions);
 		else if (rlType.equals("actorCritic"))
 			new ProportionalVotes(AFTER_ACTION_SELECTION_STR, this,
-					aAll.getSize(), numActions+1);
+					aAll.getSize(), numActions + 1);
 		else if (rlType.equals("wtaQl"))
 			new WTAVotes(AFTER_ACTION_SELECTION_STR, this, aAll.getSize(),
 					numActions);
@@ -364,11 +375,12 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				subject, lRobot, flashingReward, discountFactor);
 
 		// Wall following for obst. avoidance
-		new WallAvoider(AFTER_WALLAVOID_STR, this, subject, wallFollowingVal,
-				numActions);
-
-//		exploration.add(new DecayingExplorationSchema(AFTER_EXPLORATION, this,
-//				subject, lRobot, explorationReward, explorationHalfLifeVal));
+//		new WallAvoider(AFTER_WALLAVOID_STR, this, subject, wallFollowingVal,
+//				numActions);
+		new TaxicWallOpeningsSchema(AFTER_WALLFOLLOW_STR, this, subject, lRobot, wallFollowingVal);
+		// exploration.add(new DecayingExplorationSchema(AFTER_EXPLORATION,
+		// this,
+		// subject, lRobot, explorationReward, explorationHalfLifeVal));
 
 		// Three joint states - QL Votes, Taxic, WallAvoider
 		new JointStatesManySum(AFTER_JOINT_VOTES, this, 6, numActions + 1);
@@ -388,8 +400,8 @@ public class MultiScaleArtificialPCModel extends NslModel {
 					RL_STR, this, subject, bAll.getSize(), numActions,
 					discountFactor, alpha, discountFactor, initialValue);
 			// TODO: recover this assginments
-//			ql = mspql;
-//			qLUpdVal.add(mspql);
+			// ql = mspql;
+			// qLUpdVal.add(mspql);
 		} else if (rlType.equals("wtaQl")) {
 			// TODO: get back
 			// SingleStateQL ssql = new SingleStateQL(QL_STR, this,
@@ -397,16 +409,16 @@ public class MultiScaleArtificialPCModel extends NslModel {
 			// alpha, initialValue);
 			// ql = ssql;
 			// qLUpdVal.add(ssql);
-		} else 
+		} else
 			throw new RuntimeException("RL mechanism not implemented");
 	}
 
 	public void makeConn() {
 		// Connect tried to eat to taxic bh
-		nslConnect(getChild(BEFORE_LASTTRIEDTOEAT_GOAL_DECIDER_STR), "goalFeeder",
-				getChild(BEFORE_FOOD_FINDER_STR), "goalFeeder");
-		nslConnect(getChild(AFTER_LASTTRIEDTOEAT_GOAL_DECIDER_STR), "goalFeeder",
-				getChild(AFTER_FOOD_FINDER_STR), "goalFeeder");
+		nslConnect(getChild(BEFORE_LASTTRIEDTOEAT_GOAL_DECIDER_STR),
+				"goalFeeder", getChild(BEFORE_FOOD_FINDER_STR), "goalFeeder");
+		nslConnect(getChild(AFTER_LASTTRIEDTOEAT_GOAL_DECIDER_STR),
+				"goalFeeder", getChild(AFTER_FOOD_FINDER_STR), "goalFeeder");
 		nslConnect(getChild(BEFORE_LASTATE_GOAL_DECIDER_STR), "goalFeeder",
 				getChild(BEFORE_FLASHING_FOOD_FINDER_STR), "goalFeeder");
 		nslConnect(getChild(AFTER_LASTATE_GOAL_DECIDER_STR), "goalFeeder",
@@ -416,7 +428,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				getChild(BEFORE_JOINT_VOTES), "state" + 0);
 		nslConnect(getChild(BEFORE_FLASHING_FOOD_FINDER_STR), "votes",
 				getChild(BEFORE_JOINT_VOTES), "state" + 1);
-		nslConnect(getChild(BEFORE_WALLAVOID_STR), "votes",
+		nslConnect(getChild(BEFORE_WALLFOLLOW_STR), "votes",
 				getChild(BEFORE_JOINT_VOTES), "state" + 2);
 		nslConnect(getChild(BEFORE_EXPLORATION), "votes",
 				getChild(BEFORE_JOINT_VOTES), "state" + 4);
@@ -426,9 +438,10 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				getChild(AFTER_JOINT_VOTES), "state" + 0);
 		nslConnect(getChild(AFTER_FLASHING_FOOD_FINDER_STR), "votes",
 				getChild(AFTER_JOINT_VOTES), "state" + 1);
-		nslConnect(getChild(AFTER_WALLAVOID_STR), "votes",
+		nslConnect(getChild(AFTER_WALLFOLLOW_STR), "votes",
 				getChild(AFTER_JOINT_VOTES), "state" + 2);
-		// BEFORE exploration is connected to after votes to nullify value estimation
+		// BEFORE exploration is connected to after votes to nullify value
+		// estimation
 		nslConnect(getChild(BEFORE_EXPLORATION), "votes",
 				getChild(AFTER_JOINT_VOTES), "state" + 4);
 		nslConnect(getChild(BEFORE_STILL_EXPLORATION), "votes",
@@ -463,21 +476,21 @@ public class MultiScaleArtificialPCModel extends NslModel {
 								+ (i * numHDLayers + j));
 
 			}
-		
-//		nslConnect(getChild(BEFORE_FEEDER_CELL_LAYER), "activation",
-//				getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)), "state1");
-//		nslConnect(getChild(BEFORE_INTENTION_STR), "intention",
-//				getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)), "state2");
-//		nslConnect(getChild(AFTER_FEEDER_CELL_LAYER), "activation",
-//				getChild(AFTER_PIHD + (numPCLayers * numHDLayers)), "state1");
-//		nslConnect(getChild(AFTER_INTENTION_STR), "intention",
-//				getChild(AFTER_PIHD + (numPCLayers * numHDLayers)), "state2");
-//		nslConnect(getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)),
-//				"jointState", getChild(BEFORE_CONCAT), "state"
-//						+ (numPCLayers * numHDLayers));
-//		nslConnect(getChild(AFTER_PIHD + (numPCLayers * numHDLayers)),
-//				"jointState", getChild(AFTER_CONCAT), "state"
-//						+ (numPCLayers * numHDLayers));
+
+		// nslConnect(getChild(BEFORE_FEEDER_CELL_LAYER), "activation",
+		// getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)), "state1");
+		// nslConnect(getChild(BEFORE_INTENTION_STR), "intention",
+		// getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)), "state2");
+		// nslConnect(getChild(AFTER_FEEDER_CELL_LAYER), "activation",
+		// getChild(AFTER_PIHD + (numPCLayers * numHDLayers)), "state1");
+		// nslConnect(getChild(AFTER_INTENTION_STR), "intention",
+		// getChild(AFTER_PIHD + (numPCLayers * numHDLayers)), "state2");
+		// nslConnect(getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)),
+		// "jointState", getChild(BEFORE_CONCAT), "state"
+		// + (numPCLayers * numHDLayers));
+		// nslConnect(getChild(AFTER_PIHD + (numPCLayers * numHDLayers)),
+		// "jointState", getChild(AFTER_CONCAT), "state"
+		// + (numPCLayers * numHDLayers));
 
 		// Connect the joint states to the QL system
 		nslConnect(getChild(BEFORE_CONCAT), "jointState",
@@ -511,20 +524,20 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// "actionVotesBefore");
 		//
 		if (rlType.equals("proportionalQl")) {
-//			nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes",
-//					getChild(RL_STR), "actionVotesAfter");
-//			nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes",
-//					getChild(RL_STR), "actionVotesBefore");
+			// nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes",
+			// getChild(RL_STR), "actionVotesAfter");
+			// nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes",
+			// getChild(RL_STR), "actionVotesBefore");
 			nslConnect(getChild(AFTER_JOINT_VOTES), "jointState",
 					getChild(RL_STR), "actionVotesAfter");
 			nslConnect(getChild(BEFORE_JOINT_VOTES), "jointState",
 					getChild(RL_STR), "actionVotesBefore");
-		} else if (rlType.equals("actorCritic")){
+		} else if (rlType.equals("actorCritic")) {
 			nslConnect(getChild(AFTER_JOINT_VOTES), "jointState",
 					getChild(RL_STR), "actionVotesAfter");
 			nslConnect(getChild(BEFORE_JOINT_VOTES), "jointState",
 					getChild(RL_STR), "actionVotesBefore");
-		} else 
+		} else
 			throw new RuntimeException("RL mechanism not implemented");
 		// nslConnect(getChild(AFTER_JOINT_VOTES), "jointState",
 		// getChild(QL_STR),
@@ -559,6 +572,9 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// anyGoalDecider.newTrial();
 		// for(GoalTaxicFoodFinderSchema gs : taxic)
 		// gs.newTrial();
+		
+		for (DecayingExplorationSchema gs : exploration)
+			gs.newTrial();
 	}
 
 	public void deactivatePCL(List<Integer> feedersToDeactivate) {
@@ -641,6 +657,11 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	public void setExplorationVal(float val) {
 		for (DecayingExplorationSchema e : exploration)
 			e.setExplorationVal(val);
-			
+
+	}
+
+	public void restoreExplorationVal() {
+		for (DecayingExplorationSchema e : exploration)
+			e.setExplorationVal(explorationReward);
 	}
 }

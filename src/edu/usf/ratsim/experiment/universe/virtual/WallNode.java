@@ -100,20 +100,7 @@ public class WallNode extends ExpUniverseNode {
 				(float) wSegment.p1.x, (float) wSegment.p1.y, 0, h);
 	}
 
-	public boolean intersects(LineSegment wall) {
-		return segment.intersection(wall) != null;
-	}
 
-	public float distanceTo(LineSegment wall) {
-		return (float) segment.distance(wall);
-	}
 
-	public boolean intersects(Polygon c) {
-		GeometryFactory gf = new GeometryFactory();
-		Coordinate cs[] = new Coordinate[2];
-		cs[0] = segment.p0;
-		cs[1] = segment.p1;
-		LineString ls = gf.createLineString(cs);
-		return ls.crosses(c) || c.contains(ls);
-	}
+
 }

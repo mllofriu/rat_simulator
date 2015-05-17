@@ -10,7 +10,7 @@ public class ProportionalArtificialPlaceCell implements ArtificialPlaceCell {
 		this.center = center;
 	}
 
-	public float getActivation(Point3f currLocation) {
+	public float getActivation(Point3f currLocation, float distanceToWall) {
 		return 1 / center.distance(currLocation);
 	}
 

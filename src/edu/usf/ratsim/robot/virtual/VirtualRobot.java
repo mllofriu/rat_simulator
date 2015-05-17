@@ -24,7 +24,7 @@ import edu.usf.ratsim.support.GeomUtils;
 
 public class VirtualRobot extends LocalizableRobot {
 	
-	private static final float ROBOT_LENGTH = .1f;
+	private static final float ROBOT_LENGTH = .2f;
 
 	public VirtUniverse universe;
 
@@ -117,16 +117,7 @@ public class VirtualRobot extends LocalizableRobot {
 			if (i != except)
 				if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
 					// Get relative position
-					Point3f fPos = universe.getFoodPosition(i);
-					Point3f rPos = universe.getRobotPosition();
-					Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos,
-							fPos));
-					// Rotate to robots framework
-					Quat4f rRot = universe.getRobotOrientation();
-					rRot.inverse();
-					Transform3D t = new Transform3D();
-					t.setRotation(rRot);
-					t.transform(relFPos);
+					Point3f relFPos = getRelativePos(universe.getFoodPosition(i));
 					// Return the landmark
 					Feeder relFeeder = new Feeder(universe.getFeeder(i));
 					relFeeder.setPosition(relFPos);
@@ -134,6 +125,19 @@ public class VirtualRobot extends LocalizableRobot {
 				}
 
 		return res;
+	}
+
+	private Point3f getRelativePos(Point3f fPos) {
+		Point3f rPos = universe.getRobotPosition();
+		Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos,
+				fPos));
+		// Rotate to robots framework
+		Quat4f rRot = universe.getRobotOrientation();
+		rRot.inverse();
+		Transform3D t = new Transform3D();
+		t.setRotation(rRot);
+		t.transform(relFPos);
+		return relFPos;
 	}
 
 	@Override
@@ -270,6 +274,16 @@ public class VirtualRobot extends LocalizableRobot {
 	@Override
 	public List<Feeder> getAllFeeders() {
 		return universe.getFeeders();
+	}
+
+	@Override
+	public float getDistanceToClosestWall() {
+		return universe.getDistanceToClosestWall();
+	}
+
+	@Override
+	public List<Point3f> getVisibleWallEnds() {
+		return universe.getVisibleWallEnds(halfFieldOfView, visionDist);
 	}
 
 

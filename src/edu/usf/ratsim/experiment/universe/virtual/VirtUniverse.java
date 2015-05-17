@@ -1,7 +1,6 @@
 package edu.usf.ratsim.experiment.universe.virtual;
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,18 +20,12 @@ import org.w3c.dom.Document;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.LineSegment;
-import com.vividsolutions.jts.geom.Polygon;
 
 import edu.usf.experiment.PropertyHolder;
-import edu.usf.experiment.subject.affordance.Affordance;
-import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.experiment.universe.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.experiment.utils.IOUtils;
-import edu.usf.ratsim.support.Configuration;
 import edu.usf.ratsim.support.GeomUtils;
 import edu.usf.ratsim.support.XMLDocReader;
 
@@ -44,7 +37,6 @@ import edu.usf.ratsim.support.XMLDocReader;
  * 
  */
 public class VirtUniverse extends Universe {
-
 
 	private static VirtUniverse instance = null;
 	private View topView;
@@ -58,14 +50,13 @@ public class VirtUniverse extends Universe {
 
 	private List<WallNode> wallNodes;
 	private boolean display;
-	private long sleep;
+	private List<Wall> initialWalls;
 
 	public VirtUniverse(ElementWrapper params) {
 		super(params);
 
 		String mazeFile = params.getChildText("maze");
 		display = params.getChildBoolean("display");
-		sleep = params.getChildInt("sleep");
 
 		wallNodes = new LinkedList<WallNode>();
 
@@ -78,6 +69,9 @@ public class VirtUniverse extends Universe {
 		List<ElementWrapper> list;
 
 		robot = new Robot();
+
+		// Save initial walls to differentiate from later on added ones
+		initialWalls = new LinkedList<Wall>(getWalls());
 
 		if (display) {
 			VirtualUniverse vu = new VirtualUniverse();
@@ -141,18 +135,18 @@ public class VirtUniverse extends Universe {
 
 	public void addWall(float x1, float y1, float x2, float y2) {
 		super.addWall(x1, y1, x2, y2);
-		
-		if (display){
+
+		if (display) {
 			WallNode w = new WallNode(x1, y1, 0, x2, y2, 0, 0.025f);
 			bg.addChild(w);
 			wallNodes.add(w);
 		}
 	}
-	
+
 	public void addWall(LineSegment wSegment) {
 		super.addWall(wSegment);
-		
-		if (display){
+
+		if (display) {
 			WallNode w = new WallNode(wSegment, 0.025f);
 			bg.addChild(w);
 			wallNodes.add(w);
@@ -228,14 +222,6 @@ public class VirtUniverse extends Universe {
 		robot.setT(rPos);
 		if (display)
 			robotNode.getTransformGroup().setTransform(rPos);
-
-		if (sleep != 0 && display)
-			try {
-				Thread.sleep(sleep);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 	}
 
 	/**
@@ -256,14 +242,6 @@ public class VirtUniverse extends Universe {
 		robot.setT(rPos);
 		if (display)
 			robotNode.getTransformGroup().setTransform(rPos);
-
-		if (sleep != 0 && display)
-			try {
-				Thread.sleep(sleep);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 	}
 
 	public Quat4f getRobotOrientation() {
@@ -284,7 +262,6 @@ public class VirtUniverse extends Universe {
 		t.get(rot);
 		return (float) (2 * Math.acos(rot.w) * Math.signum(rot.z));
 	}
-
 
 	@Override
 	public void setActiveFeeder(int i, boolean val) {
@@ -360,52 +337,24 @@ public class VirtUniverse extends Universe {
 	// return wallNodes;
 	// }
 
-	public boolean wallIntersectsOtherWalls(LineSegment wall) {
-		boolean intersects = false;
-		for (WallNode w : wallNodes)
-			intersects = intersects || w.intersects(wall);
-
-		return intersects;
-	}
-
-	public float shortestDistanceToWalls(LineSegment wall) {
-		float shortestDistance = Float.MAX_VALUE;
-		for (WallNode w : wallNodes)
-			if (w.distanceTo(wall) < shortestDistance)
-				shortestDistance = w.distanceTo(wall);
-
-		return shortestDistance;
-	}
-
 	public void dispose() {
 		for (FeederNode f : feederNodes)
 			f.terminate();
-	}
-
-	public float wallDistanceToFeeders(LineSegment wall) {
-		float minDist = Float.MAX_VALUE;
-		for (Integer fn : getFeederNums()) {
-			Point3f pos = getFoodPosition(fn);
-			Coordinate c = new Coordinate(pos.x, pos.y);
-			if (wall.distance(c) < minDist)
-				minDist = (float) wall.distance(c);
-		}
-		return minDist;
 	}
 
 	public boolean canRobotSeeFeeder(Integer fn, float halfFieldOfView,
 			float visionDist) {
 		float angleToFeeder = angleToFeeder(fn);
 		boolean inField = angleToFeeder <= halfFieldOfView;
-//		System.out.println(fn + " " + angleToFeeder);
-		
+		// System.out.println(fn + " " + angleToFeeder);
+
 		boolean intersects = false;
 		Coordinate rPos = new Coordinate(getRobotPosition().x,
 				getRobotPosition().y);
 		Point3f fPosV = getFoodPosition(fn);
 		Coordinate fPos = new Coordinate(fPosV.x, fPosV.y);
 		LineSegment lineOfSight = new LineSegment(rPos, fPos);
-		for (WallNode w : wallNodes)
+		for (Wall w : getWalls())
 			intersects = intersects || w.intersects(lineOfSight);
 
 		boolean closeEnough = getRobotPosition().distance(
@@ -428,13 +377,13 @@ public class VirtUniverse extends Universe {
 
 	}
 
-	public boolean placeIntersectsWalls(Polygon c) {
-		boolean intersects = false;
-		for (WallNode w : wallNodes)
-			intersects = intersects || w.intersects(c);
-
-		return intersects;
-	}
+	// public boolean placeIntersectsWalls(Polygon c) {
+	// boolean intersects = false;
+	// for (WallNode w : wallNodes)
+	// intersects = intersects || w.intersects(c);
+	//
+	// return intersects;
+	// }
 
 	public void setFlashingFeeder(int i, boolean flashing) {
 		super.setFlashingFeeder(i, flashing);
@@ -454,4 +403,50 @@ public class VirtUniverse extends Universe {
 	public static VirtUniverse getInstance() {
 		return instance;
 	}
+
+	public List<Point3f> getVisibleWallEnds(float halfFieldOfView,
+			float visionDist) {
+		List<Point3f> ends = new LinkedList<Point3f>();
+
+		List<Wall> walls = new LinkedList<Wall>(getWalls());
+		// walls.removeAll(initialWalls);
+		for (Wall w : walls) {
+			Point3f p = new Point3f((float) w.s.p0.x, (float) w.s.p0.y, 0f);
+			if (pointCanBeSeenByRobot(p, halfFieldOfView, visionDist, w))
+				ends.add(p);
+
+			p = new Point3f((float) w.s.p1.x, (float) w.s.p1.y, 0f);
+			if (pointCanBeSeenByRobot(p, halfFieldOfView, visionDist, w))
+				ends.add(p);
+		}
+
+		return ends;
+	}
+
+	private boolean pointCanBeSeenByRobot(Point3f p, float halfFieldOfView,
+			float visionDist, Wall excludeWall) {
+		boolean inField = false, closeEnough = false, intersects = true;
+		
+		float angleToPoint = GeomUtils.angleToPointWithOrientation(
+				getRobotOrientation(), getRobotPosition(), p);
+		inField = Math.abs(angleToPoint) <= halfFieldOfView;
+
+		if (inField) {
+			closeEnough = getRobotPosition().distance(p) < visionDist;
+			
+			if (closeEnough){
+				intersects = false;
+				Coordinate rPos = new Coordinate(getRobotPosition().x,
+						getRobotPosition().y);
+				Coordinate fPos = new Coordinate(p.x, p.y);
+				LineSegment lineOfSight = new LineSegment(rPos, fPos);
+				for (Wall w : getWalls())
+					intersects = intersects
+							|| (w != excludeWall && w.intersects(lineOfSight));
+			}
+		}
+		// System.out.println(inField + " " + !intersects + " " + closeEnough);
+		return inField && !intersects && closeEnough;
+	}
+
 }

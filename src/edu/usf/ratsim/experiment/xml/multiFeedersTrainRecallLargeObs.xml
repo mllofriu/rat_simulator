@@ -8,7 +8,6 @@
 			<closeToFoodThrs>0.15</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
 			<display>true</display>
-			<sleep>10</sleep>
 		</params>
 	</universe>
 	
@@ -17,16 +16,17 @@
 		<params>
 			<noise>.2</noise>
 			<translationRotationNoise>.37</translationRotationNoise>
-			<lookaheadSteps>2</lookaheadSteps>
+			<lookaheadSteps>5</lookaheadSteps>
 			<halfFieldOfView>1.83</halfFieldOfView>
 			<visionDist>10</visionDist>
 			<closeThrs>.1</closeThrs>
 		</params>
 	</robot>
 	
+
 	<group>
 		<name>Control</name>
-		<numMembers>64</numMembers>
+		<numMembers>5</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
@@ -34,11 +34,11 @@
 				<leftAngle>0.37</leftAngle>
 				<rightAngle>-0.37</rightAngle>
 				<numPCLayers>5</numPCLayers>
-				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<numPCCellsPerLayer>200</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
-				<maxRadius>.25</maxRadius>
-				<placeCells>goalExponential</placeCells>
-				<goalCellProportion>0.3</goalCellProportion>
+				<maxRadius>.3</maxRadius>
+				<placeCells>wallGoalExponential</placeCells>
+				<goalCellProportion>0.5</goalCellProportion>
 				<numHDLayers>5</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -51,16 +51,17 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>200</explorationReward>
-				<wallAvoidingVal>0</wallAvoidingVal>
+				<explorationReward>0</explorationReward>
+				<wallFollowingVal>0</wallFollowingVal>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
+				<voteType>gradientConnection</voteType>
 				<xmin>-.5</xmin>
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
-				<maxActionsSinceForward>20</maxActionsSinceForward>
-				<stillExplorationVal>500</stillExplorationVal>
+				<maxActionsSinceForward>100</maxActionsSinceForward>
+				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
@@ -68,10 +69,10 @@
 		<tasks>
 		</tasks>
 	</group>
-	
+	<!--
 	<group>
 		<name>Dorsal</name>
-		<numMembers>64</numMembers>
+		<numMembers>5</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
@@ -79,11 +80,11 @@
 				<leftAngle>0.37</leftAngle>
 				<rightAngle>-0.37</rightAngle>
 				<numPCLayers>5</numPCLayers>
-				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<numPCCellsPerLayer>200</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
-				<maxRadius>.25</maxRadius>
-				<placeCells>goalExponential</placeCells>
-				<goalCellProportion>0.3</goalCellProportion>
+				<maxRadius>.3</maxRadius>
+				<placeCells>wallGoalExponential</placeCells>
+				<goalCellProportion>0.5</goalCellProportion>
 				<numHDLayers>5</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -96,27 +97,28 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>200</explorationReward>
+				<explorationReward>500</explorationReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
+				<voteType>gradientConnection</voteType>
 				<xmin>-.5</xmin>
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<maxActionsSinceForward>20</maxActionsSinceForward>
-				<stillExplorationVal>500</stillExplorationVal>
+				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
 		</params>
 		<tasks>
 		</tasks>
-	</group>
+	</group> 
 	
 	<group>
 		<name>Ventral</name>
-		<numMembers>64</numMembers>
+		<numMembers>5</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
@@ -124,11 +126,11 @@
 				<leftAngle>0.37</leftAngle>
 				<rightAngle>-0.37</rightAngle>
 				<numPCLayers>5</numPCLayers>
-				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<numPCCellsPerLayer>200</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
-				<maxRadius>.25</maxRadius>
-				<placeCells>goalExponential</placeCells>
-				<goalCellProportion>0.3</goalCellProportion>
+				<maxRadius>.3</maxRadius>
+				<placeCells>wallGoalExponential</placeCells>
+				<goalCellProportion>0.5</goalCellProportion>
 				<numHDLayers>5</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -141,16 +143,17 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>200</explorationReward>
+				<explorationReward>500</explorationReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
+				<voteType>gradientConnection</voteType>
 				<xmin>-.5</xmin>
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<maxActionsSinceForward>20</maxActionsSinceForward>
-				<stillExplorationVal>500</stillExplorationVal>
+				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
@@ -159,9 +162,10 @@
 		</tasks>
 	</group>
 	
+
 	<group>
 		<name>NegControl</name>
-		<numMembers>64</numMembers>
+		<numMembers>5</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
@@ -169,11 +173,11 @@
 				<leftAngle>0.37</leftAngle>
 				<rightAngle>-0.37</rightAngle>
 				<numPCLayers>5</numPCLayers>
-				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<numPCCellsPerLayer>200</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
-				<maxRadius>.25</maxRadius>
-				<placeCells>goalExponential</placeCells>
-				<goalCellProportion>0.3</goalCellProportion>
+				<maxRadius>.3</maxRadius>
+				<placeCells>wallGoalExponential</placeCells>
+				<goalCellProportion>0.5</goalCellProportion>
 				<numHDLayers>5</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -186,16 +190,17 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>200</explorationReward>
+				<explorationReward>500</explorationReward>
 				<wallAvoidingVal>0</wallAvoidingVal>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
+				<voteType>gradientConnection</voteType>
 				<xmin>-.5</xmin>
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<maxActionsSinceForward>20</maxActionsSinceForward>
-				<stillExplorationVal>500</stillExplorationVal>
+				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
@@ -204,7 +209,53 @@
 		</tasks>
 	</group>
 	
-		
+	
+-->
+	<group>
+		<name>TimeoutControl</name>
+		<numMembers>5</numMembers>
+		<subject>
+			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
+			<params>
+				<step>.05</step>
+				<leftAngle>0.37</leftAngle>
+				<rightAngle>-0.37</rightAngle>
+				<numPCLayers>5</numPCLayers>
+				<numPCCellsPerLayer>200</numPCCellsPerLayer>
+				<minRadius>.05</minRadius>
+				<maxRadius>.3</maxRadius>
+				<placeCells>wallGoalExponential</placeCells>
+				<goalCellProportion>0.5</goalCellProportion>
+				<numHDLayers>5</numHDLayers>
+				<minHDCellsPerLayer>1</minHDCellsPerLayer>
+				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
+				<numIntentions>8</numIntentions>
+				<deterministicActionSelection>true</deterministicActionSelection>
+				<foodReward>10000</foodReward>
+				<nonFoodReward>0</nonFoodReward>
+				<discountFactor>.9</discountFactor>
+				<alpha>0.9</alpha>
+				<initialValue>0</initialValue>
+				<flashingReward>5000</flashingReward>
+				<nonFlashingReward>1000</nonFlashingReward>
+				<explorationReward>250</explorationReward>
+				<wallFollowingVal>750</wallFollowingVal>
+				<explorationHalfLifeVal>1</explorationHalfLifeVal>
+				<rlType>actorCritic</rlType>
+				<voteType>gradientConnection</voteType>
+				<xmin>-.5</xmin>
+				<ymin>-.5</ymin>
+				<xmax>.5</xmax>
+				<ymax>.5</ymax>
+				<maxActionsSinceForward>20</maxActionsSinceForward>
+				<stillExplorationVal>5000</stillExplorationVal>
+			</params>
+		</subject>
+		<params>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
 	
 	<beforeTasks>
 		 <task>
@@ -222,6 +273,7 @@
 	
 	<trial>
 		<name>Training</name>
+		
 		<groups>
 			<group>Control</group>
 			<group>Dorsal</group>
@@ -232,6 +284,7 @@
 		</beforeTasks>
 		<episodes>
 			<number>1</number>
+			<sleep>0</sleep>
 			<beforeTasks>
 				<task>
 					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
@@ -293,13 +346,13 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>45000</max>
+						<max>5000</max>
 					</params>
 				</condition>
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
 					<params>
-						<n>1</n>
+						<n>100</n>
 					</params>
 				</condition>
 			</stopConditions>
@@ -318,11 +371,13 @@
 	
 	<trial>
 		<name>Recall</name>
+		
 		<groups>
 			<group>Control</group>
 			<group>Dorsal</group>
 			<group>Ventral</group>
 			<group>NegControl</group>
+			<group>TimeoutControl</group>
 		</groups>
 		<beforeTasks>
 			<task>
@@ -347,10 +402,6 @@
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.DisableExploration</name>
-				<params></params>
-			</task>
-			<task>
 				<name>edu.usf.experiment.task.AddLargeWallsTask</name>
 				<params>
 				</params>
@@ -358,6 +409,7 @@
 		</beforeTasks>
 		<episodes>
 			<number>1</number>
+			<sleep>10</sleep>
 			<beforeTasks>
 				<task>
 					<name>edu.usf.experiment.task.UnFlashAllFeeders</name>
@@ -392,7 +444,7 @@
 				<task>
 					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
 					<params>
-						<timeout>100</timeout>
+						<timeout>300</timeout>
 					</params>
 				</task>
 				<task>
@@ -429,13 +481,13 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>15000</max>
+						<max>50000</max>
 					</params>
 				</condition>
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodTimeoutStopCond</name>
 					<params>
-						<timeout>100</timeout>
+						<timeout>300</timeout>
 						<n>15</n>
 					</params>
 				</condition>

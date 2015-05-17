@@ -1,14 +1,19 @@
 package edu.usf.ratsim.nsl.modules;
 
+import java.util.List;
 import java.util.Random;
 
 import nslj.src.lang.NslDinInt0;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
+
+
+import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
+import edu.usf.experiment.utils.Debug;
 
 /**
  * Module to generate random actions when the agent hasnt moved (just rotated)
@@ -28,6 +33,7 @@ public class StillExplorer extends NslModule {
 	private NslDoutFloat1 votes;
 	private float stillExploringVal;
 	private int timeToExplore;
+	private Robot robot;
 
 	public StillExplorer(String nslName, NslModule nslParent,
 			int maxActionsSinceForward, Subject sub, float stillExploringVal) {
@@ -41,6 +47,7 @@ public class StillExplorer extends NslModule {
 		this.maxActionsSinceForward = maxActionsSinceForward;
 		this.sub = sub;
 		this.stillExploringVal = stillExploringVal;
+		this.robot = sub.getRobot();
 
 		actionsSinceForward = 0;
 		r = new Random();
@@ -67,12 +74,35 @@ public class StillExplorer extends NslModule {
 				timeToExplore = TIME_EXPLORING;
 			else
 				timeToExplore--;
-			int selectedAction;
 			
+			List<Affordance> affs = robot.checkAffordances(sub
+					.getPossibleAffordances());
+			Affordance pickedAffordance;
 			do {
-				selectedAction = r.nextInt(sub.getPossibleAffordances().size());
-			} while ((sub.getPossibleAffordances().get(selectedAction) instanceof EatAffordance));
-			votes.set(selectedAction, stillExploringVal);
+				if (containForward(affs) && r.nextBoolean())
+					pickedAffordance = getForward(affs);
+				pickedAffordance = affs.get(r.nextInt(affs.size()));
+			} while (!(pickedAffordance instanceof EatAffordance) && !pickedAffordance.isRealizable());
+			
+			votes.set(affs.indexOf(pickedAffordance), stillExploringVal);
+			
+			if (Debug.printExploration)
+				System.out.println("Performing still exploration");
 		}
+	}
+	
+	private Affordance getForward(List<Affordance> affs) {
+		for (Affordance aff : affs)
+			if (aff instanceof ForwardAffordance)
+				return aff;
+						
+		return null;
+	}
+
+	private boolean containForward(List<Affordance> affs) {
+		boolean contain = false;
+		for (Affordance aff : affs)
+			contain = contain || aff instanceof ForwardAffordance;
+		return contain;
 	}
 }

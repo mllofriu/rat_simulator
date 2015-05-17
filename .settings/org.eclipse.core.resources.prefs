@@ -5,4 +5,5 @@ encoding//src/edu/usf/ratsim/nsl/modules/Explorer.java=UTF-8
 encoding//src/edu/usf/ratsim/nsl/modules/WallAvoider.java=UTF-8
 encoding//src/edu/usf/ratsim/nsl/modules/taxic/FlashingTaxicFoodFinderSchema.java=UTF-8
 encoding//src/edu/usf/ratsim/nsl/modules/taxic/TaxicFoodFinderSchema.java=UTF-8
+encoding//src/edu/usf/ratsim/nsl/modules/taxic/TaxicWallOpeningsSchema.java=UTF-8
 encoding//src/edu/usf/ratsim/robot/virtual/VirtualRobot.java=UTF-8

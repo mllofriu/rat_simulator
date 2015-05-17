@@ -39,7 +39,7 @@ public class ArtificialPlaceCellLayer extends NslModule {
 		int i = 0;
 		float x, y;
 		do {
-			if (placeCellType.equals("goalExponential")) {
+			if (placeCellType.equals("goalExponential") || placeCellType.equals("wallGoalExponential")) {
 				if (r.nextFloat() < nearGoalProb){
 					int fIndex = r.nextInt(goals.size());
 					Point3f p = goals.get(fIndex).getPosition();
@@ -49,8 +49,14 @@ public class ArtificialPlaceCellLayer extends NslModule {
 					x = r.nextFloat() * (xmax - xmin) + xmin;
 					y = r.nextFloat() * (ymax - ymin) + ymin;
 				}
-				cells.add(new ExponentialArtificialPlaceCell(new Point3f(x,
-						y, 0), radius));
+				
+				if (placeCellType.equals("goalExponential")){
+					cells.add(new ExponentialArtificialPlaceCell(new Point3f(x,
+							y, 0), radius));
+				} else {
+					cells.add(new WallExponentialArtificialPlaceCell(new Point3f(x,
+							y, 0), radius));
+				}
 			} else {
 				x = r.nextFloat() * (xmax - xmin) + xmin;
 				y = r.nextFloat() * (ymax - ymin) + ymin;
@@ -78,10 +84,11 @@ public class ArtificialPlaceCellLayer extends NslModule {
 	}
 
 	public float[] getActivationValues(Point3f pos) {
+		float distanceToClosestWall = robot.getDistanceToClosestWall();
 		float[] res = new float[cells.size()];
 
 		for (int i = 0; i < cells.size(); i++) {
-			res[i] = cells.get(i).getActivation(pos);
+			res[i] = cells.get(i).getActivation(pos, distanceToClosestWall);
 		}
 
 		return res;
@@ -101,10 +108,11 @@ public class ArtificialPlaceCellLayer extends NslModule {
 
 	public void simRun(Point3f pos, boolean isFeederClose) {
 		// if (active && !isFeederClose) {
+		float distanceToClosestWall = robot.getDistanceToClosestWall();
 		if (active) {
 			int i = 0;
 			for (ArtificialPlaceCell pCell : cells) {
-				activation.set(i, pCell.getActivation(pos));
+				activation.set(i, pCell.getActivation(pos, distanceToClosestWall));
 				i++;
 			}
 		} else {
