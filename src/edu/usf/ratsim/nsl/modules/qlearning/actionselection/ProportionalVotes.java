@@ -29,11 +29,11 @@ public class ProportionalVotes extends NslModule implements Voter {
 	}
 
 	public void simRun() {
-		float[] values = new float[numActions];
+		double[] values = new double[numActions];
 		for (int action = 0; action < numActions; action++)
-			values[action] = 0f;
+			values[action] = 0d;
 		
-		float sum = 0;
+		double sum = 0;
 		float cantStates = states.getSize();
 		for (int state = 0; state < cantStates; state++){
 			float stateVal = states.get(state);

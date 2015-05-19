@@ -38,6 +38,7 @@ import edu.usf.ratsim.support.XMLDocReader;
  */
 public class VirtUniverse extends Universe {
 
+	private static final float OPEN_END_THRS = 0.02f;
 	private static VirtUniverse instance = null;
 	private View topView;
 	private RobotNode robotNode;
@@ -409,22 +410,37 @@ public class VirtUniverse extends Universe {
 		List<Point3f> ends = new LinkedList<Point3f>();
 
 		List<Wall> walls = new LinkedList<Wall>(getWalls());
-		// walls.removeAll(initialWalls);
+		walls.removeAll(initialWalls);
 		for (Wall w : walls) {
 			Point3f p = new Point3f((float) w.s.p0.x, (float) w.s.p0.y, 0f);
-			if (pointCanBeSeenByRobot(p, halfFieldOfView, visionDist, w))
-				ends.add(p);
+			ends.add(p);
 
 			p = new Point3f((float) w.s.p1.x, (float) w.s.p1.y, 0f);
-			if (pointCanBeSeenByRobot(p, halfFieldOfView, visionDist, w))
-				ends.add(p);
+			ends.add(p);
 		}
-
-		return ends;
+		
+		List<Point3f> openEnds = new LinkedList<Point3f>();
+		for (int i = 0; i< ends.size(); i++){
+			float minDist = Float.MAX_VALUE;
+			for (int j = 0; j < ends.size(); j++){
+				if (i != j && ends.get(i).distance(ends.get(j)) < minDist){
+					minDist = ends.get(i).distance(ends.get(j));
+				}
+				if (minDist > OPEN_END_THRS)
+					openEnds.add(ends.get(i));
+			}
+		}
+		
+		List<Point3f> visibleEnds = new LinkedList<Point3f>();
+		for (Point3f oe : openEnds)
+			if (pointCanBeSeenByRobot(oe, halfFieldOfView, visionDist))
+				visibleEnds.add(oe);
+		
+		return visibleEnds;
 	}
 
 	private boolean pointCanBeSeenByRobot(Point3f p, float halfFieldOfView,
-			float visionDist, Wall excludeWall) {
+			float visionDist) {
 		boolean inField = false, closeEnough = false, intersects = true;
 		
 		float angleToPoint = GeomUtils.angleToPointWithOrientation(
@@ -442,7 +458,7 @@ public class VirtUniverse extends Universe {
 				LineSegment lineOfSight = new LineSegment(rPos, fPos);
 				for (Wall w : getWalls())
 					intersects = intersects
-							|| (w != excludeWall && w.intersects(lineOfSight));
+							|| (w.s.p0.distance(fPos) != 0 && w.s.p1.distance(fPos) != 0  && w.intersects(lineOfSight));
 			}
 		}
 		// System.out.println(inField + " " + !intersects + " " + closeEnough);

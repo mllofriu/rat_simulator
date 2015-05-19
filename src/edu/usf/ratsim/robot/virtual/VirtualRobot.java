@@ -23,8 +23,8 @@ import edu.usf.ratsim.experiment.universe.virtual.VirtUniverse;
 import edu.usf.ratsim.support.GeomUtils;
 
 public class VirtualRobot extends LocalizableRobot {
-	
-	private static final float ROBOT_LENGTH = .2f;
+
+	private static final float ROBOT_LENGTH = .1f;
 
 	public VirtUniverse universe;
 
@@ -46,12 +46,13 @@ public class VirtualRobot extends LocalizableRobot {
 		super(params);
 
 		noise = params.getChildFloat("noise");
-		translationRotationNoise = params.getChildFloat("translationRotationNoise");
+		translationRotationNoise = params
+				.getChildFloat("translationRotationNoise");
 		lookaheadSteps = params.getChildFloat("lookaheadSteps");
 		halfFieldOfView = params.getChildFloat("halfFieldOfView");
 		visionDist = params.getChildFloat("visionDist");
 		closeThrs = params.getChildFloat("closeThrs");
-		
+
 		universe = VirtUniverse.getInstance();
 		if (universe == null)
 			throw new RuntimeException("A virtual universe must be created"
@@ -72,9 +73,9 @@ public class VirtualRobot extends LocalizableRobot {
 	}
 
 	public void forward(float dist) {
-		universe.moveRobot(new Vector3f(dist + dist * r.nextFloat() * noise, 0f,
-				0f));
-		universe.rotateRobot(r.nextFloat() * translationRotationNoise);
+		universe.moveRobot(new Vector3f(dist + dist * r.nextFloat() * noise,
+				0f, 0f));
+		universe.rotateRobot((2 * r.nextFloat() - 1) * translationRotationNoise);
 	}
 
 	@Override
@@ -83,7 +84,7 @@ public class VirtualRobot extends LocalizableRobot {
 			System.out.println("Robot ate");
 		universe.robotEat();
 	}
-	
+
 	public List<Landmark> getLandmarks() {
 		return getLandmarks(-1);
 	}
@@ -96,8 +97,8 @@ public class VirtualRobot extends LocalizableRobot {
 					// Get relative position
 					Point3f fPos = universe.getFoodPosition(i);
 					Point3f rPos = universe.getRobotPosition();
-					Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos,
-							fPos));
+					Point3f relFPos = new Point3f(GeomUtils.pointsToVector(
+							rPos, fPos));
 					// Rotate to robots framework
 					Quat4f rRot = universe.getRobotOrientation();
 					rRot.inverse();
@@ -110,14 +111,15 @@ public class VirtualRobot extends LocalizableRobot {
 
 		return res;
 	}
-	
-	public List<Feeder> getVisibleFeeders(int except) {
+
+	public List<Feeder> getVisibleFeeders(int[] except) {
 		List<Feeder> res = new LinkedList<Feeder>();
 		for (Integer i : universe.getFeederNums())
-			if (i != except)
+			if (! in(i, except))
 				if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)) {
 					// Get relative position
-					Point3f relFPos = getRelativePos(universe.getFoodPosition(i));
+					Point3f relFPos = getRelativePos(universe
+							.getFoodPosition(i));
 					// Return the landmark
 					Feeder relFeeder = new Feeder(universe.getFeeder(i));
 					relFeeder.setPosition(relFPos);
@@ -127,10 +129,16 @@ public class VirtualRobot extends LocalizableRobot {
 		return res;
 	}
 
+	private boolean in(int o, int[] except) {
+		for (int i = 0; i < except.length; i++)
+			if (except[i] == o)
+				return true;
+		return false;
+	}
+
 	private Point3f getRelativePos(Point3f fPos) {
 		Point3f rPos = universe.getRobotPosition();
-		Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos,
-				fPos));
+		Point3f relFPos = new Point3f(GeomUtils.pointsToVector(rPos, fPos));
 		// Rotate to robots framework
 		Quat4f rRot = universe.getRobotOrientation();
 		rRot.inverse();
@@ -143,7 +151,8 @@ public class VirtualRobot extends LocalizableRobot {
 	@Override
 	public Feeder getFlashingFeeder() {
 		for (Integer i : universe.getFeederNums())
-			if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist) && universe.isFeederFlashing(i)) {
+			if (universe.canRobotSeeFeeder(i, halfFieldOfView, visionDist)
+					&& universe.isFeederFlashing(i)) {
 				// Get relative position
 				Point3f fPos = universe.getFoodPosition(i);
 				Point3f rPos = universe.getRobotPosition();
@@ -164,24 +173,26 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public boolean seesFlashingFeeder() {
-//		if(getFlashingFeeder() != null)
-//			System.out.println("Seeing flashing feeder");
+		// if(getFlashingFeeder() != null)
+		// System.out.println("Seeing flashing feeder");
 		return getFlashingFeeder() != null;
 	}
 
 	@Override
 	public Feeder getClosestFeeder(int lastFeeder) {
-		List<Feeder> feeders = getVisibleFeeders(lastFeeder);
+		int [] except = {lastFeeder};
+		List<Feeder> feeders = getVisibleFeeders(except);
 
 		if (feeders.isEmpty())
 			return null;
-		
+
 		Feeder closest = feeders.get(0);
-		Point3f zero = new Point3f(0,0,0);
+		Point3f zero = new Point3f(0, 0, 0);
 		for (Feeder feeder : feeders)
-			if (feeder.getPosition().distance(zero) < closest.getPosition().distance(zero))
+			if (feeder.getPosition().distance(zero) < closest.getPosition()
+					.distance(zero))
 				closest = feeder;
-		
+
 		return closest;
 	}
 
@@ -207,22 +218,24 @@ public class VirtualRobot extends LocalizableRobot {
 	}
 
 	@Override
-	public List<Affordance> checkAffordances(List<Affordance> affs){
+	public List<Affordance> checkAffordances(List<Affordance> affs) {
 		for (Affordance af : affs) {
 			boolean realizable;
 			if (af instanceof TurnAffordance) {
 				TurnAffordance ta = (TurnAffordance) af;
-				// Either it can move there, or it cannot move forward and the other angle is not an option
-				realizable = !universe.canRobotMove(0, ROBOT_LENGTH) 
-//						&& !canRobotMove(-ta.getAngle(), ROBOT_LENGTH))
+				// Either it can move there, or it cannot move forward and the
+				// other angle is not an option
+				realizable = !universe.canRobotMove(0, ROBOT_LENGTH)
+				// && !canRobotMove(-ta.getAngle(), ROBOT_LENGTH))
 						|| universe.canRobotMove(ta.getAngle(), ROBOT_LENGTH);
 				// realizable = true;
 			} else if (af instanceof ForwardAffordance)
 				realizable = universe.canRobotMove(0, ROBOT_LENGTH);
 			else if (af instanceof EatAffordance)
-//				realizable = hasRobotFoundFood();
+				// realizable = hasRobotFoundFood();
 				if (getClosestFeeder() != null)
-					realizable = getClosestFeeder().getPosition().distance(new Point3f()) < closeThrs;
+					realizable = getClosestFeeder().getPosition().distance(
+							new Point3f()) < closeThrs;
 				else
 					realizable = false;
 			else
@@ -237,7 +250,7 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public void executeAffordance(Affordance af, Subject sub) {
-		if (af instanceof TurnAffordance){
+		if (af instanceof TurnAffordance) {
 			TurnAffordance ta = (TurnAffordance) af;
 			List<Affordance> forward = new LinkedList<Affordance>();
 			forward.add(new ForwardAffordance(ta.getDistance()));
@@ -246,13 +259,13 @@ public class VirtualRobot extends LocalizableRobot {
 				rotate(ta.getAngle());
 				forward = checkAffordances(forward);
 			} while (!forward.get(0).isRealizable());
-			
+
 		} else if (af instanceof ForwardAffordance)
-			forward(((ForwardAffordance)af).getDistance());
-		else if (af instanceof EatAffordance){
+			forward(((ForwardAffordance) af).getDistance());
+		else if (af instanceof EatAffordance) {
 			// Updates food in universe
 			sub.setTriedToEat();
-			if (getClosestFeeder().hasFood()){
+			if (getClosestFeeder().hasFood()) {
 				eat();
 				sub.setHasEaten(true);
 				if (Debug.printTryingToEat)
@@ -262,8 +275,8 @@ public class VirtualRobot extends LocalizableRobot {
 					System.out.println("Trying to eat from empty feeder");
 			}
 		} else
-			throw new RuntimeException("Affordance "
-					+ af.getClass().getName() + " not supported by robot");
+			throw new RuntimeException("Affordance " + af.getClass().getName()
+					+ " not supported by robot");
 	}
 
 	@Override
@@ -283,8 +296,13 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public List<Point3f> getVisibleWallEnds() {
-		return universe.getVisibleWallEnds(halfFieldOfView, visionDist);
+		List<Point3f> absoluteWEnds = universe.getVisibleWallEnds(
+				halfFieldOfView, visionDist);
+		List<Point3f> relativeWEnds = new LinkedList<Point3f>();
+		for (Point3f p : absoluteWEnds){
+			relativeWEnds.add(getRelativePos(p));
+		}
+		return relativeWEnds;
 	}
-
 
 }
