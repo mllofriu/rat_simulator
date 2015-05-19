@@ -2,11 +2,10 @@ package edu.usf.ratsim.nsl.modules.taxic;
 
 import java.util.List;
 
-import javax.media.j3d.Transform3D;
 import javax.vecmath.Point3f;
-import javax.vecmath.Quat4f;
 
 import nslj.src.lang.NslDinInt0;
+import nslj.src.lang.NslDinInt1;
 import nslj.src.lang.NslDoutFloat1;
 import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.LocalizableRobot;
@@ -20,7 +19,7 @@ import edu.usf.ratsim.support.GeomUtils;
 
 public class TaxicFoodFinderSchema extends NslModule {
 
-	public NslDinInt0 goalFeeder;
+	public NslDinInt1 goalFeeders;
 	public NslDoutFloat1 votes;
 	private float reward;
 
@@ -33,7 +32,7 @@ public class TaxicFoodFinderSchema extends NslModule {
 		super(nslName, nslParent);
 		this.reward = reward;
 
-		goalFeeder = new NslDinInt0(this, "goalFeeder");
+		goalFeeders = new NslDinInt1(this, "goalFeeder");
 		// Votes for action and value
 		votes = new NslDoutFloat1(this, "votes", subject
 				.getPossibleAffordances().size() + 1);
@@ -60,27 +59,30 @@ public class TaxicFoodFinderSchema extends NslModule {
 				.getPossibleAffordances());
 		int voteIndex = 0;
 		boolean feederToEat = robot.isFeederClose()
-				&& robot.getClosestFeeder().getId() != goalFeeder.get();
+				&& robot.getClosestFeeder().getId() != goalFeeders.get(0)
+				&& robot.getClosestFeeder().getId() != goalFeeders.get(1);
 		for (Affordance af : affs) {
 			float value = 0;
 			if (af.isRealizable()) {
 				if (af instanceof TurnAffordance) {
 					if (!feederToEat)
-						for (Feeder f : robot.getVisibleFeeders(goalFeeder.get())) {
+						for (Feeder f : robot.getVisibleFeeders(goalFeeders
+								.get())) {
 							value += getFeederValue(GeomUtils.simulate(
 									f.getPosition(), af));
 						}
 				} else if (af instanceof ForwardAffordance) {
 					if (!feederToEat)
-						for (Feeder f : robot.getVisibleFeeders(goalFeeder.get())) {
+						for (Feeder f : robot.getVisibleFeeders(goalFeeders
+								.get())) {
 							value += getFeederValue(GeomUtils.simulate(
 									f.getPosition(), af));
 						}
 				} else if (af instanceof EatAffordance) {
 					if (feederToEat) {
-//						value += getFeederValue(robot.getClosestFeeder()
-//								.getPosition());
-						value += reward;
+						value += getFeederValue(robot.getClosestFeeder()
+								.getPosition());
+						// value += reward;
 					}
 				} else
 					throw new RuntimeException("Affordance "
@@ -94,9 +96,12 @@ public class TaxicFoodFinderSchema extends NslModule {
 
 		// Get the value of the current position
 		float value = 0;
-		for (Feeder f : robot.getVisibleFeeders(goalFeeder.get())) {
+		for (Feeder f : robot.getVisibleFeeders(goalFeeders.get())) {
 			value += getFeederValue(f.getPosition());
 		}
+		// float value = 0;
+		// if (feederToEat)
+		// value = reward;
 		// Last position represents the current value
 		votes.set(subject.getPossibleAffordances().size(), value);
 	}

@@ -52,8 +52,8 @@
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
 				<explorationReward>0</explorationReward>
-				<attentionExploringVal>1000</attentionExploringVal>
-				<maxAttentionSpan>40</maxAttentionSpan>
+				<attentionExploringVal>900</attentionExploringVal>
+				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
 				<voteType>gradientConnection</voteType>
@@ -61,7 +61,7 @@
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
-				<maxActionsSinceForward>100</maxActionsSinceForward>
+				<maxActionsSinceForward>20</maxActionsSinceForward>
 				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
 		</subject>
@@ -98,8 +98,9 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>500</explorationReward>
-				<wallAvoidingVal>0</wallAvoidingVal>
+				<explorationReward>0</explorationReward>
+				<attentionExploringVal>900</attentionExploringVal>
+				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
 				<voteType>gradientConnection</voteType>
@@ -145,8 +146,8 @@
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
 				<explorationReward>0</explorationReward>
-				<attentionExploringVal>1000</attentionExploringVal>
-				<maxAttentionSpan>40</maxAttentionSpan>
+				<attentionExploringVal>900</attentionExploringVal>
+				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
 				<voteType>gradientConnection</voteType>
@@ -154,7 +155,7 @@
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
-				<maxActionsSinceForward>100</maxActionsSinceForward>
+				<maxActionsSinceForward>20</maxActionsSinceForward>
 				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
 		</subject>
@@ -191,8 +192,9 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>500</explorationReward>
-				<wallAvoidingVal>0</wallAvoidingVal>
+				<explorationReward>0</explorationReward>
+				<attentionExploringVal>900</attentionExploringVal>
+				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
 				<voteType>gradientConnection</voteType>
@@ -211,7 +213,7 @@
 	</group>
 	
 	
--->
+
 	<group>
 		<name>TimeoutControl</name>
 		<numMembers>5</numMembers>
@@ -240,8 +242,8 @@
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
 				<explorationReward>0</explorationReward>
-				<attentionExploringVal>1000</attentionExploringVal>
-				<maxAttentionSpan>40</maxAttentionSpan>
+				<attentionExploringVal>900</attentionExploringVal>
+				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
 				<voteType>gradientConnection</voteType>
@@ -249,7 +251,7 @@
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
-				<maxActionsSinceForward>100</maxActionsSinceForward>
+				<maxActionsSinceForward>20</maxActionsSinceForward>
 				<stillExplorationVal>5000</stillExplorationVal>
 			</params>
 		</subject>
@@ -286,7 +288,7 @@
 		</beforeTasks>
 		<episodes>
 			<number>1</number>
-			<sleep>0</sleep>
+			<sleep>00</sleep>
 			<beforeTasks>
 				<task>
 					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
@@ -446,7 +448,7 @@
 				<task>
 					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
 					<params>
-						<timeout>300</timeout>
+						<timeout>200</timeout>
 					</params>
 				</task>
 				<task>
@@ -489,7 +491,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodTimeoutStopCond</name>
 					<params>
-						<timeout>300</timeout>
+						<timeout>200</timeout>
 						<n>15</n>
 					</params>
 				</condition>

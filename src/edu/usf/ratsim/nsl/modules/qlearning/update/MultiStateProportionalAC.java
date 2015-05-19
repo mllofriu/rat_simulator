@@ -46,7 +46,7 @@ public class MultiStateProportionalAC extends NslModule implements QLAlgorithm {
 
 	private int numActions;
 
-	private int lambda;
+	private float lambda;
 
 	public MultiStateProportionalAC(String nslMain, NslModule nslParent,
 			Subject subject, int numStates, int numActions,
@@ -55,6 +55,7 @@ public class MultiStateProportionalAC extends NslModule implements QLAlgorithm {
 
 		this.discountFactor = discountFactor;
 		this.alpha = alpha;
+		this.lambda = lambda;
 		this.numStates = numStates;
 		this.subject = subject;
 
@@ -112,7 +113,7 @@ public class MultiStateProportionalAC extends NslModule implements QLAlgorithm {
 
 	private void updateLastAction(int sBefore, int a) {
 		// Error in estimation
-		float delta = reward.get() + 1 * valueAfter.get(numActions)
+		float delta = reward.get() + lambda * valueAfter.get(numActions)
 				- valueBefore.get(numActions);
 
 		// Update action

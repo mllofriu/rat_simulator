@@ -43,9 +43,10 @@ public class ArtificialPlaceCellLayer extends NslModule {
 				if (r.nextFloat() < nearGoalProb){
 					int fIndex = r.nextInt(goals.size());
 					Point3f p = goals.get(fIndex).getPosition();
-					x = (float) (p.x + r.nextFloat() * .1);
-					y = (float) (p.y + r.nextFloat() * .1);
+					x = (float) (p.x + r.nextFloat() * .2 - .1);
+					y = (float) (p.y + r.nextFloat() * .2 - .1);
 				} else {
+					// TODO change them to have different centers among layers
 					x = r.nextFloat() * (xmax - xmin) + xmin;
 					y = r.nextFloat() * (ymax - ymin) + ymin;
 				}
@@ -55,7 +56,7 @@ public class ArtificialPlaceCellLayer extends NslModule {
 							y, 0), radius));
 				} else {
 					cells.add(new WallExponentialArtificialPlaceCell(new Point3f(x,
-							y, 0), radius));
+							y, 0), radius, r));
 				}
 			} else {
 				x = r.nextFloat() * (xmax - xmin) + xmin;
@@ -112,7 +113,10 @@ public class ArtificialPlaceCellLayer extends NslModule {
 		if (active) {
 			int i = 0;
 			for (ArtificialPlaceCell pCell : cells) {
-				activation.set(i, pCell.getActivation(pos, distanceToClosestWall));
+				float val = pCell.getActivation(pos, distanceToClosestWall);
+				if (val < 0 || val > 1)
+					System.err.println("Activation less than 0 or greater than 1: " + val);
+				activation.set(i, val);
 				i++;
 			}
 		} else {

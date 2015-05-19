@@ -38,6 +38,7 @@ import edu.usf.ratsim.support.XMLDocReader;
  */
 public class VirtUniverse extends Universe {
 
+	private static final float OPEN_END_THRS = 0.1f;
 	private static VirtUniverse instance = null;
 	private View topView;
 	private RobotNode robotNode;
@@ -406,25 +407,44 @@ public class VirtUniverse extends Universe {
 
 	public List<Point3f> getVisibleWallEnds(float halfFieldOfView,
 			float visionDist) {
-		List<Point3f> ends = new LinkedList<Point3f>();
-
-		List<Wall> walls = new LinkedList<Wall>(getWalls());
-		// walls.removeAll(initialWalls);
-		for (Wall w : walls) {
+		List<Point3f> openEnds = new LinkedList<Point3f>();
+		List<Wall> innerWalls = new LinkedList<Wall>(getWalls());
+		innerWalls.removeAll(initialWalls);
+		for (Wall w : innerWalls) {
 			Point3f p = new Point3f((float) w.s.p0.x, (float) w.s.p0.y, 0f);
-			if (pointCanBeSeenByRobot(p, halfFieldOfView, visionDist, w))
-				ends.add(p);
+			
+			float minDist = Float.MAX_VALUE;
+			for (Wall w2 : getWalls()){
+				if (w2 != w){
+					if (w2.distanceTo(p) < minDist)
+						minDist = w2.distanceTo(p);
+				}
+			}
+			if (minDist > OPEN_END_THRS)
+				openEnds.add(p);
 
 			p = new Point3f((float) w.s.p1.x, (float) w.s.p1.y, 0f);
-			if (pointCanBeSeenByRobot(p, halfFieldOfView, visionDist, w))
-				ends.add(p);
+			minDist = Float.MAX_VALUE;
+			for (Wall w2 : getWalls()){
+				if (w2 != w){
+					if (w2.distanceTo(p) < minDist)
+						minDist = w2.distanceTo(p);
+				}
+			}
+			if (minDist > OPEN_END_THRS)
+				openEnds.add(p);
 		}
-
-		return ends;
+		
+		List<Point3f> visibleEnds = new LinkedList<Point3f>();
+		for (Point3f oe : openEnds)
+			if (pointCanBeSeenByRobot(oe, halfFieldOfView, visionDist))
+				visibleEnds.add(oe);
+		
+		return visibleEnds;
 	}
 
 	private boolean pointCanBeSeenByRobot(Point3f p, float halfFieldOfView,
-			float visionDist, Wall excludeWall) {
+			float visionDist) {
 		boolean inField = false, closeEnough = false, intersects = true;
 		
 		float angleToPoint = GeomUtils.angleToPointWithOrientation(
@@ -442,7 +462,7 @@ public class VirtUniverse extends Universe {
 				LineSegment lineOfSight = new LineSegment(rPos, fPos);
 				for (Wall w : getWalls())
 					intersects = intersects
-							|| (w != excludeWall && w.intersects(lineOfSight));
+							|| (w.s.p0.distance(fPos) != 0 && w.s.p1.distance(fPos) != 0  && w.intersects(lineOfSight));
 			}
 		}
 		// System.out.println(inField + " " + !intersects + " " + closeEnough);
