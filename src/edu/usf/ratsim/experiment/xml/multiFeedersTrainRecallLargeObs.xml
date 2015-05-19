@@ -26,7 +26,7 @@
 
 	<group>
 		<name>Control</name>
-		<numMembers>5</numMembers>
+		<numMembers>16</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
@@ -44,7 +44,7 @@
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
 				<numIntentions>8</numIntentions>
 				<deterministicActionSelection>true</deterministicActionSelection>
-				<foodReward>10000</foodReward>
+				<foodReward>100000</foodReward>
 				<nonFoodReward>0</nonFoodReward>
 				<discountFactor>.9</discountFactor>
 				<alpha>0.9</alpha>
@@ -52,7 +52,7 @@
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
 				<explorationReward>0</explorationReward>
-				<attentionExploringVal>900</attentionExploringVal>
+				<attentionExploringVal>100</attentionExploringVal>
 				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
@@ -62,7 +62,7 @@
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<maxActionsSinceForward>20</maxActionsSinceForward>
-				<stillExplorationVal>5000</stillExplorationVal>
+				<stillExplorationVal>10000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
@@ -73,7 +73,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>5</numMembers>
+		<numMembers>16</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
@@ -91,7 +91,7 @@
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
 				<numIntentions>8</numIntentions>
 				<deterministicActionSelection>true</deterministicActionSelection>
-				<foodReward>10000</foodReward>
+				<foodReward>100000</foodReward>
 				<nonFoodReward>0</nonFoodReward>
 				<discountFactor>.9</discountFactor>
 				<alpha>0.9</alpha>
@@ -99,7 +99,7 @@
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
 				<explorationReward>0</explorationReward>
-				<attentionExploringVal>900</attentionExploringVal>
+				<attentionExploringVal>100</attentionExploringVal>
 				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
@@ -109,7 +109,7 @@
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<maxActionsSinceForward>20</maxActionsSinceForward>
-				<stillExplorationVal>5000</stillExplorationVal>
+				<stillExplorationVal>10000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
@@ -120,7 +120,7 @@
 	
 	<group>
 		<name>Ventral</name>
-		<numMembers>5</numMembers>
+		<numMembers>16</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
@@ -138,7 +138,7 @@
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
 				<numIntentions>8</numIntentions>
 				<deterministicActionSelection>true</deterministicActionSelection>
-				<foodReward>10000</foodReward>
+				<foodReward>100000</foodReward>
 				<nonFoodReward>0</nonFoodReward>
 				<discountFactor>.9</discountFactor>
 				<alpha>0.9</alpha>
@@ -146,7 +146,7 @@
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
 				<explorationReward>0</explorationReward>
-				<attentionExploringVal>900</attentionExploringVal>
+				<attentionExploringVal>100</attentionExploringVal>
 				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
@@ -156,7 +156,7 @@
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<maxActionsSinceForward>20</maxActionsSinceForward>
-				<stillExplorationVal>5000</stillExplorationVal>
+				<stillExplorationVal>10000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
@@ -167,7 +167,7 @@
 
 	<group>
 		<name>NegControl</name>
-		<numMembers>5</numMembers>
+		<numMembers>16</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
@@ -185,7 +185,7 @@
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
 				<numIntentions>8</numIntentions>
 				<deterministicActionSelection>true</deterministicActionSelection>
-				<foodReward>10000</foodReward>
+				<foodReward>100000</foodReward>
 				<nonFoodReward>0</nonFoodReward>
 				<discountFactor>.9</discountFactor>
 				<alpha>0.9</alpha>
@@ -193,7 +193,7 @@
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
 				<explorationReward>0</explorationReward>
-				<attentionExploringVal>900</attentionExploringVal>
+				<attentionExploringVal>100</attentionExploringVal>
 				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
@@ -203,7 +203,7 @@
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<maxActionsSinceForward>20</maxActionsSinceForward>
-				<stillExplorationVal>5000</stillExplorationVal>
+				<stillExplorationVal>10000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
@@ -216,7 +216,7 @@
 
 	<group>
 		<name>TimeoutControl</name>
-		<numMembers>5</numMembers>
+		<numMembers>16</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
@@ -234,7 +234,7 @@
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
 				<numIntentions>8</numIntentions>
 				<deterministicActionSelection>true</deterministicActionSelection>
-				<foodReward>10000</foodReward>
+				<foodReward>100000</foodReward>
 				<nonFoodReward>0</nonFoodReward>
 				<discountFactor>.9</discountFactor>
 				<alpha>0.9</alpha>
@@ -242,7 +242,7 @@
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
 				<explorationReward>0</explorationReward>
-				<attentionExploringVal>900</attentionExploringVal>
+				<attentionExploringVal>100</attentionExploringVal>
 				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
@@ -252,7 +252,7 @@
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<maxActionsSinceForward>20</maxActionsSinceForward>
-				<stillExplorationVal>5000</stillExplorationVal>
+				<stillExplorationVal>10000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
@@ -288,7 +288,7 @@
 		</beforeTasks>
 		<episodes>
 			<number>1</number>
-			<sleep>00</sleep>
+			<sleep>0</sleep>
 			<beforeTasks>
 				<task>
 					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
@@ -448,7 +448,7 @@
 				<task>
 					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
 					<params>
-						<timeout>200</timeout>
+						<timeout>300</timeout>
 					</params>
 				</task>
 				<task>
@@ -491,7 +491,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodTimeoutStopCond</name>
 					<params>
-						<timeout>200</timeout>
+						<timeout>300</timeout>
 						<n>15</n>
 					</params>
 				</condition>
