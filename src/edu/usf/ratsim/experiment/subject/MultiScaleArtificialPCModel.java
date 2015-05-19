@@ -133,6 +133,7 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		int numIntentions = params.getChildInt("numIntentions");
 		float flashingReward = params.getChildFloat("flashingReward");
 		float nonFlashingReward = params.getChildFloat("nonFlashingReward");
+		boolean estimateValue = params.getChildBoolean("estimateValue");
 		explorationReward = params.getChildFloat("explorationReward");
 		//float wallFollowingVal = params.getChildFloat("wallFollowingVal");
 		float attentionExploringVal = params.getChildFloat("attentionExploringVal");
@@ -262,10 +263,10 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
 		new TaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, subject,
-				lRobot, nonFlashingReward, discountFactor);
+				lRobot, nonFlashingReward, discountFactor, estimateValue);
 
 		new FlashingTaxicFoodFinderSchema(BEFORE_FLASHING_FOOD_FINDER_STR,
-				this, subject, lRobot, flashingReward, discountFactor);
+				this, subject, lRobot, flashingReward, discountFactor, estimateValue);
 
 		exploration.add(new DecayingExplorationSchema(BEFORE_EXPLORATION, this,
 				subject, lRobot, explorationReward, explorationHalfLifeVal));
@@ -387,10 +388,10 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// new GeneralTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
 		new TaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, subject, lRobot,
-				nonFlashingReward, discountFactor);
+				nonFlashingReward, discountFactor, estimateValue);
 
 		new FlashingTaxicFoodFinderSchema(AFTER_FLASHING_FOOD_FINDER_STR, this,
-				subject, lRobot, flashingReward, discountFactor);
+				subject, lRobot, flashingReward, discountFactor, estimateValue);
 
 		// Wall following for obst. avoidance
 //		new WallAvoider(AFTER_WALLAVOID_STR, this, subject, wallFollowingVal,

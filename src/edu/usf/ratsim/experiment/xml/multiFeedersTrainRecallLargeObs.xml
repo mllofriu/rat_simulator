@@ -51,6 +51,7 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
+				<estimateValue>false</estimateValue>
 				<explorationReward>0</explorationReward>
 				<attentionExploringVal>100</attentionExploringVal>
 				<maxAttentionSpan>20</maxAttentionSpan>
@@ -98,6 +99,7 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
+				<estimateValue>false</estimateValue>
 				<explorationReward>0</explorationReward>
 				<attentionExploringVal>100</attentionExploringVal>
 				<maxAttentionSpan>20</maxAttentionSpan>
@@ -145,6 +147,7 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
+				<estimateValue>false</estimateValue>
 				<explorationReward>0</explorationReward>
 				<attentionExploringVal>100</attentionExploringVal>
 				<maxAttentionSpan>20</maxAttentionSpan>
@@ -191,6 +194,7 @@
 				<alpha>0.9</alpha>
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
+				<estimateValue>false</estimateValue>
 				<nonFlashingReward>1000</nonFlashingReward>
 				<explorationReward>0</explorationReward>
 				<attentionExploringVal>100</attentionExploringVal>
@@ -241,6 +245,7 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
+				<estimateValue>false</estimateValue>
 				<explorationReward>0</explorationReward>
 				<attentionExploringVal>100</attentionExploringVal>
 				<maxAttentionSpan>20</maxAttentionSpan>

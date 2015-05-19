@@ -25,9 +25,11 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 	private Subject subject;
 	private LocalizableRobot robot;
 	private double lambda;
+	private boolean estimateValue;
 
 	public FlashingTaxicFoodFinderSchema(String nslName, NslModule nslParent,
-			Subject subject, LocalizableRobot robot, float reward, float lambda) {
+			Subject subject, LocalizableRobot robot, float reward,
+			float lambda, boolean estimateValue) {
 		super(nslName, nslParent);
 		this.reward = reward;
 
@@ -39,6 +41,7 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 		this.subject = subject;
 		this.robot = robot;
 		this.lambda = lambda;
+		this.estimateValue = estimateValue;
 	}
 
 	/**
@@ -79,8 +82,8 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 									.getClosestFeeder().getId()
 							&& robot.getFlashingFeeder().getId() != goalFeeder
 									.get()) {
-//						value += getFeederValue(robot.getClosestFeeder()
-//								.getPosition());
+						// value += getFeederValue(robot.getClosestFeeder()
+						// .getPosition());
 						value += reward;
 					}
 				} else
@@ -94,12 +97,15 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 		}
 
 		// Get the value of the current position
-		float value = 0;
-		if (robot.seesFlashingFeeder())
-//			value += getFeederValue(robot.getFlashingFeeder().getPosition());
+		if (estimateValue) {
+			float value = 0;
+			if (robot.seesFlashingFeeder())
+				// value +=
+				// getFeederValue(robot.getFlashingFeeder().getPosition());
 
-		// Last position represents the current value
-		votes.set(subject.getPossibleAffordances().size(), value);
+				// Last position represents the current value
+				votes.set(subject.getPossibleAffordances().size(), value);
+		}
 	}
 
 	private float getFeederValue(Point3f feederPos) {
