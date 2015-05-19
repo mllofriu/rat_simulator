@@ -38,7 +38,7 @@ import edu.usf.ratsim.support.XMLDocReader;
  */
 public class VirtUniverse extends Universe {
 
-	private static final float OPEN_END_THRS = 0.02f;
+	private static final float OPEN_END_THRS = 0.1f;
 	private static VirtUniverse instance = null;
 	private View topView;
 	private RobotNode robotNode;
@@ -407,28 +407,32 @@ public class VirtUniverse extends Universe {
 
 	public List<Point3f> getVisibleWallEnds(float halfFieldOfView,
 			float visionDist) {
-		List<Point3f> ends = new LinkedList<Point3f>();
-
-		List<Wall> walls = new LinkedList<Wall>(getWalls());
-		walls.removeAll(initialWalls);
-		for (Wall w : walls) {
+		List<Point3f> openEnds = new LinkedList<Point3f>();
+		List<Wall> innerWalls = new LinkedList<Wall>(getWalls());
+		innerWalls.removeAll(initialWalls);
+		for (Wall w : innerWalls) {
 			Point3f p = new Point3f((float) w.s.p0.x, (float) w.s.p0.y, 0f);
-			ends.add(p);
+			
+			float minDist = Float.MAX_VALUE;
+			for (Wall w2 : getWalls()){
+				if (w2 != w){
+					if (w2.distanceTo(p) < minDist)
+						minDist = w2.distanceTo(p);
+				}
+			}
+			if (minDist > OPEN_END_THRS)
+				openEnds.add(p);
 
 			p = new Point3f((float) w.s.p1.x, (float) w.s.p1.y, 0f);
-			ends.add(p);
-		}
-		
-		List<Point3f> openEnds = new LinkedList<Point3f>();
-		for (int i = 0; i< ends.size(); i++){
-			float minDist = Float.MAX_VALUE;
-			for (int j = 0; j < ends.size(); j++){
-				if (i != j && ends.get(i).distance(ends.get(j)) < minDist){
-					minDist = ends.get(i).distance(ends.get(j));
+			minDist = Float.MAX_VALUE;
+			for (Wall w2 : getWalls()){
+				if (w2 != w){
+					if (w2.distanceTo(p) < minDist)
+						minDist = w2.distanceTo(p);
 				}
-				if (minDist > OPEN_END_THRS)
-					openEnds.add(ends.get(i));
 			}
+			if (minDist > OPEN_END_THRS)
+				openEnds.add(p);
 		}
 		
 		List<Point3f> visibleEnds = new LinkedList<Point3f>();

@@ -192,8 +192,9 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>500</explorationReward>
-				<wallAvoidingVal>0</wallAvoidingVal>
+				<explorationReward>0</explorationReward>
+				<attentionExploringVal>900</attentionExploringVal>
+				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
 				<voteType>gradientConnection</voteType>

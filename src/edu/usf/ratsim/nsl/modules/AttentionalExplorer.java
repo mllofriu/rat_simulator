@@ -29,7 +29,7 @@ import edu.usf.ratsim.support.GeomUtils;
 public class AttentionalExplorer extends NslModule {
 
 	private static final float TRACKIN_THRS = .4f;
-	private static final float CLOSE_THRS = 0.5f;
+	private static final float CLOSE_THRS = 0.1f;
 	private NslDoutFloat1 votes;
 	private Subject sub;
 	private float exploringVal;
