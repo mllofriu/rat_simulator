@@ -33,6 +33,8 @@ import edu.usf.ratsim.nsl.modules.StillExplorer;
 import edu.usf.ratsim.nsl.modules.Voter;
 import edu.usf.ratsim.nsl.modules.WallAvoider;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.GradientVotes;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.HalfAndHalfConnectionVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.NoExploration;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.WTAVotes;
@@ -247,6 +249,9 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		else if (voteType.equals("gradientConnection"))
 			qlVotes = new GradientVotes(BEFORE_ACTION_SELECTION_STR,
 						this, bAll.getSize(), numActions);
+		else if (voteType.equals("halfAndHalfConnection"))
+			qlVotes = new HalfAndHalfConnectionVotes(BEFORE_ACTION_SELECTION_STR,
+						this, bAll.getSize(), numActions);
 		else if (voteType.equals("wta"))
 			qlVotes = new WTAVotes(BEFORE_ACTION_SELECTION_STR, this,
 					bAll.getSize(), numActions);
@@ -359,17 +364,24 @@ public class MultiScaleArtificialPCModel extends NslModel {
 				AFTER_CONCAT, this, apihdSizes);
 
 		// Take the value of each state and vote for an action
-		if (rlType.equals("proportionalQl"))
-			new ProportionalVotes(AFTER_ACTION_SELECTION_STR, this,
-					aAll.getSize(), numActions);
-		else if (rlType.equals("actorCritic"))
-			new ProportionalVotes(AFTER_ACTION_SELECTION_STR, this,
-					aAll.getSize(), numActions + 1);
-		else if (rlType.equals("wtaQl"))
-			new WTAVotes(AFTER_ACTION_SELECTION_STR, this, aAll.getSize(),
-					numActions);
+		if (voteType.equals("proportional"))
+			if (rlType.equals("actorCritic"))
+				qlVotes = new ProportionalVotes(AFTER_ACTION_SELECTION_STR,
+						this, bAll.getSize(), numActions + 1);
+			else
+				qlVotes = new ProportionalVotes(AFTER_ACTION_SELECTION_STR,
+						this, bAll.getSize(), numActions);
+		else if (voteType.equals("gradientConnection"))
+			qlVotes = new GradientVotes(AFTER_ACTION_SELECTION_STR,
+						this, bAll.getSize(), numActions);
+		else if (voteType.equals("halfAndHalfConnection"))
+			qlVotes = new HalfAndHalfConnectionVotes(AFTER_ACTION_SELECTION_STR,
+						this, bAll.getSize(), numActions);
+		else if (voteType.equals("wta"))
+			qlVotes = new WTAVotes(AFTER_ACTION_SELECTION_STR, this,
+					bAll.getSize(), numActions);
 		else
-			throw new RuntimeException("RL mechanism not implemented");
+			throw new RuntimeException("Vote mechanism not implemented");
 
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(AFTER_FOOD_FINDER_STR, this, robot,

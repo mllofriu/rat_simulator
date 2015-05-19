@@ -97,7 +97,9 @@ public class TaxicFoodFinderSchema extends NslModule {
 		// Get the value of the current position
 		float value = 0;
 		for (Feeder f : robot.getVisibleFeeders(goalFeeders.get())) {
-			value += getFeederValue(f.getPosition());
+			// if (robot.isFeederClose()
+			// && robot.getClosestFeeder().getId() == f.getId())
+//			value += getFeederValue(f.getPosition());
 		}
 		// float value = 0;
 		// if (feederToEat)

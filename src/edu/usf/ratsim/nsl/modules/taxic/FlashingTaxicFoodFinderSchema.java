@@ -96,7 +96,7 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 		// Get the value of the current position
 		float value = 0;
 		if (robot.seesFlashingFeeder())
-			value += getFeederValue(robot.getFlashingFeeder().getPosition());
+//			value += getFeederValue(robot.getFlashingFeeder().getPosition());
 
 		// Last position represents the current value
 		votes.set(subject.getPossibleAffordances().size(), value);
