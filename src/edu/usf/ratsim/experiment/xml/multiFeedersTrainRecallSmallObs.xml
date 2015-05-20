@@ -453,7 +453,7 @@
 				<task>
 					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
 					<params>
-						<timeout>200</timeout>
+						<timeout>125</timeout>
 					</params>
 				</task>
 				<task>
@@ -496,7 +496,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodTimeoutStopCond</name>
 					<params>
-						<timeout>200</timeout>
+						<timeout>125</timeout>
 						<n>15</n>
 					</params>
 				</condition>
