@@ -267,17 +267,17 @@
 	</group>
 	
 	<beforeTasks>
-		 <task>
+		 <!--<task>
 			<name>edu.usf.experiment.task.EnableRandomFeedersTriangle</name>
 			<params>
 			</params>
-		</task> 
-		<!--<task>
+		</task>-->
+		<task>
 			<name>edu.usf.experiment.task.EnableFeeders</name>
 			<params>
-				<feeders>4,0</feeders>
+				<feeders>0,2,5</feeders>
 			</params>
-		</task>-->
+		</task>
 	</beforeTasks>
 	
 	<trial>
@@ -340,14 +340,15 @@
 			</loggers>
 			
 			<afterLoggers>
-				<!--<logger>
-					<name>edu.usf.experiment.log.PolicyLogger</name>
+				<logger>
+					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
-						<interval>.1</interval>
+						<circle>false</circle>
+						<interval>.025</interval>
 						<angleInterval>.37</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
-				</logger> -->
+				</logger> 
 			</afterLoggers>
 			<afterTasks>
 			</afterTasks>
@@ -497,7 +498,7 @@
 					<name>edu.usf.experiment.condition.FoundNFoodTimeoutStopCond</name>
 					<params>
 						<timeout>200</timeout>
-						<n>15</n>
+						<n>1</n>
 					</params>
 				</condition>
 			</stopConditions>
@@ -528,6 +529,9 @@
 		</plotter>
 		<plotter>
 			<name>edu.usf.experiment.plot.PathPlotter</name>
+		</plotter>
+		<plotter>
+			<name>edu.usf.experiment.plot.ValuePlotter</name>
 		</plotter>
 		<!-- <plotter>
 			<name>edu.usf.experiment.plot.PolicyPlotter</name>

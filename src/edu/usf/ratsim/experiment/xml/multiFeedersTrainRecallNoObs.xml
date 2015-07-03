@@ -7,7 +7,7 @@
 		<params>
 			<closeToFoodThrs>0.15</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
-			<display>false</display>
+			<display>true</display>
 			<sleep>10</sleep>
 		</params>
 	</universe>
@@ -26,15 +26,15 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>64</numMembers>
+		<numMembers>16</numMembers>
 		<subject>
 			<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 			<params>
 				<step>.05</step>
 				<leftAngle>0.37</leftAngle>
 				<rightAngle>-0.37</rightAngle>
-				<numPCLayers>5</numPCLayers>
-				<numPCCellsPerLayer>200</numPCCellsPerLayer>
+				<numPCLayers>2</numPCLayers>
+				<numPCCellsPerLayer>1000</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
 				<maxRadius>.3</maxRadius>
 				<placeCells>wallGoalExponential</placeCells>
@@ -51,17 +51,19 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>250</explorationReward>
-				<wallAvoidingVal>0</wallAvoidingVal>
+				<estimateValue>false</estimateValue>
+				<explorationReward>0</explorationReward>
+				<attentionExploringVal>100</attentionExploringVal>
+				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
-				<voteType>gradientConnection</voteType>
+				<voteType>halfAndHalfConnection</voteType>
 				<xmin>-.5</xmin>
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<maxActionsSinceForward>20</maxActionsSinceForward>
-				<stillExplorationVal>5000</stillExplorationVal>
+				<stillExplorationVal>10000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
@@ -79,12 +81,12 @@
 				<step>.05</step>
 				<leftAngle>0.37</leftAngle>
 				<rightAngle>-0.37</rightAngle>
-				<numPCLayers>5</numPCLayers>
-				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<numPCLayers>2</numPCLayers>
+				<numPCCellsPerLayer>1000</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
-				<maxRadius>.25</maxRadius>
-				<placeCells>goalExponential</placeCells>
-				<goalCellProportion>0.3</goalCellProportion>
+				<maxRadius>.3</maxRadius>
+				<placeCells>wallGoalExponential</placeCells>
+				<goalCellProportion>0.5</goalCellProportion>
 				<numHDLayers>5</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -97,16 +99,19 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>200</explorationReward>
-				<wallAvoidingVal>0</wallAvoidingVal>
+				<estimateValue>false</estimateValue>
+				<explorationReward>0</explorationReward>
+				<attentionExploringVal>100</attentionExploringVal>
+				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
+				<voteType>halfAndHalfConnection</voteType>
 				<xmin>-.5</xmin>
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<maxActionsSinceForward>20</maxActionsSinceForward>
-				<stillExplorationVal>500</stillExplorationVal>
+				<stillExplorationVal>10000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
@@ -124,12 +129,12 @@
 				<step>.05</step>
 				<leftAngle>0.37</leftAngle>
 				<rightAngle>-0.37</rightAngle>
-				<numPCLayers>5</numPCLayers>
-				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<numPCLayers>2</numPCLayers>
+				<numPCCellsPerLayer>1000</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
-				<maxRadius>.25</maxRadius>
-				<placeCells>goalExponential</placeCells>
-				<goalCellProportion>0.3</goalCellProportion>
+				<maxRadius>.3</maxRadius>
+				<placeCells>wallGoalExponential</placeCells>
+				<goalCellProportion>0.5</goalCellProportion>
 				<numHDLayers>5</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -142,16 +147,19 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>200</explorationReward>
-				<wallAvoidingVal>0</wallAvoidingVal>
+				<estimateValue>false</estimateValue>
+				<explorationReward>0</explorationReward>
+				<attentionExploringVal>100</attentionExploringVal>
+				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
+				<voteType>halfAndHalfConnection</voteType>
 				<xmin>-.5</xmin>
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<maxActionsSinceForward>20</maxActionsSinceForward>
-				<stillExplorationVal>500</stillExplorationVal>
+				<stillExplorationVal>10000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
@@ -169,12 +177,12 @@
 				<step>.05</step>
 				<leftAngle>0.37</leftAngle>
 				<rightAngle>-0.37</rightAngle>
-				<numPCLayers>5</numPCLayers>
-				<numPCCellsPerLayer>100</numPCCellsPerLayer>
+				<numPCLayers>2</numPCLayers>
+				<numPCCellsPerLayer>1000</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
-				<maxRadius>.25</maxRadius>
-				<placeCells>goalExponential</placeCells>
-				<goalCellProportion>0.3</goalCellProportion>
+				<maxRadius>.3</maxRadius>
+				<placeCells>wallGoalExponential</placeCells>
+				<goalCellProportion>0.5</goalCellProportion>
 				<numHDLayers>5</numHDLayers>
 				<minHDCellsPerLayer>1</minHDCellsPerLayer>
 				<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
@@ -187,16 +195,19 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>200</explorationReward>
-				<wallAvoidingVal>0</wallAvoidingVal>
+				<estimateValue>false</estimateValue>
+				<explorationReward>0</explorationReward>
+				<attentionExploringVal>100</attentionExploringVal>
+				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
+				<voteType>halfAndHalfConnection</voteType>
 				<xmin>-.5</xmin>
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<maxActionsSinceForward>20</maxActionsSinceForward>
-				<stillExplorationVal>500</stillExplorationVal>
+				<stillExplorationVal>10000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
@@ -214,8 +225,8 @@
 				<step>.05</step>
 				<leftAngle>0.37</leftAngle>
 				<rightAngle>-0.37</rightAngle>
-				<numPCLayers>5</numPCLayers>
-				<numPCCellsPerLayer>200</numPCCellsPerLayer>
+				<numPCLayers>2</numPCLayers>
+				<numPCCellsPerLayer>1000</numPCCellsPerLayer>
 				<minRadius>.05</minRadius>
 				<maxRadius>.3</maxRadius>
 				<placeCells>wallGoalExponential</placeCells>
@@ -232,17 +243,19 @@
 				<initialValue>0</initialValue>
 				<flashingReward>5000</flashingReward>
 				<nonFlashingReward>1000</nonFlashingReward>
-				<explorationReward>500</explorationReward>
-				<wallAvoidingVal>0</wallAvoidingVal>
+				<estimateValue>false</estimateValue>
+				<explorationReward>0</explorationReward>
+				<attentionExploringVal>100</attentionExploringVal>
+				<maxAttentionSpan>20</maxAttentionSpan>
 				<explorationHalfLifeVal>1</explorationHalfLifeVal>
 				<rlType>actorCritic</rlType>
-				<voteType>gradientConnection</voteType>
+				<voteType>halfAndHalfConnection</voteType>
 				<xmin>-.5</xmin>
 				<ymin>-.5</ymin>
 				<xmax>.5</xmax>
 				<ymax>.5</ymax>
 				<maxActionsSinceForward>20</maxActionsSinceForward>
-				<stillExplorationVal>5000</stillExplorationVal>
+				<stillExplorationVal>10000</stillExplorationVal>
 			</params>
 		</subject>
 		<params>
@@ -278,6 +291,7 @@
 		</beforeTasks>
 		<episodes>
 			<number>1</number>
+			<sleep>0</sleep>
 			<beforeTasks>
 				<task>
 					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
@@ -400,6 +414,7 @@
 		</beforeTasks>
 		<episodes>
 			<number>1</number>
+			<sleep>0</sleep>
 			<beforeTasks>
 				<task>
 					<name>edu.usf.experiment.task.UnFlashAllFeeders</name>
@@ -434,7 +449,7 @@
 				<task>
 					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
 					<params>
-						<timeout>100</timeout>
+						<timeout>00</timeout>
 					</params>
 				</task>
 				<task>

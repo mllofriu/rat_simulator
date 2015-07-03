@@ -189,6 +189,11 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	public void restoreExploration() {
 		model.restoreExplorationVal();
 	}
+
+	@Override
+	public float getValue(Point3f point, int intention, float angleInterval) {
+		return model.getValue(point, intention, angleInterval);
+	}
 	
 
 }

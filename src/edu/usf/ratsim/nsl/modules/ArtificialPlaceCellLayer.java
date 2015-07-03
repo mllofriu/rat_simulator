@@ -110,6 +110,7 @@ public class ArtificialPlaceCellLayer extends NslModule {
 	public void simRun(Point3f pos, boolean isFeederClose) {
 		// if (active && !isFeederClose) {
 		float distanceToClosestWall = robot.getDistanceToClosestWall();
+//		float distanceToClosestWall = 1000;
 		if (active) {
 			int i = 0;
 			for (ArtificialPlaceCell pCell : cells) {

@@ -367,19 +367,19 @@ public class MultiScaleArtificialPCModel extends NslModel {
 		// Take the value of each state and vote for an action
 		if (voteType.equals("proportional"))
 			if (rlType.equals("actorCritic"))
-				qlVotes = new ProportionalVotes(AFTER_ACTION_SELECTION_STR,
+				new ProportionalVotes(AFTER_ACTION_SELECTION_STR,
 						this, bAll.getSize(), numActions + 1);
 			else
-				qlVotes = new ProportionalVotes(AFTER_ACTION_SELECTION_STR,
+				new ProportionalVotes(AFTER_ACTION_SELECTION_STR,
 						this, bAll.getSize(), numActions);
 		else if (voteType.equals("gradientConnection"))
-			qlVotes = new GradientVotes(AFTER_ACTION_SELECTION_STR,
+			new GradientVotes(AFTER_ACTION_SELECTION_STR,
 						this, bAll.getSize(), numActions);
 		else if (voteType.equals("halfAndHalfConnection"))
-			qlVotes = new HalfAndHalfConnectionVotes(AFTER_ACTION_SELECTION_STR,
+			new HalfAndHalfConnectionVotes(AFTER_ACTION_SELECTION_STR,
 						this, bAll.getSize(), numActions);
 		else if (voteType.equals("wta"))
-			qlVotes = new WTAVotes(AFTER_ACTION_SELECTION_STR, this,
+			new WTAVotes(AFTER_ACTION_SELECTION_STR, this,
 					bAll.getSize(), numActions);
 		else
 			throw new RuntimeException("Vote mechanism not implemented");
@@ -689,5 +689,38 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	public void restoreExplorationVal() {
 		for (DecayingExplorationSchema e : exploration)
 			e.setExplorationVal(explorationReward);
+	}
+
+	
+	public float getValue(Point3f point, int inte, float angleInterval) {
+		intention.simRun(inte);
+
+		
+		for (ArtificialPlaceCellLayer pcl : beforePcls)
+			// TODO: add feeder cells to policies
+			pcl.simRun(point, false);
+		
+		float maxVal = Float.NEGATIVE_INFINITY;
+		for (float angle = 0; angle <= 2 * Math.PI; angle += angleInterval) {
+			for (ArtificialHDCellLayer hdcl : beforeHDs)
+				hdcl.simRun(angle);
+
+			for (JointStatesManyMultiply jsmm : jStateList)
+				jsmm.simRun();
+
+			bAll.simRun();
+
+			qlVotes.simRun();
+
+			NslDoutFloat1 votes = qlVotes.getVotes();
+			float val = votes.get(votes.getSize()-1);
+			
+			if (val > maxVal){
+				maxVal = val;
+			}
+		}
+		
+		
+		return maxVal;
 	}
 }
