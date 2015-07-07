@@ -23,7 +23,7 @@
 		</params>
 	</robot>
 	
-
+	
 	<group>
 		<name>Control</name>
 		<numMembers>16</numMembers>
@@ -118,7 +118,7 @@
 		</params>
 		<tasks>
 		</tasks>
-	</group> 
+	</group>
 	
 	<group>
 		<name>Ventral</name>
@@ -167,7 +167,7 @@
 		<tasks>
 		</tasks>
 	</group>
-
+	
 	<group>
 		<name>NegControl</name>
 		<numMembers>16</numMembers>
@@ -217,7 +217,7 @@
 	</group>
 	
 	
-
+	
 	<group>
 		<name>TimeoutControl</name>
 		<numMembers>16</numMembers>
@@ -267,11 +267,8 @@
 	</group>
 	
 	<beforeTasks>
-		 <!--<task>
-			<name>edu.usf.experiment.task.EnableRandomFeedersTriangle</name>
-			<params>
-			</params>
-		</task>-->
+		<!--<task> <name>edu.usf.experiment.task.EnableRandomFeedersTriangle</name> <params>
+			</params> </task>-->
 		<task>
 			<name>edu.usf.experiment.task.EnableFeeders</name>
 			<params>
@@ -344,11 +341,11 @@
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
-						<interval>.025</interval>
+						<interval>.05</interval>
 						<angleInterval>.37</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
-				</logger> 
+				</logger>
 			</afterLoggers>
 			<afterTasks>
 			</afterTasks>
@@ -393,6 +390,13 @@
 			<task>
 				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
 				<params>
+					<group>Control</group>
+					<layers>0,1</layers>
+				</params>
+			</task>
+			<task>
+				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
+				<params>
 					<group>Dorsal</group>
 					<layers>0</layers>
 				</params>
@@ -417,6 +421,17 @@
 				</params>
 			</task>
 		</beforeTasks>
+		<beforeLoggers>
+			<logger>
+				<name>edu.usf.experiment.log.ValueLogger</name>
+				<params>
+					<circle>false</circle>
+					<interval>.05</interval>
+					<angleInterval>.37</angleInterval>
+					<numIntentions>1</numIntentions>
+				</params>
+			</logger>
+		</beforeLoggers>
 		<episodes>
 			<number>1</number>
 			<sleep>00</sleep>
@@ -476,14 +491,9 @@
 			</loggers>
 			
 			<afterLoggers>
-				<!-- <logger>
-					<name>edu.usf.experiment.log.PolicyLogger</name>
-					<params>
-						<interval>.1</interval>
-						<angleInterval>.37</angleInterval>
-						<numIntentions>1</numIntentions>
-					</params>
-				</logger> -->
+				<!-- <logger> <name>edu.usf.experiment.log.PolicyLogger</name> <params> <interval>.1</interval>
+					<angleInterval>.37</angleInterval> <numIntentions>1</numIntentions> </params>
+					</logger> -->
 			</afterLoggers>
 			<afterTasks>
 			</afterTasks>
@@ -533,8 +543,6 @@
 		<plotter>
 			<name>edu.usf.experiment.plot.ValuePlotter</name>
 		</plotter>
-		<!-- <plotter>
-			<name>edu.usf.experiment.plot.PolicyPlotter</name>
-		</plotter> -->
+		<!-- <plotter> <name>edu.usf.experiment.plot.PolicyPlotter</name> </plotter> -->
 	</plotters>
 </experiment>

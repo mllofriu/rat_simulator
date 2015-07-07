@@ -692,13 +692,14 @@ public class MultiScaleArtificialPCModel extends NslModel {
 	}
 
 	
-	public float getValue(Point3f point, int inte, float angleInterval) {
+	public float getValue(Point3f point, int inte, float angleInterval, float distToWall) {
 		intention.simRun(inte);
 
 		
+		
 		for (ArtificialPlaceCellLayer pcl : beforePcls)
 			// TODO: add feeder cells to policies
-			pcl.simRun(point, false);
+			pcl.simRun(point, false, distToWall);
 		
 		float maxVal = Float.NEGATIVE_INFINITY;
 		for (float angle = 0; angle <= 2 * Math.PI; angle += angleInterval) {
