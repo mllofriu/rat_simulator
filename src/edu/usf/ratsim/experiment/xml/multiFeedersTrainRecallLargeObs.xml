@@ -390,13 +390,6 @@
 			<task>
 				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
 				<params>
-					<group>Control</group>
-					<layers>0,1</layers>
-				</params>
-			</task>
-			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
-				<params>
 					<group>Dorsal</group>
 					<layers>0</layers>
 				</params>
@@ -426,7 +419,7 @@
 				<name>edu.usf.experiment.log.ValueLogger</name>
 				<params>
 					<circle>false</circle>
-					<interval>.05</interval>
+					<interval>.1</interval>
 					<angleInterval>.37</angleInterval>
 					<numIntentions>1</numIntentions>
 				</params>
