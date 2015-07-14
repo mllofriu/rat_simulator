@@ -1,33 +1,28 @@
 package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
-import nslj.src.lang.NslDinFloat1;
-import nslj.src.lang.NslDinFloat2;
-import nslj.src.lang.NslDoutFloat1;
-import nslj.src.lang.NslModule;
+import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.nsl.modules.Voter;
 
-public class HalfAndHalfConnectionVotes extends NslModule implements Voter {
+public class HalfAndHalfConnectionVotes extends Module implements Voter {
 
-	public NslDoutFloat1 actionVote;
-	public NslDinFloat1 states;
-	public NslDinFloat2 value;
+	public float[] actionVote;
 	private int numActions;
+	private FloatArrayPort states;
+	private FloatMatrixPort value;
 
-	public HalfAndHalfConnectionVotes(String nslName, NslModule nslParent,
-			int numStates, int numActions) {
-		super(nslName, nslParent);
+	public HalfAndHalfConnectionVotes(FloatArrayPort states,
+			FloatMatrixPort value, int numActions) {
+		actionVote = new float[numActions + 1];
+		addPort(new FloatArrayPort("votes", actionVote));
 
-		actionVote = new NslDoutFloat1(this, "votes", numActions + 1);
-		states = new NslDinFloat1(this, "states", numStates);
-		value = new NslDinFloat2(this, "value", numStates, numActions + 1);
-
-		this.numActions = numActions;
+		this.states = states;
+		this.value = value;
 	}
 
 	public void simRun() {
-		float[] values = new float[numActions + 1];
 		for (int action = 0; action < numActions + 1; action++)
-			values[action] = 0f;
+			actionVote[action] = 0f;
 
 		float sumActionSel = 0;
 		int cantStates = states.getSize();
@@ -42,38 +37,38 @@ public class HalfAndHalfConnectionVotes extends NslModule implements Voter {
 					if (actionVal != 0)
 						// action selection contributes only in smaller states
 						// (smaller scales
-						values[action] = values[action] + stateVal * actionVal;
+						actionVote[action] = actionVote[action] + stateVal
+								* actionVal;
 				}
 			}
 		}
 
 		// Value place
 		float sumValue = 0;
-		for (int state = cantStates / 2; state < cantStates ; state++) {
+		for (int state = cantStates / 2; state < cantStates; state++) {
 			float valueVal = value.get(state, numActions);
 			float stateVal = states.get(state);
 			sumValue += stateVal;
 			if (valueVal != 0)
-				values[numActions] = values[numActions] + stateVal * valueVal;
+				actionVote[numActions] = actionVote[numActions] + stateVal
+						* valueVal;
 		}
 
 		// Normalize
 		if (sumActionSel != 0)
 			for (int action = 0; action < numActions; action++)
 				// Normalize with real value and revert previous normalization
-				values[action] = values[action] / sumActionSel;
+				actionVote[action] = actionVote[action] / sumActionSel;
 		if (sumValue != 0)
-			values[numActions] = values[numActions] / sumValue;
+			actionVote[numActions] = actionVote[numActions] / sumValue;
 
 		// for (int action = 0; action < numActions; action++)
 		// if (values[action] != 0)
 		// System.out.println("value action " + values[action]);
 
-		actionVote.set(values);
 	}
 
-	@Override
-	public NslDoutFloat1 getVotes() {
+	public float[] getVotes() {
 		return actionVote;
 	}
 

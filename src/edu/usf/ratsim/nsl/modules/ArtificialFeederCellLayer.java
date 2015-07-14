@@ -3,14 +3,13 @@ package edu.usf.ratsim.nsl.modules;
 import java.util.LinkedList;
 import java.util.List;
 
-import nslj.src.lang.NslDoutFloat1;
-import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.utils.Debug;
+import edu.usf.ratsim.micronsl.Module;
 
-public class ArtificialFeederCellLayer extends NslModule {
+public class ArtificialFeederCellLayer extends Module {
 
-	public NslDoutFloat1 activation;
+	public float[] activation;
 
 	private LinkedList<ArtificialFeederCell> cells;
 
@@ -18,27 +17,25 @@ public class ArtificialFeederCellLayer extends NslModule {
 
 	private LocalizableRobot robot;
 
-	public ArtificialFeederCellLayer(String nslName, NslModule nslParent,
-			LocalizableRobot robot, int numFeeders, long seed) {
-		super(nslName, nslParent);
-
+	public ArtificialFeederCellLayer(LocalizableRobot robot, int numFeeders,
+			long seed) {
 		active = true;
 
 		// Compute number of cells
 		cells = new LinkedList<ArtificialFeederCell>();
-		
+
 		for (int i = 0; i < numFeeders; i++)
 			for (int j = 0; j < 1; j++)
 				cells.add(new ArtificialFeederCell(i));
 
-		activation = new NslDoutFloat1(this, "activation", cells.size());
+		activation = new float[cells.size()];
 
 		this.robot = robot;
 	}
 
 	public void simRun() {
 		boolean feederClose = robot.isFeederClose();
-		if (feederClose){
+		if (feederClose) {
 			simRun(feederClose, robot.getClosestFeeder().getId());
 		} else
 			simRun(feederClose, -1);
@@ -70,15 +67,16 @@ public class ArtificialFeederCellLayer extends NslModule {
 		if (active && feederClose) {
 			int i = 0;
 			for (ArtificialFeederCell fCell : cells) {
-				activation.set(i, fCell.getActivation(id));
+				activation[i] = fCell.getActivation(id);
 				if (Debug.printFeederCells)
-					System.out.print(activation.get(i) + " ");
+					System.out.print(activation[i] + " ");
 				i++;
 			}
 			if (Debug.printFeederCells)
 				System.out.println();
 		} else {
-			activation.set(0);
+			for (int i = 0; i < activation.length; i++)
+				activation[i] = 0;
 		}
 	}
 

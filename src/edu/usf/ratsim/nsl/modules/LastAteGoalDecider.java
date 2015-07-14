@@ -1,22 +1,21 @@
 package edu.usf.ratsim.nsl.modules;
 
-import nslj.src.lang.NslDoutInt0;
-import nslj.src.lang.NslModule;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.Debug;
+import edu.usf.ratsim.micronsl.IntArrayPort;
+import edu.usf.ratsim.micronsl.Module;
 
-public class LastAteGoalDecider extends NslModule {
+public class LastAteGoalDecider extends Module {
 
-	public NslDoutInt0 goalFeeder;
+	public int[] goalFeeder;
 	public static int currentGoal;
 	private Subject sub;
 
-	public LastAteGoalDecider(String nslName, NslModule nslParent, Subject sub) {
-		super(nslName, nslParent);
-
+	public LastAteGoalDecider(Subject sub) {
 		this.sub = sub;
-		
-		goalFeeder = new NslDoutInt0(this, "goalFeeder");
+
+		goalFeeder = new int[1];
+		addPort(new IntArrayPort("goalFeeder", goalFeeder));
 
 		currentGoal = -1;
 	}
@@ -26,13 +25,13 @@ public class LastAteGoalDecider extends NslModule {
 			currentGoal = sub.getRobot().getClosestFeeder().getId();
 		}
 
-		goalFeeder.set(currentGoal);
+		goalFeeder[0] = currentGoal;
 		if (Debug.printActiveGoal)
 			System.out.println("Last Ate GD: " + currentGoal);
 	}
 
 	public void newTrial() {
 		currentGoal = -1;
-		goalFeeder.set(currentGoal);
+		goalFeeder[0] = currentGoal;
 	}
 }

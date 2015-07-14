@@ -3,11 +3,11 @@ package edu.usf.ratsim.nsl.modules;
 import java.util.List;
 import java.util.Random;
 
-import nslj.src.lang.NslDoutFloat1;
-import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Module;
 
 /**
  * Sets the dopaminergic votes for both a flashing feeder and a non flashing
@@ -16,12 +16,12 @@ import edu.usf.experiment.subject.affordance.Affordance;
  * @author ludo
  * 
  */
-public class WallAvoider extends NslModule {
+public class WallAvoider extends Module {
 
 	private static final float EPS_VALUE = 1f;
 	private static final float DIMINISH_FACTOR = .8f;
 	private static final int WALL_LOOKAHEAD = 10;
-	public NslDoutFloat1 votes;
+	public float[] votes;
 	private float wallFollowingValue;
 	private Robot robot;
 	private float currentValue;
@@ -31,9 +31,7 @@ public class WallAvoider extends NslModule {
 	// private int number;
 	private Subject subject;
 
-	public WallAvoider(String nslName, NslModule nslParent, Subject subject,
-			float wallFollowingValue, int numActions) {
-		super(nslName, nslParent);
+	public WallAvoider(Subject subject, float wallFollowingValue, int numActions) {
 		this.subject = subject;
 		this.wallFollowingValue = wallFollowingValue;
 		this.currentValue = 0f;
@@ -41,7 +39,8 @@ public class WallAvoider extends NslModule {
 
 		// number = (new Random()).nextInt();
 
-		votes = new NslDoutFloat1(this, "votes", numActions + 1);
+		votes = new float[numActions + 1];
+		addPort(new FloatArrayPort("votes", votes));
 		r = new Random();
 
 		robot = subject.getRobot();
@@ -51,13 +50,15 @@ public class WallAvoider extends NslModule {
 	public void simRun() {
 		// System.out.println("Performing wall avoider " + number);
 
-		votes.set(0);
+		for (int i = 0; i < votes.length; i++)
+			votes[i] = 0;
 
-		List<Affordance> affs = robot.checkAffordances(subject.getPossibleAffordances());
+		List<Affordance> affs = robot.checkAffordances(subject
+				.getPossibleAffordances());
 		int index = 0;
-		for (Affordance af : affs){
+		for (Affordance af : affs) {
 			if (!af.isRealizable())
-				votes.set(index, wallFollowingValue);
+				votes[index] = wallFollowingValue;
 			index++;
 		}
 	}

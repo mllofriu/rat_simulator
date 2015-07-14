@@ -4,22 +4,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import javax.vecmath.Quat4f;
-
-import nslj.src.lang.NslDinInt0;
-import nslj.src.lang.NslDoutFloat1;
-import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
-import edu.usf.ratsim.support.GeomUtils;
+import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Module;
 
-public class DecayingExplorationSchema extends NslModule {
+public class DecayingExplorationSchema extends Module {
 
-	public NslDoutFloat1 votes;
+	public float[] votes;
 	private float maxReward;
 	private Random r;
 	private double alpha;
@@ -29,15 +25,13 @@ public class DecayingExplorationSchema extends NslModule {
 	private int episodeCount;
 	private Affordance lastPicked;
 
-	public DecayingExplorationSchema(String nslName, NslModule nslParent,
-			Subject subject, LocalizableRobot robot, float maxReward,
-			float explorationHalfLifeVal) {
-		super(nslName, nslParent);
+	public DecayingExplorationSchema(Subject subject, LocalizableRobot robot,
+			float maxReward, float explorationHalfLifeVal) {
 		this.maxReward = maxReward;
 		this.alpha = -Math.log(.5) / explorationHalfLifeVal;
 
-		votes = new NslDoutFloat1(this, "votes", subject
-				.getPossibleAffordances().size() + 1);
+		votes = new float[subject.getPossibleAffordances().size() + 1];
+		addPort(new FloatArrayPort("votes", votes));
 
 		r = new Random();
 
@@ -50,26 +44,30 @@ public class DecayingExplorationSchema extends NslModule {
 	}
 
 	public void simRun() {
-		votes.set(0);
+		for (int i = 0; i < votes.length; i++)
+			votes[i] = 0;
 
 		// Flashing feeder prevents exploration
 		// if (!robot.seesFlashingFeeder()){
-		double explorationValue = maxReward * Math.exp(-(episodeCount-1) * alpha);
+		double explorationValue = maxReward
+				* Math.exp(-(episodeCount - 1) * alpha);
 		List<Affordance> affs = robot.checkAffordances(subject
 				.getPossibleAffordances());
 
 		// Avoid alternating rotations as exploration
-//		if (lastPicked != null && lastPicked instanceof TurnAffordance && turnRealizable(affs, (TurnAffordance)lastPicked))
-//			affs = removeOtherTurns(affs, (TurnAffordance) lastPicked);
+		// if (lastPicked != null && lastPicked instanceof TurnAffordance &&
+		// turnRealizable(affs, (TurnAffordance)lastPicked))
+		// affs = removeOtherTurns(affs, (TurnAffordance) lastPicked);
 
 		Affordance pickedAffordance;
 		do {
 			if (containForward(affs) && r.nextBoolean())
 				pickedAffordance = getForward(affs);
 			pickedAffordance = affs.get(r.nextInt(affs.size()));
-		} while (!pickedAffordance.isRealizable() || (pickedAffordance instanceof EatAffordance));
+		} while (!pickedAffordance.isRealizable()
+				|| (pickedAffordance instanceof EatAffordance));
 
-		votes.set(pickedAffordance.getIndex(), explorationValue);
+		votes[pickedAffordance.getIndex()] = (float) explorationValue;
 
 		lastPicked = pickedAffordance;
 		// }
@@ -79,7 +77,7 @@ public class DecayingExplorationSchema extends NslModule {
 		for (Affordance aff : affs)
 			if (aff instanceof ForwardAffordance)
 				return aff;
-						
+
 		return null;
 	}
 

@@ -5,18 +5,16 @@ import java.util.Random;
 
 import javax.vecmath.Point3f;
 
-import nslj.src.lang.NslDinInt0;
-import nslj.src.lang.NslDoutFloat1;
-import nslj.src.lang.NslDoutInt0;
-import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
-import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.Debug;
+import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.IntArrayPort;
+import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.support.GeomUtils;
 
 /**
@@ -26,27 +24,26 @@ import edu.usf.ratsim.support.GeomUtils;
  * @author biorob
  * 
  */
-public class AttentionalExplorer extends NslModule {
+public class AttentionalExplorer extends Module {
 
 	private static final float TRACKIN_THRS = .4f;
 	private static final float CLOSE_THRS = 0.1f;
-	private NslDoutFloat1 votes;
+	private float[] votes;
 	private Subject sub;
 	private float exploringVal;
 	private Robot robot;
 	private Random r;
 	private Point3f currentInterest;
-	private NslDinInt0 takenAction;
+	private int[] takenAction;
 	private int attentionRemaining;
 	private int maxAttentionSpan;
 
-	public AttentionalExplorer(String nslName, NslModule nslParent,
-			Subject sub, float exploringVal, int maxAttentionSpan) {
-		super(nslName, nslParent);
+	public AttentionalExplorer(IntArrayPort takenActionPort, Subject sub,
+			float exploringVal, int maxAttentionSpan) {
+		votes = new float[sub.getPossibleAffordances().size() + 1];
+		addPort(new FloatArrayPort("votes", votes));
 
-		votes = new NslDoutFloat1(this, "votes", sub.getPossibleAffordances()
-				.size() + 1);
-		takenAction = new NslDinInt0(this, "takenAction");
+		takenAction = takenActionPort.getData();
 
 		this.maxAttentionSpan = maxAttentionSpan;
 		this.attentionRemaining = 0;
@@ -59,18 +56,19 @@ public class AttentionalExplorer extends NslModule {
 	}
 
 	public void simRun() {
-		votes.set(0);
+		for (int i = 0; i < votes.length; i++)
+			votes[i] = 0;
 
 		// Apply last movement to track interest point
-		if (currentInterest != null && takenAction.get() != -1) {
+		if (currentInterest != null && takenAction[0] != -1) {
 			if (Debug.printAttentional)
 				System.out.println("Applying move to track");
-			currentInterest = applyLastMove(currentInterest, takenAction.get());
+			currentInterest = applyLastMove(currentInterest, takenAction[0]);
 		}
 
 		// Find all visible interest points
-//		List<Point3f> interestingPoints = robot.getInterestingPoints();
-		 List<Point3f> interestingPoints = robot.getVisibleWallEnds();
+		// List<Point3f> interestingPoints = robot.getInterestingPoints();
+		List<Point3f> interestingPoints = robot.getVisibleWallEnds();
 		// If no current interest or not found, create new interest
 		if (attentionRemaining <= 0 // Not interesting any more
 				|| currentInterest == null // no current interest
@@ -125,7 +123,7 @@ public class AttentionalExplorer extends NslModule {
 								+ " not supported by robot");
 				}
 
-				votes.set(voteIndex, value);
+				votes[voteIndex] = value;
 				voteIndex++;
 			}
 		}

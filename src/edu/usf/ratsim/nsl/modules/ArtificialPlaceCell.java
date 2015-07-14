@@ -7,5 +7,5 @@ public interface ArtificialPlaceCell {
 	public float getActivation(Point3f currLocation, float distanceToWall);
 
 	public Point3f getCenter();
-	
+
 }

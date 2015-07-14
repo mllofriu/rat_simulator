@@ -2,11 +2,11 @@ package edu.usf.ratsim.nsl.modules;
 
 import java.util.Random;
 
-import nslj.src.lang.NslDoutInt0;
-import nslj.src.lang.NslModule;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.Debug;
+import edu.usf.ratsim.micronsl.IntArrayPort;
+import edu.usf.ratsim.micronsl.Module;
 
 /**
  * Sets the goal to be the flashing feeder (if any) or any feeder if there is
@@ -15,9 +15,9 @@ import edu.usf.experiment.utils.Debug;
  * @author ludo
  * 
  */
-public class FlashingOrAnyGoalDecider extends NslModule {
+public class FlashingOrAnyGoalDecider extends Module {
 
-	public NslDoutInt0 goalFeeder;
+	public int[] goalFeeder;
 	// Keep the goal as a static variable to be able to pass among iterations
 	public static int currentGoal;
 	private Random r;
@@ -25,14 +25,12 @@ public class FlashingOrAnyGoalDecider extends NslModule {
 	private int numIntentions;
 	private static int lastFeeder;
 
-	public FlashingOrAnyGoalDecider(String nslName, NslModule nslParent,
-			Subject subject, int numIntentions) {
-		super(nslName, nslParent);
-
+	public FlashingOrAnyGoalDecider(Subject subject, int numIntentions) {
 		this.subject = subject;
 		this.numIntentions = numIntentions;
 
-		goalFeeder = new NslDoutInt0(this, "goalFeeder");
+		goalFeeder = new int[1];
+		addPort(new IntArrayPort("goalFeeder", goalFeeder));
 
 		r = new Random();
 
@@ -65,11 +63,10 @@ public class FlashingOrAnyGoalDecider extends NslModule {
 			currentGoal = subject.getRobot().getFlashingFeeder().getId();
 		}
 
-		goalFeeder.set(currentGoal);
+		goalFeeder[0] = currentGoal;
 
 		if (Debug.printAnyGoal)
-			System.out.println("Any GD: " + currentGoal + " "
-					+ goalFeeder.get());
+			System.out.println("Any GD: " + currentGoal + " " + goalFeeder[0]);
 	}
 
 	public void newTrial() {

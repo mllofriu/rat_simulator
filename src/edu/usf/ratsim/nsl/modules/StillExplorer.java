@@ -3,17 +3,15 @@ package edu.usf.ratsim.nsl.modules;
 import java.util.List;
 import java.util.Random;
 
-import nslj.src.lang.NslDinInt0;
-import nslj.src.lang.NslDoutFloat1;
-import nslj.src.lang.NslModule;
-
-
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.utils.Debug;
+import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.IntPort;
+import edu.usf.ratsim.micronsl.Module;
 
 /**
  * Module to generate random actions when the agent hasnt moved (just rotated)
@@ -22,27 +20,25 @@ import edu.usf.experiment.utils.Debug;
  * @author biorob
  * 
  */
-public class StillExplorer extends NslModule {
+public class StillExplorer extends Module {
 
 	private static final int TIME_EXPLORING = 5;
-	private NslDinInt0 takenAction;
 	private int maxActionsSinceForward;
 	private Subject sub;
 	private int actionsSinceForward;
 	private Random r;
-	private NslDoutFloat1 votes;
+	private float[] votes;
 	private float stillExploringVal;
 	private int timeToExplore;
 	private Robot robot;
+	private IntPort takenAction;
 
-	public StillExplorer(String nslName, NslModule nslParent,
-			int maxActionsSinceForward, Subject sub, float stillExploringVal) {
-		super(nslName, nslParent);
+	public StillExplorer(IntPort takenAction, int maxActionsSinceForward,
+			Subject sub, float stillExploringVal) {
+		this.takenAction = takenAction;
 
-		takenAction = new NslDinInt0(this, "takenAction");
-
-		votes = new NslDoutFloat1(this, "votes", sub.getPossibleAffordances()
-				.size() + 1);
+		votes = new float[sub.getPossibleAffordances().size() + 1];
+		addPort(new FloatArrayPort("votes", votes));
 
 		this.maxActionsSinceForward = maxActionsSinceForward;
 		this.sub = sub;
@@ -55,16 +51,18 @@ public class StillExplorer extends NslModule {
 	}
 
 	public void simRun() {
-		votes.set(0);
+		for (int i = 0; i < votes.length; i++)
+			votes[i] = 0;
 
-		if (takenAction.get() != -1){
-			Affordance taken = sub.getPossibleAffordances().get(takenAction.get());
-	
+		if (takenAction.get() != -1) {
+			Affordance taken = sub.getPossibleAffordances().get(
+					takenAction.get());
+
 			if (taken instanceof ForwardAffordance)
 				actionsSinceForward = 0;
 			else
 				actionsSinceForward++;
-		} else 
+		} else
 			actionsSinceForward++;
 
 		// When the agent hasnt moved for a while, add exploring value to random
@@ -74,7 +72,7 @@ public class StillExplorer extends NslModule {
 				timeToExplore = TIME_EXPLORING;
 			else
 				timeToExplore--;
-			
+
 			List<Affordance> affs = robot.checkAffordances(sub
 					.getPossibleAffordances());
 			Affordance pickedAffordance;
@@ -82,20 +80,21 @@ public class StillExplorer extends NslModule {
 				if (containForward(affs) && r.nextBoolean())
 					pickedAffordance = getForward(affs);
 				pickedAffordance = affs.get(r.nextInt(affs.size()));
-			} while (!(pickedAffordance instanceof EatAffordance) && !pickedAffordance.isRealizable());
-			
-			votes.set(affs.indexOf(pickedAffordance), stillExploringVal);
-			
+			} while (!(pickedAffordance instanceof EatAffordance)
+					&& !pickedAffordance.isRealizable());
+
+			votes[affs.indexOf(pickedAffordance)] = stillExploringVal;
+
 			if (Debug.printExploration)
 				System.out.println("Performing still exploration");
 		}
 	}
-	
+
 	private Affordance getForward(List<Affordance> affs) {
 		for (Affordance aff : affs)
 			if (aff instanceof ForwardAffordance)
 				return aff;
-						
+
 		return null;
 	}
 

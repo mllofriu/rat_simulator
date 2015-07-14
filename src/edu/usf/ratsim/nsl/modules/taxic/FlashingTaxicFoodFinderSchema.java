@@ -4,9 +4,6 @@ import java.util.List;
 
 import javax.vecmath.Point3f;
 
-import nslj.src.lang.NslDinInt0;
-import nslj.src.lang.NslDoutFloat1;
-import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
@@ -14,29 +11,32 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.FloatPort;
+import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.support.GeomUtils;
 
-public class FlashingTaxicFoodFinderSchema extends NslModule {
+public class FlashingTaxicFoodFinderSchema extends Module {
 
-	public NslDinInt0 goalFeeder;
-	public NslDoutFloat1 votes;
+	public float[] votes;
 	private float reward;
 
 	private Subject subject;
 	private LocalizableRobot robot;
 	private double lambda;
 	private boolean estimateValue;
+	private FloatPort goalFeeder;
 
-	public FlashingTaxicFoodFinderSchema(String nslName, NslModule nslParent,
-			Subject subject, LocalizableRobot robot, float reward,
-			float lambda, boolean estimateValue) {
-		super(nslName, nslParent);
+	public FlashingTaxicFoodFinderSchema(FloatPort goalFeeder, Subject subject,
+			LocalizableRobot robot, float reward, float lambda,
+			boolean estimateValue) {
 		this.reward = reward;
 
-		goalFeeder = new NslDinInt0(this, "goalFeeder");
 		// Votes for action and value
-		votes = new NslDoutFloat1(this, "votes", subject
-				.getPossibleAffordances().size() + 1);
+		votes = new float[subject.getPossibleAffordances().size() + 1];
+		addPort(new FloatArrayPort("votes", votes));
+
+		this.goalFeeder = goalFeeder;
 
 		this.subject = subject;
 		this.robot = robot;
@@ -54,7 +54,8 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 	 * goal).
 	 */
 	public void simRun() {
-		votes.set(0);
+		for (int i = 0; i < votes.length; i++)
+			votes[i] = 0;
 
 		// Get the votes for each affordable action
 		List<Affordance> affs = robot.checkAffordances(subject
@@ -92,7 +93,7 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 							+ " not supported by robot");
 			}
 
-			votes.set(voteIndex, value);
+			votes[voteIndex] = value;
 			voteIndex++;
 		}
 
@@ -104,7 +105,7 @@ public class FlashingTaxicFoodFinderSchema extends NslModule {
 				// getFeederValue(robot.getFlashingFeeder().getPosition());
 
 				// Last position represents the current value
-				votes.set(subject.getPossibleAffordances().size(), value);
+				votes[subject.getPossibleAffordances().size()] = value;
 		}
 	}
 

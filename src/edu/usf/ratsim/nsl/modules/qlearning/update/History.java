@@ -27,9 +27,9 @@ public class History {
 	float[] actionsVotes;
 	int action;
 	float reward;
-	
-	public History(float[] statesBefore, float[] statesAfter, float[] actionVotes, int action,
-			float reward) {
+
+	public History(float[] statesBefore, float[] statesAfter,
+			float[] actionVotes, int action, float reward) {
 		super();
 		this.statesBefore = statesBefore;
 		this.statesAfter = statesAfter;
@@ -37,8 +37,5 @@ public class History {
 		this.action = action;
 		this.reward = reward;
 	}
-	
 
-	
-	
 }

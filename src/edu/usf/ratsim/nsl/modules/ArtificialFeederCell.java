@@ -1,6 +1,5 @@
 package edu.usf.ratsim.nsl.modules;
 
-
 public class ArtificialFeederCell {
 
 	private int preferredFeeder;

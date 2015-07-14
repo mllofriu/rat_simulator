@@ -3,7 +3,6 @@ package edu.usf.ratsim.nsl.modules.qlearning.update;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 
-
 public interface QLAlgorithm {
 
 	void setUpdatesEnabled(boolean b);

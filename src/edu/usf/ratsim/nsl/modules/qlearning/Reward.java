@@ -1,21 +1,19 @@
 package edu.usf.ratsim.nsl.modules.qlearning;
 
-import nslj.src.lang.NslDoutFloat0;
-import nslj.src.lang.NslModule;
 import edu.usf.experiment.subject.Subject;
+import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Module;
 
-public class Reward extends NslModule {
+public class Reward extends Module {
 
-	private NslDoutFloat0 reward;
+	private float[] reward;
 	private float nonFoodReward;
 	private float foodReward;
 	private Subject subject;
 
-	public Reward(String nslName, NslModule nslParent, Subject subject,
-			float foodReward, float nonFoodReward) {
-		super(nslName, nslParent);
-
-		reward = new NslDoutFloat0(this, "reward");
+	public Reward(Subject subject, float foodReward, float nonFoodReward) {
+		reward = new float[1];
+		addPort(new FloatArrayPort("reward", reward));
 
 		this.foodReward = foodReward;
 		this.nonFoodReward = nonFoodReward;
@@ -24,10 +22,10 @@ public class Reward extends NslModule {
 
 	public void simRun() {
 		if (subject.hasEaten()) {
-			reward.set(foodReward);
+			reward[0] = foodReward;
 		} else {
-			reward.set(nonFoodReward);
+			reward[0] = nonFoodReward;
 		}
-			
+
 	}
 }

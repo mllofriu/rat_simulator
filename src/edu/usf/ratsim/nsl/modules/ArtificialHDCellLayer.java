@@ -2,22 +2,20 @@ package edu.usf.ratsim.nsl.modules;
 
 import java.util.LinkedList;
 
-import nslj.src.lang.NslDoutFloat1;
-import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.utils.Debug;
+import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Module;
 
-public class ArtificialHDCellLayer extends NslModule {
+public class ArtificialHDCellLayer extends Module {
 
-	public NslDoutFloat1 activation;
+	public float activation[];
 
 	private LinkedList<ArtificialHDCell> cells;
 
 	private LocalizableRobot robot;
 
-	public ArtificialHDCellLayer(String nslName, NslModule nslParent, int numCells, LocalizableRobot robot) {
-		super(nslName, nslParent);
-
+	public ArtificialHDCellLayer(int numCells, LocalizableRobot robot) {
 		// Compute number of cells
 		cells = new LinkedList<ArtificialHDCell>();
 		float angleInterval = (float) (Math.PI * 2 / numCells);
@@ -31,7 +29,8 @@ public class ArtificialHDCellLayer extends NslModule {
 					/ 2, angleInterval * 2));
 		}
 
-		activation = new NslDoutFloat1(this, "activation", cells.size());
+		activation = new float[cells.size()];
+		addPort(new FloatArrayPort("activation", activation));
 
 		this.robot = robot;
 	}
@@ -42,14 +41,14 @@ public class ArtificialHDCellLayer extends NslModule {
 	}
 
 	public int getSize() {
-		return activation.getSize();
+		return activation.length;
 	}
 
 	public void simRun(float theta) {
 		int i = 0;
-		
+
 		for (ArtificialHDCell pCell : cells) {
-			activation.set(i, pCell.getActivation(theta));
+			activation[i] = pCell.getActivation(theta);
 			// System.out.print(pCell.getActivation(angle) + " ");
 			i++;
 		}

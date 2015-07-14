@@ -1,6 +1,5 @@
 package edu.usf.ratsim.nsl.modules.qlearning;
 
-
 public final class StateActionReward {
 	private int state;
 	private int action;
@@ -29,7 +28,7 @@ public final class StateActionReward {
 		this.reward = reward;
 		this.numAngles = numAngles;
 	}
-	
+
 	public StateActionReward(int state, int action) {
 		this.state = state;
 		this.action = action;

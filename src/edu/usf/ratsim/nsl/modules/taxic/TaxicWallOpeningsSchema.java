@@ -5,33 +5,32 @@ import java.util.List;
 
 import javax.vecmath.Point3f;
 
-import nslj.src.lang.NslDoutFloat1;
-import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
+import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.support.GeomUtils;
 
-public class TaxicWallOpeningsSchema extends NslModule {
+public class TaxicWallOpeningsSchema extends Module {
 
 	private static final float OPENING_MAX_LENGHT = 0.2f;
 	private static final float OPENING_MIN_LENGHT = 0.02f;
-	public NslDoutFloat1 votes;
+	public float[] votes;
 	private float reward;
 
 	private Subject subject;
 	private LocalizableRobot robot;
 
-	public TaxicWallOpeningsSchema(String nslName, NslModule nslParent,
-			Subject subject, LocalizableRobot robot, float reward) {
-		super(nslName, nslParent);
+	public TaxicWallOpeningsSchema(Subject subject, LocalizableRobot robot,
+			float reward) {
 		this.reward = reward;
 
-		votes = new NslDoutFloat1(this, "votes", subject
-				.getPossibleAffordances().size() + 1);
+		votes = new float[subject.getPossibleAffordances().size() + 1];
+		addPort(new FloatArrayPort("votes", votes));
 
 		this.subject = subject;
 		this.robot = robot;
@@ -42,15 +41,16 @@ public class TaxicWallOpeningsSchema extends NslModule {
 	 * end.
 	 */
 	public void simRun() {
-		votes.set(0);
+		for (int i = 0; i < votes.length; i++)
+			votes[i] = 0;
 
 		// Get the votes for each affordable action
 		List<Affordance> affs = robot.checkAffordances(subject
 				.getPossibleAffordances());
 		int voteIndex = 0;
-		
+
 		List<Point3f> openings = getOpenings(robot.getVisibleWallEnds());
-		
+
 		for (Affordance af : affs) {
 			float value = 0;
 			if (af.isRealizable()) {
@@ -69,20 +69,21 @@ public class TaxicWallOpeningsSchema extends NslModule {
 							+ " not supported by robot");
 			}
 
-			votes.set(voteIndex, value);
+			votes[voteIndex] = value;
 			voteIndex++;
 		}
 
 		// This module does not intervene in value estimation
-		votes.set(subject.getPossibleAffordances().size(), 0);
+		votes[subject.getPossibleAffordances().size()] = 0;
 	}
 
 	private List<Point3f> getOpenings(List<Point3f> wEnds) {
 		List<Point3f> openings = new LinkedList<Point3f>();
 		for (int i = 0; i < wEnds.size(); i++)
 			// Start one off to avoid comparing agains same wall
-			for (int j = i + 2; j < wEnds.size(); j++){
-				if (wEnds.get(i).distance(wEnds.get(j)) < OPENING_MAX_LENGHT && wEnds.get(i).distance(wEnds.get(j)) > OPENING_MIN_LENGHT){
+			for (int j = i + 2; j < wEnds.size(); j++) {
+				if (wEnds.get(i).distance(wEnds.get(j)) < OPENING_MAX_LENGHT
+						&& wEnds.get(i).distance(wEnds.get(j)) > OPENING_MIN_LENGHT) {
 					Point3f midPoint = new Point3f(wEnds.get(i));
 					midPoint.interpolate(wEnds.get(j), .5f);
 					openings.add(midPoint);

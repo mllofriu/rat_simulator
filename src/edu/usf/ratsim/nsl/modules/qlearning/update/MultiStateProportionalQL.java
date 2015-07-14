@@ -10,16 +10,15 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
-import nslj.src.lang.NslDinFloat0;
-import nslj.src.lang.NslDinFloat1;
-import nslj.src.lang.NslDinInt0;
-import nslj.src.lang.NslDoutFloat2;
-import nslj.src.lang.NslModule;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.IntArrayPort;
+import edu.usf.ratsim.micronsl.Module;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.FloatMatrixPort;
 import edu.usf.ratsim.support.Configuration;
 
-public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
+public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 
 	private static final String DUMP_FILENAME = "policy.txt";
 
@@ -32,67 +31,71 @@ public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 	private static final float ANGLE_INTERVAL = 0.314f;
 
 	private static PrintWriter writer;
-	private NslDinFloat0 reward;
-	private NslDinInt0 takenAction;
-	private NslDoutFloat2 value;
-	private NslDinFloat1 statesBefore;
 
 	private float alpha;
 	private float discountFactor;
-	private NslDinFloat1 statesAfter;
 	private int numStates;
-
-	private NslDinFloat1 actionVotesAfter;
-
-	private NslDinFloat1 actionVotesBefore;
 
 	private boolean update;
 
 	private Subject subject;
 
-	public MultiStateProportionalQL(String nslMain, NslModule nslParent,
-			Subject subject, int numStates, int numActions,
+	private FloatArrayPort reward;
+
+	private IntArrayPort takenAction;
+
+	private FloatArrayPort statesBefore;
+
+	private FloatArrayPort statesAfter;
+
+	private FloatArrayPort votesBefore;
+
+	private FloatArrayPort votesAfter;
+
+	private FloatMatrixPort value;
+
+	public MultiStateProportionalQL(FloatArrayPort reward,
+			IntArrayPort takenAction, FloatArrayPort statesBefore,
+			FloatArrayPort statesAfter, FloatMatrixPort value,
+			FloatArrayPort votesBefore, FloatArrayPort votesAfter,
+			Subject subject, int numActions,
 			float discountFactor, float alpha, float initialValue) {
-		super(nslMain, nslParent);
 
 		this.discountFactor = discountFactor;
 		this.alpha = alpha;
-		this.numStates = numStates;
 		this.subject = subject;
 
-		takenAction = new NslDinInt0(this, "takenAction");
-		reward = new NslDinFloat0(this, "reward");
-		statesBefore = new NslDinFloat1(this, "statesBefore", numStates);
-		statesAfter = new NslDinFloat1(this, "statesAfter", numStates);
+		this.reward = reward;
+		this.takenAction = takenAction;
+		this.statesBefore = statesBefore;
+		this.statesAfter = statesAfter;
+		this.votesBefore = votesBefore;
+		this.votesAfter = votesAfter;
+		this.value = value;
 
-		value = new NslDoutFloat2(this, "value", numStates, numActions);
-		File f = new File("policy.obj");
-		if (f.exists()
-				&& Configuration.getBoolean("Experiment.loadSavedPolicy")) {
+		// File f = new File("policy.obj");
+		// if (f.exists()
+		// && Configuration.getBoolean("Experiment.loadSavedPolicy")) {
+		//
+		// try {
+		// System.out.println("Reading saved policy...");
+		// FileInputStream fin;
+		// fin = new FileInputStream(f);
+		// ObjectInputStream ois = new ObjectInputStream(fin);
+		// value.set((float[][]) ois.readObject());
+		// } catch (FileNotFoundException e) {
+		// value.set(initialValue);
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (ClassNotFoundException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// } else {
+		// value.set(initialValue);
+		// }
 
-			try {
-				System.out.println("Reading saved policy...");
-				FileInputStream fin;
-				fin = new FileInputStream(f);
-				ObjectInputStream ois = new ObjectInputStream(fin);
-				value.set((float[][]) ois.readObject());
-			} catch (FileNotFoundException e) {
-				value.set(initialValue);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else {
-			value.set(initialValue);
-		}
-
-		actionVotesAfter = new NslDinFloat1(this, "actionVotesAfter",
-				numActions);
-		actionVotesBefore = new NslDinFloat1(this, "actionVotesBefore",
-				numActions);
 		// for (int s = 0; s < numStates; s++)
 		// for (int a = 0; a < numActions; a++)
 		// value.set(s,a,initialValue);
@@ -108,9 +111,9 @@ public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 
 			// Maximize the action value after the movement
 			float maxExpectedR = Float.NEGATIVE_INFINITY;
-			for (int action = 0; action < actionVotesAfter.getSize(); action++)
-				if (maxExpectedR < actionVotesAfter.get(action))
-					maxExpectedR = actionVotesAfter.get(action);
+			for (int action = 0; action < votesAfter.getSize(); action++)
+				if (maxExpectedR < votesAfter.get(action))
+					maxExpectedR = votesAfter.get(action);
 
 			// Do the update once for each state
 			for (int stateBefore = 0; stateBefore < numStates; stateBefore++)
@@ -121,7 +124,7 @@ public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 	}
 
 	private void updateLastAction(int sBefore, int a, float maxERNextState) {
-		
+
 		float val = value.get(sBefore, a);
 		float delta;
 		// If eating cut the cycle - episodic ql
@@ -137,10 +140,10 @@ public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 		// else
 		// TODO: get the bh expectation back
 		delta = alpha
-				* (reward.get() + discountFactor * (maxERNextState) - (val + actionVotesBefore
+				* (reward.get() + discountFactor * (maxERNextState) - (val + votesBefore
 						.get(a)));
-//		if (reward.get() > 0)
-//			System.out.println(delta + " " + actionVotesBefore.get(a));
+		// if (reward.get() > 0)
+		// System.out.println(delta + " " + actionVotesBefore.get(a));
 		// if (a == Utiles.eatAction)
 		// System.out.println("Updating eat with delta " + delta);
 		float newValue = statesBefore.get(sBefore) * (val + delta)
@@ -260,7 +263,7 @@ public class MultiStateProportionalQL extends NslModule implements QLAlgorithm {
 		try {
 			fout = new FileOutputStream("policy.obj");
 			ObjectOutputStream oos = new ObjectOutputStream(fout);
-			oos.writeObject(value._data);
+			oos.writeObject(value.getData());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

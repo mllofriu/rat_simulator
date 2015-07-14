@@ -1,29 +1,31 @@
 package edu.usf.ratsim.nsl.modules;
 
-import nslj.src.lang.NslDoutFloat1;
-import nslj.src.lang.NslModule;
+import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Module;
 
 /**
  * Dummy intention module that always sets the same intention
+ * 
  * @author biorob
  *
  */
-public class NoIntention extends NslModule implements Intention {
+public class NoIntention extends Module implements Intention {
 
-	public NslDoutFloat1 intention;
+	public float[] intention;
 
-	public NoIntention(String nslName, NslModule parent, int numIntentions) {
-		super(nslName, parent);
-
-		intention = new NslDoutFloat1(this, "intention", numIntentions);
+	public NoIntention(int numIntentions) {
+		intention = new float[numIntentions];
+		addPort(new FloatArrayPort("intention", intention));
 	}
 
 	public void simRun() {
-		intention.set(0);
-		intention.set(0, 1);
+		for (int i = 0; i < intention.length; i++)
+			intention[i] = 0;
+
+		intention[0] = 1;
 	}
-	
-	public void simRun(int inte){
+
+	public void simRun(int inte) {
 		simRun();
 	}
 }

@@ -13,10 +13,6 @@ import java.util.Random;
 
 import javax.vecmath.Point3f;
 
-import nslj.src.lang.NslHierarchy;
-import nslj.src.lang.NslModule;
-import nslj.src.system.NslInterpreter;
-import nslj.src.system.NslSystem;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
@@ -24,7 +20,6 @@ import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
-import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.support.Configuration;
 
@@ -34,16 +29,11 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	private float leftAngle;
 	private float rightAngle;
 	
-	private NslSystem system;
-	private NslSequentialScheduler scheduler;
-	private NslInterpreter interpreter;
 	private MultiScaleArtificialPCModel model;
 
 	public MultiScaleArtificialPCSubject(String name, String group,
 			ElementWrapper params, Robot robot) {
 		super(name, group, params, robot);
-		
-		initNSL();
 		
 		step = params.getChildFloat("step");
 		leftAngle = params.getChildFloat("leftAngle");
@@ -54,12 +44,8 @@ public class MultiScaleArtificialPCSubject extends Subject {
 					+ "needs a Localizable Robot");
 		LocalizableRobot lRobot = (LocalizableRobot) robot;
 
-		model = new MultiScaleArtificialPCModel(
-				name, (NslModule) null, params, this, lRobot);
+		model = new MultiScaleArtificialPCModel(params, this, lRobot);
 		
-		system.addModel(model);
-		
-		scheduler.initRun();
 	}
 
 	@Override
@@ -67,7 +53,7 @@ public class MultiScaleArtificialPCSubject extends Subject {
 		setHasEaten(false);
 		clearTriedToEAt();
 		
-		scheduler.stepCycle();
+		model.simRun();
 	}
 
 	private long checkPCLSeed() {
@@ -107,29 +93,6 @@ public class MultiScaleArtificialPCSubject extends Subject {
 		return 0;
 	}
 
-	public void initNSL() {
-		system = new NslSystem(); // Create System
-
-		interpreter = new NslInterpreter(system); // Create
-													// Interpreter
-		// scheduler = new NslMultiClockScheduler(system); // Create Scheduler
-		scheduler = new NslSequentialScheduler(system); // Create Scheduler
-
-		system.setNoDisplay(false);
-		system.setDebug(0);
-		system.setStdOut(true);
-		system.setStdErr(true);
-		system.setInterpreter(interpreter);
-		system.nslSetScheduler(scheduler);
-		system.nslSetSchedulerMethod("pre");
-
-		system.setRunEndTime(10000000);
-		system.nslSetRunDelta(.1);
-		system.setNumRunEpochs(1);
-
-		NslHierarchy.nslSetSystem(system);
-	}
-
 
 	@Override
 	public void setPassiveMode(boolean b) {
@@ -167,7 +130,8 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	@Override
 	public Affordance getHypotheticAction(Point3f pos, float theta,
 			int intention) {
-		return model.getHypotheticAction(pos, theta, getPossibleAffordances(), intention);
+//		return model.getHypotheticAction(pos, theta, getPossibleAffordances(), intention);
+		return null;
 	}
 
 	@Override

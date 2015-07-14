@@ -4,10 +4,6 @@ import java.util.List;
 
 import javax.vecmath.Point3f;
 
-import nslj.src.lang.NslDinInt0;
-import nslj.src.lang.NslDinInt1;
-import nslj.src.lang.NslDoutFloat1;
-import nslj.src.lang.NslModule;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
@@ -15,29 +11,32 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.IntArrayPort;
+import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.support.GeomUtils;
 
-public class TaxicFoodFinderSchema extends NslModule {
+public class TaxicFoodFinderSchema extends Module {
 
-	public NslDinInt1 goalFeeders;
-	public NslDoutFloat1 votes;
+	public float[] votes;
 	private float reward;
 
 	private Subject subject;
 	private LocalizableRobot robot;
 	private double lambda;
 	private boolean estimateValue;
+	private IntArrayPort goalFeeder;
 
-	public TaxicFoodFinderSchema(String nslName, NslModule nslParent,
-			Subject subject, LocalizableRobot robot, float reward,
-			float lambda, boolean estimateValue) {
-		super(nslName, nslParent);
+	public TaxicFoodFinderSchema(IntArrayPort goalFeeder, Subject subject,
+			LocalizableRobot robot, float reward, float lambda,
+			boolean estimateValue) {
 		this.reward = reward;
 
-		goalFeeders = new NslDinInt1(this, "goalFeeder");
 		// Votes for action and value
-		votes = new NslDoutFloat1(this, "votes", subject
-				.getPossibleAffordances().size() + 1);
+		votes = new float[subject.getPossibleAffordances().size() + 1];
+		addPort(new FloatArrayPort("votes", votes));
+
+		this.goalFeeder = goalFeeder;
 
 		this.subject = subject;
 		this.robot = robot;
@@ -55,29 +54,30 @@ public class TaxicFoodFinderSchema extends NslModule {
 	 * goal).
 	 */
 	public void simRun() {
-		votes.set(0);
+		for (int i = 0; i < votes.length; i++)
+			votes[i] = 0;
 
 		// Get the votes for each affordable action
 		List<Affordance> affs = robot.checkAffordances(subject
 				.getPossibleAffordances());
 		int voteIndex = 0;
 		boolean feederToEat = robot.isFeederClose()
-				&& robot.getClosestFeeder().getId() != goalFeeders.get(0)
-				&& robot.getClosestFeeder().getId() != goalFeeders.get(1);
+				&& robot.getClosestFeeder().getId() != goalFeeder.get(0)
+				&& robot.getClosestFeeder().getId() != goalFeeder.get(1);
 		for (Affordance af : affs) {
 			float value = 0;
 			if (af.isRealizable()) {
 				if (af instanceof TurnAffordance) {
 					if (!feederToEat)
-						for (Feeder f : robot.getVisibleFeeders(goalFeeders
-								.get())) {
+						for (Feeder f : robot.getVisibleFeeders(goalFeeder
+								.getData())) {
 							value += getFeederValue(GeomUtils.simulate(
 									f.getPosition(), af));
 						}
 				} else if (af instanceof ForwardAffordance) {
 					if (!feederToEat)
-						for (Feeder f : robot.getVisibleFeeders(goalFeeders
-								.get())) {
+						for (Feeder f : robot.getVisibleFeeders(goalFeeder
+								.getData())) {
 							value += getFeederValue(GeomUtils.simulate(
 									f.getPosition(), af));
 						}
@@ -93,14 +93,14 @@ public class TaxicFoodFinderSchema extends NslModule {
 							+ " not supported by robot");
 			}
 
-			votes.set(voteIndex, value);
+			votes[voteIndex] = value;
 			voteIndex++;
 		}
 
 		// Get the value of the current position
 		if (estimateValue) {
 			float value = 0;
-			for (Feeder f : robot.getVisibleFeeders(goalFeeders.get())) {
+			for (Feeder f : robot.getVisibleFeeders(goalFeeder.getData())) {
 				// if (robot.isFeederClose()
 				// && robot.getClosestFeeder().getId() == f.getId())
 				// value += getFeederValue(f.getPosition());
@@ -109,7 +109,7 @@ public class TaxicFoodFinderSchema extends NslModule {
 			// if (feederToEat)
 			// value = reward;
 			// Last position represents the current value
-			votes.set(subject.getPossibleAffordances().size(), value);
+			votes[subject.getPossibleAffordances().size()] = value;
 		}
 	}
 

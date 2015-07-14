@@ -3,15 +3,15 @@ package edu.usf.ratsim.support;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-import nslj.src.lang.NslModule;
+import edu.usf.ratsim.micronsl.Module;
 
 public class ReflexionLoader {
 
-	public static NslModule getReflexionModel(String module, String moduleName,
+	public static Module getReflexionModel(String module, String moduleName,
 			Object owner) {
-		NslModule result = null;
+		Module result = null;
 
-		Class<?>[] types = new Class[] { String.class, NslModule.class };
+		Class<?>[] types = new Class[] { String.class, Module.class };
 		@SuppressWarnings("rawtypes")
 		Constructor cons = null;
 		try {
@@ -28,7 +28,7 @@ public class ReflexionLoader {
 		}
 		Object[] args = new Object[] { moduleName, owner };
 		try {
-			result = (NslModule) cons.newInstance(args);
+			result = (Module) cons.newInstance(args);
 		} catch (IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

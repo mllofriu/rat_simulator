@@ -1,44 +1,32 @@
 package edu.usf.ratsim.nsl.modules.qlearning.update;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
-import nslj.src.lang.NslDinFloat0;
-import nslj.src.lang.NslDinFloat1;
-import nslj.src.lang.NslDinInt0;
-import nslj.src.lang.NslDoutFloat2;
-import nslj.src.lang.NslModule;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.IntArrayPort;
+import edu.usf.ratsim.micronsl.Module;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.FloatMatrixPort;
 import edu.usf.ratsim.support.Configuration;
 
-public class MultiStateProportionalAC extends NslModule implements QLAlgorithm {
+public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 	private static final String DUMP_FILENAME = "policy.txt";
 
 	private static final float EPS = 0.2f;
 
 	private static PrintWriter writer;
-	private NslDinFloat0 reward;
-	private NslDinInt0 takenAction;
-	private NslDoutFloat2 value;
-	private NslDinFloat1 statesBefore;
 
 	private float alpha;
 	private float discountFactor;
-	private NslDinFloat1 statesAfter;
 	private int numStates;
-
-	private NslDinFloat1 valueAfter;
-
-	private NslDinFloat1 valueBefore;
 
 	private boolean update;
 
@@ -48,51 +36,63 @@ public class MultiStateProportionalAC extends NslModule implements QLAlgorithm {
 
 	private float lambda;
 
-	public MultiStateProportionalAC(String nslMain, NslModule nslParent,
-			Subject subject, int numStates, int numActions,
-			float discountFactor, float alpha, float lambda, float initialValue) {
-		super(nslMain, nslParent);
+	private FloatMatrixPort value;
 
+	private FloatArrayPort reward;
+
+	private IntArrayPort takenAction;
+
+	private FloatArrayPort votesBefore;
+
+	private FloatArrayPort votesAfter;
+
+	private FloatArrayPort statesBefore;
+
+	private FloatArrayPort statesAfter;
+
+	public MultiStateProportionalAC(FloatArrayPort reward,
+			IntArrayPort takenAction, FloatArrayPort statesBefore,
+			FloatArrayPort statesAfter, FloatMatrixPort value,
+			FloatArrayPort votesBefore, FloatArrayPort votesAfter,
+			Subject subject,  int numActions,
+			float discountFactor, float alpha, float lambda, float initialValue) {
 		this.discountFactor = discountFactor;
 		this.alpha = alpha;
 		this.lambda = lambda;
-		this.numStates = numStates;
 		this.subject = subject;
 
-		takenAction = new NslDinInt0(this, "takenAction");
-		reward = new NslDinFloat0(this, "reward");
-		statesBefore = new NslDinFloat1(this, "statesBefore", numStates);
-		statesAfter = new NslDinFloat1(this, "statesAfter", numStates);
+		this.reward = reward;
+		this.takenAction = takenAction;
+		this.statesBefore = statesBefore;
+		this.statesAfter = statesAfter;
+		this.votesBefore = votesBefore;
+		this.votesAfter = votesAfter;
+		this.value = value;
 
-		// Last value holds the critic estimate of the value
-		value = new NslDoutFloat2(this, "value", numStates, numActions + 1);
 		this.numActions = numActions;
 
-		File f = new File("policy.obj");
-		if (f.exists()
-				&& Configuration.getBoolean("Experiment.loadSavedPolicy")) {
-
-			try {
-				System.out.println("Reading saved policy...");
-				FileInputStream fin;
-				fin = new FileInputStream(f);
-				ObjectInputStream ois = new ObjectInputStream(fin);
-				value.set((float[][]) ois.readObject());
-			} catch (FileNotFoundException e) {
-				value.set(initialValue);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} else {
-			value.set(initialValue);
-		}
-
-		valueAfter = new NslDinFloat1(this, "actionVotesAfter");
-		valueBefore = new NslDinFloat1(this, "actionVotesBefore");
+		// File f = new File("policy.obj");
+		// if (f.exists()
+		// && Configuration.getBoolean("Experiment.loadSavedPolicy")) {
+		//
+		// try {
+		// System.out.println("Reading saved policy...");
+		// FileInputStream fin;
+		// fin = new FileInputStream(f);
+		// ObjectInputStream ois = new ObjectInputStream(fin);
+		// value.set((float[][]) ois.readObject());
+		// } catch (FileNotFoundException e) {
+		// value.set(initialValue);
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (ClassNotFoundException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// } else {
+		// value.set(initialValue);
+		// }
 
 		update = true;
 	}
@@ -113,8 +113,8 @@ public class MultiStateProportionalAC extends NslModule implements QLAlgorithm {
 
 	private void updateLastAction(int sBefore, int a) {
 		// Error in estimation
-		float delta = reward.get() + lambda * valueAfter.get(numActions)
-				- valueBefore.get(numActions);
+		float delta = reward.get() + lambda * votesAfter.get(numActions)
+				- votesBefore.get(numActions);
 
 		// Update action
 		float actionVal = value.get(sBefore, a);
@@ -244,7 +244,7 @@ public class MultiStateProportionalAC extends NslModule implements QLAlgorithm {
 		try {
 			fout = new FileOutputStream("policy.obj");
 			ObjectOutputStream oos = new ObjectOutputStream(fout);
-			oos.writeObject(value._data);
+			oos.writeObject(value.getData());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
