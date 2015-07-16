@@ -190,36 +190,40 @@ public class VirtualRobot extends LocalizableRobot {
 	@Override
 	public Feeder getClosestFeeder(int lastFeeder) {
 		// If feeder was invalidated - re compute it
-		if (!closestFeederValid){
-			closestFeederValid = true;
-			previouslyFoundFeeder = getClosestFeeder(-1);
-		}
-		
-		// No feeder visible at all
-		if (previouslyFoundFeeder == null)
-			return null;
-		
-		// Optimize to return previously computed if hasnt moved
-		if (previouslyFoundFeeder.getId() == lastFeeder){
-			int [] except = {lastFeeder};
-			List<Feeder> feeders = getVisibleFeeders(except);
-	
-			if (feeders.isEmpty())
-				return null;
-	
-			Feeder closest = feeders.get(0);
-			Point3f zero = new Point3f(0, 0, 0);
-			for (Feeder feeder : feeders)
-				if (feeder.getPosition().distance(zero) < closest.getPosition()
-						.distance(zero))
-					closest = feeder;
-	
-			
-			return closest;
-		} else
-			return previouslyFoundFeeder;
+//		if (!closestFeederValid){
+//			previouslyFoundFeeder = getClosestFeederImpl(-1);
+//			closestFeederValid = true;
+//		}
+//		
+//		// No feeder visible at all
+//		if (previouslyFoundFeeder == null)
+//			return null;
+//		
+//		// Optimize to return previously computed if hasnt moved
+//		if (previouslyFoundFeeder.getId() == lastFeeder){
+			return getClosestFeederImpl(lastFeeder);
+//		} else
+//			return previouslyFoundFeeder;
 				
 			
+	}
+
+	private Feeder getClosestFeederImpl(int lastFeeder) {
+		int [] except = {lastFeeder};
+		List<Feeder> feeders = getVisibleFeeders(except);
+
+		if (feeders.isEmpty())
+			return null;
+
+		Feeder closest = feeders.get(0);
+		Point3f zero = new Point3f(0, 0, 0);
+		for (Feeder feeder : feeders)
+			if (feeder.getPosition().distance(zero) < closest.getPosition()
+					.distance(zero))
+				closest = feeder;
+
+		
+		return closest;
 	}
 
 	@Override
