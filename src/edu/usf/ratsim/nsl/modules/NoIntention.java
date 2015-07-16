@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules;
 
-import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.Module;
 
 /**
@@ -16,7 +16,7 @@ public class NoIntention extends Module implements Intention {
 	public NoIntention(String name, int numIntentions) {
 		super(name);
 		intention = new float[numIntentions];
-		addOutPort("intention", new FloatArrayPort(this, intention));
+		addOutPort("intention", new Float1dPortArray(this, intention));
 	}
 
 	public void simRun() {

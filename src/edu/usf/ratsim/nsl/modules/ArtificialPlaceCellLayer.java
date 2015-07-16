@@ -8,7 +8,7 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.universe.Feeder;
-import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.Module;
 
 public class ArtificialPlaceCellLayer extends Module {
@@ -72,7 +72,7 @@ public class ArtificialPlaceCellLayer extends Module {
 		} while (i < numCells);
 
 		activation = new float[cells.size()];
-		addOutPort("activation", new FloatArrayPort(this, activation));
+		addOutPort("activation", new Float1dPortArray(this, activation));
 
 		this.robot = robot;
 	}

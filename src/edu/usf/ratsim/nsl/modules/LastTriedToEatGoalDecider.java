@@ -1,30 +1,32 @@
 package edu.usf.ratsim.nsl.modules;
 
-import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.Debug;
-import edu.usf.ratsim.micronsl.IntArrayPort;
+import edu.usf.ratsim.micronsl.Bool1dPort;
+import edu.usf.ratsim.micronsl.Int0dPort;
+import edu.usf.ratsim.micronsl.Int1dPort;
 import edu.usf.ratsim.micronsl.Module;
 
 public class LastTriedToEatGoalDecider extends Module {
 
 	public int[] goalFeeder;
-	private Subject sub;
 
-	public LastTriedToEatGoalDecider(String name, Subject sub) {
+	public LastTriedToEatGoalDecider(String name) {
 		super(name);
-		this.sub = sub;
 
 		goalFeeder = new int[2];
-		addOutPort("goalFeeder", new IntArrayPort(this, goalFeeder));
+		addOutPort("goalFeeder", new Int1dPort(this, goalFeeder));
 
 		goalFeeder[0] = -1;
 		goalFeeder[1] = -1;
 	}
 
 	public void simRun() {
-		if (sub.hasTriedToEat()) {
+		Bool1dPort subTriedToEat = (Bool1dPort) getInPort("subTriedToEat");
+		Int0dPort closestFeeder = (Int0dPort) getInPort("closestFeeder");
+		
+		if (subTriedToEat.get()) {
 			goalFeeder[1] = goalFeeder[0];
-			goalFeeder[0] = sub.getRobot().getClosestFeeder().getId();
+			goalFeeder[0] = closestFeeder.get();
 		}
 
 		if (Debug.printActiveGoal)

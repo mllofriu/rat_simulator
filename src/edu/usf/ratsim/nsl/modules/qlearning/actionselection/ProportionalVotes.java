@@ -1,6 +1,6 @@
 package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
-import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.FloatMatrixPort;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.nsl.modules.Voter;
@@ -20,11 +20,11 @@ public class ProportionalVotes extends Module implements Voter {
 	public ProportionalVotes(String name) {
 		super(name);
 		actionVote = new float[numActions];
-		addOutPort("votes", new FloatArrayPort(this, actionVote));
+		addOutPort("votes", new Float1dPortArray(this, actionVote));
 	}
 
 	public void simRun() {
-		FloatArrayPort states = (FloatArrayPort) getInPort("states");
+		Float1dPortArray states = (Float1dPortArray) getInPort("states");
 		FloatMatrixPort value = (FloatMatrixPort) getOutPort("value");
 		for (int action = 0; action < numActions; action++)
 			actionVote[action] = 0f;
@@ -50,9 +50,12 @@ public class ProportionalVotes extends Module implements Voter {
 				// Normalize with real value and revert previous normalization
 				actionVote[action] = (float) (actionVote[action] / sum);
 
-		// for (int action = 0; action < numActions; action++)
-		// if (values[action] != 0)
-		// System.out.println("value action " + values[action]);
+		System.out.println("RL votes");
+		for (int action = 0; action < numActions; action++)
+			System.out.print(actionVote[action] + " ");
+		System.out.println();
+		
+		
 
 	}
 

@@ -1,10 +1,10 @@
 package edu.usf.ratsim.micronsl;
 
-public class IntArrayPort extends IntPort {
+public class Int1dPort extends IntPort {
 
 	int[] data;
 
-	public IntArrayPort(Module owner, int[] data) {
+	public Int1dPort(Module owner, int[] data) {
 		super(owner);
 
 		this.data = data;

@@ -11,8 +11,8 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
-import edu.usf.ratsim.micronsl.FloatArrayPort;
-import edu.usf.ratsim.micronsl.IntArrayPort;
+import edu.usf.ratsim.micronsl.Float1dPortArray;
+import edu.usf.ratsim.micronsl.Int1dPort;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.support.GeomUtils;
 
@@ -34,7 +34,7 @@ public class TaxicFoodFinderSchema extends Module {
 
 		// Votes for action and value
 		votes = new float[subject.getPossibleAffordances().size() + 1];
-		addOutPort("votes", new FloatArrayPort(this, votes));
+		addOutPort("votes", new Float1dPortArray(this, votes));
 
 		this.subject = subject;
 		this.robot = robot;
@@ -52,7 +52,7 @@ public class TaxicFoodFinderSchema extends Module {
 	 * goal).
 	 */
 	public void simRun() {
-		IntArrayPort goalFeeder = (IntArrayPort) getInPort("goalFeeder");
+		Int1dPort goalFeeder = (Int1dPort) getInPort("goalFeeder");
 
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;

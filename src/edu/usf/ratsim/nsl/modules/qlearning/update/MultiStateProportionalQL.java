@@ -12,9 +12,9 @@ import java.io.PrintWriter;
 
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
-import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.FloatMatrixPort;
-import edu.usf.ratsim.micronsl.IntArrayPort;
+import edu.usf.ratsim.micronsl.Int1dPort;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.support.Configuration;
 
@@ -82,12 +82,12 @@ public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 	public void simRun() {
 		// Updates may be disabled for data log reasons
 		if (update) {
-			FloatArrayPort reward = (FloatArrayPort) getInPort("reward");
-			IntArrayPort takenAction = (IntArrayPort) getInPort("takenAction");
-			FloatArrayPort statesBefore = (FloatArrayPort) getInPort("statesBefore");
-			FloatArrayPort statesAfter = (FloatArrayPort) getInPort("statesAfter");
-			FloatArrayPort votesBefore = (FloatArrayPort) getInPort("votesBefore");
-			FloatArrayPort votesAfter = (FloatArrayPort) getInPort("votesAfter");
+			Float1dPortArray reward = (Float1dPortArray) getInPort("reward");
+			Int1dPort takenAction = (Int1dPort) getInPort("takenAction");
+			Float1dPortArray statesBefore = (Float1dPortArray) getInPort("statesBefore");
+			Float1dPortArray statesAfter = (Float1dPortArray) getInPort("statesAfter");
+			Float1dPortArray votesBefore = (Float1dPortArray) getInPort("votesBefore");
+			Float1dPortArray votesAfter = (Float1dPortArray) getInPort("votesAfter");
 			;
 			FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
 			// Gets the active state as computed at the beginning of the cycle
@@ -109,8 +109,8 @@ public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 	}
 
 	private void updateLastAction(int sBefore, int a, float maxERNextState,
-			FloatArrayPort reward, FloatArrayPort statesBefore,
-			FloatArrayPort statesAfter, FloatArrayPort votesBefore,
+			Float1dPortArray reward, Float1dPortArray statesBefore,
+			Float1dPortArray statesAfter, Float1dPortArray votesBefore,
 			FloatMatrixPort value) {
 
 		float val = value.get(sBefore, a);

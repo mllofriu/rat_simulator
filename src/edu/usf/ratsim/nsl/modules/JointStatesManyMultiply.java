@@ -2,8 +2,8 @@ package edu.usf.ratsim.nsl.modules;
 
 import java.util.List;
 
-import edu.usf.ratsim.micronsl.FloatMultiplyPort;
-import edu.usf.ratsim.micronsl.FloatPort;
+import edu.usf.ratsim.micronsl.Float1dPort;
+import edu.usf.ratsim.micronsl.Float1dPortMultiply;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.micronsl.Port;
 
@@ -18,14 +18,17 @@ public class JointStatesManyMultiply extends Module {
 
 	public void simRun() {
 		// All is done in the multiply port
+		
+		// Clear optimization cache
+		((Float1dPortMultiply)getOutPort("jointState")).clearOptimizationCache();
 	}
 
 	@Override
 	public void addInPorts(List<Port> ports) {
 		super.addInPorts(ports);
 
-		addOutPort("jointState", new FloatMultiplyPort(this,
-				(List<FloatPort>) (List<?>) ports, EPS));
+		addOutPort("jointState", new Float1dPortMultiply(this,
+				(List<Float1dPort>) (List<?>) ports, EPS));
 	}
 
 }

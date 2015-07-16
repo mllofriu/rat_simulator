@@ -11,8 +11,8 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
-import edu.usf.ratsim.micronsl.FloatArrayPort;
-import edu.usf.ratsim.micronsl.FloatPort;
+import edu.usf.ratsim.micronsl.Float1dPortArray;
+import edu.usf.ratsim.micronsl.Float1dPort;
 import edu.usf.ratsim.micronsl.IntPort;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.support.GeomUtils;
@@ -35,7 +35,7 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 
 		// Votes for action and value
 		votes = new float[subject.getPossibleAffordances().size() + 1];
-		addOutPort("votes", new FloatArrayPort(this, votes));
+		addOutPort("votes", new Float1dPortArray(this, votes));
 
 		this.subject = subject;
 		this.robot = robot;

@@ -2,11 +2,11 @@ package edu.usf.ratsim.micronsl;
 
 import java.util.List;
 
-public class FloatSumPort extends FloatPort {
+public class Float1dPortSum extends Float1dPort {
 
-	private List<FloatPort> states;
+	private List<Float1dPort> states;
 
-	public FloatSumPort(Module owner, List<FloatPort> states) {
+	public Float1dPortSum(Module owner, List<Float1dPort> states) {
 		super(owner);
 
 		if (states.isEmpty())
@@ -15,7 +15,7 @@ public class FloatSumPort extends FloatPort {
 
 		boolean allSameSize = true;
 		int sizeFirst = states.get(0).getSize();
-		for (FloatPort state : states)
+		for (Float1dPort state : states)
 			allSameSize = sizeFirst == state.getSize();
 		if (!allSameSize)
 			throw new IllegalArgumentException(
@@ -32,9 +32,23 @@ public class FloatSumPort extends FloatPort {
 	@Override
 	public float get(int index) {
 		float sum = 0;
-		for (FloatPort state : states)
+		for (Float1dPort state : states)
 			sum += state.get(index);
 		return sum;
+	}
+
+	@Override
+	public float[] getData() {
+		float [] data = new float[getSize()];
+		for (int i = 0; i < getSize(); i++)
+			data[i] = get(i);
+		return data;
+	}
+
+	@Override
+	public void getData(float[] data) {
+		for (int i = 0; i < getSize(); i++)
+			data[i] = get(i);
 	}
 
 }

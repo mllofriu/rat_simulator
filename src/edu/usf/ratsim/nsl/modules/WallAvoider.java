@@ -6,7 +6,7 @@ import java.util.Random;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
-import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.Module;
 
 /**
@@ -42,7 +42,7 @@ public class WallAvoider extends Module {
 		// number = (new Random()).nextInt();
 
 		votes = new float[numActions + 1];
-		addOutPort("votes", new FloatArrayPort(this, votes));
+		addOutPort("votes", new Float1dPortArray(this, votes));
 		r = new Random();
 
 		robot = subject.getRobot();

@@ -10,7 +10,7 @@ import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
-import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.Module;
 
 public class DecayingExplorationSchema extends Module {
@@ -33,7 +33,7 @@ public class DecayingExplorationSchema extends Module {
 		this.alpha = -Math.log(.5) / explorationHalfLifeVal;
 
 		votes = new float[subject.getPossibleAffordances().size() + 1];
-		addOutPort("votes", new FloatArrayPort(this, votes));
+		addOutPort("votes", new Float1dPortArray(this, votes));
 
 		r = new Random();
 

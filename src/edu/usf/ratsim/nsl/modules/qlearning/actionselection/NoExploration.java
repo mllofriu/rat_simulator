@@ -9,8 +9,8 @@ import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.utils.Debug;
-import edu.usf.ratsim.micronsl.FloatPort;
-import edu.usf.ratsim.micronsl.IntArrayPort;
+import edu.usf.ratsim.micronsl.Float1dPort;
+import edu.usf.ratsim.micronsl.Int1dPort;
 import edu.usf.ratsim.micronsl.Module;
 
 public class NoExploration extends Module {
@@ -29,7 +29,7 @@ public class NoExploration extends Module {
 		super(name);
 
 		takenAction = new int[1];
-		addOutPort("takenAction", new IntArrayPort(this, takenAction));
+		addOutPort("takenAction", new Int1dPort(this, takenAction));
 
 		random = new Random();
 		lastRot = false;
@@ -39,7 +39,7 @@ public class NoExploration extends Module {
 	}
 
 	public void simRun() {
-		FloatPort votes = (FloatPort) getInPort("votes");
+		Float1dPort votes = (Float1dPort) getInPort("votes");
 
 		Affordance selectedAction;
 		List<Affordance> aff = robot.checkAffordances(sub

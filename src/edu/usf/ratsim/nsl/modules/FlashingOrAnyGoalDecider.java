@@ -5,7 +5,7 @@ import java.util.Random;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.Debug;
-import edu.usf.ratsim.micronsl.IntArrayPort;
+import edu.usf.ratsim.micronsl.Int1dPort;
 import edu.usf.ratsim.micronsl.Module;
 
 /**
@@ -32,7 +32,7 @@ public class FlashingOrAnyGoalDecider extends Module {
 		this.numIntentions = numIntentions;
 
 		goalFeeder = new int[1];
-		addOutPort("goalFeeder", new IntArrayPort(this, goalFeeder));
+		addOutPort("goalFeeder", new Int1dPort(this, goalFeeder));
 
 		r = new Random();
 

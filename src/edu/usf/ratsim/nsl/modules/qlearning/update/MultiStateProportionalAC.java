@@ -8,10 +8,10 @@ import java.io.PrintWriter;
 
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
-import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.FloatMatrixPort;
-import edu.usf.ratsim.micronsl.FloatPort;
-import edu.usf.ratsim.micronsl.IntArrayPort;
+import edu.usf.ratsim.micronsl.Float1dPort;
+import edu.usf.ratsim.micronsl.Int1dPort;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.support.Configuration;
 
@@ -75,12 +75,12 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 	public void simRun() {
 		// Updates may be disabled for data log reasons
 		if (update) {
-			FloatArrayPort reward = (FloatArrayPort) getInPort("reward");
-			IntArrayPort takenAction = (IntArrayPort) getInPort("takenAction");
-			FloatPort statesBefore = (FloatPort) getInPort("statesBefore");
-			FloatPort statesAfter = (FloatPort) getInPort("statesAfter");
-			FloatPort votesBefore = (FloatPort) getInPort("votesBefore");
-			FloatPort votesAfter = (FloatPort) getInPort("votesAfter");
+			Float1dPortArray reward = (Float1dPortArray) getInPort("reward");
+			Int1dPort takenAction = (Int1dPort) getInPort("takenAction");
+			Float1dPort statesBefore = (Float1dPort) getInPort("statesBefore");
+			Float1dPort statesAfter = (Float1dPort) getInPort("statesAfter");
+			Float1dPort votesBefore = (Float1dPort) getInPort("votesBefore");
+			Float1dPort votesAfter = (Float1dPort) getInPort("votesAfter");
 			;
 			FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
 			// Gets the active state as computed at the beginning of the cycle
@@ -95,9 +95,9 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		}
 	}
 
-	private void updateLastAction(int sBefore, int a, FloatArrayPort reward,
-			FloatPort statesBefore, FloatPort statesAfter,
-			FloatPort votesBefore, FloatPort votesAfter, FloatMatrixPort value) {
+	private void updateLastAction(int sBefore, int a, Float1dPortArray reward,
+			Float1dPort statesBefore, Float1dPort statesAfter,
+			Float1dPort votesBefore, Float1dPort votesAfter, FloatMatrixPort value) {
 		// Error in estimation
 		float delta = reward.get() + lambda * votesAfter.get(numActions)
 				- votesBefore.get(numActions);

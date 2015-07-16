@@ -1,6 +1,6 @@
 package edu.usf.ratsim.micronsl;
 
-public class FloatMatrixPort extends FloatPort {
+public class FloatMatrixPort extends Float2dPort {
 
 	float[][] data;
 
@@ -14,15 +14,6 @@ public class FloatMatrixPort extends FloatPort {
 	}
 
 	@Override
-	public int getSize() {
-		return data.length * data[0].length;
-	}
-
-	@Override
-	public float get(int index) {
-		return data[index / data[0].length][index % data[0].length];
-	}
-
 	public float get(int i, int j) {
 		return data[i][j];
 	}
@@ -33,5 +24,18 @@ public class FloatMatrixPort extends FloatPort {
 
 	public float[][] getData() {
 		return data;
+	}
+
+	@Override
+	public int getNRows() {
+		return data.length;
+	}
+
+	@Override
+	public int getNCols() {
+		if (data.length == 0)
+			return 0;
+		else 
+			return data[0].length;
 	}
 }

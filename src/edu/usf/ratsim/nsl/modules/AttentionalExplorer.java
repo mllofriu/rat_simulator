@@ -12,7 +12,7 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.Debug;
-import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.IntPort;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.support.GeomUtils;
@@ -41,7 +41,7 @@ public class AttentionalExplorer extends Module {
 			int maxAttentionSpan) {
 		super(name);
 		votes = new float[sub.getPossibleAffordances().size() + 1];
-		addOutPort("votes", new FloatArrayPort(this, votes));
+		addOutPort("votes", new Float1dPortArray(this, votes));
 
 		this.maxAttentionSpan = maxAttentionSpan;
 		this.attentionRemaining = 0;

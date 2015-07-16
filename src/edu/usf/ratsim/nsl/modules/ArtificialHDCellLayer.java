@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.utils.Debug;
-import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.Module;
 
 public class ArtificialHDCellLayer extends Module {
@@ -32,7 +32,7 @@ public class ArtificialHDCellLayer extends Module {
 		}
 
 		activation = new float[cells.size()];
-		addOutPort("activation", new FloatArrayPort(this, activation));
+		addOutPort("activation", new Float1dPortArray(this, activation));
 
 		this.robot = robot;
 	}

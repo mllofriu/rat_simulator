@@ -1,8 +1,8 @@
 package edu.usf.ratsim.micronsl;
 
-public abstract class FloatPort extends Port {
+public abstract class Float1dPort extends Port {
 
-	public FloatPort(Module owner) {
+	public Float1dPort(Module owner) {
 		super(owner);
 	}
 
@@ -13,5 +13,8 @@ public abstract class FloatPort extends Port {
 	public float get() {
 		return get(0);
 	}
+	
+	public abstract float[] getData();
 
+	public abstract void getData(float[] data);
 }

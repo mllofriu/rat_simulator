@@ -1,8 +1,8 @@
 package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
-import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.FloatMatrixPort;
-import edu.usf.ratsim.micronsl.FloatPort;
+import edu.usf.ratsim.micronsl.Float1dPort;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.nsl.modules.Voter;
 
@@ -14,11 +14,14 @@ public class HalfAndHalfConnectionVotes extends Module implements Voter {
 	public HalfAndHalfConnectionVotes(String name, int numActions) {
 		super(name);
 		actionVote = new float[numActions + 1];
-		addOutPort("votes", new FloatArrayPort(this, actionVote));
+		addOutPort("votes", new Float1dPortArray(this, actionVote));
+		this.numActions = numActions;
 	}
 
 	public void simRun() {
-		FloatPort states = (FloatPort) getInPort("states");
+
+		Float1dPort states = (Float1dPort) getInPort("states");
+		float[] data = states.getData();
 		FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
 
 		for (int action = 0; action < numActions + 1; action++)
@@ -27,8 +30,8 @@ public class HalfAndHalfConnectionVotes extends Module implements Voter {
 		float sumActionSel = 0;
 		int cantStates = states.getSize();
 		// System.out.println(cantStates);
-		for (int state = 0; state < cantStates / 5; state++) {
-			float stateVal = states.get(state);
+		for (int state = 0; state < cantStates / 2; state++) {
+			float stateVal = data[state];
 			// Update gradient every some steps
 			if (stateVal != 0) {
 				sumActionSel += stateVal;
@@ -47,7 +50,7 @@ public class HalfAndHalfConnectionVotes extends Module implements Voter {
 		float sumValue = 0;
 		for (int state = cantStates / 2; state < cantStates; state++) {
 			float valueVal = value.get(state, numActions);
-			float stateVal = states.get(state);
+			float stateVal = data[state];
 			sumValue += stateVal;
 			if (valueVal != 0)
 				actionVote[numActions] = actionVote[numActions] + stateVal
@@ -62,9 +65,10 @@ public class HalfAndHalfConnectionVotes extends Module implements Voter {
 		if (sumValue != 0)
 			actionVote[numActions] = actionVote[numActions] / sumValue;
 
-		// for (int action = 0; action < numActions; action++)
-		// if (values[action] != 0)
-		// System.out.println("value action " + values[action]);
+		System.out.println("RL Half and Half votes");
+		for (int action = 0; action < numActions; action++)
+			System.out.print(actionVote[action] + " ");
+		System.out.println();
 
 	}
 
