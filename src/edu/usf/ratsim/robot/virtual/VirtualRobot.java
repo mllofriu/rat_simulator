@@ -42,6 +42,10 @@ public class VirtualRobot extends LocalizableRobot {
 
 	private float translationRotationNoise;
 
+	private boolean closestFeederValid;
+
+	private Feeder previouslyFoundFeeder;
+
 	public VirtualRobot(ElementWrapper params) {
 		super(params);
 
@@ -59,10 +63,13 @@ public class VirtualRobot extends LocalizableRobot {
 					+ " before Virtual Robot is created");
 
 		r = new Random();
+		
+		closestFeederValid = false;
 	}
 
 	public void rotate(float grados) {
 		universe.rotateRobot(grados + noise * r.nextFloat() * grados);
+		closestFeederValid = false;
 	}
 
 	public void startRobot() {
@@ -76,6 +83,8 @@ public class VirtualRobot extends LocalizableRobot {
 		universe.moveRobot(new Vector3f(dist + dist * r.nextFloat() * noise,
 				0f, 0f));
 		universe.rotateRobot((2 * r.nextFloat() - 1) * translationRotationNoise);
+		
+		closestFeederValid = false;
 	}
 
 	@Override
@@ -180,20 +189,37 @@ public class VirtualRobot extends LocalizableRobot {
 
 	@Override
 	public Feeder getClosestFeeder(int lastFeeder) {
-		int [] except = {lastFeeder};
-		List<Feeder> feeders = getVisibleFeeders(except);
-
-		if (feeders.isEmpty())
+		// If feeder was invalidated - re compute it
+		if (!closestFeederValid){
+			closestFeederValid = true;
+			previouslyFoundFeeder = getClosestFeeder(-1);
+		}
+		
+		// No feeder visible at all
+		if (previouslyFoundFeeder == null)
 			return null;
-
-		Feeder closest = feeders.get(0);
-		Point3f zero = new Point3f(0, 0, 0);
-		for (Feeder feeder : feeders)
-			if (feeder.getPosition().distance(zero) < closest.getPosition()
-					.distance(zero))
-				closest = feeder;
-
-		return closest;
+		
+		// Optimize to return previously computed if hasnt moved
+		if (previouslyFoundFeeder.getId() == lastFeeder){
+			int [] except = {lastFeeder};
+			List<Feeder> feeders = getVisibleFeeders(except);
+	
+			if (feeders.isEmpty())
+				return null;
+	
+			Feeder closest = feeders.get(0);
+			Point3f zero = new Point3f(0, 0, 0);
+			for (Feeder feeder : feeders)
+				if (feeder.getPosition().distance(zero) < closest.getPosition()
+						.distance(zero))
+					closest = feeder;
+	
+			
+			return closest;
+		} else
+			return previouslyFoundFeeder;
+				
+			
 	}
 
 	@Override

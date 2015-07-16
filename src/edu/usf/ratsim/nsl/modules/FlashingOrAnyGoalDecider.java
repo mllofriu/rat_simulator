@@ -25,12 +25,14 @@ public class FlashingOrAnyGoalDecider extends Module {
 	private int numIntentions;
 	private static int lastFeeder;
 
-	public FlashingOrAnyGoalDecider(Subject subject, int numIntentions) {
+	public FlashingOrAnyGoalDecider(String name, Subject subject,
+			int numIntentions) {
+		super(name);
 		this.subject = subject;
 		this.numIntentions = numIntentions;
 
 		goalFeeder = new int[1];
-		addPort(new IntArrayPort("goalFeeder", goalFeeder));
+		addOutPort("goalFeeder", new IntArrayPort(this, goalFeeder));
 
 		r = new Random();
 

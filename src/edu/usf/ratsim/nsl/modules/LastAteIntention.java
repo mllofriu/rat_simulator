@@ -7,16 +7,17 @@ import edu.usf.ratsim.micronsl.Module;
 
 public class LastAteIntention extends Module implements Intention {
 
-	public IntPort goalFeeder;
 	public float[] intention;
 
-	public LastAteIntention(IntPort goalFeeder, int numIntentions) {
-		this.goalFeeder = goalFeeder;
+	public LastAteIntention(String name, int numIntentions) {
+		super(name);
 		intention = new float[numIntentions];
-		addPort(new FloatArrayPort("intention", intention));
+		addOutPort("intention", new FloatArrayPort(this, intention));
 	}
 
 	public void simRun() {
+		IntPort goalFeeder = (IntPort) getInPort("goalFeeder");
+
 		for (int i = 0; i < intention.length; i++)
 			intention[i] = 0;
 
@@ -36,4 +37,5 @@ public class LastAteIntention extends Module implements Intention {
 			intention[i] = 0;
 		intention[inte] = 1;
 	}
+
 }

@@ -7,7 +7,7 @@
 		<params>
 			<closeToFoodThrs>0.15</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	

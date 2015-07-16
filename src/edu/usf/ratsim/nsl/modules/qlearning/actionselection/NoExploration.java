@@ -23,24 +23,24 @@ public class NoExploration extends Module {
 	private Random random;
 	private boolean lastRot;
 	private Subject sub;
-	private FloatPort votes;
-	private IntArrayPort takenAction;
+	private int[] takenAction;
 
-	public NoExploration(IntArrayPort takenAction, FloatPort votes, Subject sub) {
+	public NoExploration(String name, Subject sub) {
+		super(name);
 
-		this.votes = votes;
-		this.takenAction = takenAction;
+		takenAction = new int[1];
+		addOutPort("takenAction", new IntArrayPort(this, takenAction));
 
 		random = new Random();
-
 		lastRot = false;
-
 		robot = sub.getRobot();
 
 		this.sub = sub;
 	}
 
 	public void simRun() {
+		FloatPort votes = (FloatPort) getInPort("votes");
+
 		Affordance selectedAction;
 		List<Affordance> aff = robot.checkAffordances(sub
 				.getPossibleAffordances());
@@ -55,13 +55,13 @@ public class NoExploration extends Module {
 
 		// Publish the taken action
 		if (selectedAction.getValue() > 0) {
-			takenAction.set(0,aff.indexOf(selectedAction));
+			takenAction[0] = aff.indexOf(selectedAction);
 			if (Debug.printSelectedValues)
 				System.out.println(selectedAction.toString());
 
 			robot.executeAffordance(selectedAction, sub);
 		} else {
-			takenAction.set(0,-1);
+			takenAction[0] = -1;
 		}
 
 		// TODO: get the rotation -> forward back

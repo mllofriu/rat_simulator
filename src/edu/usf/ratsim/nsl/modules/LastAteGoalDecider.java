@@ -11,11 +11,12 @@ public class LastAteGoalDecider extends Module {
 	public static int currentGoal;
 	private Subject sub;
 
-	public LastAteGoalDecider(Subject sub) {
+	public LastAteGoalDecider(String name, Subject sub) {
+		super(name);
 		this.sub = sub;
 
 		goalFeeder = new int[1];
-		addPort(new IntArrayPort("goalFeeder", goalFeeder));
+		addOutPort("goalFeeder", new IntArrayPort(this, goalFeeder));
 
 		currentGoal = -1;
 	}

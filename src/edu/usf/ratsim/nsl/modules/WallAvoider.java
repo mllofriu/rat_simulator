@@ -31,7 +31,9 @@ public class WallAvoider extends Module {
 	// private int number;
 	private Subject subject;
 
-	public WallAvoider(Subject subject, float wallFollowingValue, int numActions) {
+	public WallAvoider(String name, Subject subject, float wallFollowingValue,
+			int numActions) {
+		super(name);
 		this.subject = subject;
 		this.wallFollowingValue = wallFollowingValue;
 		this.currentValue = 0f;
@@ -40,7 +42,7 @@ public class WallAvoider extends Module {
 		// number = (new Random()).nextInt();
 
 		votes = new float[numActions + 1];
-		addPort(new FloatArrayPort("votes", votes));
+		addOutPort("votes", new FloatArrayPort(this, votes));
 		r = new Random();
 
 		robot = subject.getRobot();

@@ -4,8 +4,8 @@ public class IntArrayPort extends IntPort {
 
 	int[] data;
 
-	public IntArrayPort(String name, int[] data) {
-		super(name);
+	public IntArrayPort(Module owner, int[] data) {
+		super(owner);
 
 		this.data = data;
 	}

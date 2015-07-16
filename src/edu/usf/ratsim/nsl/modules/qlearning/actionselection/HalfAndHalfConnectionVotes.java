@@ -1,6 +1,8 @@
 package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
 import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.FloatMatrixPort;
+import edu.usf.ratsim.micronsl.FloatPort;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.nsl.modules.Voter;
 
@@ -8,19 +10,17 @@ public class HalfAndHalfConnectionVotes extends Module implements Voter {
 
 	public float[] actionVote;
 	private int numActions;
-	private FloatArrayPort states;
-	private FloatMatrixPort value;
 
-	public HalfAndHalfConnectionVotes(FloatArrayPort states,
-			FloatMatrixPort value, int numActions) {
+	public HalfAndHalfConnectionVotes(String name, int numActions) {
+		super(name);
 		actionVote = new float[numActions + 1];
-		addPort(new FloatArrayPort("votes", actionVote));
-
-		this.states = states;
-		this.value = value;
+		addOutPort("votes", new FloatArrayPort(this, actionVote));
 	}
 
 	public void simRun() {
+		FloatPort states = (FloatPort) getInPort("states");
+		FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
+
 		for (int action = 0; action < numActions + 1; action++)
 			actionVote[action] = 0f;
 

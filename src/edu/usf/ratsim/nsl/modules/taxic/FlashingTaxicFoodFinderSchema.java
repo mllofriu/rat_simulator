@@ -13,6 +13,7 @@ import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.ratsim.micronsl.FloatArrayPort;
 import edu.usf.ratsim.micronsl.FloatPort;
+import edu.usf.ratsim.micronsl.IntPort;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.support.GeomUtils;
 
@@ -25,18 +26,16 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 	private LocalizableRobot robot;
 	private double lambda;
 	private boolean estimateValue;
-	private FloatPort goalFeeder;
 
-	public FlashingTaxicFoodFinderSchema(FloatPort goalFeeder, Subject subject,
+	public FlashingTaxicFoodFinderSchema(String name, Subject subject,
 			LocalizableRobot robot, float reward, float lambda,
 			boolean estimateValue) {
+		super(name);
 		this.reward = reward;
 
 		// Votes for action and value
 		votes = new float[subject.getPossibleAffordances().size() + 1];
-		addPort(new FloatArrayPort("votes", votes));
-
-		this.goalFeeder = goalFeeder;
+		addOutPort("votes", new FloatArrayPort(this, votes));
 
 		this.subject = subject;
 		this.robot = robot;
@@ -54,6 +53,8 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 	 * goal).
 	 */
 	public void simRun() {
+		IntPort goalFeeder = (IntPort) getInPort("goalFeeder");
+
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 

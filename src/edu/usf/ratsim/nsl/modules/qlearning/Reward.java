@@ -11,9 +11,11 @@ public class Reward extends Module {
 	private float foodReward;
 	private Subject subject;
 
-	public Reward(Subject subject, float foodReward, float nonFoodReward) {
+	public Reward(String name, Subject subject, float foodReward,
+			float nonFoodReward) {
+		super(name);
 		reward = new float[1];
-		addPort(new FloatArrayPort("reward", reward));
+		addOutPort("reward", new FloatArrayPort(this, reward));
 
 		this.foodReward = foodReward;
 		this.nonFoodReward = nonFoodReward;

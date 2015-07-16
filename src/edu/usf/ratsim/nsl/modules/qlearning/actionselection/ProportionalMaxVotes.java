@@ -1,6 +1,7 @@
 package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
 import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.FloatMatrixPort;
 import edu.usf.ratsim.micronsl.Module;
 
 public class ProportionalMaxVotes extends Module {
@@ -10,9 +11,11 @@ public class ProportionalMaxVotes extends Module {
 	private FloatArrayPort states;
 	private FloatMatrixPort value;
 
-	public ProportionalMaxVotes(FloatArrayPort states, FloatMatrixPort value) {
+	public ProportionalMaxVotes(String name, FloatArrayPort states,
+			FloatMatrixPort value) {
+		super(name);
 		actionVote = new float[numActions];
-		addPort(new FloatArrayPort("votes", actionVote));
+		addOutPort("votes", new FloatArrayPort(this, actionVote));
 
 		this.states = states;
 		this.value = value;

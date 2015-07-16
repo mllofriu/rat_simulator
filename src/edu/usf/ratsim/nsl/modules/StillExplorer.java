@@ -31,14 +31,13 @@ public class StillExplorer extends Module {
 	private float stillExploringVal;
 	private int timeToExplore;
 	private Robot robot;
-	private IntPort takenAction;
 
-	public StillExplorer(IntPort takenAction, int maxActionsSinceForward,
-			Subject sub, float stillExploringVal) {
-		this.takenAction = takenAction;
+	public StillExplorer(String name, int maxActionsSinceForward, Subject sub,
+			float stillExploringVal) {
+		super(name);
 
 		votes = new float[sub.getPossibleAffordances().size() + 1];
-		addPort(new FloatArrayPort("votes", votes));
+		addOutPort("votes", new FloatArrayPort(this, votes));
 
 		this.maxActionsSinceForward = maxActionsSinceForward;
 		this.sub = sub;
@@ -51,6 +50,8 @@ public class StillExplorer extends Module {
 	}
 
 	public void simRun() {
+		IntPort takenAction = (IntPort) getInPort("takenAction");
+
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 

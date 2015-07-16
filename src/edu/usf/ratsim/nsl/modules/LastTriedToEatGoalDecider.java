@@ -10,11 +10,12 @@ public class LastTriedToEatGoalDecider extends Module {
 	public int[] goalFeeder;
 	private Subject sub;
 
-	public LastTriedToEatGoalDecider(Subject sub) {
+	public LastTriedToEatGoalDecider(String name, Subject sub) {
+		super(name);
 		this.sub = sub;
 
 		goalFeeder = new int[2];
-		addPort(new IntArrayPort("goalFeeder", goalFeeder));
+		addOutPort("goalFeeder", new IntArrayPort(this, goalFeeder));
 
 		goalFeeder[0] = -1;
 		goalFeeder[1] = -1;

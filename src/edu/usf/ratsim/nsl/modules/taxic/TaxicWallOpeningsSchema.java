@@ -25,12 +25,14 @@ public class TaxicWallOpeningsSchema extends Module {
 	private Subject subject;
 	private LocalizableRobot robot;
 
-	public TaxicWallOpeningsSchema(Subject subject, LocalizableRobot robot,
-			float reward) {
+	public TaxicWallOpeningsSchema(String name, Subject subject,
+			LocalizableRobot robot, float reward) {
+		super(name);
+
 		this.reward = reward;
 
 		votes = new float[subject.getPossibleAffordances().size() + 1];
-		addPort(new FloatArrayPort("votes", votes));
+		addOutPort("votes", new FloatArrayPort(this, votes));
 
 		this.subject = subject;
 		this.robot = robot;

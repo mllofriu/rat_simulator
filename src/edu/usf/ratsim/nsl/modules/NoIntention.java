@@ -13,9 +13,10 @@ public class NoIntention extends Module implements Intention {
 
 	public float[] intention;
 
-	public NoIntention(int numIntentions) {
+	public NoIntention(String name, int numIntentions) {
+		super(name);
 		intention = new float[numIntentions];
-		addPort(new FloatArrayPort("intention", intention));
+		addOutPort("intention", new FloatArrayPort(this, intention));
 	}
 
 	public void simRun() {

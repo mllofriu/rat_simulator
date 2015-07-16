@@ -2,8 +2,8 @@ package edu.usf.ratsim.micronsl;
 
 public abstract class IntPort extends Port {
 
-	public IntPort(String name) {
-		super(name);
+	public IntPort(Module owner) {
+		super(owner);
 	}
 
 	public abstract int getSize();

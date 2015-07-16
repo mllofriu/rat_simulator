@@ -13,9 +13,9 @@ import java.io.PrintWriter;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.FloatMatrixPort;
 import edu.usf.ratsim.micronsl.IntArrayPort;
 import edu.usf.ratsim.micronsl.Module;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.FloatMatrixPort;
 import edu.usf.ratsim.support.Configuration;
 
 public class MultiStateProportionalQL extends Module implements QLAlgorithm {
@@ -40,38 +40,14 @@ public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 
 	private Subject subject;
 
-	private FloatArrayPort reward;
-
-	private IntArrayPort takenAction;
-
-	private FloatArrayPort statesBefore;
-
-	private FloatArrayPort statesAfter;
-
-	private FloatArrayPort votesBefore;
-
-	private FloatArrayPort votesAfter;
-
-	private FloatMatrixPort value;
-
-	public MultiStateProportionalQL(FloatArrayPort reward,
-			IntArrayPort takenAction, FloatArrayPort statesBefore,
-			FloatArrayPort statesAfter, FloatMatrixPort value,
-			FloatArrayPort votesBefore, FloatArrayPort votesAfter,
-			Subject subject, int numActions,
-			float discountFactor, float alpha, float initialValue) {
+	public MultiStateProportionalQL(String name, Subject subject,
+			int numActions, float discountFactor, float alpha,
+			float initialValue) {
+		super(name);
 
 		this.discountFactor = discountFactor;
 		this.alpha = alpha;
 		this.subject = subject;
-
-		this.reward = reward;
-		this.takenAction = takenAction;
-		this.statesBefore = statesBefore;
-		this.statesAfter = statesAfter;
-		this.votesBefore = votesBefore;
-		this.votesAfter = votesAfter;
-		this.value = value;
 
 		// File f = new File("policy.obj");
 		// if (f.exists()
@@ -106,6 +82,14 @@ public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 	public void simRun() {
 		// Updates may be disabled for data log reasons
 		if (update) {
+			FloatArrayPort reward = (FloatArrayPort) getInPort("reward");
+			IntArrayPort takenAction = (IntArrayPort) getInPort("takenAction");
+			FloatArrayPort statesBefore = (FloatArrayPort) getInPort("statesBefore");
+			FloatArrayPort statesAfter = (FloatArrayPort) getInPort("statesAfter");
+			FloatArrayPort votesBefore = (FloatArrayPort) getInPort("votesBefore");
+			FloatArrayPort votesAfter = (FloatArrayPort) getInPort("votesAfter");
+			;
+			FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
 			// Gets the active state as computed at the beginning of the cycle
 			int a = takenAction.get();
 
@@ -119,11 +103,15 @@ public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 			for (int stateBefore = 0; stateBefore < numStates; stateBefore++)
 				// Dont bother if the activation is to small
 				if (statesBefore.get(stateBefore) > EPS && a != -1)
-					updateLastAction(stateBefore, a, maxExpectedR);
+					updateLastAction(stateBefore, a, maxExpectedR, reward,
+							statesBefore, statesAfter, votesBefore, value);
 		}
 	}
 
-	private void updateLastAction(int sBefore, int a, float maxERNextState) {
+	private void updateLastAction(int sBefore, int a, float maxERNextState,
+			FloatArrayPort reward, FloatArrayPort statesBefore,
+			FloatArrayPort statesAfter, FloatArrayPort votesBefore,
+			FloatMatrixPort value) {
 
 		float val = value.get(sBefore, a);
 		float delta;
@@ -259,16 +247,16 @@ public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 
 	@Override
 	public void savePolicy() {
-		FileOutputStream fout;
-		try {
-			fout = new FileOutputStream("policy.obj");
-			ObjectOutputStream oos = new ObjectOutputStream(fout);
-			oos.writeObject(value.getData());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// FileOutputStream fout;
+		// try {
+		// fout = new FileOutputStream("policy.obj");
+		// ObjectOutputStream oos = new ObjectOutputStream(fout);
+		// oos.writeObject(value.getData());
+		// } catch (FileNotFoundException e) {
+		// e.printStackTrace();
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
 
 	}
 

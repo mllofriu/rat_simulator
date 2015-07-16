@@ -11,11 +11,12 @@ public class PlaceIntention extends Module {
 	private FloatPort places;
 	private IntPort goalFeeder;
 
-	public PlaceIntention(FloatPort places, IntPort goalFeeder) {
+	public PlaceIntention(String name, FloatPort places, IntPort goalFeeder) {
+		super(name);
 		this.goalFeeder = goalFeeder;
 		this.places = places;
 		states = new float[goalFeeder.getSize() * places.getSize()];
-		addPort(new FloatArrayPort("states", states));
+		addOutPort("states", new FloatArrayPort(this, states));
 	}
 
 	public void simRun() {

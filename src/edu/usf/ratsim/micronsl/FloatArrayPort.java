@@ -4,8 +4,8 @@ public class FloatArrayPort extends FloatPort {
 
 	float[] data;
 
-	public FloatArrayPort(String name, float[] data) {
-		super(name);
+	public FloatArrayPort(Module owner, float[] data) {
+		super(owner);
 		this.data = data;
 	}
 

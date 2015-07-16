@@ -4,15 +4,16 @@ import java.util.List;
 
 public class FloatMultiplyPort extends FloatPort {
 
-	private List<FloatPort> states;
 	private int size;
 	private float eps;
+	private List<FloatPort> states;
 
-	public FloatMultiplyPort(String name, List<FloatPort> states, float eps) {
-		super(name);
+	public FloatMultiplyPort(Module owner, List<FloatPort> states, float eps) {
+		super(owner);
+
+		this.eps = eps;
 
 		this.states = states;
-		this.eps = eps;
 
 		if (states.isEmpty())
 			size = 0;
@@ -39,6 +40,7 @@ public class FloatMultiplyPort extends FloatPort {
 			jointActivation *= state.get(stateIndex);
 			if (jointActivation < eps) {
 				jointActivation = 0;
+				// TODO: Optimize to set zero from then on
 				break;
 			}
 		}

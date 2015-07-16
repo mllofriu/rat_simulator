@@ -3,17 +3,16 @@ package edu.usf.ratsim.nsl.modules.qlearning.update;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
 import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.FloatMatrixPort;
+import edu.usf.ratsim.micronsl.FloatPort;
 import edu.usf.ratsim.micronsl.IntArrayPort;
 import edu.usf.ratsim.micronsl.Module;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.FloatMatrixPort;
 import edu.usf.ratsim.support.Configuration;
 
 public class MultiStateProportionalAC extends Module implements QLAlgorithm {
@@ -36,38 +35,14 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 	private float lambda;
 
-	private FloatMatrixPort value;
-
-	private FloatArrayPort reward;
-
-	private IntArrayPort takenAction;
-
-	private FloatArrayPort votesBefore;
-
-	private FloatArrayPort votesAfter;
-
-	private FloatArrayPort statesBefore;
-
-	private FloatArrayPort statesAfter;
-
-	public MultiStateProportionalAC(FloatArrayPort reward,
-			IntArrayPort takenAction, FloatArrayPort statesBefore,
-			FloatArrayPort statesAfter, FloatMatrixPort value,
-			FloatArrayPort votesBefore, FloatArrayPort votesAfter,
-			Subject subject,  int numActions,
-			float discountFactor, float alpha, float lambda, float initialValue) {
+	public MultiStateProportionalAC(String name, Subject subject,
+			int numActions, float discountFactor, float alpha, float lambda,
+			float initialValue) {
+		super(name);
 		this.discountFactor = discountFactor;
 		this.alpha = alpha;
 		this.lambda = lambda;
 		this.subject = subject;
-
-		this.reward = reward;
-		this.takenAction = takenAction;
-		this.statesBefore = statesBefore;
-		this.statesAfter = statesAfter;
-		this.votesBefore = votesBefore;
-		this.votesAfter = votesAfter;
-		this.value = value;
 
 		this.numActions = numActions;
 
@@ -100,6 +75,14 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 	public void simRun() {
 		// Updates may be disabled for data log reasons
 		if (update) {
+			FloatArrayPort reward = (FloatArrayPort) getInPort("reward");
+			IntArrayPort takenAction = (IntArrayPort) getInPort("takenAction");
+			FloatPort statesBefore = (FloatPort) getInPort("statesBefore");
+			FloatPort statesAfter = (FloatPort) getInPort("statesAfter");
+			FloatPort votesBefore = (FloatPort) getInPort("votesBefore");
+			FloatPort votesAfter = (FloatPort) getInPort("votesAfter");
+			;
+			FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
 			// Gets the active state as computed at the beginning of the cycle
 			int a = takenAction.get();
 
@@ -107,11 +90,14 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 			for (int stateBefore = 0; stateBefore < numStates; stateBefore++)
 				// Dont bother if the activation is to small
 				if (statesBefore.get(stateBefore) > EPS && a != -1)
-					updateLastAction(stateBefore, a);
+					updateLastAction(stateBefore, a, reward, statesBefore,
+							statesAfter, votesBefore, votesAfter, value);
 		}
 	}
 
-	private void updateLastAction(int sBefore, int a) {
+	private void updateLastAction(int sBefore, int a, FloatArrayPort reward,
+			FloatPort statesBefore, FloatPort statesAfter,
+			FloatPort votesBefore, FloatPort votesAfter, FloatMatrixPort value) {
 		// Error in estimation
 		float delta = reward.get() + lambda * votesAfter.get(numActions)
 				- votesBefore.get(numActions);
@@ -240,16 +226,16 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 	@Override
 	public void savePolicy() {
-		FileOutputStream fout;
-		try {
-			fout = new FileOutputStream("policy.obj");
-			ObjectOutputStream oos = new ObjectOutputStream(fout);
-			oos.writeObject(value.getData());
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// FileOutputStream fout;
+		// try {
+		// fout = new FileOutputStream("policy.obj");
+		// ObjectOutputStream oos = new ObjectOutputStream(fout);
+		// oos.writeObject(value.getData());
+		// } catch (FileNotFoundException e) {
+		// e.printStackTrace();
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
 
 	}
 

@@ -1,6 +1,7 @@
 package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
 import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.FloatMatrixPort;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.nsl.modules.Voter;
 
@@ -11,10 +12,12 @@ public class GradientVotes extends Module implements Voter {
 	private FloatMatrixPort value;
 	private FloatArrayPort states;
 
-	public GradientVotes(FloatArrayPort states, FloatMatrixPort value, int numActions) {
+	public GradientVotes(String name, FloatArrayPort states,
+			FloatMatrixPort value, int numActions) {
+		super(name);
 
 		actionVote = new float[numActions + 1];
-		addPort(new FloatArrayPort("votes", actionVote));
+		addOutPort("votes", new FloatArrayPort(this, actionVote));
 
 		this.states = states;
 		this.value = value;

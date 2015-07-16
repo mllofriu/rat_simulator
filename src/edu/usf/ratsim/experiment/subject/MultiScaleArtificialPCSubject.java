@@ -45,7 +45,6 @@ public class MultiScaleArtificialPCSubject extends Subject {
 		LocalizableRobot lRobot = (LocalizableRobot) robot;
 
 		model = new MultiScaleArtificialPCModel(params, this, lRobot);
-		
 	}
 
 	@Override

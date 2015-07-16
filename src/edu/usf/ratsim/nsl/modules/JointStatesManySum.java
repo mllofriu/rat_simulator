@@ -5,11 +5,18 @@ import java.util.List;
 import edu.usf.ratsim.micronsl.FloatPort;
 import edu.usf.ratsim.micronsl.FloatSumPort;
 import edu.usf.ratsim.micronsl.Module;
+import edu.usf.ratsim.micronsl.Port;
 
 public class JointStatesManySum extends Module {
 
-	public JointStatesManySum(List<FloatPort> states) {
-		addPort(new FloatSumPort("jointState", states));
+	public JointStatesManySum(String name) {
+		super(name);
+	}
+
+	@Override
+	public void addInPorts(List<Port> states) {
+		super.addInPorts(states);
+		addOutPort("jointState", new FloatSumPort(this, (List<FloatPort>)(List<?>)states));
 	}
 
 	public void simRun() {

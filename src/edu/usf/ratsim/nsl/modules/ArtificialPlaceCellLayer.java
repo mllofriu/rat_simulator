@@ -21,10 +21,11 @@ public class ArtificialPlaceCellLayer extends Module {
 
 	private LocalizableRobot robot;
 
-	public ArtificialPlaceCellLayer(LocalizableRobot robot, float radius,
-			int numCells, long seed, String placeCellType, float xmin,
-			float ymin, float xmax, float ymax, List<Feeder> goals,
+	public ArtificialPlaceCellLayer(String name, LocalizableRobot robot,
+			float radius, int numCells, long seed, String placeCellType,
+			float xmin, float ymin, float xmax, float ymax, List<Feeder> goals,
 			float nearGoalProb) {
+		super(name);
 
 		active = true;
 
@@ -71,7 +72,7 @@ public class ArtificialPlaceCellLayer extends Module {
 		} while (i < numCells);
 
 		activation = new float[cells.size()];
-		addPort(new FloatArrayPort("activation", activation));
+		addOutPort("activation", new FloatArrayPort(this, activation));
 
 		this.robot = robot;
 	}

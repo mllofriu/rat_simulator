@@ -6,8 +6,8 @@ public class FloatSumPort extends FloatPort {
 
 	private List<FloatPort> states;
 
-	public FloatSumPort(String name, List<FloatPort> states) {
-		super(name);
+	public FloatSumPort(Module owner, List<FloatPort> states) {
+		super(owner);
 
 		if (states.isEmpty())
 			throw new IllegalArgumentException(

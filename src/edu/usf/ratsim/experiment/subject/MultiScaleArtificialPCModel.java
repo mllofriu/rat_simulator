@@ -3,22 +3,20 @@ package edu.usf.ratsim.experiment.subject;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-import java.util.Vector;
 
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.affordance.Affordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.ratsim.micronsl.CopyStateModule;
 import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.FloatMatrixPort;
 import edu.usf.ratsim.micronsl.FloatPort;
 import edu.usf.ratsim.micronsl.IntArrayPort;
-import edu.usf.ratsim.micronsl.IntPort;
 import edu.usf.ratsim.micronsl.Model;
 import edu.usf.ratsim.micronsl.Module;
+import edu.usf.ratsim.micronsl.Port;
 import edu.usf.ratsim.nsl.modules.ArtificialHDCellLayer;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.AttentionalExplorer;
@@ -35,7 +33,6 @@ import edu.usf.ratsim.nsl.modules.PlaceIntention;
 import edu.usf.ratsim.nsl.modules.StillExplorer;
 import edu.usf.ratsim.nsl.modules.Voter;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
-import edu.usf.ratsim.nsl.modules.qlearning.actionselection.FloatMatrixPort;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.GradientVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.HalfAndHalfConnectionVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.NoExploration;
@@ -47,43 +44,6 @@ import edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicFoodFinderSchema;
 import edu.usf.ratsim.nsl.modules.taxic.TaxicFoodFinderSchema;
 
 public class MultiScaleArtificialPCModel extends Model {
-
-	private static final String BEFORE_ACTION_SELECTION_STR = "BASL";
-	private static final String AFTER_ACTION_SELECTION_STR = "AASL";
-	private static final String ACTION_PERFORMER_STR = "AP";
-	private static final String BEFORE_FOOD_FINDER_STR = "BTD";
-	private static final String AFTER_FOOD_FINDER_STR = "ATD";
-	private static final String BEFORE_STATE_STR = "BeforePCL";
-	private static final String AFTER_STATE_STR = "AfterPCL";
-	private static final String RL_STR = "NQL";
-	private static final String TAKEN_ACTION_STR = "TA";
-	private static final String REWARD_STR = "R";
-	private static final String BEFORE_LASTATE_GOAL_DECIDER_STR = "BANYGD";
-	private static final String AFTER_LASTATE_GOAL_DECIDER_STR = "AANYGD";
-	private static final String AFTER_PLACE_INTENTION_STR = "API";
-	private static final String BEFORE_PLACE_INTENTION_STR = "BPI";
-	private static final String BEFORE_WALLFOLLOW_STR = "B_WALL_AVOID";
-	private static final String AFTER_WALLFOLLOW_STR = "A_WALL_AVOID";
-	private static final String BEFORE_INTENTION_STR = "BINT";
-	private static final String AFTER_INTENTION_STR = "AINT";
-	private static final String BEFORE_HD_LAYER_STR = "BHDL";
-	private static final String AFTER_HD_LAYER_STR = "AHDL";
-	private static final String AFTER_PIHD = "APIHD";
-	private static final String BEFORE_PIHD = "BPIHD";
-	private static final String BEFORE_CONCAT = "BALL";
-	private static final String AFTER_CONCAT = "AALL";
-	private static final String BEFORE_JOINT_VOTES = "BJVOTES";
-	private static final String AFTER_JOINT_VOTES = "AJVOTES";
-	private static final String BEFORE_EXPLORATION = "BEXP";
-	private static final String AFTER_EXPLORATION = "AEXP";
-	private static final String AFTER_FLASHING_FOOD_FINDER_STR = "AFFF";
-	private static final String BEFORE_FLASHING_FOOD_FINDER_STR = "BFFF";
-	private static final String BEFORE_STILL_EXPLORATION = "BSE";
-	private static final String BEFORE_LASTTRIEDTOEAT_GOAL_DECIDER_STR = "BLTTEGD";
-	private static final String AFTER_LASTTRIEDTOEAT_GOAL_DECIDER_STR = "ALTTEGD";
-	private static final String BEFORE_FEEDER_CELL_LAYER = "BFCL";
-	private static final String AFTER_FEEDER_CELL_LAYER = "AFCL";
-	private static final String BEFORE_ATTENTIONAL = "BATT";
 
 	private List<ArtificialPlaceCellLayer> beforePcls;
 	private List<QLAlgorithm> qLUpdVal;
@@ -104,10 +64,10 @@ public class MultiScaleArtificialPCModel extends Model {
 	private String rlType;
 	private List<DecayingExplorationSchema> exploration;
 	private JointStatesManyConcatenate jointPCHDIntentionState;
-	private Intention intention;
+	private Intention intentionGetter;
 	private LinkedList<JointStatesManyMultiply> jStateList;
 	private float explorationReward;
-	private List<FloatPort> pclHDIntentionPortList;
+	private List<Port> pclHDIntentionPortList;
 
 	public MultiScaleArtificialPCModel() {
 	}
@@ -168,34 +128,35 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		// beforeActiveGoalDecider = new ActiveGoalDecider(
 		// BEFORE_ACTIVE_GOAL_DECIDER_STR, this);
-		lastAteGoalDecider = new LastAteGoalDecider(subject);
-		addModule("Last Ate Goal Decider", lastAteGoalDecider);
+		lastAteGoalDecider = new LastAteGoalDecider("Last Ate Goal Decider",
+				subject);
+		addModule(lastAteGoalDecider);
 
 		LastTriedToEatGoalDecider lastTriedToEatGoalDecider = new LastTriedToEatGoalDecider(
-				subject);
-		addModule("Last Tried To Eat Goal Decider", lastTriedToEatGoalDecider);
+				"Last Tried To Eat Goal Decider", subject);
+		addModule(lastTriedToEatGoalDecider);
 
-		Module m;
+		Module intention;
 		if (numIntentions > 1) {
-			m = new LastAteIntention(
-					(IntPort) lastAteGoalDecider.getPort("goalFeeder"),
-					numIntentions);
+			intention = new LastAteIntention("Intention", numIntentions);
+			intention.addInPort("goalFeeder",
+					lastAteGoalDecider.getOutPort("goalFeeder"));
 		} else {
-			m = new NoIntention(numIntentions);
+			intention = new NoIntention("Intention", numIntentions);
 		}
-		addModule("Intention", m);
-		intention = (Intention) m;
+		addModule(intention);
+		intentionGetter = (Intention) intention;
 
 		// Create the layers
 		float radius = minRadius;
 		// For each layer
 		for (int i = 0; i < numPCLayers; i++) {
-			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer(lRobot,
-					radius, numPCCellsPerLayer, pclSeed, placeCellType, xmin,
-					ymin, xmax, ymax, lRobot.getAllFeeders(),
-					goalCellProportion);
+			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer("PCL "
+					+ i, lRobot, radius, numPCCellsPerLayer, pclSeed,
+					placeCellType, xmin, ymin, xmax, ymax,
+					lRobot.getAllFeeders(), goalCellProportion);
 			beforePcls.add(pcl);
-			addModule("PCL " + i, pcl);
+			addModule(pcl);
 			// JointStates placeIntention = new JointStates(
 			// BEFORE_PLACE_INTENTION_STR + i, this, universe,
 			// pcl.getSize(), numIntentions);
@@ -207,32 +168,35 @@ public class MultiScaleArtificialPCModel extends Model {
 		beforeHDs = new LinkedList<ArtificialHDCellLayer>();
 		int numHDCells = minHDCellsPerLayer;
 		for (int i = 0; i < numHDLayers; i++) {
-			ArtificialHDCellLayer hd = new ArtificialHDCellLayer(numHDCells,
-					lRobot);
+			ArtificialHDCellLayer hd = new ArtificialHDCellLayer("HD " + i,
+					numHDCells, lRobot);
 			beforeHDs.add(hd);
-			addModule("HD " + i, hd);
+			addModule(hd);
 			numHDCells += stepHDCellsPerLayer;
 		}
 
 		List<Integer> bpihdSizes = new LinkedList<Integer>();
 		jStateList = new LinkedList<JointStatesManyMultiply>();
-		pclHDIntentionPortList = new LinkedList<FloatPort>();
+		pclHDIntentionPortList = new LinkedList<Port>();
+		int jointStateMultiplyNum = 0;
 		for (ArtificialPlaceCellLayer pcl : beforePcls)
 			for (ArtificialHDCellLayer hd : beforeHDs) {
 				// JointStates jStates = new JointStates(BEFORE_PIHD
 				// + (i * numHDLayers + j), this, universe, beforePcls
 				// .get(i).getSize() * numIntentions,
 				// beforeHDs.get(j).getSize());
-				List<FloatPort> states = new LinkedList<FloatPort>();
-				states.add((FloatPort) intention.getPort("intention"));
-				states.add((FloatPort) pcl.getPort("activation"));
-				states.add((FloatPort) hd.getPort("activation"));
+				List<Port> states = new LinkedList<Port>();
+				states.add((FloatPort) intention.getOutPort("intention"));
+				states.add((FloatPort) pcl.getOutPort("activation"));
+				states.add((FloatPort) hd.getOutPort("activation"));
 
 				JointStatesManyMultiply jStates = new JointStatesManyMultiply(
-						states);
+						"Joint State Multiply " + jointStateMultiplyNum);
+				jStates.addInPorts(states);
+				jointStateMultiplyNum++;
 				jStateList.add(jStates);
 				pclHDIntentionPortList.add((FloatPort) jStates
-						.getPort("jointState"));
+						.getOutPort("jointState"));
 			}
 
 		// Add feeder cells
@@ -249,76 +213,68 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		// Concatenate all layers
 		jointPCHDIntentionState = new JointStatesManyConcatenate(
-				pclHDIntentionPortList);
-		addModule("Joint PC HD Intention State", jointPCHDIntentionState);
+				"Joint PC HD Intention State");
+		jointPCHDIntentionState.addInPorts(pclHDIntentionPortList);
+		addModule(jointPCHDIntentionState);
 
 		// Create value matrix
 		int numStates = ((FloatPort) jointPCHDIntentionState
-				.getPort("jointStates")).getSize();
+				.getOutPort("jointState")).getSize();
 		float[][] value = new float[numStates][numActions + 1];
-		FloatMatrixPort valuePort = new FloatMatrixPort("value", value);
+		FloatMatrixPort valuePort = new FloatMatrixPort((Module) null, value);
 
-		List<FloatPort> votesPorts = new LinkedList<FloatPort>();
+		List<Port> votesPorts = new LinkedList<Port>();
 		// Take the value of each state and vote for an action
 		if (voteType.equals("proportional"))
 			if (rlType.equals("actorCritic"))
-				rlVotes = new ProportionalVotes(
-						(FloatArrayPort) jointPCHDIntentionState
-								.getPort("jointState"),
-						valuePort);
+				rlVotes = new ProportionalVotes("RL votes");
 			else
-				rlVotes = new ProportionalVotes(
-						(FloatArrayPort) jointPCHDIntentionState
-								.getPort("jointState"),
-						valuePort);
+				rlVotes = new ProportionalVotes("RL votes");
 		else if (voteType.equals("gradientConnection"))
-			rlVotes = new GradientVotes(
+			rlVotes = new GradientVotes("RL votes",
 					(FloatArrayPort) jointPCHDIntentionState
-							.getPort("jointState"),
-					valuePort, numActions);
+							.getOutPort("jointState"), valuePort, numActions);
 		else if (voteType.equals("halfAndHalfConnection"))
-			rlVotes = new HalfAndHalfConnectionVotes(
-					(FloatArrayPort) jointPCHDIntentionState
-							.getPort("jointState"),
-					valuePort, numActions);
-		// else if (voteType.equals("wta"))
-		// qlVotes = new WTAVotes(BEFORE_ACTION_SELECTION_STR, this,
-		// bAll.getSize(), numActions);
+			rlVotes = new HalfAndHalfConnectionVotes("RL votes", numActions);
 		else
 			throw new RuntimeException("Vote mechanism not implemented");
+		rlVotes.addInPort("states",
+				jointPCHDIntentionState.getOutPort("jointState"));
+		rlVotes.addInPort("value", valuePort);
 
-		addModule("RL votes", rlVotes);
-		votesPorts.add((FloatPort) rlVotes.getPort("votes"));
+		addModule(rlVotes);
+		votesPorts.add((FloatPort) rlVotes.getOutPort("votes"));
 
 		// Create taxic driver
 		// new GeneralTaxicFoodFinderSchema(BEFORE_FOOD_FINDER_STR, this, robot,
 		// universe, numActions, flashingReward, nonFlashingReward);
 		TaxicFoodFinderSchema taxicff = new TaxicFoodFinderSchema(
-				(IntArrayPort) lastTriedToEatGoalDecider.getPort("goalFeeder"),
-				subject, lRobot, nonFlashingReward, discountFactor,
-				estimateValue);
-		addModule("Taxic Food Finder", taxicff);
-		votesPorts.add((FloatPort) taxicff.getPort("votes"));
+				"Taxic Food Finder", subject, lRobot, nonFlashingReward,
+				discountFactor, estimateValue);
+		taxicff.addInPort("goalFeeder",
+				lastTriedToEatGoalDecider.getOutPort("goalFeeder"));
+		addModule(taxicff);
+		votesPorts.add((FloatPort) taxicff.getOutPort("votes"));
 
 		FlashingTaxicFoodFinderSchema flashingTaxicFF = new FlashingTaxicFoodFinderSchema(
-				(FloatPort) lastAteGoalDecider.getPort("goalFeeder"), subject,
-				lRobot, flashingReward, discountFactor, estimateValue);
-		addModule("Flashing Taxic Food Finder", flashingTaxicFF);
-		votesPorts.add((FloatPort) flashingTaxicFF.getPort("votes"));
+				"Flashing Taxic Food Finder", subject, lRobot, flashingReward,
+				discountFactor, estimateValue);
+		flashingTaxicFF.addInPort("goalFeeder",
+				lastAteGoalDecider.getOutPort("goalFeeder"));
+		addModule(flashingTaxicFF);
+		votesPorts.add((FloatPort) flashingTaxicFF.getOutPort("votes"));
 
 		DecayingExplorationSchema decayExpl = new DecayingExplorationSchema(
-				subject, lRobot, explorationReward, explorationHalfLifeVal);
+				"Decay Explorer", subject, lRobot, explorationReward,
+				explorationHalfLifeVal);
 		exploration.add(decayExpl);
-		addModule("Decay Explorer", decayExpl);
-		votesPorts.add((FloatPort) decayExpl.getPort("votes"));
+		addModule(decayExpl);
+		votesPorts.add((FloatPort) decayExpl.getOutPort("votes"));
 
-		int[] takenAction = new int[1];
-		IntArrayPort takenActionPort = new IntArrayPort("takenAction",
-				takenAction);
-		StillExplorer stillExpl = new StillExplorer(takenActionPort,
+		StillExplorer stillExpl = new StillExplorer("Still Explorer",
 				maxActionsSinceForward, subject, stillExplorationVal);
-		addModule("Still Explorer", stillExpl);
-		votesPorts.add((FloatPort) stillExpl.getPort("votes"));
+		addModule(stillExpl);
+		votesPorts.add((FloatPort) stillExpl.getOutPort("votes"));
 		// Wall following for obst. avoidance
 		// new WallAvoider(BEFORE_WALLAVOID_STR, this, subject,
 		// wallFollowingVal,
@@ -326,32 +282,43 @@ public class MultiScaleArtificialPCModel extends Model {
 		// new TaxicWallOpeningsSchema(BEFORE_WALLFOLLOW_STR, this, subject,
 		// lRobot, wallFollowingVal);
 
-		AttentionalExplorer attExpl = new AttentionalExplorer(takenActionPort,
-				subject, attentionExploringVal, maxAttentionSpan);
-		addModule("Attentional Explorer", attExpl);
-		votesPorts.add((FloatPort) attExpl.getPort("votes"));
-		// Three joint states - QL Votes, Taxic, WallAvoider
-		jointVotes = new JointStatesManySum(votesPorts);
-		addModule("Votes", jointVotes);
+		AttentionalExplorer attExpl = new AttentionalExplorer(
+				"Attentional Explorer", subject, attentionExploringVal,
+				maxAttentionSpan);
+		addModule(attExpl);
+		votesPorts.add((FloatPort) attExpl.getOutPort("votes"));
+		
+		// Joint votes
+		jointVotes = new JointStatesManySum("Votes");
+		jointVotes.addInPorts(votesPorts);
+		addModule(jointVotes);
 
 		// Copy last state and votes before recomputing to use in RL algorithm
-		addModule("States Before", new CopyStateModule(
-				(FloatPort) jointPCHDIntentionState.getPort("jointStates")));
-		addModule("Votes Before",
-				new CopyStateModule((FloatPort) jointVotes.getPort("votes")));
+		CopyStateModule stateCopy = new CopyStateModule("States Before");
+		stateCopy.addInPort("toCopy",
+				jointPCHDIntentionState.getOutPort("jointState"), true);
+		addModule(stateCopy);
+
+		CopyStateModule votesCopy = new CopyStateModule("Votes Before");
+		votesCopy.addInPort("toCopy",
+				(FloatPort) jointVotes.getOutPort("jointState"), true);
+		addModule(votesCopy);
 
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf
 		if (deterministic) {
-			actionPerformer = new NoExploration(takenActionPort,
-					(FloatPort) jointVotes.getPort("votes"), subject);
+			actionPerformer = new NoExploration("Action Performer", subject);
+			actionPerformer.addInPort("votes",
+					jointVotes.getOutPort("jointState"));
+			addModule(actionPerformer);
 		}
-		// else {
-		// new ProportionalExplorer(ACTION_PERFORMER_STR, this, subject, 1 + 2);
-		// }
+		Port takenActionPort = actionPerformer.getOutPort("takenAction");
+		// Add the taken action ports to some previous exploration modules
+		attExpl.addInPort("takenAction", takenActionPort, true);
+		stillExpl.addInPort("takenAction", takenActionPort, true);
 
-		Reward reward = new Reward(subject, foodReward, nonFoodReward);
-		addModule("Reward", reward);
+		Reward reward = new Reward("Reward", subject, foodReward, nonFoodReward);
+		addModule(reward);
 
 		if (rlType.equals("proportionalQl")) {
 			// MultiStateProportionalQLReplay mspql = new
@@ -359,27 +326,40 @@ public class MultiScaleArtificialPCModel extends Model {
 			// QL_STR, this, subject, bAll.getSize(), numActions,
 			// discountFactor, alpha, initialValue);
 			MultiStateProportionalQL mspql = new MultiStateProportionalQL(
-					(FloatArrayPort) reward.getPort("reward"),
-					(IntArrayPort) takenActionPort, (FloatArrayPort) getModule(
-							"States Before").getPort("copy"),
-					(FloatArrayPort) jointPCHDIntentionState
-							.getPort("jointState"), valuePort,
-					(FloatArrayPort) getModule("Votes Before").getPort("copy"),
-					(FloatArrayPort) jointVotes.getPort("votes"), subject,
-					numActions, discountFactor, alpha, initialValue);
+					"RL Module",
+
+					subject, numActions, discountFactor, alpha, initialValue);
+
+			mspql.addInPort("reward",
+					(FloatArrayPort) reward.getOutPort("reward"));
+			mspql.addInPort("takenAction", takenActionPort);
+			mspql.addInPort("statesBefore", getModule("States Before")
+					.getOutPort("copy"));
+			mspql.addInPort("statesAfter",
+					jointPCHDIntentionState.getOutPort("jointState"));
+			mspql.addInPort("value", valuePort);
+			mspql.addInPort("votesBefore", getModule("Votes Before")
+					.getOutPort("copy"));
+			mspql.addInPort("votesAfter", jointVotes.getOutPort("jointState"));
 			ql = mspql;
 			qLUpdVal.add(mspql);
+			addModule(mspql);
 		} else if (rlType.equals("actorCritic")) {
 			MultiStateProportionalAC mspac = new MultiStateProportionalAC(
-					(FloatArrayPort) reward.getPort("reward"),
-					(IntArrayPort) takenActionPort, (FloatArrayPort) getModule(
-							"States Before").getPort("copy"),
-					(FloatArrayPort) jointPCHDIntentionState
-							.getPort("jointState"), valuePort,
-					(FloatArrayPort) getModule("Votes Before").getPort("copy"),
-					(FloatArrayPort) jointVotes.getPort("votes"), subject,
-					numActions, discountFactor, alpha, discountFactor,
-					initialValue);
+					"RL Module", subject, numActions, discountFactor, alpha,
+					discountFactor, initialValue);
+			mspac.addInPort("reward",
+					(FloatArrayPort) reward.getOutPort("reward"));
+			mspac.addInPort("takenAction", takenActionPort);
+			mspac.addInPort("statesBefore", getModule("States Before")
+					.getOutPort("copy"));
+			mspac.addInPort("statesAfter",
+					jointPCHDIntentionState.getOutPort("jointState"));
+			mspac.addInPort("value", valuePort);
+			mspac.addInPort("votesBefore", getModule("Votes Before")
+					.getOutPort("copy"));
+			mspac.addInPort("votesAfter", jointVotes.getOutPort("jointState"));
+			addModule(mspac);
 			// TODO: recover this assginments
 			// ql = mspql;
 			// qLUpdVal.add(mspql);
@@ -392,158 +372,9 @@ public class MultiScaleArtificialPCModel extends Model {
 			// qLUpdVal.add(ssql);
 		} else
 			throw new RuntimeException("RL mechanism not implemented");
+
+		System.out.println("Building run order");
 	}
-
-	public void makeConn() {
-		// Connect tried to eat to taxic bh
-		// nslConnect(getChild(BEFORE_LASTTRIEDTOEAT_GOAL_DECIDER_STR),
-		// "goalFeeder", getChild(BEFORE_FOOD_FINDER_STR), "goalFeeder");
-		// nslConnect(getChild(AFTER_LASTTRIEDTOEAT_GOAL_DECIDER_STR),
-		// "goalFeeder", getChild(AFTER_FOOD_FINDER_STR), "goalFeeder");
-		// nslConnect(getChild(BEFORE_LASTATE_GOAL_DECIDER_STR), "goalFeeder",
-		// getChild(BEFORE_FLASHING_FOOD_FINDER_STR), "goalFeeder");
-		// nslConnect(getChild(AFTER_LASTATE_GOAL_DECIDER_STR), "goalFeeder",
-		// getChild(AFTER_FLASHING_FOOD_FINDER_STR), "goalFeeder");
-		// // Connect taxic behaviors to vote_adder
-		// nslConnect(getChild(BEFORE_FOOD_FINDER_STR), "votes",
-		// getChild(BEFORE_JOINT_VOTES), "state" + 0);
-		// nslConnect(getChild(BEFORE_FLASHING_FOOD_FINDER_STR), "votes",
-		// getChild(BEFORE_JOINT_VOTES), "state" + 1);
-		// // nslConnect(getChild(BEFORE_WALLFOLLOW_STR), "votes",
-		// // getChild(BEFORE_JOINT_VOTES), "state" + 2);
-		// nslConnect(getChild(BEFORE_ATTENTIONAL), "votes",
-		// getChild(BEFORE_JOINT_VOTES), "state" + 2);
-		//
-		// nslConnect(getChild(BEFORE_EXPLORATION), "votes",
-		// getChild(BEFORE_JOINT_VOTES), "state" + 4);
-		// nslConnect(getChild(BEFORE_STILL_EXPLORATION), "votes",
-		// getChild(BEFORE_JOINT_VOTES), "state" + 5);
-		// nslConnect(getChild(AFTER_FOOD_FINDER_STR), "votes",
-		// getChild(AFTER_JOINT_VOTES), "state" + 0);
-		// nslConnect(getChild(AFTER_FLASHING_FOOD_FINDER_STR), "votes",
-		// getChild(AFTER_JOINT_VOTES), "state" + 1);
-		// // nslConnect(getChild(AFTER_WALLFOLLOW_STR), "votes",
-		// // getChild(AFTER_JOINT_VOTES), "state" + 2);
-		// nslConnect(getChild(BEFORE_ATTENTIONAL), "votes",
-		// getChild(AFTER_JOINT_VOTES), "state" + 2);
-		// // BEFORE exploration is connected to after votes to nullify value
-		// // estimation
-		// nslConnect(getChild(BEFORE_EXPLORATION), "votes",
-		// getChild(AFTER_JOINT_VOTES), "state" + 4);
-		// nslConnect(getChild(BEFORE_STILL_EXPLORATION), "votes",
-		// getChild(AFTER_JOINT_VOTES), "state" + 5);
-		// // Connect active goal to intention
-		// nslConnect(getChild(BEFORE_LASTATE_GOAL_DECIDER_STR), "goalFeeder",
-		// getChild(BEFORE_INTENTION_STR), "goalFeeder");
-		// nslConnect(getChild(AFTER_LASTATE_GOAL_DECIDER_STR), "goalFeeder",
-		// getChild(AFTER_INTENTION_STR), "goalFeeder");
-		//
-		// // Build intention hd place layers
-		// for (int i = 0; i < numPCLayers; i++)
-		// for (int j = 0; j < numHDLayers; j++) {
-		// nslConnect(getChild(BEFORE_STATE_STR + i), "activation",
-		// getChild(BEFORE_PIHD + (i * numHDLayers + j)), "state3");
-		// nslConnect(getChild(BEFORE_INTENTION_STR), "intention",
-		// getChild(BEFORE_PIHD + (i * numHDLayers + j)), "state1");
-		// nslConnect(getChild(BEFORE_HD_LAYER_STR + j), "activation",
-		// getChild(BEFORE_PIHD + (i * numHDLayers + j)), "state2");
-		// nslConnect(getChild(BEFORE_PIHD + (i * numHDLayers + j)),
-		// "jointState", getChild(BEFORE_CONCAT), "state"
-		// + (i * numHDLayers + j));
-		//
-		// nslConnect(getChild(AFTER_STATE_STR + i), "activation",
-		// getChild(AFTER_PIHD + (i * numHDLayers + j)), "state3");
-		// nslConnect(getChild(AFTER_INTENTION_STR), "intention",
-		// getChild(AFTER_PIHD + (i * numHDLayers + j)), "state1");
-		// nslConnect(getChild(AFTER_HD_LAYER_STR + j), "activation",
-		// getChild(AFTER_PIHD + (i * numHDLayers + j)), "state2");
-		// nslConnect(getChild(AFTER_PIHD + (i * numHDLayers + j)),
-		// "jointState", getChild(AFTER_CONCAT), "state"
-		// + (i * numHDLayers + j));
-		//
-		// }
-		//
-		// // nslConnect(getChild(BEFORE_FEEDER_CELL_LAYER), "activation",
-		// // getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)), "state1");
-		// // nslConnect(getChild(BEFORE_INTENTION_STR), "intention",
-		// // getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)), "state2");
-		// // nslConnect(getChild(AFTER_FEEDER_CELL_LAYER), "activation",
-		// // getChild(AFTER_PIHD + (numPCLayers * numHDLayers)), "state1");
-		// // nslConnect(getChild(AFTER_INTENTION_STR), "intention",
-		// // getChild(AFTER_PIHD + (numPCLayers * numHDLayers)), "state2");
-		// // nslConnect(getChild(BEFORE_PIHD + (numPCLayers * numHDLayers)),
-		// // "jointState", getChild(BEFORE_CONCAT), "state"
-		// // + (numPCLayers * numHDLayers));
-		// // nslConnect(getChild(AFTER_PIHD + (numPCLayers * numHDLayers)),
-		// // "jointState", getChild(AFTER_CONCAT), "state"
-		// // + (numPCLayers * numHDLayers));
-		//
-		// // Connect the joint states to the QL system
-		// nslConnect(getChild(BEFORE_CONCAT), "jointState",
-		// getChild(BEFORE_ACTION_SELECTION_STR), "states");
-		// nslConnect(getChild(AFTER_CONCAT), "jointState",
-		// getChild(AFTER_ACTION_SELECTION_STR), "states");
-		// nslConnect(getChild(RL_STR), "value",
-		// getChild(BEFORE_ACTION_SELECTION_STR), "value");
-		// nslConnect(getChild(RL_STR), "value",
-		// getChild(AFTER_ACTION_SELECTION_STR), "value");
-		// nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes",
-		// getChild(BEFORE_JOINT_VOTES), "state" + 3);
-		// nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes",
-		// getChild(AFTER_JOINT_VOTES), "state" + 3);
-		// nslConnect(getChild(BEFORE_JOINT_VOTES), "jointState",
-		// getChild(ACTION_PERFORMER_STR), "votes");
-		// nslConnect(getChild(ACTION_PERFORMER_STR), "takenAction",
-		// getChild(RL_STR), "takenAction");
-		// nslConnect(getChild(ACTION_PERFORMER_STR), "takenAction",
-		// getChild(BEFORE_STILL_EXPLORATION), "takenAction");
-		// nslConnect(getChild(ACTION_PERFORMER_STR), "takenAction",
-		// getChild(BEFORE_ATTENTIONAL), "takenAction");
-		// // nslConnect(getChild(BEFORE_FOOD_FINDER_STR), "votes",
-		// // getChild(QL_STR),
-		// // "taxonExpectedValues");
-		// nslConnect(getChild(REWARD_STR), "reward", getChild(RL_STR),
-		// "reward");
-		// nslConnect(getChild(BEFORE_CONCAT), "jointState", getChild(RL_STR),
-		// "statesBefore");
-		// nslConnect(getChild(AFTER_CONCAT), "jointState", getChild(RL_STR),
-		// "statesAfter");
-		// // nslConnect(getChild(BEFORE_FOOD_FINDER_STR), "votes",
-		// // getChild(QL_STR),
-		// // "actionVotesBefore");
-		// //
-		// if (rlType.equals("proportionalQl")) {
-		// // nslConnect(getChild(AFTER_ACTION_SELECTION_STR), "votes",
-		// // getChild(RL_STR), "actionVotesAfter");
-		// // nslConnect(getChild(BEFORE_ACTION_SELECTION_STR), "votes",
-		// // getChild(RL_STR), "actionVotesBefore");
-		// nslConnect(getChild(AFTER_JOINT_VOTES), "jointState",
-		// getChild(RL_STR), "actionVotesAfter");
-		// nslConnect(getChild(BEFORE_JOINT_VOTES), "jointState",
-		// getChild(RL_STR), "actionVotesBefore");
-		// } else if (rlType.equals("actorCritic")) {
-		// nslConnect(getChild(AFTER_JOINT_VOTES), "jointState",
-		// getChild(RL_STR), "actionVotesAfter");
-		// nslConnect(getChild(BEFORE_JOINT_VOTES), "jointState",
-		// getChild(RL_STR), "actionVotesBefore");
-		// } else
-		// throw new RuntimeException("RL mechanism not implemented");
-		// // nslConnect(getChild(AFTER_JOINT_VOTES), "jointState",
-		// // getChild(QL_STR),
-		// // "actionVotesAfter");
-
-	}
-
-//	@SuppressWarnings("unchecked")
-//	private NslModule getChild(String name) {
-//		for (NslModule module : (Vector<NslModule>) this
-//				.nslGetModuleChildrenVector()) {
-//			if (module.nslGetName() != null && module.nslGetName().equals(name))
-//				return module;
-//		}
-//
-//		return null;
-//	}
 
 	public NoExploration getActionPerformer() {
 		return actionPerformer;
@@ -573,11 +404,11 @@ public class MultiScaleArtificialPCModel extends Model {
 		}
 	}
 
-//	protected void finalize() {
-//		super.finalize();
-//
-//		// System.out.println("NsL model being finalized");
-//	}
+	// protected void finalize() {
+	// super.finalize();
+	//
+	// // System.out.println("NsL model being finalized");
+	// }
 
 	public void savePolicy() {
 		ql.savePolicy();
@@ -591,9 +422,9 @@ public class MultiScaleArtificialPCModel extends Model {
 		return jointVotes;
 	}
 
-//	public Voter getQLVotes() {
-//		return rlVotes;
-//	}
+	// public Voter getQLVotes() {
+	// return rlVotes;
+	// }
 
 	public void newEpisode() {
 		for (DecayingExplorationSchema gs : exploration)
@@ -607,41 +438,42 @@ public class MultiScaleArtificialPCModel extends Model {
 	 * @param pos
 	 * @param theta
 	 * @param affs
-	 * @param intention
+	 * @param intentionGetter
 	 * @return
 	 */
-//	public Affordance getHypotheticAction(Point3f pos, float theta,
-//			List<Affordance> affs, int inte) {
-//		intention.simRun(inte);
-//
-//		for (ArtificialPlaceCellLayer pcl : beforePcls)
-//			// TODO: add feeder cells to policies
-//			pcl.simRun(pos, false);
-//		for (ArtificialHDCellLayer hdcl : beforeHDs)
-//			hdcl.simRun(theta);
-//
-//		for (JointStatesManyMultiply jsmm : jStateList)
-//			jsmm.simRun();
-//
-//		jointPCHDIntentionState.simRun();
-//
-//		rlVotes.simRun();
-//
-//		NslDoutFloat1 votes = rlVotes.getVotes();
-//		float max = Float.NEGATIVE_INFINITY;
-//		int maxIndex = 0;
-//		for (int i = 0; i < votes.getSize(); i++)
-//			// Only consider motion affordances
-//			if ((affs.get(i) instanceof TurnAffordance || affs.get(i) instanceof ForwardAffordance)
-//					&& votes.get(i) > max) {
-//				max = votes.get(i);
-//				maxIndex = i;
-//			}
-//
-//		Affordance picked = affs.get(maxIndex);
-//		picked.setValue(max);
-//		return picked;
-//	}
+	// public Affordance getHypotheticAction(Point3f pos, float theta,
+	// List<Affordance> affs, int inte) {
+	// intention.simRun(inte);
+	//
+	// for (ArtificialPlaceCellLayer pcl : beforePcls)
+	// // TODO: add feeder cells to policies
+	// pcl.simRun(pos, false);
+	// for (ArtificialHDCellLayer hdcl : beforeHDs)
+	// hdcl.simRun(theta);
+	//
+	// for (JointStatesManyMultiply jsmm : jStateList)
+	// jsmm.simRun();
+	//
+	// jointPCHDIntentionState.simRun();
+	//
+	// rlVotes.simRun();
+	//
+	// NslDoutFloat1 votes = rlVotes.getVotes();
+	// float max = Float.NEGATIVE_INFINITY;
+	// int maxIndex = 0;
+	// for (int i = 0; i < votes.getSize(); i++)
+	// // Only consider motion affordances
+	// if ((affs.get(i) instanceof TurnAffordance || affs.get(i) instanceof
+	// ForwardAffordance)
+	// && votes.get(i) > max) {
+	// max = votes.get(i);
+	// maxIndex = i;
+	// }
+	//
+	// Affordance picked = affs.get(maxIndex);
+	// picked.setValue(max);
+	// return picked;
+	// }
 
 	public void setExplorationVal(float val) {
 		for (DecayingExplorationSchema e : exploration)
@@ -656,7 +488,7 @@ public class MultiScaleArtificialPCModel extends Model {
 
 	public float getValue(Point3f point, int inte, float angleInterval,
 			float distToWall) {
-		intention.simRun(inte);
+		intentionGetter.simRun(inte);
 
 		for (ArtificialPlaceCellLayer pcl : beforePcls)
 			// TODO: add feeder cells to policies

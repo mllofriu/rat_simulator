@@ -13,7 +13,7 @@ import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.Debug;
 import edu.usf.ratsim.micronsl.FloatArrayPort;
-import edu.usf.ratsim.micronsl.IntArrayPort;
+import edu.usf.ratsim.micronsl.IntPort;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.support.GeomUtils;
 
@@ -34,16 +34,14 @@ public class AttentionalExplorer extends Module {
 	private Robot robot;
 	private Random r;
 	private Point3f currentInterest;
-	private int[] takenAction;
 	private int attentionRemaining;
 	private int maxAttentionSpan;
 
-	public AttentionalExplorer(IntArrayPort takenActionPort, Subject sub,
-			float exploringVal, int maxAttentionSpan) {
+	public AttentionalExplorer(String name, Subject sub, float exploringVal,
+			int maxAttentionSpan) {
+		super(name);
 		votes = new float[sub.getPossibleAffordances().size() + 1];
-		addPort(new FloatArrayPort("votes", votes));
-
-		takenAction = takenActionPort.getData();
+		addOutPort("votes", new FloatArrayPort(this, votes));
 
 		this.maxAttentionSpan = maxAttentionSpan;
 		this.attentionRemaining = 0;
@@ -56,14 +54,16 @@ public class AttentionalExplorer extends Module {
 	}
 
 	public void simRun() {
+		IntPort takenAction = (IntPort) getInPort("takenAction");
+
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 
 		// Apply last movement to track interest point
-		if (currentInterest != null && takenAction[0] != -1) {
+		if (currentInterest != null && takenAction.get() != -1) {
 			if (Debug.printAttentional)
 				System.out.println("Applying move to track");
-			currentInterest = applyLastMove(currentInterest, takenAction[0]);
+			currentInterest = applyLastMove(currentInterest, takenAction.get());
 		}
 
 		// Find all visible interest points
@@ -153,4 +153,5 @@ public class AttentionalExplorer extends Module {
 		float steps = GeomUtils.getStepsToFeeder(feederPos, sub);
 		return (float) (reward * Math.pow(.9, steps));
 	}
+
 }

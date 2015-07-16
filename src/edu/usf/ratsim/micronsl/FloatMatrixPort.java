@@ -1,13 +1,11 @@
-package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
-
-import edu.usf.ratsim.micronsl.FloatPort;
+package edu.usf.ratsim.micronsl;
 
 public class FloatMatrixPort extends FloatPort {
 
 	float[][] data;
 
-	public FloatMatrixPort(String name, float[][] data) {
-		super(name);
+	public FloatMatrixPort(Module owner, float[][] data) {
+		super(owner);
 
 		if (data.length == 0)
 			throw new IllegalArgumentException("Cannot use matrix with 0 rows");

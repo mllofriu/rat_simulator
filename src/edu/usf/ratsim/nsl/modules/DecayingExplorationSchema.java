@@ -25,13 +25,15 @@ public class DecayingExplorationSchema extends Module {
 	private int episodeCount;
 	private Affordance lastPicked;
 
-	public DecayingExplorationSchema(Subject subject, LocalizableRobot robot,
-			float maxReward, float explorationHalfLifeVal) {
+	public DecayingExplorationSchema(String name, Subject subject,
+			LocalizableRobot robot, float maxReward,
+			float explorationHalfLifeVal) {
+		super(name);
 		this.maxReward = maxReward;
 		this.alpha = -Math.log(.5) / explorationHalfLifeVal;
 
 		votes = new float[subject.getPossibleAffordances().size() + 1];
-		addPort(new FloatArrayPort("votes", votes));
+		addOutPort("votes", new FloatArrayPort(this, votes));
 
 		r = new Random();
 

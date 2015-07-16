@@ -7,8 +7,8 @@ public class FloatConcatenatePort extends FloatPort {
 	private List<FloatPort> states;
 	private int size;
 
-	public FloatConcatenatePort(String name, List<FloatPort> states) {
-		super(name);
+	public FloatConcatenatePort(Module owner, List<FloatPort> states) {
+		super(owner);
 
 		this.states = states;
 

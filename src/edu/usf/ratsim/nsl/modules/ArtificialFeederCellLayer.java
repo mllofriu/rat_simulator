@@ -17,8 +17,9 @@ public class ArtificialFeederCellLayer extends Module {
 
 	private LocalizableRobot robot;
 
-	public ArtificialFeederCellLayer(LocalizableRobot robot, int numFeeders,
-			long seed) {
+	public ArtificialFeederCellLayer(String name, LocalizableRobot robot,
+			int numFeeders, long seed) {
+		super(name);
 		active = true;
 
 		// Compute number of cells

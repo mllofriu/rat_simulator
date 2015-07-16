@@ -15,7 +15,9 @@ public class ArtificialHDCellLayer extends Module {
 
 	private LocalizableRobot robot;
 
-	public ArtificialHDCellLayer(int numCells, LocalizableRobot robot) {
+	public ArtificialHDCellLayer(String name, int numCells,
+			LocalizableRobot robot) {
+		super(name);
 		// Compute number of cells
 		cells = new LinkedList<ArtificialHDCell>();
 		float angleInterval = (float) (Math.PI * 2 / numCells);
@@ -30,7 +32,7 @@ public class ArtificialHDCellLayer extends Module {
 		}
 
 		activation = new float[cells.size()];
-		addPort(new FloatArrayPort("activation", activation));
+		addOutPort("activation", new FloatArrayPort(this, activation));
 
 		this.robot = robot;
 	}

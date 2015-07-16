@@ -1,6 +1,7 @@
 package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
 import edu.usf.ratsim.micronsl.FloatArrayPort;
+import edu.usf.ratsim.micronsl.FloatMatrixPort;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.nsl.modules.Voter;
 
@@ -15,18 +16,16 @@ public class ProportionalVotes extends Module implements Voter {
 
 	public float[] actionVote;
 	private int numActions;
-	private FloatArrayPort states;
-	private FloatMatrixPort value;
 
-	public ProportionalVotes(FloatArrayPort states, FloatMatrixPort value) {
+	public ProportionalVotes(String name) {
+		super(name);
 		actionVote = new float[numActions];
-		addPort(new FloatArrayPort("votes", actionVote));
-
-		this.states = states;
-		this.value = value;
+		addOutPort("votes", new FloatArrayPort(this, actionVote));
 	}
 
 	public void simRun() {
+		FloatArrayPort states = (FloatArrayPort) getInPort("states");
+		FloatMatrixPort value = (FloatMatrixPort) getOutPort("value");
 		for (int action = 0; action < numActions; action++)
 			actionVote[action] = 0f;
 

@@ -25,18 +25,16 @@ public class TaxicFoodFinderSchema extends Module {
 	private LocalizableRobot robot;
 	private double lambda;
 	private boolean estimateValue;
-	private IntArrayPort goalFeeder;
 
-	public TaxicFoodFinderSchema(IntArrayPort goalFeeder, Subject subject,
+	public TaxicFoodFinderSchema(String name, Subject subject,
 			LocalizableRobot robot, float reward, float lambda,
 			boolean estimateValue) {
+		super(name);
 		this.reward = reward;
 
 		// Votes for action and value
 		votes = new float[subject.getPossibleAffordances().size() + 1];
-		addPort(new FloatArrayPort("votes", votes));
-
-		this.goalFeeder = goalFeeder;
+		addOutPort("votes", new FloatArrayPort(this, votes));
 
 		this.subject = subject;
 		this.robot = robot;
@@ -54,6 +52,8 @@ public class TaxicFoodFinderSchema extends Module {
 	 * goal).
 	 */
 	public void simRun() {
+		IntArrayPort goalFeeder = (IntArrayPort) getInPort("goalFeeder");
+
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 

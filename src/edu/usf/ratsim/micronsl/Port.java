@@ -2,18 +2,14 @@ package edu.usf.ratsim.micronsl;
 
 public class Port {
 
-	String name;
+	private Module owner;
 
-	public Port(String name) {
-		this.name = name;
+	public Port(Module owner) {
+		this.owner = owner;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
+	public Module getOwner() {
+		return owner;
 	}
 
 }
