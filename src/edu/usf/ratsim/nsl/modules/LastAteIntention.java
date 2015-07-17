@@ -15,7 +15,7 @@ public class LastAteIntention extends Module implements Intention {
 		addOutPort("intention", new Float1dPortArray(this, intention));
 	}
 
-	public void simRun() {
+	public void run() {
 		IntPort goalFeeder = (IntPort) getInPort("goalFeeder");
 
 		for (int i = 0; i < intention.length; i++)

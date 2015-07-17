@@ -72,7 +72,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		update = true;
 	}
 
-	public void simRun() {
+	public void run() {
 		// Updates may be disabled for data log reasons
 		if (update) {
 			Float1dPortArray reward = (Float1dPortArray) getInPort("reward");

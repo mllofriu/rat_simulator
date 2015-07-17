@@ -23,7 +23,7 @@ public class ProportionalVotes extends Module implements Voter {
 		addOutPort("votes", new Float1dPortArray(this, actionVote));
 	}
 
-	public void simRun() {
+	public void run() {
 		Float1dPortArray states = (Float1dPortArray) getInPort("states");
 		FloatMatrixPort value = (FloatMatrixPort) getOutPort("value");
 		for (int action = 0; action < numActions; action++)

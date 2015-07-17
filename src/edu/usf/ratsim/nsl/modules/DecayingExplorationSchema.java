@@ -45,7 +45,7 @@ public class DecayingExplorationSchema extends Module {
 		this.lastPicked = null;
 	}
 
-	public void simRun() {
+	public void run() {
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 

@@ -24,7 +24,7 @@ public class GradientVotes extends Module implements Voter {
 		this.numActions = numActions;
 	}
 
-	public void simRun() {
+	public void run() {
 		for (int action = 0; action < numActions + 1; action++)
 			actionVote[action] = 0f;
 

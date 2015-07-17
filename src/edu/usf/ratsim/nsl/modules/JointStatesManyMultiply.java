@@ -16,7 +16,7 @@ public class JointStatesManyMultiply extends Module {
 
 	}
 
-	public void simRun() {
+	public void run() {
 		// All is done in the multiply port
 		
 		// Clear optimization cache

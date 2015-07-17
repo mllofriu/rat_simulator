@@ -34,7 +34,7 @@ public class ArtificialFeederCellLayer extends Module {
 		this.robot = robot;
 	}
 
-	public void simRun() {
+	public void run() {
 		boolean feederClose = robot.isFeederClose();
 		if (feederClose) {
 			simRun(feederClose, robot.getClosestFeeder().getId());

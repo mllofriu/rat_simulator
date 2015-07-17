@@ -51,7 +51,7 @@ public class TaxicFoodFinderSchema extends Module {
 	 * trying to eat and no food is found (due to goalFeeder turning to that
 	 * goal).
 	 */
-	public void simRun() {
+	public void run() {
 		Int1dPort goalFeeder = (Int1dPort) getInPort("goalFeeder");
 
 		for (int i = 0; i < votes.length; i++)

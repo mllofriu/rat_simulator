@@ -20,7 +20,7 @@ public class ClosestFeeder extends Module {
 	}
 
 	@Override
-	public void simRun() {
+	public void run() {
 		Feeder closest = sub.getRobot().getClosestFeeder();
 		if (closest == null)
 			outPort.set(-1);

@@ -19,7 +19,7 @@ public class PlaceIntention extends Module {
 		addOutPort("states", new Float1dPortArray(this, states));
 	}
 
-	public void simRun() {
+	public void run() {
 		for (int i = 0; i < states.length; i++)
 			states[i] = 0;
 

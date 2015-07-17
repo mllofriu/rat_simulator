@@ -20,7 +20,7 @@ public class LastTriedToEatGoalDecider extends Module {
 		goalFeeder[1] = -1;
 	}
 
-	public void simRun() {
+	public void run() {
 		Bool1dPort subTriedToEat = (Bool1dPort) getInPort("subTriedToEat");
 		Int0dPort closestFeeder = (Int0dPort) getInPort("closestFeeder");
 		

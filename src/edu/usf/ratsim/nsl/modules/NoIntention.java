@@ -19,7 +19,7 @@ public class NoIntention extends Module implements Intention {
 		addOutPort("intention", new Float1dPortArray(this, intention));
 	}
 
-	public void simRun() {
+	public void run() {
 		for (int i = 0; i < intention.length; i++)
 			intention[i] = 0;
 
@@ -27,6 +27,6 @@ public class NoIntention extends Module implements Intention {
 	}
 
 	public void simRun(int inte) {
-		simRun();
+		run();
 	}
 }

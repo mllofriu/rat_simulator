@@ -14,7 +14,7 @@ public class CopyStateModule extends Module {
 	}
 
 	@Override
-	public void simRun() {
+	public void run() {
 		copyPort.copy();
 	}
 

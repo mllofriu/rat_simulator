@@ -4,5 +4,5 @@ public interface Voter {
 
 	public float[] getVotes();
 
-	public void simRun();
+	public void run();
 }

@@ -85,6 +85,6 @@ public class Model {
 		}
 		// run taking prereqs into account
 		for (Module m : runOrder)
-			m.simRun();
+			m.run();
 	}
 }

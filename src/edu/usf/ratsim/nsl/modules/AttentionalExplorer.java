@@ -53,7 +53,7 @@ public class AttentionalExplorer extends Module {
 		currentInterest = null;
 	}
 
-	public void simRun() {
+	public void run() {
 		IntPort takenAction = (IntPort) getInPort("takenAction");
 
 		for (int i = 0; i < votes.length; i++)

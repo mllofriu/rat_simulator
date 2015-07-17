@@ -38,7 +38,7 @@ public class NoExploration extends Module {
 		this.sub = sub;
 	}
 
-	public void simRun() {
+	public void run() {
 		Float1dPort votes = (Float1dPort) getInPort("votes");
 
 		Affordance selectedAction;

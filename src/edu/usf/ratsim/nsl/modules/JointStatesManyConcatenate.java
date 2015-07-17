@@ -13,7 +13,7 @@ public class JointStatesManyConcatenate extends Module {
 		super(name);
 	}
 
-	public void simRun() {
+	public void run() {
 	}
 
 	@Override

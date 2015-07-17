@@ -20,7 +20,7 @@ public class LastAteGoalDecider extends Module {
 		currentGoal = -1;
 	}
 
-	public void simRun() {
+	public void run() {
 		Bool1dPort subAte = (Bool1dPort) getInPort("subAte");
 		Int0dPort closestFeeder = (Int0dPort) getInPort("closestFeeder");
 		

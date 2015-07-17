@@ -49,7 +49,7 @@ public class StillExplorer extends Module {
 		timeToExplore = 0;
 	}
 
-	public void simRun() {
+	public void run() {
 		IntPort takenAction = (IntPort) getInPort("takenAction");
 
 		for (int i = 0; i < votes.length; i++)

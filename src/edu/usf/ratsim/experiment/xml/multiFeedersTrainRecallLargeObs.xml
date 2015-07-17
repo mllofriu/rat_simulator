@@ -415,15 +415,7 @@
 			</task>
 		</beforeTasks>
 		<beforeLoggers>
-			<logger>
-				<name>edu.usf.experiment.log.ValueLogger</name>
-				<params>
-					<circle>false</circle>
-					<interval>.1</interval>
-					<angleInterval>.37</angleInterval>
-					<numIntentions>1</numIntentions>
-				</params>
-			</logger>
+			
 		</beforeLoggers>
 		<episodes>
 			<number>1</number>
@@ -501,7 +493,7 @@
 					<name>edu.usf.experiment.condition.FoundNFoodTimeoutStopCond</name>
 					<params>
 						<timeout>200</timeout>
-						<n>1</n>
+						<n>15</n>
 					</params>
 				</condition>
 			</stopConditions>
@@ -514,6 +506,15 @@
 		<afterTasks>
 		</afterTasks>
 		<loggers>
+			<logger>
+				<name>edu.usf.experiment.log.ValueLogger</name>
+				<params>
+					<circle>false</circle>
+					<interval>.05</interval>
+					<angleInterval>.37</angleInterval>
+					<numIntentions>1</numIntentions>
+				</params>
+			</logger>
 		</loggers>
 		
 	</trial>

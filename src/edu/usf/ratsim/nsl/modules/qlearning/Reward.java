@@ -21,7 +21,7 @@ public class Reward extends Module {
 		this.nonFoodReward = nonFoodReward;
 	}
 
-	public void simRun() {
+	public void run() {
 		Bool1dPort subAte = (Bool1dPort) getInPort("subAte");
 		if (subAte.get()) {
 			reward[0] = foodReward;

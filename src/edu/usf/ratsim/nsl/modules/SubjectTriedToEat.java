@@ -20,7 +20,7 @@ public class SubjectTriedToEat extends Module {
 	}
 
 	@Override
-	public void simRun() {
+	public void run() {
 		outPort.set(sub.hasTriedToEat());
 	}
 

@@ -19,7 +19,7 @@ public class JointStatesManySum extends Module {
 		addOutPort("jointState", new Float1dPortSum(this, (List<Float1dPort>)(List<?>)states));
 	}
 
-	public void simRun() {
+	public void run() {
 		// Do nothing, the port does it all
 	}
 

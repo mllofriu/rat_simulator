@@ -49,7 +49,7 @@ public class WallAvoider extends Module {
 		this.subject = subject;
 	}
 
-	public void simRun() {
+	public void run() {
 		// System.out.println("Performing wall avoider " + number);
 
 		for (int i = 0; i < votes.length; i++)

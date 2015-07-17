@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Module {
+public abstract class Module implements Runnable {
 
 	private List<Module> preReqs;
 	private Map<String, Port> outPorts;
@@ -22,8 +22,6 @@ public abstract class Module {
 	public String getName() {
 		return name;
 	}
-
-	public abstract void simRun();
 
 	public List<Module> getPreReqs() {
 		return preReqs;
@@ -70,5 +68,7 @@ public abstract class Module {
 			throw new RuntimeException("There is no in-port named " + name);
 		return inPorts.get(name);
 	}
+	
+
 
 }

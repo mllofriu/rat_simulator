@@ -521,11 +521,11 @@ public class MultiScaleArtificialPCModel extends Model {
 				hdcl.simRun(angle);
 
 			for (JointStatesManyMultiply jsmm : jStateList)
-				jsmm.simRun();
+				jsmm.run();
 
-			jointPCHDIntentionState.simRun();
+			jointPCHDIntentionState.run();
 
-			rlVotes.simRun();
+			rlVotes.run();
 
 			float[] votes = ((Voter) rlVotes).getVotes();
 			float val = votes[votes.length - 1];

@@ -37,7 +37,7 @@ public class ArtificialHDCellLayer extends Module {
 		this.robot = robot;
 	}
 
-	public void simRun() {
+	public void run() {
 		float angle = robot.getOrientationAngle();
 		simRun(angle);
 	}

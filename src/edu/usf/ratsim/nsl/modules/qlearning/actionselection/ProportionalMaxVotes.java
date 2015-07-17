@@ -21,7 +21,7 @@ public class ProportionalMaxVotes extends Module {
 		this.value = value;
 	}
 
-	public void simRun() {
+	public void run() {
 		for (int i = 0; i < actionVote.length; i++)
 			actionVote[i] = 0;
 

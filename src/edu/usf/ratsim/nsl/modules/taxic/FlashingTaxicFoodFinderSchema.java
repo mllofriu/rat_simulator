@@ -52,7 +52,7 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 	 * trying to eat and no food is found (due to goalFeeder turning to that
 	 * goal).
 	 */
-	public void simRun() {
+	public void run() {
 		IntPort goalFeeder = (IntPort) getInPort("goalFeeder");
 
 		for (int i = 0; i < votes.length; i++)

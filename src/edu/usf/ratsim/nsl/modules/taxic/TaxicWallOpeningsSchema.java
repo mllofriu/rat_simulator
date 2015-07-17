@@ -42,7 +42,7 @@ public class TaxicWallOpeningsSchema extends Module {
 	 * Assigns a fixed value to go to a wall end. Rationale: go to where walls
 	 * end.
 	 */
-	public void simRun() {
+	public void run() {
 		for (int i = 0; i < votes.length; i++)
 			votes[i] = 0;
 

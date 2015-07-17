@@ -19,7 +19,7 @@ public class HalfAndHalfConnectionVotes extends Module implements Voter {
 		this.numActions = numActions;
 	}
 
-	public void simRun() {
+	public void run() {
 
 		Float1dPort states = (Float1dPort) getInPort("states");
 		float[] data = states.getData();

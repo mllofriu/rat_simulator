@@ -44,7 +44,7 @@ public class FlashingOrAnyGoalDecider extends Module {
 		lastFeeder = -1;
 	}
 
-	public void simRun() {
+	public void run() {
 		if (currentGoal == -1) {
 			// currentGoal = 0;
 			currentGoal = r.nextInt(numIntentions);
