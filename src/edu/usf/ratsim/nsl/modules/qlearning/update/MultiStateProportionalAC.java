@@ -81,13 +81,12 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 			Float1dPort statesAfter = (Float1dPort) getInPort("statesAfter");
 			Float1dPort votesBefore = (Float1dPort) getInPort("votesBefore");
 			Float1dPort votesAfter = (Float1dPort) getInPort("votesAfter");
-			;
 			FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
 			// Gets the active state as computed at the beginning of the cycle
 			int a = takenAction.get();
 
 			// Do the update once for each state
-			for (int stateBefore = 0; stateBefore < numStates; stateBefore++)
+			for (int stateBefore = 0; stateBefore < statesBefore.getSize(); stateBefore++)
 				// Dont bother if the activation is to small
 				if (statesBefore.get(stateBefore) > EPS && a != -1)
 					updateLastAction(stateBefore, a, reward, statesBefore,
@@ -97,7 +96,8 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 	private void updateLastAction(int sBefore, int a, Float1dPortArray reward,
 			Float1dPort statesBefore, Float1dPort statesAfter,
-			Float1dPort votesBefore, Float1dPort votesAfter, FloatMatrixPort value) {
+			Float1dPort votesBefore, Float1dPort votesAfter,
+			FloatMatrixPort value) {
 		// Error in estimation
 		float delta = reward.get() + lambda * votesAfter.get(numActions)
 				- votesBefore.get(numActions);

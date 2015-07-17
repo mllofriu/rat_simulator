@@ -1,6 +1,7 @@
 package edu.usf.ratsim.nsl.modules;
 
 import edu.usf.experiment.subject.Subject;
+import edu.usf.experiment.universe.Feeder;
 import edu.usf.ratsim.micronsl.Int0dPort;
 import edu.usf.ratsim.micronsl.Module;
 
@@ -20,7 +21,11 @@ public class ClosestFeeder extends Module {
 
 	@Override
 	public void simRun() {
-		outPort.set(sub.getRobot().getClosestFeeder().getId());
+		Feeder closest = sub.getRobot().getClosestFeeder();
+		if (closest == null)
+			outPort.set(-1);
+		else
+			outPort.set(closest.getId());
 	}
 
 	

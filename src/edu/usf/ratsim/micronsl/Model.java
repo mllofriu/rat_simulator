@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.usf.experiment.utils.Debug;
+
 public class Model {
 
 	private Map<String, Module> modules;
@@ -49,7 +51,7 @@ public class Model {
 
 		if (!res)
 			System.err.println("Could not find a suitable run order");
-		else
+		else if (Debug.printExecutionOrder)
 			for (Module m : runOrder)
 				System.out.println(m.getName());
 

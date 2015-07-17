@@ -3,6 +3,8 @@ package edu.usf.ratsim.micronsl;
 import java.util.List;
 import java.util.Stack;
 
+import edu.usf.experiment.utils.Debug;
+
 public class Float1dPortMultiply extends Float1dPort {
 
 	private int size;
@@ -19,13 +21,17 @@ public class Float1dPortMultiply extends Float1dPort {
 
 		this.states = states;
 
-		if (states.isEmpty())
+		if (states.isEmpty()) {
 			size = 0;
-		else {
+		} else {
 			size = 1;
-			for (Float1dPort state : states)
+			for (Float1dPort state : states) {
 				size *= state.getSize();
+			}
 		}
+
+		if (size == 0)
+			throw new RuntimeException("Empty input to Multiply port");
 
 		validOptimization = false;
 	}
@@ -107,7 +113,7 @@ public class Float1dPortMultiply extends Float1dPort {
 				for (int s = listNum + 1; s < states.size(); s++)
 					elemsToSkip *= states.get(s).getSize();
 				element += elemsToSkip;
-//				System.out.println("Skipping elements");
+				// System.out.println("Skipping elements");
 			} else {
 				if (listNum < states.size() - 1) {
 					for (int i = states.get(listNum + 1).getSize() - 1; i >= 0; i--) {
@@ -122,22 +128,24 @@ public class Float1dPortMultiply extends Float1dPort {
 			}
 		} while (!listPointer.isEmpty());
 
-//		float[] data2 = new float[size];
-//		for (int i = 0; i < size; i++)
-//			data2[i] = get(i);
-//
-//		for (int i = 0; i < size; i++)
-//			if (data2[i] != data[i])
-//				System.err.println("Incorrect optimization: " + data2[i] + " "
-//						+ data[i]);
+		// float[] data2 = new float[size];
+		// for (int i = 0; i < size; i++)
+		// data2[i] = get(i);
+		//
+		// for (int i = 0; i < size; i++)
+		// if (data2[i] != data[i])
+		// System.err.println("Incorrect optimization: " + data2[i] + " "
+		// + data[i]);
 
-		if (states.get(0).get(0) == 1){
-			System.out.println("Conjuntive cells output");
-			for (int i = 0; i < data.length; i++)
-				System.out.print(data[i] + " ");
-			System.out.println();
-		}
-		
+		if (Debug.printConjCells)
+			if (states.get(0).get(0) == 1) {
+				System.out.println("Conjuntive cells output " + data.length);
+				for (int i = 0; i < data.length; i++)
+					if (data[i] != 0)
+						System.out.print(data[i] + " ");
+				System.out.println();
+			}
+
 	}
 
 }

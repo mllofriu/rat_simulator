@@ -23,7 +23,7 @@ public class ArtificialHDCellLayer extends Module {
 		float angleInterval = (float) (Math.PI * 2 / numCells);
 		if (Debug.printHDCells)
 			System.out.println("Adding " + numCells + " hd cells");
-		for (int i = 0; i < numCells - 1; i++) {
+		for (int i = 0; i < numCells; i++) {
 			// Add a cell with center x,y
 			cells.add(new ArtificialHDCell(i * angleInterval, angleInterval * 2));
 			// Create one phased out half the angle interval

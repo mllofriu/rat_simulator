@@ -1,8 +1,9 @@
 package edu.usf.ratsim.nsl.modules.qlearning.actionselection;
 
+import edu.usf.experiment.utils.Debug;
+import edu.usf.ratsim.micronsl.Float1dPort;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.FloatMatrixPort;
-import edu.usf.ratsim.micronsl.Float1dPort;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.nsl.modules.Voter;
 
@@ -65,10 +66,12 @@ public class HalfAndHalfConnectionVotes extends Module implements Voter {
 		if (sumValue != 0)
 			actionVote[numActions] = actionVote[numActions] / sumValue;
 
-		System.out.println("RL Half and Half votes");
-		for (int action = 0; action < numActions; action++)
-			System.out.print(actionVote[action] + " ");
-		System.out.println();
+		if (Debug.printHalfAndHalf) {
+			System.out.println("RL Half and Half votes");
+			for (int action = 0; action < numActions; action++)
+				System.out.print(actionVote[action] + " ");
+			System.out.println();
+		}
 
 	}
 
