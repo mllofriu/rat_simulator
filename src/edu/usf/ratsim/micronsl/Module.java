@@ -5,15 +5,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class Module implements Runnable {
+public abstract class Module extends DependencyRunnable {
 
-	private List<Module> preReqs;
 	private Map<String, Port> outPorts;
 	private String name;
 	private Map<String, Port> inPorts;
 
 	public Module(String name) {
-		preReqs = new LinkedList<Module>();
+		super();
+		
 		outPorts = new HashMap<String, Port>();
 		inPorts = new HashMap<String, Port>();
 		this.name = name;
@@ -21,14 +21,6 @@ public abstract class Module implements Runnable {
 
 	public String getName() {
 		return name;
-	}
-
-	public List<Module> getPreReqs() {
-		return preReqs;
-	}
-
-	public void addPreReq(Module m) {
-		preReqs.add(m);
 	}
 
 	public void addInPort(String name, Port port) {
@@ -68,7 +60,5 @@ public abstract class Module implements Runnable {
 			throw new RuntimeException("There is no in-port named " + name);
 		return inPorts.get(name);
 	}
-	
-
 
 }

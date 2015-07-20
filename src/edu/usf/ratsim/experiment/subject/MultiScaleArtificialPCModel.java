@@ -195,6 +195,8 @@ public class MultiScaleArtificialPCModel extends Model {
 				JointStatesManyMultiply jStates = new JointStatesManyMultiply(
 						"Joint State Multiply " + jointStateMultiplyNum);
 				jStates.addInPorts(states);
+				addModule(jStates);
+				
 				jointStateMultiplyNum++;
 				jStateList.add(jStates);
 				pclHDIntentionPortList.add((Float1dPort) jStates
