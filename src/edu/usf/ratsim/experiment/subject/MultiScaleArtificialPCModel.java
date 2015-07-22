@@ -9,10 +9,9 @@ import javax.vecmath.Point3f;
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.ratsim.micronsl.Float1dPort;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.FloatMatrixPort;
-import edu.usf.ratsim.micronsl.Float1dPort;
-import edu.usf.ratsim.micronsl.Int1dPort;
 import edu.usf.ratsim.micronsl.Model;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.micronsl.Port;
@@ -52,13 +51,9 @@ public class MultiScaleArtificialPCModel extends Model {
 	private List<QLAlgorithm> qLUpdVal;
 	// private ProportionalExplorer actionPerformerVote;
 	// private List<WTAVotes> qLActionSel;
-	private LinkedList<ArtificialPlaceCellLayer> afterPcls;
 	private int numPCLayers;
-	private LinkedList<PlaceIntention> beforePI;
-	private LinkedList<PlaceIntention> afterPI;
 	private LastAteGoalDecider lastAteGoalDecider;
 	private int numHDLayers;
-	private List<ArtificialHDCellLayer> afterHDs;
 	private LinkedList<ArtificialHDCellLayer> beforeHDs;
 	private QLAlgorithm ql;
 	private NoExploration actionPerformer;
@@ -122,9 +117,6 @@ public class MultiScaleArtificialPCModel extends Model {
 		long pclSeed = r.nextLong();
 
 		beforePcls = new LinkedList<ArtificialPlaceCellLayer>();
-		beforePI = new LinkedList<PlaceIntention>();
-		afterPcls = new LinkedList<ArtificialPlaceCellLayer>();
-		afterPI = new LinkedList<PlaceIntention>();
 		qLUpdVal = new LinkedList<QLAlgorithm>();
 		// qLActionSel = new LinkedList<WTAVotes>();
 		exploration = new LinkedList<DecayingExplorationSchema>();
@@ -423,7 +415,6 @@ public class MultiScaleArtificialPCModel extends Model {
 	public void deactivatePCL(List<Integer> feedersToDeactivate) {
 		for (Integer layer : feedersToDeactivate) {
 			beforePcls.get(layer).deactivate();
-			afterPcls.get(layer).deactivate();
 		}
 	}
 
