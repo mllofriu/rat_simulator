@@ -1,8 +1,8 @@
 package edu.usf.ratsim.micronsl;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
@@ -46,7 +46,7 @@ public class ThreadDependencyExecutor extends ThreadPoolExecutor {
 				threadFactory);
 	}
 
-	public synchronized void execute(List<DependencyRunnable> tasks) {
+	public synchronized void execute(Collection<DependencyRunnable> tasks) {
 		byDependOn = new HashMap<DependencyRunnable, Set<DependencyRunnable>>();
 		byNumDependencies = new HashMap<Integer, Set<DependencyRunnable>>();
 		numDependencies = new HashMap<DependencyRunnable, Integer>();
