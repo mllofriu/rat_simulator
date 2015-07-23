@@ -77,4 +77,9 @@ public class GradientVotes extends Module implements Voter {
 		return actionVote;
 	}
 
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
+
 }

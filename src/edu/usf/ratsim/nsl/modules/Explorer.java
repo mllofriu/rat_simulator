@@ -15,7 +15,7 @@
 //			ExperimentUniverse universe) {
 //		super(nslName, nslParent);
 //		this.robot = robot;
-//		r = new Random();
+//		r = RandomSingleton.getInstance();
 //	}
 //
 //	public void simRun() {

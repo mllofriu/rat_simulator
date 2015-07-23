@@ -1,9 +1,11 @@
 package edu.usf.ratsim.micronsl;
 
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class Module extends DependencyRunnable {
 
@@ -13,9 +15,9 @@ public abstract class Module extends DependencyRunnable {
 
 	public Module(String name) {
 		super();
-		
-		outPorts = new HashMap<String, Port>();
-		inPorts = new HashMap<String, Port>();
+
+		outPorts = new LinkedHashMap<String, Port>();
+		inPorts = new LinkedHashMap<String, Port>();
 		this.name = name;
 	}
 
@@ -34,10 +36,30 @@ public abstract class Module extends DependencyRunnable {
 				addPreReq(port.getOwner());
 		} else {
 			if (port.getOwner() != null)
-				port.getOwner().addPreReq(this);
+				for (Module m : port.getOwner().getValueInfluencingModules())
+					m.addPreReq(this);
 		}
 
 		inPorts.put(name, port);
+	}
+
+	/**
+	 * Returns the set of modules that influences this module's value By
+	 * default, it's just the module itself. However, some modules rely on
+	 * on-the-fly ports, so their value dinamically changes when one of their
+	 * dependencies changes.
+	 * 
+	 * @return
+	 */
+	public Set<Module> getValueInfluencingModules() {
+		Set<Module> res = new LinkedHashSet<Module>();
+		res.add(this);
+		return res;
+	}
+
+	private void addPreReqs(List<Module> modules) {
+		for (Module m : modules)
+			addPreReq(m);
 	}
 
 	public void addInPorts(List<Port> ports) {
@@ -61,4 +83,9 @@ public abstract class Module extends DependencyRunnable {
 		return inPorts.get(name);
 	}
 
+	public abstract boolean usesRandom();
+
+	public Collection<Port> getInPorts() {
+		return inPorts.values();
+	}
 }

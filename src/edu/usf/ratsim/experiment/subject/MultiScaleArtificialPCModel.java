@@ -2,7 +2,6 @@ package edu.usf.ratsim.experiment.subject;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import javax.vecmath.Point3f;
 
@@ -29,7 +28,6 @@ import edu.usf.ratsim.nsl.modules.LastAteGoalDecider;
 import edu.usf.ratsim.nsl.modules.LastAteIntention;
 import edu.usf.ratsim.nsl.modules.LastTriedToEatGoalDecider;
 import edu.usf.ratsim.nsl.modules.NoIntention;
-import edu.usf.ratsim.nsl.modules.PlaceIntention;
 import edu.usf.ratsim.nsl.modules.StillExplorer;
 import edu.usf.ratsim.nsl.modules.SubjectAte;
 import edu.usf.ratsim.nsl.modules.SubjectTriedToEat;
@@ -113,9 +111,6 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		int numActions = subject.getPossibleAffordances().size();
 
-		Random r = new Random();
-		long pclSeed = r.nextLong();
-
 		beforePcls = new LinkedList<ArtificialPlaceCellLayer>();
 		qLUpdVal = new LinkedList<QLAlgorithm>();
 		// qLActionSel = new LinkedList<WTAVotes>();
@@ -146,9 +141,9 @@ public class MultiScaleArtificialPCModel extends Model {
 		// For each layer
 		for (int i = 0; i < numPCLayers; i++) {
 			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer("PCL "
-					+ i, lRobot, radius, numPCCellsPerLayer, pclSeed,
-					placeCellType, xmin, ymin, xmax, ymax,
-					lRobot.getAllFeeders(), goalCellProportion);
+					+ i, lRobot, radius, numPCCellsPerLayer, placeCellType,
+					xmin, ymin, xmax, ymax, lRobot.getAllFeeders(),
+					goalCellProportion);
 			beforePcls.add(pcl);
 			addModule(pcl);
 			// JointStates placeIntention = new JointStates(
@@ -188,7 +183,7 @@ public class MultiScaleArtificialPCModel extends Model {
 						"Joint State Multiply " + jointStateMultiplyNum);
 				jStates.addInPorts(states);
 				addModule(jStates);
-				
+
 				jointStateMultiplyNum++;
 				jStateList.add(jStates);
 				pclHDIntentionPortList.add((Float1dPort) jStates
@@ -283,7 +278,7 @@ public class MultiScaleArtificialPCModel extends Model {
 				maxAttentionSpan);
 		addModule(attExpl);
 		votesPorts.add((Float1dPort) attExpl.getOutPort("votes"));
-		
+
 		// Joint votes
 		jointVotes = new JointStatesManySum("Votes");
 		jointVotes.addInPorts(votesPorts);
@@ -302,12 +297,9 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf
-		if (deterministic) {
-			actionPerformer = new NoExploration("Action Performer", subject);
-			actionPerformer.addInPort("votes",
-					jointVotes.getOutPort("jointState"));
-			addModule(actionPerformer);
-		}
+		actionPerformer = new NoExploration("Action Performer", subject);
+		actionPerformer.addInPort("votes", jointVotes.getOutPort("jointState"));
+		addModule(actionPerformer);
 		Port takenActionPort = actionPerformer.getOutPort("takenAction");
 		// Add the taken action ports to some previous exploration modules
 		attExpl.addInPort("takenAction", takenActionPort, true);
@@ -316,21 +308,29 @@ public class MultiScaleArtificialPCModel extends Model {
 		SubjectAte subAte = new SubjectAte("Subject Ate", subject);
 		subAte.addInPort("takenAction", takenActionPort); // just for dependency
 		addModule(subAte);
-		
-		SubjectTriedToEat subTriedToEat = new SubjectTriedToEat("Subject Tried To Eat", subject);
-		subTriedToEat.addInPort("takenAction", takenActionPort); // just for dependency
+
+		SubjectTriedToEat subTriedToEat = new SubjectTriedToEat(
+				"Subject Tried To Eat", subject);
+		subTriedToEat.addInPort("takenAction", takenActionPort); // just for
+																	// dependency
 		addModule(subTriedToEat);
-		
-		ClosestFeeder closestFeeder = new ClosestFeeder("Closest Feeder After Move", subject);
+
+		ClosestFeeder closestFeeder = new ClosestFeeder(
+				"Closest Feeder After Move", subject);
 		closestFeeder.addInPort("takenAction", takenActionPort);
 		addModule(closestFeeder);
-		
-		// Reversed dependencies because I need to base my desicion on the last cycle
-		lastAteGoalDecider.addInPort("subAte", subAte.getOutPort("subAte"), true);
-		lastAteGoalDecider.addInPort("closestFeeder", closestFeeder.getOutPort("closestFeeder"), true);
-		lastTriedToEatGoalDecider.addInPort("subTriedToEat", subTriedToEat.getOutPort("subTriedToEat"), true);
-		lastTriedToEatGoalDecider.addInPort("closestFeeder", closestFeeder.getOutPort("closestFeeder"), true);
-		
+
+		// Reversed dependencies because I need to base my desicion on the last
+		// cycle
+		lastAteGoalDecider.addInPort("subAte", subAte.getOutPort("subAte"),
+				true);
+		lastAteGoalDecider.addInPort("closestFeeder",
+				closestFeeder.getOutPort("closestFeeder"), true);
+		lastTriedToEatGoalDecider.addInPort("subTriedToEat",
+				subTriedToEat.getOutPort("subTriedToEat"), true);
+		lastTriedToEatGoalDecider.addInPort("closestFeeder",
+				closestFeeder.getOutPort("closestFeeder"), true);
+
 		Reward reward = new Reward("Reward", foodReward, nonFoodReward);
 		reward.addInPort("subAte", subAte.getOutPort("subAte"));
 		addModule(reward);

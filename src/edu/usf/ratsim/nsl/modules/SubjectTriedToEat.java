@@ -24,5 +24,10 @@ public class SubjectTriedToEat extends Module {
 		outPort.set(sub.hasTriedToEat());
 	}
 
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
+
 	
 }

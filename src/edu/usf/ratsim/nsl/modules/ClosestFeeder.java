@@ -28,5 +28,10 @@ public class ClosestFeeder extends Module {
 			outPort.set(closest.getId());
 	}
 
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
+
 	
 }

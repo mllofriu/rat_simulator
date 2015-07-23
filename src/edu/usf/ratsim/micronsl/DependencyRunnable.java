@@ -19,7 +19,8 @@ public abstract class DependencyRunnable implements Runnable {
 	}
 
 	public void addPreReq(DependencyRunnable dr1) {
-		preReqs.add(dr1);
+		if (!preReqs.contains(dr1))
+			preReqs.add(dr1);
 	}
 	
 	/**
@@ -32,13 +33,12 @@ public abstract class DependencyRunnable implements Runnable {
 		Set<DependencyRunnable> visited = new HashSet<DependencyRunnable>();
 		Set<DependencyRunnable> processed = new HashSet<DependencyRunnable>();
 
-		boolean res = true;
+		boolean res = false;
 		for (DependencyRunnable m : modules)
-			res = res && checkCycles(m, visited, processed);
+			res = res || checkCycles(m, visited, processed);
 
-		if (!res)
+		if (res)
 			System.err.println("Could not find a suitable run order");
-	
 
 		return res;
 	}
@@ -60,5 +60,7 @@ public abstract class DependencyRunnable implements Runnable {
 
 		return cycles;
 	}
+	
+	
 	
 }

@@ -2,6 +2,8 @@
 <!-- Just a test of new format -->
 
 <experiment>
+	<seed>3234232343</seed>
+	
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
@@ -184,7 +186,7 @@
 					<params>
 					</params>
 				</logger>
-				<logger>
+				<!--<logger>
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
@@ -192,7 +194,7 @@
 						<angleInterval>.37</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
-				</logger>
+				</logger> -->
 			</afterEpisodeLoggers>
 			<afterEpisodeTasks>
 				
@@ -224,9 +226,9 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.experiment.plot.ValuePlotter</name>
-				</plotter>
+				</plotter> -->
 			</afterEpisodePlotters>
 		</episodes>
 		

@@ -118,4 +118,9 @@ public class TaxicFoodFinderSchema extends Module {
 		return (float) (reward * Math.pow(lambda, steps));
 	}
 
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
+
 }

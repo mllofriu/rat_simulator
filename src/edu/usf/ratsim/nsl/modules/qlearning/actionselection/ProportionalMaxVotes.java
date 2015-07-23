@@ -38,4 +38,9 @@ public class ProportionalMaxVotes extends Module {
 		}
 	}
 
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
+
 }

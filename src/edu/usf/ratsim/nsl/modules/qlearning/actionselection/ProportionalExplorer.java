@@ -40,7 +40,7 @@
 //		for (int i = 0; i < numLayers; i++)
 //			votes[i] = new NslDinFloat1(this, "votes" + i);
 //
-//		r = new Random();
+//		r = RandomSingleton.getInstance();
 //	}
 //
 //	public void simRun() {

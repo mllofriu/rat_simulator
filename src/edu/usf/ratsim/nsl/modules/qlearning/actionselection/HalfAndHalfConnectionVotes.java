@@ -79,4 +79,9 @@ public class HalfAndHalfConnectionVotes extends Module implements Voter {
 		return actionVote;
 	}
 
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
+
 }

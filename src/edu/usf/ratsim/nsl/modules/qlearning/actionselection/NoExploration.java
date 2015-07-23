@@ -9,6 +9,7 @@ import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.utils.Debug;
+import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.ratsim.micronsl.Float1dPort;
 import edu.usf.ratsim.micronsl.Int1dPort;
 import edu.usf.ratsim.micronsl.Module;
@@ -20,7 +21,6 @@ public class NoExploration extends Module {
 
 	private Robot robot;
 
-	private Random random;
 	private boolean lastRot;
 	private Subject sub;
 	private int[] takenAction;
@@ -31,7 +31,6 @@ public class NoExploration extends Module {
 		takenAction = new int[1];
 		addOutPort("takenAction", new Int1dPort(this, takenAction));
 
-		random = new Random();
 		lastRot = false;
 		robot = sub.getRobot();
 
@@ -68,5 +67,11 @@ public class NoExploration extends Module {
 		// // System.out.println(takenAction.get());
 		// lastRot = selectedAction == sub.getActionLeft()
 		// || selectedAction == sub.getActionRight();
+	}
+
+	@Override
+	public boolean usesRandom() {
+		// Executes robot movements, which uses random
+		return true;
 	}
 }

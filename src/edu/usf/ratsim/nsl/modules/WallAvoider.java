@@ -6,6 +6,7 @@ import java.util.Random;
 import edu.usf.experiment.robot.Robot;
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.subject.affordance.Affordance;
+import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.Module;
 
@@ -27,7 +28,6 @@ public class WallAvoider extends Module {
 	private float currentValue;
 	private boolean active;
 	private int direction;
-	private Random r;
 	// private int number;
 	private Subject subject;
 
@@ -43,7 +43,6 @@ public class WallAvoider extends Module {
 
 		votes = new float[numActions + 1];
 		addOutPort("votes", new Float1dPortArray(this, votes));
-		r = new Random();
 
 		robot = subject.getRobot();
 		this.subject = subject;
@@ -63,5 +62,10 @@ public class WallAvoider extends Module {
 				votes[index] = wallFollowingValue;
 			index++;
 		}
+	}
+
+	@Override
+	public boolean usesRandom() {
+		return false;
 	}
 }

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
+	<seed>32342343</seed>
+	
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>

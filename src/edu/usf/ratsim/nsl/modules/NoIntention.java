@@ -29,4 +29,9 @@ public class NoIntention extends Module implements Intention {
 	public void simRun(int inte) {
 		run();
 	}
+
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
 }

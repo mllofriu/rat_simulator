@@ -37,4 +37,9 @@ public class LastAteGoalDecider extends Module {
 		currentGoal = -1;
 		goalFeeder[0] = currentGoal;
 	}
+
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
 }

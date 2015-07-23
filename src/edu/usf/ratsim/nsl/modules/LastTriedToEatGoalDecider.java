@@ -38,4 +38,9 @@ public class LastTriedToEatGoalDecider extends Module {
 		goalFeeder[0] = -1;
 		goalFeeder[1] = -1;
 	}
+
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
 }

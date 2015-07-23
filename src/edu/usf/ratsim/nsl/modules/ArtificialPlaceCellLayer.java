@@ -8,6 +8,7 @@ import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.universe.Feeder;
+import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.Module;
 
@@ -22,7 +23,7 @@ public class ArtificialPlaceCellLayer extends Module {
 	private LocalizableRobot robot;
 
 	public ArtificialPlaceCellLayer(String name, LocalizableRobot robot,
-			float radius, int numCells, long seed, String placeCellType,
+			float radius, int numCells, String placeCellType,
 			float xmin, float ymin, float xmax, float ymax, List<Feeder> goals,
 			float nearGoalProb) {
 		super(name);
@@ -30,7 +31,7 @@ public class ArtificialPlaceCellLayer extends Module {
 		active = true;
 
 		cells = new LinkedList<ArtificialPlaceCell>();
-		Random r = new Random(seed);
+		Random r = RandomSingleton.getInstance();
 		int i = 0;
 		float x, y;
 		do {
@@ -125,6 +126,11 @@ public class ArtificialPlaceCellLayer extends Module {
 			for (int i = 0; i < activation.length; i++)
 				activation[i] = 0;
 		}
+	}
+
+	@Override
+	public boolean usesRandom() {
+		return false;
 	}
 
 }

@@ -24,5 +24,10 @@ public class SubjectAte extends Module {
 		outPort.set(sub.hasEaten());
 	}
 
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
+
 	
 }

@@ -81,4 +81,9 @@ public class ArtificialFeederCellLayer extends Module {
 		}
 	}
 
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
+
 }

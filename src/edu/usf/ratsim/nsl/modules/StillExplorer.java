@@ -9,6 +9,7 @@ import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.utils.Debug;
+import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.IntPort;
 import edu.usf.ratsim.micronsl.Module;
@@ -45,7 +46,7 @@ public class StillExplorer extends Module {
 		this.robot = sub.getRobot();
 
 		actionsSinceForward = 0;
-		r = new Random();
+		r = RandomSingleton.getInstance();
 		timeToExplore = 0;
 	}
 
@@ -104,5 +105,10 @@ public class StillExplorer extends Module {
 		for (Affordance aff : affs)
 			contain = contain || aff instanceof ForwardAffordance;
 		return contain;
+	}
+
+	@Override
+	public boolean usesRandom() {
+		return true;
 	}
 }

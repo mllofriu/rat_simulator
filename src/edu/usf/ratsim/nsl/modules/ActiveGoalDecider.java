@@ -32,7 +32,7 @@
 //
 //		goalFeeder = new NslDoutInt0(this, "goalFeeder");
 //
-//		r = new Random();
+//		r = RandomSingleton.getInstance();
 //		currentGoal = -1;
 //	}
 //

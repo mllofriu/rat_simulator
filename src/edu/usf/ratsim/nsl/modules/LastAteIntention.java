@@ -38,4 +38,9 @@ public class LastAteIntention extends Module implements Intention {
 		intention[inte] = 1;
 	}
 
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
+
 }

@@ -10,6 +10,7 @@ import edu.usf.experiment.subject.affordance.Affordance;
 import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
+import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.Module;
 
@@ -35,7 +36,7 @@ public class DecayingExplorationSchema extends Module {
 		votes = new float[subject.getPossibleAffordances().size() + 1];
 		addOutPort("votes", new Float1dPortArray(this, votes));
 
-		r = new Random();
+		r = RandomSingleton.getInstance();
 
 		episodeCount = 0;
 
@@ -112,6 +113,11 @@ public class DecayingExplorationSchema extends Module {
 
 	public void setExplorationVal(float val) {
 		maxReward = val;
+	}
+
+	@Override
+	public boolean usesRandom() {
+		return true;
 	}
 
 }

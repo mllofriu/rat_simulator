@@ -1,6 +1,5 @@
 package edu.usf.ratsim.nsl.modules.qlearning;
 
-import edu.usf.experiment.subject.Subject;
 import edu.usf.ratsim.micronsl.Bool1dPort;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.Module;
@@ -29,5 +28,10 @@ public class Reward extends Module {
 			reward[0] = nonFoodReward;
 		}
 
+	}
+
+	@Override
+	public boolean usesRandom() {
+		return false;
 	}
 }

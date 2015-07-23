@@ -12,6 +12,7 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.Debug;
+import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.IntPort;
 import edu.usf.ratsim.micronsl.Module;
@@ -49,7 +50,7 @@ public class AttentionalExplorer extends Module {
 		this.exploringVal = exploringVal;
 		this.robot = sub.getRobot();
 
-		r = new Random();
+		r = RandomSingleton.getInstance();
 		currentInterest = null;
 	}
 
@@ -152,6 +153,11 @@ public class AttentionalExplorer extends Module {
 	private float getFeederValue(Point3f feederPos, float reward) {
 		float steps = GeomUtils.getStepsToFeeder(feederPos, sub);
 		return (float) (reward * Math.pow(.9, steps));
+	}
+
+	@Override
+	public boolean usesRandom() {
+		return true;
 	}
 
 }

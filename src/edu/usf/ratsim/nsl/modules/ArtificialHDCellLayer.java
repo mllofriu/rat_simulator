@@ -57,4 +57,9 @@ public class ArtificialHDCellLayer extends Module {
 		// System.out.println();
 	}
 
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
+
 }

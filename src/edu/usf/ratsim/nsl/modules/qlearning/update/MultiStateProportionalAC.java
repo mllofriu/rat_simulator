@@ -239,4 +239,9 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 	}
 
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
+
 }

@@ -18,4 +18,9 @@ public class DummyModule extends Module {
 		System.out.println("Done executing module " + getName());
 	}
 
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
+
 }

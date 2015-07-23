@@ -64,4 +64,9 @@ public class ProportionalVotes extends Module implements Voter {
 		return actionVote;
 	}
 
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
+
 }

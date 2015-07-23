@@ -1,15 +1,7 @@
 package edu.usf.ratsim.experiment.subject;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import javax.vecmath.Point3f;
 
@@ -21,7 +13,6 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.ratsim.support.Configuration;
 
 public class MultiScaleArtificialPCSubject extends Subject {
 
@@ -54,51 +45,7 @@ public class MultiScaleArtificialPCSubject extends Subject {
 		
 		model.simRun();
 	}
-
-	private long checkPCLSeed() {
-		File f = new File("pclseed.obj");
-		if (f.exists()
-				&& Configuration.getBoolean("Experiment.loadSavedPolicy")) {
-
-			try {
-
-				System.out.println("Using existing seed...");
-				FileInputStream fin;
-				fin = new FileInputStream(f);
-				ObjectInputStream ois = new ObjectInputStream(fin);
-				return ((Long) ois.readObject()).longValue();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			}
-		}
-
-		Random r = new Random();
-		long seed = r.nextLong();
-
-		try {
-			FileOutputStream fout = new FileOutputStream("pclseed.obj");
-			ObjectOutputStream oos = new ObjectOutputStream(fout);
-			oos.writeObject(new Long(seed));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return 0;
-	}
-
-
-	@Override
-	public void setPassiveMode(boolean b) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	@Override
 	public List<Affordance> getPossibleAffordances() {
 		List<Affordance> res = new LinkedList<Affordance>();

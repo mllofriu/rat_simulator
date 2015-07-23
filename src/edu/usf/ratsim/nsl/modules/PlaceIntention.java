@@ -29,4 +29,9 @@ public class PlaceIntention extends Module {
 			states[goalFeeder.get() * places.getSize() + i] = places.get(i);
 		}
 	}
+
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
 }

@@ -32,4 +32,9 @@ public class CopyStateModule extends Module {
 		addOutPort("copy", copyPort);
 	}
 
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
+
 }

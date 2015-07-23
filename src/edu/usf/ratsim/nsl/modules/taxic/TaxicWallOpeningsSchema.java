@@ -99,4 +99,9 @@ public class TaxicWallOpeningsSchema extends Module {
 		return (float) (reward * Math.pow(.9f, steps));
 	}
 
+	@Override
+	public boolean usesRandom() {
+		return false;
+	}
+
 }
