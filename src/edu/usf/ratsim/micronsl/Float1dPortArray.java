@@ -28,4 +28,9 @@ public class Float1dPortArray extends Float1dPort {
 		System.arraycopy(data, 0, buf, 0, data.length);
 	}
 
+	public void set(float x) {
+		for (int i = 0; i < data.length; i++)
+			data[i] = x;
+	}
+
 }

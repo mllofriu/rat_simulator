@@ -98,8 +98,6 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		float explorationHalfLifeVal = params
 				.getChildFloat("explorationHalfLifeVal");
-		boolean deterministic = params
-				.getChildBoolean("deterministicActionSelection");
 		float xmin = params.getChildFloat("xmin");
 		float ymin = params.getChildFloat("ymin");
 		float xmax = params.getChildFloat("xmax");
@@ -509,7 +507,7 @@ public class MultiScaleArtificialPCModel extends Model {
 			// TODO: add feeder cells to policies
 			pcl.simRun(point, false, distToWall);
 
-		float maxVal = Float.NEGATIVE_INFINITY;
+		float maxVal = 0f;
 		for (float angle = 0; angle <= 2 * Math.PI; angle += angleInterval) {
 			for (ArtificialHDCellLayer hdcl : beforeHDs)
 				hdcl.simRun(angle);
@@ -524,10 +522,17 @@ public class MultiScaleArtificialPCModel extends Model {
 			float[] votes = ((Voter) rlVotes).getVotes();
 			float val = votes[votes.length - 1];
 
-			if (val > maxVal) {
+			if (Math.abs(val) > Math.abs(maxVal)) {
 				maxVal = val;
 			}
 		}
+		
+		for (ArtificialPlaceCellLayer pcl : beforePcls)
+			// TODO: add feeder cells to policies
+			pcl.clear();
+		
+		for (ArtificialHDCellLayer hdcl : beforeHDs)
+			hdcl.clear();
 
 		return maxVal;
 	}

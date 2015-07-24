@@ -59,4 +59,8 @@ public class ArtificialHDCellLayer extends Module {
 		return false;
 	}
 
+	public void clear() {
+		((Float1dPortArray)getOutPort("activation")).set(0);
+	}
+
 }

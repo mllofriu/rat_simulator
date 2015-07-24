@@ -46,29 +46,6 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 		this.numActions = numActions;
 
-		// File f = new File("policy.obj");
-		// if (f.exists()
-		// && Configuration.getBoolean("Experiment.loadSavedPolicy")) {
-		//
-		// try {
-		// System.out.println("Reading saved policy...");
-		// FileInputStream fin;
-		// fin = new FileInputStream(f);
-		// ObjectInputStream ois = new ObjectInputStream(fin);
-		// value.set((float[][]) ois.readObject());
-		// } catch (FileNotFoundException e) {
-		// value.set(initialValue);
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (ClassNotFoundException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// } else {
-		// value.set(initialValue);
-		// }
-
 		update = true;
 	}
 
@@ -107,6 +84,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		float newActionValue = statesBefore.get(sBefore)
 				* (actionVal + alpha * (delta - actionVal))
 				+ (1 - statesBefore.get(sBefore)) * actionVal;
+		
 		if (Float.isInfinite(newActionValue) || Float.isNaN(newActionValue))
 			System.out.println("Numeric Error");
 		value.set(sBefore, a, newActionValue);

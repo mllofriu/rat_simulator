@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-	<seed>32342343</seed>
+	<seed>234234656</seed>
 	
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
@@ -16,7 +16,7 @@
 		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
 		<params>
 			<noise>.2</noise>
-			<translationRotationNoise>.37</translationRotationNoise>
+			<translationRotationNoise>.195</translationRotationNoise>
 			<lookaheadSteps>5</lookaheadSteps>
 			<halfFieldOfView>1.83</halfFieldOfView>
 			<visionDist>10</visionDist>
@@ -53,7 +53,7 @@
 			<explorationReward>0</explorationReward>
 			<attentionExploringVal>100</attentionExploringVal>
 			<maxAttentionSpan>20</maxAttentionSpan>
-			<explorationHalfLifeVal>1</explorationHalfLifeVal>
+			<explorationHalfLifeVal>.125</explorationHalfLifeVal>
 			<rlType>actorCritic</rlType>
 			<voteType>halfAndHalfConnection</voteType>
 			<xmin>-.5</xmin>
@@ -190,8 +190,8 @@
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
-						<interval>.05</interval>
-						<angleInterval>.37</angleInterval>
+						<interval>.1</interval>
+						<angleInterval>.78</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
 				</logger>
@@ -306,8 +306,8 @@
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
-						<interval>.05</interval>
-						<angleInterval>.37</angleInterval>
+						<interval>.1</interval>
+						<angleInterval>.78</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
 				</logger>
@@ -319,7 +319,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>5000</max>
+						<max>2000</max>
 					</params>
 				</condition>
 				<condition>
@@ -459,8 +459,8 @@
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
-						<interval>.05</interval>
-						<angleInterval>.37</angleInterval>
+						<interval>.1</interval>
+						<angleInterval>.78</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
 				</logger>
