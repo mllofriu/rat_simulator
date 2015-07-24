@@ -53,8 +53,8 @@ public class VirtUniverse extends Universe {
 	private boolean display;
 	private List<Wall> initialWalls;
 
-	public VirtUniverse(ElementWrapper params) {
-		super(params);
+	public VirtUniverse(ElementWrapper params, String logPath) {
+		super(params, logPath);
 
 		String mazeFile = params.getChildText("maze");
 		display = params.getChildBoolean("display");
@@ -62,8 +62,7 @@ public class VirtUniverse extends Universe {
 		wallNodes = new LinkedList<WallNode>();
 
 		// Just initialize the nodes we need
-		PropertyHolder props = PropertyHolder.getInstance();
-		String dstMazeFile = props.getProperty("log.directory") + "maze.xml";
+		String dstMazeFile = logPath + "maze.xml";
 		IOUtils.copyFile(mazeFile, dstMazeFile);
 		Document doc = XMLDocReader.readDocument(dstMazeFile);
 		ElementWrapper maze = new ElementWrapper(doc.getDocumentElement());
