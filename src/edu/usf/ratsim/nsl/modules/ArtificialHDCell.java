@@ -2,13 +2,15 @@ package edu.usf.ratsim.nsl.modules;
 
 public class ArtificialHDCell {
 
+	private static final double RADIUS_THRS = 0.2;
+	
 	private float preferredOrientation;
 	private float width;
 
-	public ArtificialHDCell(float preferredOrientation, float width) {
+	public ArtificialHDCell(float preferredOrientation, float radius) {
 		super();
 		this.preferredOrientation = preferredOrientation;
-		this.width = width;
+		this.width = (float) (-Math.pow(radius, 2) / Math.log(RADIUS_THRS));;
 	}
 
 	public float getActivation(float currOrientation) {

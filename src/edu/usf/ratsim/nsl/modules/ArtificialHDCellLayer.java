@@ -1,9 +1,11 @@
 package edu.usf.ratsim.nsl.modules;
 
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 import edu.usf.experiment.robot.LocalizableRobot;
-import edu.usf.experiment.utils.Debug;
+import edu.usf.experiment.utils.RandomSingleton;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.Module;
 
@@ -11,24 +13,19 @@ public class ArtificialHDCellLayer extends Module {
 
 	public float activation[];
 
-	private LinkedList<ArtificialHDCell> cells;
+	private List<ArtificialHDCell> cells;
 
 	private LocalizableRobot robot;
 
-	public ArtificialHDCellLayer(String name, int numCells,
+	public ArtificialHDCellLayer(String name, int numCells, float radius,
 			LocalizableRobot robot) {
 		super(name);
-		// Compute number of cells
+		
+		Random r = RandomSingleton.getInstance();
 		cells = new LinkedList<ArtificialHDCell>();
-		float angleInterval = (float) (Math.PI * 2 / numCells);
-		if (Debug.printHDCells)
-			System.out.println("Adding " + numCells + " hd cells");
 		for (int i = 0; i < numCells; i++) {
 			// Add a cell with center x,y
-			cells.add(new ArtificialHDCell(i * angleInterval, angleInterval * 2));
-			// Create one phased out half the angle interval
-			cells.add(new ArtificialHDCell(i * angleInterval + angleInterval
-					/ 2, angleInterval * 2));
+			cells.add(new ArtificialHDCell((float) (r.nextFloat() * 2 * Math.PI), radius));
 		}
 
 		activation = new float[cells.size()];

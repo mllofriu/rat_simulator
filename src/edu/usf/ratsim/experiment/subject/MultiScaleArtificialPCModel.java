@@ -51,7 +51,6 @@ public class MultiScaleArtificialPCModel extends Model {
 	// private List<WTAVotes> qLActionSel;
 	private int numPCLayers;
 	private LastAteGoalDecider lastAteGoalDecider;
-	private int numHDLayers;
 	private LinkedList<ArtificialHDCellLayer> beforeHDs;
 	private QLAlgorithm ql;
 	private NoExploration actionPerformer;
@@ -71,15 +70,17 @@ public class MultiScaleArtificialPCModel extends Model {
 	public MultiScaleArtificialPCModel(ElementWrapper params, Subject subject,
 			LocalizableRobot lRobot) {
 		// Get some configuration values for place cells + qlearning
-		float minRadius = params.getChildFloat("minRadius");
-		float maxRadius = params.getChildFloat("maxRadius");
+		float minPCRadius = params.getChildFloat("minPCRadius");
+		float maxPCRadius = params.getChildFloat("maxPCRadius");
+		
 		numPCLayers = params.getChildInt("numPCLayers");
 		int numPCCellsPerLayer = params.getChildInt("numPCCellsPerLayer");
-		numHDLayers = params.getChildInt("numHDLayers");
+		float minHDRadius = params.getChildFloat("minHDRadius");
+		float maxHDRadius = params.getChildFloat("maxHDRadius");
+		int numHDLayers = params.getChildInt("numHDLayers");
+		int numHDCellsPerLayer = params.getChildInt("numHDCellsPerLayer");
 		String placeCellType = params.getChildText("placeCells");
 		float goalCellProportion = params.getChildFloat("goalCellProportion");
-		int minHDCellsPerLayer = params.getChildInt("minHDCellsPerLayer");
-		int stepHDCellsPerLayer = params.getChildInt("stepHDCellsPerLayer");
 		float discountFactor = params.getChildFloat("discountFactor");
 		float alpha = params.getChildFloat("alpha");
 		float initialValue = params.getChildFloat("initialValue");
@@ -137,7 +138,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		intentionGetter = (Intention) intention;
 
 		// Create the layers
-		float radius = minRadius;
+		float radius = minPCRadius;
 		// For each layer
 		for (int i = 0; i < numPCLayers; i++) {
 			ArtificialPlaceCellLayer pcl = new ArtificialPlaceCellLayer("PCL "
@@ -150,18 +151,18 @@ public class MultiScaleArtificialPCModel extends Model {
 			// BEFORE_PLACE_INTENTION_STR + i, this, universe,
 			// pcl.getSize(), numIntentions);
 			// Update radius
-			radius += (maxRadius - minRadius) / (numPCLayers - 1);
+			radius += (maxPCRadius - minPCRadius) / (numPCLayers - 1);
 		}
 
-		// TODO: seed?
+		// Create the layers
+		float hdRadius = minHDRadius;
 		beforeHDs = new LinkedList<ArtificialHDCellLayer>();
-		int numHDCells = minHDCellsPerLayer;
 		for (int i = 0; i < numHDLayers; i++) {
 			ArtificialHDCellLayer hd = new ArtificialHDCellLayer("HD " + i,
-					numHDCells, lRobot);
+					numHDCellsPerLayer, hdRadius, lRobot);
 			beforeHDs.add(hd);
 			addModule(hd);
-			numHDCells += stepHDCellsPerLayer;
+			radius += (maxHDRadius - minHDRadius) / (numHDLayers - 1);
 		}
 
 		List<Integer> bpihdSizes = new LinkedList<Integer>();

@@ -30,13 +30,14 @@
 			<rightAngle>-0.37</rightAngle>
 			<numPCLayers>2</numPCLayers>
 			<numPCCellsPerLayer>1000</numPCCellsPerLayer>
-			<minRadius>.05</minRadius>
-			<maxRadius>.3</maxRadius>
+			<minPCRadius>.05</minPCRadius>
+			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
 			<goalCellProportion>0.5</goalCellProportion>
-			<numHDLayers>5</numHDLayers>
-			<minHDCellsPerLayer>1</minHDCellsPerLayer>
-			<stepHDCellsPerLayer>4</stepHDCellsPerLayer>
+			<numHDLayers>4</numHDLayers>
+			<numHDCellsPerLayer>16</numHDCellsPerLayer>
+			<minHDRadius>0.39</minHDRadius>
+			<maxHDRadius>3.14</maxHDRadius>
 			<numIntentions>8</numIntentions>
 			<deterministicActionSelection>true</deterministicActionSelection>
 			<foodReward>10000</foodReward>
