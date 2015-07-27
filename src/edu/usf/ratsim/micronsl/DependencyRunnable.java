@@ -6,14 +6,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import edu.usf.experiment.utils.Debug;
+
 public abstract class DependencyRunnable implements Runnable {
 
 	private List<DependencyRunnable> preReqs;
-	
-	public DependencyRunnable(){
+
+	public DependencyRunnable() {
 		preReqs = new LinkedList<DependencyRunnable>();
 	}
-	
+
 	public List<DependencyRunnable> getPreReqs() {
 		return preReqs;
 	}
@@ -22,45 +24,60 @@ public abstract class DependencyRunnable implements Runnable {
 		if (!preReqs.contains(dr1))
 			preReqs.add(dr1);
 	}
-	
+
 	/**
 	 * Set up the run order for the modules by performing a dfs search over the
 	 * deps graph
 	 * 
 	 * @return an order could be reached
 	 */
-	public static boolean checkCycles(Collection<DependencyRunnable> modules) {
+	public static boolean hasCycles(Collection<DependencyRunnable> modules) {
 		Set<DependencyRunnable> visited = new HashSet<DependencyRunnable>();
 		Set<DependencyRunnable> processed = new HashSet<DependencyRunnable>();
 
-		boolean res = false;
-		for (DependencyRunnable m : modules)
-			res = res || checkCycles(m, visited, processed);
+		boolean cycles = false;
+		for (DependencyRunnable m : modules){
+			cycles = cycles || hasCycles(m, visited, processed);
+			if (cycles)
+				break;
+		}
+			
 
-		if (res)
+		if (cycles)
 			System.err.println("Could not find a suitable run order");
-
-		return res;
+		
+		return cycles;
 	}
 
-	private static boolean checkCycles(DependencyRunnable dr, Set<DependencyRunnable> visited,
-			Set<DependencyRunnable> processed) {
-		if (processed.contains(dr))
+	private static boolean hasCycles(DependencyRunnable dr,
+			Set<DependencyRunnable> visited, Set<DependencyRunnable> processed) {
+		if (processed.contains(dr)) {
 			return false;
-		if (visited.contains(dr))
+		}
+
+		if (visited.contains(dr)) {
+			if (Debug.printSchedulling)
+				System.out.println("Module " + ((Module) dr).getName()
+						+ " is in a cycle");
 			return true;
+		}
 
 		visited.add(dr);
 
 		boolean cycles = false;
-		for (DependencyRunnable pr : dr.getPreReqs())
-			cycles = cycles || checkCycles(pr, visited, processed);
-
+		for (DependencyRunnable pr : dr.getPreReqs()){
+			cycles = cycles || hasCycles(pr, visited, processed);
+			if (cycles)
+				break;
+		}
+		
+		if (Debug.printSchedulling)
+			if (cycles)
+				System.out.println("Module " + ((Module) dr).getName()
+						+ " is in a cycle");
 		processed.add(dr);
 
 		return cycles;
 	}
-	
-	
-	
+
 }

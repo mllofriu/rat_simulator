@@ -11,9 +11,10 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import edu.usf.experiment.utils.Debug;
+
 public class ThreadDependencyExecutor extends ThreadPoolExecutor {
 
-	private static final boolean DEBUG = false;
 	private Map<DependencyRunnable, Set<DependencyRunnable>> byDependOn;
 	private Map<Integer, Set<DependencyRunnable>> byNumDependencies;
 	private Map<DependencyRunnable, Integer> numDependencies;
@@ -73,7 +74,7 @@ public class ThreadDependencyExecutor extends ThreadPoolExecutor {
 
 		// Submit tasks with no current dependencies
 		for (DependencyRunnable dr : byNumDependencies.get(0)) {
-			if (DEBUG)
+			if (Debug.printSchedulling)
 				System.out.println("Executing " + ((Module) dr).getName());
 			execute(dr);
 		}
@@ -86,7 +87,7 @@ public class ThreadDependencyExecutor extends ThreadPoolExecutor {
 
 		DependencyRunnable completed = (DependencyRunnable) r;
 
-		if (DEBUG)
+		if (Debug.printSchedulling)
 			System.out.println("Completed a task: "
 					+ ((Module) completed).getName());
 
@@ -107,7 +108,7 @@ public class ThreadDependencyExecutor extends ThreadPoolExecutor {
 				byNumDependencies.get(numDeps).add(antiDep);
 
 				if (numDeps == 0) {
-					if (DEBUG)
+					if (Debug.printSchedulling)
 						System.out.println("Executing "
 								+ ((Module) antiDep).getName());
 					execute(antiDep);

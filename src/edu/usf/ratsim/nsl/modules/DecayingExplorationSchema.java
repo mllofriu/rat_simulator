@@ -33,7 +33,7 @@ public class DecayingExplorationSchema extends Module {
 		this.maxReward = maxReward;
 		this.alpha = -Math.log(.5) / explorationHalfLifeVal;
 
-		votes = new float[subject.getPossibleAffordances().size() + 1];
+		votes = new float[subject.getPossibleAffordances().size()];
 		addOutPort("votes", new Float1dPortArray(this, votes));
 
 		r = RandomSingleton.getInstance();

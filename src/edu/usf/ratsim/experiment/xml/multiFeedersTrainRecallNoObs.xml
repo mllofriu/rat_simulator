@@ -49,7 +49,7 @@
 			<initialValue>0</initialValue>
 			<flashingReward>5000</flashingReward>
 			<nonFlashingReward>1000</nonFlashingReward>
-			<estimateValue>false</estimateValue>
+			<estimateValue>true</estimateValue>
 			<explorationReward>0</explorationReward>
 			<attentionExploringVal>100</attentionExploringVal>
 			<maxAttentionSpan>20</maxAttentionSpan>

@@ -21,6 +21,7 @@ public class SubjectTriedToEat extends Module {
 
 	@Override
 	public void run() {
+//		System.out.println(sub.hasTriedToEat());
 		outPort.set(sub.hasTriedToEat());
 	}
 

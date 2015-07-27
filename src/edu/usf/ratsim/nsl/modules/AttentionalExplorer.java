@@ -41,7 +41,7 @@ public class AttentionalExplorer extends Module {
 	public AttentionalExplorer(String name, Subject sub, float exploringVal,
 			int maxAttentionSpan) {
 		super(name);
-		votes = new float[sub.getPossibleAffordances().size() + 1];
+		votes = new float[sub.getPossibleAffordances().size()];
 		addOutPort("votes", new Float1dPortArray(this, votes));
 
 		this.maxAttentionSpan = maxAttentionSpan;

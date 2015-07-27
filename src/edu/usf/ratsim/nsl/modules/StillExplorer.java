@@ -37,7 +37,7 @@ public class StillExplorer extends Module {
 			float stillExploringVal) {
 		super(name);
 
-		votes = new float[sub.getPossibleAffordances().size() + 1];
+		votes = new float[sub.getPossibleAffordances().size()];
 		addOutPort("votes", new Float1dPortArray(this, votes));
 
 		this.maxActionsSinceForward = maxActionsSinceForward;

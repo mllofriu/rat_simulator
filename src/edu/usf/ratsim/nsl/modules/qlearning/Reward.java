@@ -24,6 +24,7 @@ public class Reward extends Module {
 		Bool1dPort subAte = (Bool1dPort) getInPort("subAte");
 		if (subAte.get()) {
 			reward[0] = foodReward;
+//			System.out.println("Rewarding");
 		} else {
 			reward[0] = nonFoodReward;
 		}

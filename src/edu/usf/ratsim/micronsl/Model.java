@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import edu.usf.experiment.utils.Debug;
+
 public class Model {
 
 	private Map<String, Module> modules;
@@ -42,12 +44,17 @@ public class Model {
 	public void simRun() {
 		if (modulesChanged) {
 			if (DependencyRunnable
-					.checkCycles((List<DependencyRunnable>) (List<?>) moduleList))
+					.hasCycles((List<DependencyRunnable>) (List<?>) moduleList))
 				throw new RuntimeException(
 						"There are cycles in the modules requirements");
 
 			runOrder = addRandomUseDeps(moduleList);
 
+			if (Debug.printSchedulling){
+				System.out.println("Printing run order");
+				for (Module m : runOrder)
+					System.out.println(m.getName());
+			}
 //			 Module last = null;
 //			 for( Module m : runOrder){
 //			 if (last != null){
@@ -57,7 +64,7 @@ public class Model {
 //			 }
 
 			if (DependencyRunnable
-					.checkCycles((Collection<DependencyRunnable>) (Collection<?>) modules
+					.hasCycles((Collection<DependencyRunnable>) (Collection<?>) modules
 							.values()))
 				throw new RuntimeException(
 						"There are cycles in the modules requirements");
@@ -114,7 +121,6 @@ public class Model {
 		if (processed.contains(m))
 			return false;
 		if (visited.contains(m)) {
-			System.out.println(m.getName());
 			return true;
 		}
 

@@ -97,16 +97,6 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 			votes[voteIndex] = value;
 			voteIndex++;
 		}
-
-		// Get the value of the current position
-		if (estimateValue) {
-			float value = 0;
-			if (robot.seesFlashingFeeder())
-				value += getFeederValue(robot.getFlashingFeeder().getPosition());
-
-				// Last position represents the current value
-				votes[subject.getPossibleAffordances().size()] = value;
-		}
 	}
 
 	private float getFeederValue(Point3f feederPos) {

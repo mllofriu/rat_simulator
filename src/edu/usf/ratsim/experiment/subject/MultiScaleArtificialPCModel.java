@@ -34,6 +34,7 @@ import edu.usf.ratsim.nsl.modules.SubjectTriedToEat;
 import edu.usf.ratsim.nsl.modules.Voter;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.GradientVotes;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.HalfAndHalfConnectionValue;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.HalfAndHalfConnectionVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.NoExploration;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalVotes;
@@ -41,7 +42,9 @@ import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalAC;
 import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQL;
 import edu.usf.ratsim.nsl.modules.qlearning.update.QLAlgorithm;
 import edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicFoodFinderSchema;
+import edu.usf.ratsim.nsl.modules.taxic.FlashingTaxicValueSchema;
 import edu.usf.ratsim.nsl.modules.taxic.TaxicFoodFinderSchema;
+import edu.usf.ratsim.nsl.modules.taxic.TaxicValueSchema;
 
 public class MultiScaleArtificialPCModel extends Model {
 
@@ -63,6 +66,7 @@ public class MultiScaleArtificialPCModel extends Model {
 	private LinkedList<JointStatesManyMultiply> jStateList;
 	private float explorationReward;
 	private List<Port> pclHDIntentionPortList;
+	private HalfAndHalfConnectionValue rlValue;
 
 	public MultiScaleArtificialPCModel() {
 	}
@@ -72,7 +76,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		// Get some configuration values for place cells + qlearning
 		float minPCRadius = params.getChildFloat("minPCRadius");
 		float maxPCRadius = params.getChildFloat("maxPCRadius");
-		
+
 		numPCLayers = params.getChildInt("numPCLayers");
 		int numPCCellsPerLayer = params.getChildInt("numPCCellsPerLayer");
 		float minHDRadius = params.getChildFloat("minHDRadius");
@@ -174,8 +178,8 @@ public class MultiScaleArtificialPCModel extends Model {
 				// .get(i).getSize() * numIntentions,
 				// beforeHDs.get(j).getSize());
 				List<Port> states = new LinkedList<Port>();
-				states.add((Float1dPort) intention.getOutPort("intention"));
 				states.add((Float1dPort) pcl.getOutPort("activation"));
+				states.add((Float1dPort) intention.getOutPort("intention"));
 				states.add((Float1dPort) hd.getOutPort("activation"));
 
 				JointStatesManyMultiply jStates = new JointStatesManyMultiply(
@@ -188,18 +192,6 @@ public class MultiScaleArtificialPCModel extends Model {
 				pclHDIntentionPortList.add((Float1dPort) jStates
 						.getOutPort("jointState"));
 			}
-
-		// Add feeder cells
-		// TODO: pcl seed?
-		// new ArtificialFeederCellLayer(BEFORE_FEEDER_CELL_LAYER, this, lRobot,
-		// numIntentions, pclSeed);
-		// List<Integer> statesSizes = new LinkedList<Integer>();
-		// statesSizes.add(numIntentions);
-		// statesSizes.add(numIntentions);
-		// JointStatesManyMultiply jStates = new JointStatesManyMultiply(
-		// BEFORE_PIHD + (numPCLayers * numHDLayers), this, statesSizes);
-		// jStateList.add(jStates);
-		// bpihdSizes.add(jStates.getSize());
 
 		// Concatenate all layers
 		jointPCHDIntentionState = new JointStatesManyConcatenate(
@@ -228,8 +220,9 @@ public class MultiScaleArtificialPCModel extends Model {
 			rlVotes = new HalfAndHalfConnectionVotes("RL votes", numActions);
 		else
 			throw new RuntimeException("Vote mechanism not implemented");
+		// RL votes are based on previous state
 		rlVotes.addInPort("states",
-				jointPCHDIntentionState.getOutPort("jointState"));
+				jointPCHDIntentionState.getOutPort("jointState"), true);
 		rlVotes.addInPort("value", valuePort);
 
 		addModule(rlVotes);
@@ -242,7 +235,7 @@ public class MultiScaleArtificialPCModel extends Model {
 				"Taxic Food Finder", subject, lRobot, nonFlashingReward,
 				discountFactor, estimateValue);
 		taxicff.addInPort("goalFeeder",
-				lastTriedToEatGoalDecider.getOutPort("goalFeeder"));
+				lastTriedToEatGoalDecider.getOutPort("goalFeeder"), true);
 		addModule(taxicff);
 		votesPorts.add((Float1dPort) taxicff.getOutPort("votes"));
 
@@ -250,7 +243,7 @@ public class MultiScaleArtificialPCModel extends Model {
 				"Flashing Taxic Food Finder", subject, lRobot, flashingReward,
 				discountFactor, estimateValue);
 		flashingTaxicFF.addInPort("goalFeeder",
-				lastAteGoalDecider.getOutPort("goalFeeder"));
+				lastAteGoalDecider.getOutPort("goalFeeder"), true);
 		addModule(flashingTaxicFF);
 		votesPorts.add((Float1dPort) flashingTaxicFF.getOutPort("votes"));
 
@@ -289,20 +282,64 @@ public class MultiScaleArtificialPCModel extends Model {
 				jointPCHDIntentionState.getOutPort("jointState"), true);
 		addModule(stateCopy);
 
-		CopyStateModule votesCopy = new CopyStateModule("Votes Before");
-		votesCopy.addInPort("toCopy",
-				(Float1dPort) jointVotes.getOutPort("jointState"), true);
-		addModule(votesCopy);
-
 		// Get votes from QL and other behaviors and perform an action
 		// One vote per layer (one now) + taxic + wf
 		actionPerformer = new NoExploration("Action Performer", subject);
 		actionPerformer.addInPort("votes", jointVotes.getOutPort("jointState"));
 		addModule(actionPerformer);
+		// State calculation should be done after movement
+		for (ArtificialPlaceCellLayer pcl : beforePcls)
+			pcl.addPreReq(actionPerformer);
+		for (ArtificialHDCellLayer hd : beforeHDs)
+			hd.addPreReq(actionPerformer);
+		intention.addPreReq(actionPerformer);
+		
 		Port takenActionPort = actionPerformer.getOutPort("takenAction");
 		// Add the taken action ports to some previous exploration modules
 		attExpl.addInPort("takenAction", takenActionPort, true);
 		stillExpl.addInPort("takenAction", takenActionPort, true);
+
+		List<Port> valueEstimationPorts = new LinkedList<Port>();
+		TaxicValueSchema taxVal = new TaxicValueSchema("Taxic Value Estimator",
+				subject, lRobot, nonFlashingReward, discountFactor,
+				estimateValue);
+		taxVal.addInPort("goalFeeder",
+				lastTriedToEatGoalDecider.getOutPort("goalFeeder"));
+		taxVal.addInPort("takenAction", takenActionPort); // just for dependency
+		valueEstimationPorts.add(taxVal.getOutPort("value"));
+		addModule(taxVal);
+
+		FlashingTaxicValueSchema flashTaxVal = new FlashingTaxicValueSchema(
+				"Flashing Taxic Value Estimator", subject, lRobot,
+				flashingReward, discountFactor, estimateValue);
+		flashTaxVal.addInPort("goalFeeder",
+				lastAteGoalDecider.getOutPort("goalFeeder"));
+		flashTaxVal.addInPort("takenAction", takenActionPort); // just for
+																// dependency
+		valueEstimationPorts.add(flashTaxVal.getOutPort("value"));
+		addModule(flashTaxVal);
+
+		if (voteType.equals("halfAndHalfConnection"))
+			rlValue = new HalfAndHalfConnectionValue("RL value estimation", numActions);
+		else
+			throw new RuntimeException("Vote mechanism not implemented");
+		rlValue.addInPort("states",
+				jointPCHDIntentionState.getOutPort("jointState"));
+		rlValue.addInPort("value", valuePort);
+		rlValue.addInPort("takenAction", takenActionPort); // just for dependency
+		valueEstimationPorts.add(rlValue.getOutPort("valueEst"));
+		addModule(rlValue);
+
+		JointStatesManySum sumValue = new JointStatesManySum(
+				"Joint value estimation");
+		sumValue.addInPorts(valueEstimationPorts);
+		addModule(sumValue);
+
+		CopyStateModule valueCopy = new CopyStateModule(
+				"Value Estimation Before");
+		valueCopy.addInPort("toCopy",
+				(Float1dPort) sumValue.getOutPort("jointState"), true);
+		addModule(valueCopy);
 
 		SubjectAte subAte = new SubjectAte("Subject Ate", subject);
 		subAte.addInPort("takenAction", takenActionPort); // just for dependency
@@ -319,16 +356,13 @@ public class MultiScaleArtificialPCModel extends Model {
 		closestFeeder.addInPort("takenAction", takenActionPort);
 		addModule(closestFeeder);
 
-		// Reversed dependencies because I need to base my desicion on the last
-		// cycle
-		lastAteGoalDecider.addInPort("subAte", subAte.getOutPort("subAte"),
-				true);
+		lastAteGoalDecider.addInPort("subAte", subAte.getOutPort("subAte"));
 		lastAteGoalDecider.addInPort("closestFeeder",
-				closestFeeder.getOutPort("closestFeeder"), true);
+				closestFeeder.getOutPort("closestFeeder"));
 		lastTriedToEatGoalDecider.addInPort("subTriedToEat",
-				subTriedToEat.getOutPort("subTriedToEat"), true);
+				subTriedToEat.getOutPort("subTriedToEat"));
 		lastTriedToEatGoalDecider.addInPort("closestFeeder",
-				closestFeeder.getOutPort("closestFeeder"), true);
+				closestFeeder.getOutPort("closestFeeder"));
 
 		Reward reward = new Reward("Reward", foodReward, nonFoodReward);
 		reward.addInPort("subAte", subAte.getOutPort("subAte"));
@@ -370,9 +404,10 @@ public class MultiScaleArtificialPCModel extends Model {
 			mspac.addInPort("statesAfter",
 					jointPCHDIntentionState.getOutPort("jointState"));
 			mspac.addInPort("value", valuePort);
-			mspac.addInPort("votesBefore", getModule("Votes Before")
-					.getOutPort("copy"));
-			mspac.addInPort("votesAfter", jointVotes.getOutPort("jointState"));
+			mspac.addInPort("valueEstimationAfter",
+					sumValue.getOutPort("jointState"));
+			mspac.addInPort("valueEstimationBefore",
+					getModule("Value Estimation Before").getOutPort("copy"));
 			addModule(mspac);
 			// TODO: recover this assginments
 			// ql = mspql;
@@ -517,20 +552,21 @@ public class MultiScaleArtificialPCModel extends Model {
 
 			jointPCHDIntentionState.run();
 
-			rlVotes.run();
+			rlValue.run();
 
-			float[] votes = ((Voter) rlVotes).getVotes();
-			float val = votes[votes.length - 1];
+			float[] votes = ((Voter) rlValue).getVotes();
+			float val = votes[0];
 
 			if (Math.abs(val) > Math.abs(maxVal)) {
+//			if (val > maxVal) {
 				maxVal = val;
 			}
 		}
-		
+
 		for (ArtificialPlaceCellLayer pcl : beforePcls)
 			// TODO: add feeder cells to policies
 			pcl.clear();
-		
+
 		for (ArtificialHDCellLayer hdcl : beforeHDs)
 			hdcl.clear();
 
