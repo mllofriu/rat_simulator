@@ -46,11 +46,15 @@ public class HalfAndHalfConnectionVotes extends Module implements Voter {
 			}
 		}
 
+		for (int action = 0; action < numActions; action++)
+			if (Math.abs(actionVote[action]) > 3)
+				actionVote[action] = 3 * Math.signum(actionVote[action]);
+		
 		// Normalize
-		if (sumActionSel != 0)
-			for (int action = 0; action < numActions; action++)
-				// Normalize with real value and revert previous normalization
-				actionVote[action] = actionVote[action] / sumActionSel;
+//		if (sumActionSel != 0)
+//			for (int action = 0; action < numActions; action++)
+//				// Normalize with real value and revert previous normalization
+//				actionVote[action] = actionVote[action] / sumActionSel;
 		
 		if (Debug.printHalfAndHalf) {
 			System.out.println("RL Half and Half votes");

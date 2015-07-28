@@ -76,11 +76,11 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 			Float1dPort valueEstBefore, Float1dPort valueEstAfter,
 			FloatMatrixPort value) {
 		// Error in estimation
-		float delta = reward.get() + lambda * valueEstAfter.get(0)
-				- valueEstBefore.get(0);
-		
-//		float delta = reward.get() + valueEstAfter.get(0)
+//		float delta = reward.get() + lambda * valueEstAfter.get(0)
 //				- valueEstBefore.get(0);
+		
+		float delta = reward.get() + valueEstAfter.get(0)
+				- valueEstBefore.get(0);
 		// Update action
 		float actionVal = value.get(sBefore, a);
 		float newActionValue = statesBefore.get(sBefore)

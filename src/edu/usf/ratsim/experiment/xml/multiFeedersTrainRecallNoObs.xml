@@ -31,7 +31,7 @@
 			<leftAngle>0.37</leftAngle>
 			<rightAngle>-0.37</rightAngle>
 			<numPCLayers>2</numPCLayers>
-			<numPCCellsPerLayer>1000</numPCCellsPerLayer>
+			<numPCCellsPerLayer>100</numPCCellsPerLayer>
 			<minPCRadius>.05</minPCRadius>
 			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
@@ -39,19 +39,19 @@
 			<numHDLayers>4</numHDLayers>
 			<numHDCellsPerLayer>16</numHDCellsPerLayer>
 			<minHDRadius>0.39</minHDRadius>
-			<maxHDRadius>3.14</maxHDRadius>
+			<maxHDRadius>6.28</maxHDRadius>
 			<numIntentions>8</numIntentions>
 			<deterministicActionSelection>true</deterministicActionSelection>
-			<foodReward>10000</foodReward>
+			<foodReward>1</foodReward>
 			<nonFoodReward>0</nonFoodReward>
 			<discountFactor>.9</discountFactor>
-			<alpha>0.9</alpha>
+			<alpha>0.1</alpha>
 			<initialValue>0</initialValue>
-			<flashingReward>5000</flashingReward>
-			<nonFlashingReward>1000</nonFlashingReward>
-			<estimateValue>true</estimateValue>
+			<flashingReward>.5</flashingReward>
+			<nonFlashingReward>.1</nonFlashingReward>
+			<estimateValue>false</estimateValue>
 			<explorationReward>0</explorationReward>
-			<attentionExploringVal>100</attentionExploringVal>
+			<attentionExploringVal>.1</attentionExploringVal>
 			<maxAttentionSpan>20</maxAttentionSpan>
 			<explorationHalfLifeVal>.125</explorationHalfLifeVal>
 			<rlType>actorCritic</rlType>
@@ -61,7 +61,7 @@
 			<xmax>.5</xmax>
 			<ymax>.5</ymax>
 			<maxActionsSinceForward>20</maxActionsSinceForward>
-			<stillExplorationVal>10000</stillExplorationVal>
+			<stillExplorationVal>5</stillExplorationVal>
 		</params>
 	</model>
 	
@@ -187,14 +187,16 @@
 					</params>
 				</logger>
 				<logger>
+					
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
-						<interval>.1</interval>
-						<angleInterval>.78</angleInterval>
+						<interval>.05</interval>
+						<angleInterval>.39</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
 				</logger>
+				
 			</afterEpisodeLoggers>
 			<afterEpisodeTasks>
 				
@@ -228,7 +230,7 @@
 				</plotter>
 				<plotter>
 					<name>edu.usf.experiment.plot.ValuePlotter</name>
-				</plotter>
+				</plotter> 
 			</afterEpisodePlotters>
 		</episodes>
 		
@@ -306,8 +308,8 @@
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
-						<interval>.1</interval>
-						<angleInterval>.78</angleInterval>
+						<interval>.05</interval>
+						<angleInterval>.39</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
 				</logger>
@@ -319,7 +321,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>2000</max>
+						<max>5000</max>
 					</params>
 				</condition>
 				<condition>

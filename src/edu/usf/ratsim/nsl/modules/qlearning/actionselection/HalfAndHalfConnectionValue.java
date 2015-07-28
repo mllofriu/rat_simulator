@@ -31,13 +31,16 @@ public class HalfAndHalfConnectionValue extends Module implements Voter {
 			float valueVal = rlValue.get(state, numActions);
 			float stateVal = data[state];
 			sumValue += stateVal;
-			if (valueVal != 0)
+			if (valueVal != 0 )
 				value[0] = value[0] + stateVal
 						* valueVal;
 		}
+		
+		if (Math.abs(value[0]) > 3)
+			value[0] = 3 * Math.signum(value[0]);
 
-		if (sumValue != 0)
-			value[0] = value[0] / sumValue;
+//		if (sumValue != 0)
+//			value[0] = value[0] / sumValue;
 
 		if (Debug.printHalfAndHalf) {
 			System.out.println("RL Half and Half value: " + value[0]);
