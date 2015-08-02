@@ -37,18 +37,21 @@ public class HalfAndHalfConnectionVotes extends Module implements Voter {
 				sumActionSel += stateVal;
 				for (int action = 0; action < numActions; action++) {
 					float actionVal = value.get(state, action);
-					if (actionVal != 0)
+					if (actionVal != 0){
 						// action selection contributes only in smaller states
 						// (smaller scales
-						actionVote[action] = actionVote[action] + stateVal
+						actionVote[action] = actionVote[action] + 1/1000f * stateVal
 								* actionVal;
+//						System.out.println(actionVote[action]);
+					}
+					
 				}
 			}
 		}
 
 		for (int action = 0; action < numActions; action++)
-			if (Math.abs(actionVote[action]) > 3)
-				actionVote[action] = 3 * Math.signum(actionVote[action]);
+			if (Math.abs(actionVote[action]) > 1)
+				actionVote[action] = 1 * Math.signum(actionVote[action]);
 		
 		// Normalize
 //		if (sumActionSel != 0)

@@ -2,7 +2,7 @@ package edu.usf.ratsim.nsl.modules;
 
 public class ArtificialHDCell {
 
-	private static final double RADIUS_THRS = 0.2;
+	private static final double RADIUS_THRS = .2;
 	
 	private float preferredOrientation;
 	private float width;

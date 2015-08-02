@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import edu.usf.experiment.utils.Debug;
 import edu.usf.ratsim.micronsl.Float1dPort;
 import edu.usf.ratsim.micronsl.Float1dPortSum;
 import edu.usf.ratsim.micronsl.Module;
@@ -23,6 +24,19 @@ public class JointStatesManySum extends Module {
 
 	public void run() {
 		// Do nothing, the port does it all
+		if (Debug.printValues && (getName().equals("Votes") || getName().equals("Joint value estimation"))){
+			System.out.println(getName());
+			for (Port p : getInPorts()){
+				Float1dPort fp = ((Float1dPort)p);
+				for (int i =0; i < fp.getSize(); i++)
+					System.out.print(fp.get(i) + "\t");
+				if (getName().equals("Votes"))
+				System.out.println();
+			}
+			System.out.println();
+				
+		}
+			
 	}
 
 	@Override

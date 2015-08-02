@@ -1,15 +1,9 @@
 package edu.usf.ratsim.nsl.modules.taxic;
 
-import java.util.List;
-
 import javax.vecmath.Point3f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.subject.affordance.Affordance;
-import edu.usf.experiment.subject.affordance.EatAffordance;
-import edu.usf.experiment.subject.affordance.ForwardAffordance;
-import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.Int1dPort;
@@ -59,8 +53,8 @@ public class TaxicValueSchema extends Module {
 		if (estimateValue) {
 			value[0] = 0;
 			for (Feeder f : robot.getVisibleFeeders(goalFeeder.getData())) {
-				if (robot.isFeederClose()
-						&& robot.getClosestFeeder().getId() == f.getId())
+//				if (robot.isFeederClose()
+//						&& robot.getClosestFeeder().getId() == f.getId())
 					value[0] += getFeederValue(f.getPosition());
 			}
 		}

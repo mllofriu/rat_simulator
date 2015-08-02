@@ -34,7 +34,7 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 		this.reward = reward;
 
 		// Votes for action and value
-		votes = new float[subject.getPossibleAffordances().size() + 1];
+		votes = new float[subject.getPossibleAffordances().size()];
 		addOutPort("votes", new Float1dPortArray(this, votes));
 
 		this.subject = subject;
@@ -62,28 +62,34 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 		List<Affordance> affs = robot.checkAffordances(subject
 				.getPossibleAffordances());
 		int voteIndex = 0;
+		int closestFeeder;
+		if (robot.getClosestFeeder() != null)
+			closestFeeder = robot.getClosestFeeder().getId();
+		else
+			closestFeeder = -1;
+		boolean feederToEat = robot.isFeederClose()
+				&& robot.seesFlashingFeeder()
+				&& robot.getFlashingFeeder().getId() == robot
+						.getClosestFeeder().getId()
+				&& robot.getFlashingFeeder().getId() != goalFeeder
+						.get();
 		for (Affordance af : affs) {
 			float value = 0;
 			if (af.isRealizable()) {
 				if (af instanceof TurnAffordance) {
-					if (robot.seesFlashingFeeder()) {
+					if (robot.seesFlashingFeeder() && !feederToEat) {
 						Feeder f = robot.getFlashingFeeder();
 						value += getFeederValue(GeomUtils.simulate(
 								f.getPosition(), af));
 					}
 				} else if (af instanceof ForwardAffordance) {
-					if (robot.seesFlashingFeeder()) {
+					if (robot.seesFlashingFeeder() && !feederToEat) {
 						Feeder f = robot.getFlashingFeeder();
 						value += getFeederValue(GeomUtils.simulate(
 								f.getPosition(), af));
 					}
 				} else if (af instanceof EatAffordance) {
-					if (robot.isFeederClose()
-							&& robot.seesFlashingFeeder()
-							&& robot.getFlashingFeeder().getId() == robot
-									.getClosestFeeder().getId()
-							&& robot.getFlashingFeeder().getId() != goalFeeder
-									.get()) {
+					if (feederToEat) {
 						// value += getFeederValue(robot.getClosestFeeder()
 						// .getPosition());
 						value += reward;

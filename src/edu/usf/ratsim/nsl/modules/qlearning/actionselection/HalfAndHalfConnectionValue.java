@@ -5,23 +5,28 @@ import edu.usf.ratsim.micronsl.Float1dPort;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.FloatMatrixPort;
 import edu.usf.ratsim.micronsl.Module;
+import edu.usf.ratsim.micronsl.Port;
 import edu.usf.ratsim.nsl.modules.Voter;
 
 public class HalfAndHalfConnectionValue extends Module implements Voter {
 
 	public float[] value;
 	private int numActions;
+	private float[] stateData;
 
 	public HalfAndHalfConnectionValue(String name, int numActions) {
 		super(name);
 		value = new float[1];
 		addOutPort("valueEst", new Float1dPortArray(this, value));
 		this.numActions = numActions;
+		stateData = null;
 	}
 
 	public void run() {
 		Float1dPort states = (Float1dPort) getInPort("states");
-		float[] data = states.getData();
+		if (stateData == null)
+			stateData = new float[states.getSize()];
+		states.getData(stateData);
 		FloatMatrixPort rlValue = (FloatMatrixPort) getInPort("value");
 
 		value[0] = 0f;
@@ -29,15 +34,15 @@ public class HalfAndHalfConnectionValue extends Module implements Voter {
 		float sumValue = 0;
 		for (int state = cantStates / 2; state < cantStates; state++) {
 			float valueVal = rlValue.get(state, numActions);
-			float stateVal = data[state];
+			float stateVal = stateData[state];
 			sumValue += stateVal;
 			if (valueVal != 0 )
-				value[0] = value[0] + stateVal
+				value[0] = value[0] + 1/1000f * stateVal
 						* valueVal;
 		}
 		
-		if (Math.abs(value[0]) > 3)
-			value[0] = 3 * Math.signum(value[0]);
+//		if (Math.abs(value[0]) > 1)
+//			value[0] = 1 * Math.signum(value[0]);
 
 //		if (sumValue != 0)
 //			value[0] = value[0] / sumValue;

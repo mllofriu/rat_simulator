@@ -22,6 +22,8 @@ public class ArtificialPlaceCellLayer extends Module {
 
 	private LocalizableRobot robot;
 
+	private float layerEnergy = 200;
+
 	public ArtificialPlaceCellLayer(String name, LocalizableRobot robot,
 			float radius, int numCells, String placeCellType,
 			float xmin, float ymin, float xmax, float ymax, List<Feeder> goals,
@@ -113,6 +115,7 @@ public class ArtificialPlaceCellLayer extends Module {
 			float distanceToClosestWall) {
 		if (active) {
 			int i = 0;
+			float total = 0;
 			for (ArtificialPlaceCell pCell : cells) {
 				float val = pCell.getActivation(pos, distanceToClosestWall);
 //				if (val < 0 || val > 1)
@@ -120,8 +123,16 @@ public class ArtificialPlaceCellLayer extends Module {
 //							.println("Activation less than 0 or greater than 1: "
 //									+ val);
 				activation[i] = val;
+				total += val;
 				i++;
 			}
+			
+			if (Float.isNaN(total))
+				System.out.println("Numeric error");
+			
+			if (total != 0)
+				for (i = 0; i < activation.length; i++)
+					activation[i] = activation[i] / total * layerEnergy ;
 		} else {
 			for (int i = 0; i < activation.length; i++)
 				activation[i] = 0;

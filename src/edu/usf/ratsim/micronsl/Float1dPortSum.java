@@ -34,6 +34,9 @@ public class Float1dPortSum extends Float1dPort {
 		float sum = 0;
 		for (Float1dPort state : states)
 			sum += state.get(index);
+//		if (Math.abs(sum) > 1)
+//			sum = Math.signum(sum);
+		
 		return sum;
 	}
 

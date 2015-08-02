@@ -61,9 +61,15 @@ public class TaxicFoodFinderSchema extends Module {
 		List<Affordance> affs = robot.checkAffordances(subject
 				.getPossibleAffordances());
 		int voteIndex = 0;
+		int closestFeeder;
+		if (robot.getClosestFeeder() != null)
+			closestFeeder = robot.getClosestFeeder().getId();
+		else
+			closestFeeder = -1;
+		
 		boolean feederToEat = robot.isFeederClose()
-				&& robot.getClosestFeeder().getId() != goalFeeder.get(0)
-				&& robot.getClosestFeeder().getId() != goalFeeder.get(1);
+				&& closestFeeder != goalFeeder.get(0)
+				&& closestFeeder != goalFeeder.get(1);
 		for (Affordance af : affs) {
 			float value = 0;
 			if (af.isRealizable()) {
@@ -71,15 +77,19 @@ public class TaxicFoodFinderSchema extends Module {
 					if (!feederToEat)
 						for (Feeder f : robot.getVisibleFeeders(goalFeeder
 								.getData())) {
-							value += getFeederValue(GeomUtils.simulate(
-									f.getPosition(), af));
+							if (f.getId() != goalFeeder.get(0)
+									&& f.getId() != goalFeeder.get(1))
+								value += getFeederValue(GeomUtils.simulate(
+										f.getPosition(), af));
 						}
 				} else if (af instanceof ForwardAffordance) {
 					if (!feederToEat)
 						for (Feeder f : robot.getVisibleFeeders(goalFeeder
 								.getData())) {
-							value += getFeederValue(GeomUtils.simulate(
-									f.getPosition(), af));
+							if (f.getId() != goalFeeder.get(0)
+									&& f.getId() != goalFeeder.get(1))
+								value += getFeederValue(GeomUtils.simulate(
+										f.getPosition(), af));
 						}
 				} else if (af instanceof EatAffordance) {
 					if (feederToEat) {

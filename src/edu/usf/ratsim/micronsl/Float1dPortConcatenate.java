@@ -6,6 +6,7 @@ public class Float1dPortConcatenate extends Float1dPort {
 
 	private List<Float1dPort> states;
 	private int size;
+	private float[] tmpData;
 
 	public Float1dPortConcatenate(Module owner, List<Float1dPort> states) {
 		super(owner);
@@ -13,8 +14,14 @@ public class Float1dPortConcatenate extends Float1dPort {
 		this.states = states;
 
 		size = 0;
-		for (Float1dPort state : states)
+		int maxSize = 0;
+		for (Float1dPort state : states){
 			size += state.getSize();
+			if (state.getSize() > maxSize)
+				maxSize = state.getSize();
+		}
+		tmpData = new float[maxSize];
+		
 	}
 
 	@Override
@@ -36,22 +43,30 @@ public class Float1dPortConcatenate extends Float1dPort {
 
 	@Override
 	public float[] getData() {
-		float [] data = new float[size];
+		float [] res = new float[size];
 		int i = 0;
 		for (Float1dPort state : states){
-			System.arraycopy(state.getData(), 0, data, i, state.getSize());
-			i += state.getSize();
+			int stateSize = state.getSize();
+			for (int j = 0; j < stateSize; j++)
+				tmpData[j] = 0;
+			state.getData(tmpData);
+			System.arraycopy(tmpData, 0, res, i, stateSize);
+			i += stateSize;
 		}
 			
-		return data;
+		return res;
 	}
 
 	@Override
-	public void getData(float[] data) {
+	public void getData(float[] res) {
 		int i = 0;
 		for (Float1dPort state : states){
-			System.arraycopy(state.getData(), 0, data, i, state.getSize());
-			i += state.getSize();
+			int stateSize = state.getSize();
+			for (int j = 0; j < stateSize; j++)
+				tmpData[j] = 0;
+			state.getData(tmpData);
+			System.arraycopy(tmpData, 0, res, i, stateSize);
+			i += stateSize;
 		}
 	}
 

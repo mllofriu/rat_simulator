@@ -31,24 +31,24 @@
 			<leftAngle>0.37</leftAngle>
 			<rightAngle>-0.37</rightAngle>
 			<numPCLayers>2</numPCLayers>
-			<numPCCellsPerLayer>100</numPCCellsPerLayer>
+			<numPCCellsPerLayer>500</numPCCellsPerLayer>
 			<minPCRadius>.05</minPCRadius>
 			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
-			<goalCellProportion>0.5</goalCellProportion>
-			<numHDLayers>4</numHDLayers>
+			<goalCellProportion>0.3</goalCellProportion>
+			<numHDLayers>5</numHDLayers>
 			<numHDCellsPerLayer>16</numHDCellsPerLayer>
-			<minHDRadius>0.39</minHDRadius>
+			<minHDRadius>0.195</minHDRadius>
 			<maxHDRadius>6.28</maxHDRadius>
 			<numIntentions>8</numIntentions>
 			<deterministicActionSelection>true</deterministicActionSelection>
 			<foodReward>1</foodReward>
 			<nonFoodReward>0</nonFoodReward>
-			<discountFactor>.9</discountFactor>
-			<alpha>0.1</alpha>
+			<discountFactor>.90</discountFactor>
+			<alpha>0.5</alpha>
 			<initialValue>0</initialValue>
 			<flashingReward>.5</flashingReward>
-			<nonFlashingReward>.1</nonFlashingReward>
+			<nonFlashingReward>.05</nonFlashingReward>
 			<estimateValue>false</estimateValue>
 			<explorationReward>0</explorationReward>
 			<attentionExploringVal>.1</attentionExploringVal>
@@ -123,6 +123,25 @@
 			</params>
 		</task>
 	</beforeExperimentTasks>
+	
+	<beforeExperimentLoggers>
+		<logger>
+			<name>edu.usf.experiment.log.WallLogger</name>
+			<params>
+			</params>
+		</logger>
+		<logger>
+			<name>edu.usf.ratsim.experiment.log.PCLogger</name>
+		</logger>
+	</beforeExperimentLoggers>
+	<beforeExperimentPlotters>
+		<plotter>
+			<name>edu.usf.experiment.plot.CSVConverter</name>
+		</plotter>
+		<!--<plotter>
+			<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
+		</plotter>-->
+	</beforeExperimentPlotters>
 	
 	<trial>
 		<name>Training</name>
@@ -205,7 +224,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>5000</max>
+						<max>50000</max>
 					</params>
 				</condition>
 				<condition>
@@ -230,7 +249,7 @@
 				</plotter>
 				<plotter>
 					<name>edu.usf.experiment.plot.ValuePlotter</name>
-				</plotter> 
+				</plotter>
 			</afterEpisodePlotters>
 		</episodes>
 		

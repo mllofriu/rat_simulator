@@ -3,6 +3,7 @@ package edu.usf.ratsim.micronsl;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,12 +13,14 @@ public abstract class Module extends DependencyRunnable {
 	private Map<String, Port> outPorts;
 	private String name;
 	private Map<String, Port> inPorts;
+	private List<Port> inPortsList;
 
 	public Module(String name) {
 		super();
 
 		outPorts = new LinkedHashMap<String, Port>();
 		inPorts = new LinkedHashMap<String, Port>();
+		inPortsList = new LinkedList<Port>();
 		this.name = name;
 	}
 
@@ -41,6 +44,7 @@ public abstract class Module extends DependencyRunnable {
 		}
 
 		inPorts.put(name, port);
+		inPortsList.add(port);
 	}
 
 	/**
@@ -85,7 +89,7 @@ public abstract class Module extends DependencyRunnable {
 
 	public abstract boolean usesRandom();
 
-	public Collection<Port> getInPorts() {
-		return inPorts.values();
+	public List<Port> getInPorts() {
+		return inPortsList;
 	}
 }

@@ -262,13 +262,14 @@ public class VirtualRobot extends LocalizableRobot {
 				// realizable = true;
 			} else if (af instanceof ForwardAffordance)
 				realizable = universe.canRobotMove(0, ROBOT_LENGTH);
-			else if (af instanceof EatAffordance)
+			else if (af instanceof EatAffordance){
 				// realizable = hasRobotFoundFood();
 				if (getClosestFeeder() != null)
 					realizable = getClosestFeeder().getPosition().distance(
 							new Point3f()) < closeThrs;
 				else
 					realizable = false;
+			}
 			else
 				throw new RuntimeException("Affordance "
 						+ af.getClass().getName() + " not supported by robot");

@@ -73,6 +73,9 @@ public class Float1dPortMultiply extends Float1dPort {
 		// e.printStackTrace();
 		// }
 
+		if (Float.isNaN(jointActivation))
+			System.out.println("Numeric Error");
+		
 		return jointActivation;
 	}
 
@@ -107,7 +110,13 @@ public class Float1dPortMultiply extends Float1dPort {
 
 			// System.out.println(listNum + " " + index + " " + currVal);
 			// If not the last list
+//			System.out.println(currVal);
+//			System.out.println(states.get(listNum).get(index));
 			currVal *= states.get(listNum).get(index);
+			if (Float.isNaN(currVal)){
+				System.out.println("Numeric Error");
+				System.exit(1);
+			}
 			if (currVal < eps) {
 				int elemsToSkip = 1;
 				for (int s = listNum + 1; s < states.size(); s++)
@@ -123,6 +132,7 @@ public class Float1dPortMultiply extends Float1dPort {
 					}
 				} else {
 					data[element] = currVal;
+					
 					element++;
 				}
 			}

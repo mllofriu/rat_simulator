@@ -44,8 +44,10 @@ public class NoExploration extends Module {
 		List<Affordance> aff = robot.checkAffordances(sub
 				.getPossibleAffordances());
 
-		for (int action = 0; action < aff.size(); action++)
+		for (int action = 0; action < aff.size(); action++){
 			aff.get(action).setValue(votes.get(action));
+			System.out.println("votes for aff " + action + ": " + votes.get(action));
+		}
 
 		// Select best action
 		List<Affordance> sortedAff = new LinkedList<Affordance>(aff);
