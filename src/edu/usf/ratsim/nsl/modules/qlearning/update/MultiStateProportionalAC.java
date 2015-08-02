@@ -8,9 +8,10 @@ import java.io.PrintWriter;
 
 import edu.usf.experiment.subject.Subject;
 import edu.usf.experiment.universe.Universe;
+import edu.usf.experiment.utils.Debug;
+import edu.usf.ratsim.micronsl.Float1dPort;
 import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.FloatMatrixPort;
-import edu.usf.ratsim.micronsl.Float1dPort;
 import edu.usf.ratsim.micronsl.Int1dPort;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.support.Configuration;
@@ -66,11 +67,12 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 					- valueEstBefore.get(0);
 
 			
-			if (delta < -.5)
-				System.out.println("Big neg delta: " + delta);
+			if (Debug.printDelta)
+				if (delta < -.5)
+					System.out.println("Big neg delta: " + delta);
 			
-			
-			System.out.println("Origianal Delta: " + delta);
+			if (Debug.printDelta)
+				System.out.println("Origianal Delta: " + delta);
 
 			delta = Math.min(2, Math.max(delta, -2));
 			

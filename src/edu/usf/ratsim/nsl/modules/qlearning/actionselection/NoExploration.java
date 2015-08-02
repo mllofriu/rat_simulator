@@ -46,7 +46,8 @@ public class NoExploration extends Module {
 
 		for (int action = 0; action < aff.size(); action++){
 			aff.get(action).setValue(votes.get(action));
-			System.out.println("votes for aff " + action + ": " + votes.get(action));
+			if (Debug.printSelectedValues)
+				System.out.println("votes for aff " + action + ": " + votes.get(action));
 		}
 
 		// Select best action
