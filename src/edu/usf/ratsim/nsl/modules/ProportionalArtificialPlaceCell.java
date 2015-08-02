@@ -17,4 +17,9 @@ public class ProportionalArtificialPlaceCell implements ArtificialPlaceCell {
 	public Point3f getCenter() {
 		return center;
 	}
+
+	@Override
+	public float getRadius() {
+		return 0;
+	}
 }

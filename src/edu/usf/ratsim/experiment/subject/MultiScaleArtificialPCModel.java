@@ -15,6 +15,7 @@ import edu.usf.ratsim.micronsl.Model;
 import edu.usf.ratsim.micronsl.Module;
 import edu.usf.ratsim.micronsl.Port;
 import edu.usf.ratsim.nsl.modules.ArtificialHDCellLayer;
+import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCellLayer;
 import edu.usf.ratsim.nsl.modules.AttentionalExplorer;
 import edu.usf.ratsim.nsl.modules.ClosestFeeder;
@@ -293,7 +294,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		for (ArtificialHDCellLayer hd : beforeHDs)
 			hd.addPreReq(actionPerformer);
 		intention.addPreReq(actionPerformer);
-		
+
 		Port takenActionPort = actionPerformer.getOutPort("takenAction");
 		// Add the taken action ports to some previous exploration modules
 		attExpl.addInPort("takenAction", takenActionPort, true);
@@ -320,13 +321,15 @@ public class MultiScaleArtificialPCModel extends Model {
 		addModule(flashTaxVal);
 
 		if (voteType.equals("halfAndHalfConnection"))
-			rlValue = new HalfAndHalfConnectionValue("RL value estimation", numActions);
+			rlValue = new HalfAndHalfConnectionValue("RL value estimation",
+					numActions);
 		else
 			throw new RuntimeException("Vote mechanism not implemented");
 		rlValue.addInPort("states",
 				jointPCHDIntentionState.getOutPort("jointState"));
 		rlValue.addInPort("value", valuePort);
-		rlValue.addInPort("takenAction", takenActionPort); // just for dependency
+		rlValue.addInPort("takenAction", takenActionPort); // just for
+															// dependency
 		valueEstimationPorts.add(rlValue.getOutPort("valueEst"));
 		addModule(rlValue);
 
@@ -542,7 +545,8 @@ public class MultiScaleArtificialPCModel extends Model {
 			// TODO: add feeder cells to policies
 			pcl.simRun(point, false, distToWall);
 
-		float maxVal = 0f;
+		float avgVal = 0f;
+		int numAngles = 0;
 		for (float angle = 0; angle <= 2 * Math.PI; angle += angleInterval) {
 			for (ArtificialHDCellLayer hdcl : beforeHDs)
 				hdcl.simRun(angle);
@@ -557,11 +561,14 @@ public class MultiScaleArtificialPCModel extends Model {
 			float[] votes = ((Voter) rlValue).getVotes();
 			float val = votes[0];
 
-			if (Math.abs(val) > Math.abs(maxVal)) {
-//			if (val > maxVal) {
-				maxVal = val;
-			}
+			// if (Math.abs(val) > Math.abs(avgVal)) {
+			// // if (val > maxVal) {
+			// avgVal = val;
+			// }
+			avgVal += votes[0];
+			numAngles++;
 		}
+		avgVal /= numAngles;
 
 		for (ArtificialPlaceCellLayer pcl : beforePcls)
 			// TODO: add feeder cells to policies
@@ -570,6 +577,15 @@ public class MultiScaleArtificialPCModel extends Model {
 		for (ArtificialHDCellLayer hdcl : beforeHDs)
 			hdcl.clear();
 
-		return maxVal;
+		return avgVal;
+	}
+
+	public List<ArtificialPlaceCell> getPlaceCells() {
+		List <ArtificialPlaceCell> res = new LinkedList<ArtificialPlaceCell>();
+		for (ArtificialPlaceCellLayer pcl : beforePcls){
+			res.addAll(pcl.getCells());
+		}
+	
+		return res;
 	}
 }

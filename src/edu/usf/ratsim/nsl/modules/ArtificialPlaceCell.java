@@ -8,4 +8,6 @@ public interface ArtificialPlaceCell {
 
 	public Point3f getCenter();
 
+	public float getRadius();
+
 }

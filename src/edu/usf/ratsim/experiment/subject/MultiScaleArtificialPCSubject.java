@@ -13,6 +13,7 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
+import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
 
 public class MultiScaleArtificialPCSubject extends Subject {
 
@@ -103,6 +104,10 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	@Override
 	public float getValue(Point3f point, int intention, float angleInterval, float distToWall) {
 		return model.getValue(point, intention, angleInterval, distToWall);
+	}
+
+	public List<ArtificialPlaceCell> getPlaceCells() {
+		return model.getPlaceCells();
 	}
 	
 

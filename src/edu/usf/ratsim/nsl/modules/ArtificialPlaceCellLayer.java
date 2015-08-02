@@ -115,10 +115,10 @@ public class ArtificialPlaceCellLayer extends Module {
 			int i = 0;
 			for (ArtificialPlaceCell pCell : cells) {
 				float val = pCell.getActivation(pos, distanceToClosestWall);
-				if (val < 0 || val > 1)
-					System.err
-							.println("Activation less than 0 or greater than 1: "
-									+ val);
+//				if (val < 0 || val > 1)
+//					System.err
+//							.println("Activation less than 0 or greater than 1: "
+//									+ val);
 				activation[i] = val;
 				i++;
 			}
