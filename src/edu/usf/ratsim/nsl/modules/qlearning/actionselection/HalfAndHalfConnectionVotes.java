@@ -11,12 +11,14 @@ public class HalfAndHalfConnectionVotes extends Module implements Voter {
 
 	public float[] actionVote;
 	private int numActions;
+	private float cellContribution;
 
-	public HalfAndHalfConnectionVotes(String name, int numVotes) {
+	public HalfAndHalfConnectionVotes(String name, int numVotes, float cellContribution) {
 		super(name);
 		actionVote = new float[numVotes];
 		addOutPort("votes", new Float1dPortArray(this, actionVote));
 		this.numActions = numVotes;
+		this.cellContribution = cellContribution;
 	}
 
 	public void run() {
@@ -40,7 +42,7 @@ public class HalfAndHalfConnectionVotes extends Module implements Voter {
 					if (actionVal != 0){
 						// action selection contributes only in smaller states
 						// (smaller scales
-						actionVote[action] = actionVote[action] + 1/1000f * stateVal
+						actionVote[action] = actionVote[action] + cellContribution * stateVal
 								* actionVal;
 //						System.out.println(actionVote[action]);
 					}

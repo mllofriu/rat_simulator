@@ -48,8 +48,9 @@
 			<alpha>0.5</alpha>
 			<initialValue>0</initialValue>
 			<flashingReward>.5</flashingReward>
-			<nonFlashingReward>.05</nonFlashingReward>
+			<nonFlashingReward>.1</nonFlashingReward>
 			<estimateValue>false</estimateValue>
+			<cellContribution>0.001</cellContribution>
 			<explorationReward>0</explorationReward>
 			<attentionExploringVal>.1</attentionExploringVal>
 			<maxAttentionSpan>20</maxAttentionSpan>

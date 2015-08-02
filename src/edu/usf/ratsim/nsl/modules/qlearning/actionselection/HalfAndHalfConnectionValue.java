@@ -13,12 +13,14 @@ public class HalfAndHalfConnectionValue extends Module implements Voter {
 	public float[] value;
 	private int numActions;
 	private float[] stateData;
+	private float cellContribution;
 
-	public HalfAndHalfConnectionValue(String name, int numActions) {
+	public HalfAndHalfConnectionValue(String name, int numActions, float cellContribution) {
 		super(name);
 		value = new float[1];
 		addOutPort("valueEst", new Float1dPortArray(this, value));
 		this.numActions = numActions;
+		this.cellContribution = cellContribution;
 		stateData = null;
 	}
 
@@ -37,7 +39,7 @@ public class HalfAndHalfConnectionValue extends Module implements Voter {
 			float stateVal = stateData[state];
 			sumValue += stateVal;
 			if (valueVal != 0 )
-				value[0] = value[0] + 1/1000f * stateVal
+				value[0] = value[0] + cellContribution * stateVal
 						* valueVal;
 		}
 		

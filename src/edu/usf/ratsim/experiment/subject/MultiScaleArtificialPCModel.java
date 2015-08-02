@@ -95,6 +95,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		float flashingReward = params.getChildFloat("flashingReward");
 		float nonFlashingReward = params.getChildFloat("nonFlashingReward");
 		boolean estimateValue = params.getChildBoolean("estimateValue");
+		float cellContribution = params.getChildFloat("cellContribution");
 		explorationReward = params.getChildFloat("explorationReward");
 		// float wallFollowingVal = params.getChildFloat("wallFollowingVal");
 		float attentionExploringVal = params
@@ -204,6 +205,8 @@ public class MultiScaleArtificialPCModel extends Model {
 		int numStates = ((Float1dPort) jointPCHDIntentionState
 				.getOutPort("jointState")).getSize();
 		float[][] value = new float[numStates][numActions + 1];
+//		for (int i = 0; i < numStates; i++)
+//			value[i][numActions] = .5f;
 		FloatMatrixPort valuePort = new FloatMatrixPort((Module) null, value);
 
 		List<Port> votesPorts = new LinkedList<Port>();
@@ -218,7 +221,7 @@ public class MultiScaleArtificialPCModel extends Model {
 					(Float1dPortArray) jointPCHDIntentionState
 							.getOutPort("jointState"), valuePort, numActions);
 		else if (voteType.equals("halfAndHalfConnection"))
-			rlVotes = new HalfAndHalfConnectionVotes("RL votes", numActions);
+			rlVotes = new HalfAndHalfConnectionVotes("RL votes", numActions, cellContribution);
 		else
 			throw new RuntimeException("Vote mechanism not implemented");
 		// RL votes are based on previous state
@@ -322,7 +325,7 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		if (voteType.equals("halfAndHalfConnection"))
 			rlValue = new HalfAndHalfConnectionValue("RL value estimation",
-					numActions);
+					numActions, cellContribution);
 		else
 			throw new RuntimeException("Vote mechanism not implemented");
 		rlValue.addInPort("states",
