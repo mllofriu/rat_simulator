@@ -12,6 +12,7 @@ public class HalfAndHalfConnectionVotes extends Module implements Voter {
 	public float[] actionVote;
 	private int numActions;
 	private float cellContribution;
+	private float[] stateData;
 
 	public HalfAndHalfConnectionVotes(String name, int numVotes, float cellContribution) {
 		super(name);
@@ -19,11 +20,14 @@ public class HalfAndHalfConnectionVotes extends Module implements Voter {
 		addOutPort("votes", new Float1dPortArray(this, actionVote));
 		this.numActions = numVotes;
 		this.cellContribution = cellContribution;
+		stateData = null;
 	}
 
 	public void run() {
 		Float1dPort states = (Float1dPort) getInPort("states");
-		float[] data = states.getData();
+		if (stateData == null)
+			stateData = new float[states.getSize()];
+		states.getData(stateData);
 		FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
 
 		for (int action = 0; action < numActions; action++)
@@ -33,7 +37,7 @@ public class HalfAndHalfConnectionVotes extends Module implements Voter {
 		int cantStates = states.getSize();
 		// System.out.println(cantStates);
 		for (int state = 0; state < cantStates / 2; state++) {
-			float stateVal = data[state];
+			float stateVal = stateData[state];
 			// Update gradient every some steps
 			if (stateVal != 0) {
 				sumActionSel += stateVal;

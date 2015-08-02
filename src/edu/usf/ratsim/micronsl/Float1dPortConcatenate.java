@@ -42,7 +42,7 @@ public class Float1dPortConcatenate extends Float1dPort {
 	}
 
 	@Override
-	public float[] getData() {
+	public synchronized float[] getData() {
 		float [] res = new float[size];
 		int i = 0;
 		for (Float1dPort state : states){
@@ -58,7 +58,7 @@ public class Float1dPortConcatenate extends Float1dPort {
 	}
 
 	@Override
-	public void getData(float[] res) {
+	public synchronized void getData(float[] res) {
 		int i = 0;
 		for (Float1dPort state : states){
 			int stateSize = state.getSize();
