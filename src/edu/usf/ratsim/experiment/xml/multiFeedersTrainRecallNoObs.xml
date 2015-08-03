@@ -38,18 +38,18 @@
 			<goalCellProportion>0.5</goalCellProportion>
 			<numHDLayers>1</numHDLayers>
 			<numHDCellsPerLayer>256</numHDCellsPerLayer>
-			<minHDRadius>.628</minHDRadius>
+			<minHDRadius>.314</minHDRadius>
 			<maxHDRadius>6.28</maxHDRadius>
 			<numIntentions>8</numIntentions>
 			<deterministicActionSelection>true</deterministicActionSelection>
 			<foodReward>10000</foodReward>
 			<nonFoodReward>0</nonFoodReward>
-			<discountFactor>.99</discountFactor>
+			<discountFactor>.95</discountFactor>
 			<alpha>.9</alpha>
 			<initialValue>0</initialValue>
 			<flashingReward>5000</flashingReward>
 			<nonFlashingReward>1000</nonFlashingReward>
-			<estimateValue>false</estimateValue>
+			<estimateValue>true</estimateValue>
 			<cellContribution>1</cellContribution>
 			<explorationReward>0</explorationReward>
 			<attentionExploringVal>100</attentionExploringVal>
