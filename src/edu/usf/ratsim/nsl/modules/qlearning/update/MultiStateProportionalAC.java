@@ -63,7 +63,9 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 			// Gets the active state as computed at the beginning of the cycle
 			int a = takenAction.get();
 
-			float delta = reward.get() + lambda * valueEstAfter.get(0)
+//			float delta = reward.get() + lambda * valueEstAfter.get(0)
+//					- valueEstBefore.get(0);
+			float delta = reward.get() + valueEstAfter.get(0)
 					- valueEstBefore.get(0);
 
 			if (Debug.printDelta)
@@ -73,8 +75,8 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 			if (Debug.printDelta)
 				System.out.println("Origianal Delta: " + delta);
 
-			// if (delta < 0)
-//			delta *= 10;
+//			if (delta < 0)
+//				delta *= 2;
 
 //			delta = Math.min(2, Math.max(delta, -2));
 
