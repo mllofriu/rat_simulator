@@ -20,7 +20,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 	private static final String DUMP_FILENAME = "policy.txt";
 
-	private static final float EPS = .00f;
+	private static final float EPS = .2f;
 
 	private static PrintWriter writer;
 
@@ -63,23 +63,25 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 			// Gets the active state as computed at the beginning of the cycle
 			int a = takenAction.get();
 
-			float delta = reward.get() + valueEstAfter.get(0)
+			float delta = reward.get() + lambda * valueEstAfter.get(0)
 					- valueEstBefore.get(0);
 
-			
 			if (Debug.printDelta)
 				if (delta < -.5)
 					System.out.println("Big neg delta: " + delta);
-			
+
 			if (Debug.printDelta)
 				System.out.println("Origianal Delta: " + delta);
 
-			delta = Math.min(2, Math.max(delta, -2));
-			
+			// if (delta < 0)
+//			delta *= 10;
+
+//			delta = Math.min(2, Math.max(delta, -2));
+
 			// Do the update once for each state
 			for (int stateBefore = 0; stateBefore < statesBefore.getSize(); stateBefore++)
 				// Dont bother if the activation is to small
-				if (statesBefore.get(stateBefore) > EPS && a != -1)
+				if (statesBefore.get(stateBefore) > 0 && a != -1)
 					updateLastAction(stateBefore, a, reward, statesBefore,
 							statesAfter, valueEstBefore, valueEstAfter, value,
 							delta);
@@ -97,15 +99,18 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		// if (delta < 0)
 		// delta *= 2;
 
-		// Update action
+		// Update action only if hasnt gone below inferior thrs
+		// if (value.get(sBefore, numActions) > -1) {
+
 		float actionVal = value.get(sBefore, a);
-//		float newActionValue = statesBefore.get(sBefore)
-//				* (actionVal + alpha * (delta - actionVal))
-//				+ (20 - statesBefore.get(sBefore)) * actionVal;
-		float newActionValue = actionVal + alpha * statesBefore.get(sBefore) * delta;
-//		System.out.println(newActionValue);
-		
-		if (Float.isInfinite(newActionValue) || Float.isNaN(newActionValue)){
+		float newActionValue = statesBefore.get(sBefore)
+				* (actionVal + alpha * (delta - actionVal))
+				+ (1 - statesBefore.get(sBefore)) * actionVal;
+		// float newActionValue = actionVal + alpha * statesBefore.get(sBefore)
+		// * delta;
+		// System.out.println(newActionValue);
+
+		if (Float.isInfinite(newActionValue) || Float.isNaN(newActionValue)) {
 			System.out.println("Numeric Error");
 			System.exit(1);
 		}
@@ -113,15 +118,21 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 		// Update value
 		float currValue = value.get(sBefore, numActions);
-//		float newValue = statesBefore.get(sBefore)
-//				* (currValue + alpha * (delta - currValue))
-//				+ (20 - statesBefore.get(sBefore)) * currValue;
-		float newValue = currValue + alpha * statesBefore.get(sBefore) * delta;
-		if (Float.isInfinite(newValue) || Float.isNaN(newValue)){
+		float newValue = statesBefore.get(sBefore)
+				* (currValue + alpha * (delta - currValue))
+				+ (1 - statesBefore.get(sBefore)) * currValue;
+		// float newValue = currValue + alpha * statesBefore.get(sBefore)
+		// * delta;
+		if (Float.isInfinite(newValue) || Float.isNaN(newValue)) {
 			System.out.println("Numeric Error");
 			System.exit(1);
 		}
 		value.set(sBefore, numActions, newValue);
+		// } else {
+		// // value.set(sBefore, numActions, -3);
+		// if (Debug.printSilentSynapses)
+		// System.out.println("Not updating because synapse is silent");
+		// }
 	}
 
 	/**

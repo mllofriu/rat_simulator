@@ -4,7 +4,7 @@ import javax.vecmath.Point3f;
 
 public class ExponentialArtificialPlaceCell implements ArtificialPlaceCell {
 
-	private static final double RADIUS_THRS = 2;
+	private static final double RADIUS_THRS = .2;
 	private Point3f center;
 	private float width;
 	private float radius;
@@ -20,7 +20,7 @@ public class ExponentialArtificialPlaceCell implements ArtificialPlaceCell {
 		if (center.distance(currLocation) > radius)
 			return 0;
 		else
-			return 20 * (float) Math.exp(-Math.pow(center.distance(currLocation), 2)
+			return (float) Math.exp(-Math.pow(center.distance(currLocation), 2)
 					/ width);
 	}
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-	<seed>234234656</seed>
+	<seed>32423</seed>
 	
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
@@ -35,24 +35,24 @@
 			<minPCRadius>.05</minPCRadius>
 			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
-			<goalCellProportion>0.3</goalCellProportion>
-			<numHDLayers>5</numHDLayers>
-			<numHDCellsPerLayer>16</numHDCellsPerLayer>
-			<minHDRadius>0.195</minHDRadius>
+			<goalCellProportion>0.5</goalCellProportion>
+			<numHDLayers>1</numHDLayers>
+			<numHDCellsPerLayer>256</numHDCellsPerLayer>
+			<minHDRadius>.628</minHDRadius>
 			<maxHDRadius>6.28</maxHDRadius>
 			<numIntentions>8</numIntentions>
 			<deterministicActionSelection>true</deterministicActionSelection>
-			<foodReward>1</foodReward>
+			<foodReward>10000</foodReward>
 			<nonFoodReward>0</nonFoodReward>
-			<discountFactor>.90</discountFactor>
-			<alpha>0.5</alpha>
+			<discountFactor>.99</discountFactor>
+			<alpha>.9</alpha>
 			<initialValue>0</initialValue>
-			<flashingReward>.5</flashingReward>
-			<nonFlashingReward>.1</nonFlashingReward>
+			<flashingReward>5000</flashingReward>
+			<nonFlashingReward>1000</nonFlashingReward>
 			<estimateValue>false</estimateValue>
-			<cellContribution>0.001</cellContribution>
+			<cellContribution>1</cellContribution>
 			<explorationReward>0</explorationReward>
-			<attentionExploringVal>.1</attentionExploringVal>
+			<attentionExploringVal>100</attentionExploringVal>
 			<maxAttentionSpan>20</maxAttentionSpan>
 			<explorationHalfLifeVal>.125</explorationHalfLifeVal>
 			<rlType>actorCritic</rlType>
@@ -62,7 +62,7 @@
 			<xmax>.5</xmax>
 			<ymax>.5</ymax>
 			<maxActionsSinceForward>20</maxActionsSinceForward>
-			<stillExplorationVal>5</stillExplorationVal>
+			<stillExplorationVal>10000</stillExplorationVal>
 		</params>
 	</model>
 	
@@ -211,8 +211,8 @@
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
-						<interval>.05</interval>
-						<angleInterval>.39</angleInterval>
+						<interval>.1</interval>
+						<angleInterval>.78</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
 				</logger>
@@ -328,8 +328,8 @@
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
-						<interval>.05</interval>
-						<angleInterval>.39</angleInterval>
+						<interval>.1</interval>
+						<angleInterval>.78</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
 				</logger>

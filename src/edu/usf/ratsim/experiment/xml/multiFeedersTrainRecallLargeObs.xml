@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="us-ascii"?>
-<!-- Just a test of new format -->
 
 <experiment>
-	<seed>3234232343</seed>
+	<seed>234234656</seed>
 	
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
@@ -17,7 +16,7 @@
 		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
 		<params>
 			<noise>.2</noise>
-			<translationRotationNoise>.37</translationRotationNoise>
+			<translationRotationNoise>.195</translationRotationNoise>
 			<lookaheadSteps>5</lookaheadSteps>
 			<halfFieldOfView>1.83</halfFieldOfView>
 			<visionDist>10</visionDist>
@@ -32,29 +31,30 @@
 			<leftAngle>0.37</leftAngle>
 			<rightAngle>-0.37</rightAngle>
 			<numPCLayers>2</numPCLayers>
-			<numPCCellsPerLayer>1000</numPCCellsPerLayer>
+			<numPCCellsPerLayer>500</numPCCellsPerLayer>
 			<minPCRadius>.05</minPCRadius>
 			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
-			<goalCellProportion>0.5</goalCellProportion>
-			<numHDLayers>4</numHDLayers>
+			<goalCellProportion>0.3</goalCellProportion>
+			<numHDLayers>5</numHDLayers>
 			<numHDCellsPerLayer>16</numHDCellsPerLayer>
-			<minHDRadius>0.39</minHDRadius>
-			<maxHDRadius>3.14</maxHDRadius>
+			<minHDRadius>0.195</minHDRadius>
+			<maxHDRadius>6.28</maxHDRadius>
 			<numIntentions>8</numIntentions>
 			<deterministicActionSelection>true</deterministicActionSelection>
-			<foodReward>10000</foodReward>
+			<foodReward>1</foodReward>
 			<nonFoodReward>0</nonFoodReward>
-			<discountFactor>.9</discountFactor>
-			<alpha>0.9</alpha>
+			<discountFactor>.90</discountFactor>
+			<alpha>0.5</alpha>
 			<initialValue>0</initialValue>
-			<flashingReward>5000</flashingReward>
-			<nonFlashingReward>1000</nonFlashingReward>
+			<flashingReward>.5</flashingReward>
+			<nonFlashingReward>.1</nonFlashingReward>
 			<estimateValue>false</estimateValue>
+			<cellContribution>0.001</cellContribution>
 			<explorationReward>0</explorationReward>
-			<attentionExploringVal>100</attentionExploringVal>
+			<attentionExploringVal>.1</attentionExploringVal>
 			<maxAttentionSpan>20</maxAttentionSpan>
-			<explorationHalfLifeVal>1</explorationHalfLifeVal>
+			<explorationHalfLifeVal>.125</explorationHalfLifeVal>
 			<rlType>actorCritic</rlType>
 			<voteType>halfAndHalfConnection</voteType>
 			<xmin>-.5</xmin>
@@ -62,7 +62,7 @@
 			<xmax>.5</xmax>
 			<ymax>.5</ymax>
 			<maxActionsSinceForward>20</maxActionsSinceForward>
-			<stillExplorationVal>10000</stillExplorationVal>
+			<stillExplorationVal>5</stillExplorationVal>
 		</params>
 	</model>
 	
@@ -124,6 +124,25 @@
 			</params>
 		</task>
 	</beforeExperimentTasks>
+	
+	<beforeExperimentLoggers>
+		<logger>
+			<name>edu.usf.experiment.log.WallLogger</name>
+			<params>
+			</params>
+		</logger>
+		<logger>
+			<name>edu.usf.ratsim.experiment.log.PCLogger</name>
+		</logger>
+	</beforeExperimentLoggers>
+	<beforeExperimentPlotters>
+		<plotter>
+			<name>edu.usf.experiment.plot.CSVConverter</name>
+		</plotter>
+		<!--<plotter>
+			<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
+		</plotter>-->
+	</beforeExperimentPlotters>
 	
 	<trial>
 		<name>Training</name>
@@ -187,15 +206,17 @@
 					<params>
 					</params>
 				</logger>
-				<!--<logger>
+				<logger>
+					
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
 						<interval>.05</interval>
-						<angleInterval>.37</angleInterval>
+						<angleInterval>.39</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
-				</logger> -->
+				</logger>
+				
 			</afterEpisodeLoggers>
 			<afterEpisodeTasks>
 				
@@ -204,7 +225,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>5000</max>
+						<max>50000</max>
 					</params>
 				</condition>
 				<condition>
@@ -227,9 +248,9 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
-				<!-- <plotter>
+				<plotter>
 					<name>edu.usf.experiment.plot.ValuePlotter</name>
-				</plotter> -->
+				</plotter>
 			</afterEpisodePlotters>
 		</episodes>
 		
@@ -308,7 +329,7 @@
 					<params>
 						<circle>false</circle>
 						<interval>.05</interval>
-						<angleInterval>.37</angleInterval>
+						<angleInterval>.39</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
 				</logger>
@@ -357,6 +378,8 @@
 		<afterTrialPlotters>
 		</afterTrialPlotters>
 	</trial>
+	
+	
 	
 	<trial>
 		<name>Recall</name>
@@ -463,8 +486,8 @@
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
-						<interval>.05</interval>
-						<angleInterval>.37</angleInterval>
+						<interval>.1</interval>
+						<angleInterval>.78</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
 				</logger>
@@ -481,7 +504,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodTimeoutStopCond</name>
 					<params>
-						<timeout>600</timeout>
+						<timeout>150</timeout>
 						<n>15</n>
 					</params>
 				</condition>
@@ -524,3 +547,6 @@
 		<!-- <plotter> <name>edu.usf.experiment.plot.PolicyPlotter</name> </plotter> -->
 	</afterExperimentPlotters>
 </experiment>
+		
+
+

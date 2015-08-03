@@ -38,6 +38,7 @@ public class HalfAndHalfConnectionValue extends Module implements Voter {
 			float valueVal = rlValue.get(state, numActions);
 			float stateVal = stateData[state];
 			sumValue += stateVal;
+//			sumValue += stateVal * valueVal;
 			if (valueVal != 0 )
 				value[0] = value[0] + cellContribution * stateVal
 						* valueVal;
@@ -46,8 +47,8 @@ public class HalfAndHalfConnectionValue extends Module implements Voter {
 //		if (Math.abs(value[0]) > 1)
 //			value[0] = 1 * Math.signum(value[0]);
 
-//		if (sumValue != 0)
-//			value[0] = value[0] / sumValue;
+		if (sumValue != 0)
+			value[0] = value[0] / sumValue;
 
 		if (Debug.printHalfAndHalf) {
 			System.out.println("RL Half and Half value: " + value[0]);

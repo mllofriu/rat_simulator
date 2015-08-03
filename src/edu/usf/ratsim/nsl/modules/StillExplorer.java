@@ -82,8 +82,8 @@ public class StillExplorer extends Module {
 				if (containForward(affs) && r.nextBoolean())
 					pickedAffordance = getForward(affs);
 				pickedAffordance = affs.get(r.nextInt(affs.size()));
-			} while (!(pickedAffordance instanceof EatAffordance)
-					&& !pickedAffordance.isRealizable());
+			} while ((pickedAffordance instanceof EatAffordance)
+					|| !pickedAffordance.isRealizable());
 
 			votes[affs.indexOf(pickedAffordance)] = stillExploringVal;
 

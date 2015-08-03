@@ -22,7 +22,7 @@ public class ArtificialPlaceCellLayer extends Module {
 
 	private LocalizableRobot robot;
 
-	private float layerEnergy = 200;
+	private float layerEnergy = 1;
 
 	public ArtificialPlaceCellLayer(String name, LocalizableRobot robot,
 			float radius, int numCells, String placeCellType,
@@ -130,9 +130,9 @@ public class ArtificialPlaceCellLayer extends Module {
 			if (Float.isNaN(total))
 				System.out.println("Numeric error");
 			
-			if (total != 0)
-				for (i = 0; i < activation.length; i++)
-					activation[i] = activation[i] / total * layerEnergy ;
+//			if (total != 0)
+//				for (i = 0; i < activation.length; i++)
+//					activation[i] = activation[i] / total * layerEnergy ;
 		} else {
 			for (int i = 0; i < activation.length; i++)
 				activation[i] = 0;
