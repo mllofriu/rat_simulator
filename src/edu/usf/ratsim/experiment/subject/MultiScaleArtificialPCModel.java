@@ -303,14 +303,14 @@ public class MultiScaleArtificialPCModel extends Model {
 		attExpl.addInPort("takenAction", takenActionPort, true);
 		stillExpl.addInPort("takenAction", takenActionPort, true);
 
-		List<Port> valueEstimationPorts = new LinkedList<Port>();
+		List<Port> taxicValueEstimationPorts = new LinkedList<Port>();
 		TaxicValueSchema taxVal = new TaxicValueSchema("Taxic Value Estimator",
 				subject, lRobot, nonFlashingReward, discountFactor,
 				estimateValue);
 		taxVal.addInPort("goalFeeder",
 				lastTriedToEatGoalDecider.getOutPort("goalFeeder"));
 		taxVal.addInPort("takenAction", takenActionPort); // just for dependency
-		valueEstimationPorts.add(taxVal.getOutPort("value"));
+		taxicValueEstimationPorts.add(taxVal.getOutPort("value"));
 		addModule(taxVal);
 
 		FlashingTaxicValueSchema flashTaxVal = new FlashingTaxicValueSchema(
@@ -320,8 +320,19 @@ public class MultiScaleArtificialPCModel extends Model {
 				lastAteGoalDecider.getOutPort("goalFeeder"));
 		flashTaxVal.addInPort("takenAction", takenActionPort); // just for
 																// dependency
-		valueEstimationPorts.add(flashTaxVal.getOutPort("value"));
+		taxicValueEstimationPorts.add(flashTaxVal.getOutPort("value"));
 		addModule(flashTaxVal);
+		
+		JointStatesManySum sumTaxicValue = new JointStatesManySum(
+				"Taxic joint value estimation");
+		sumTaxicValue.addInPorts(taxicValueEstimationPorts);
+		addModule(sumTaxicValue);
+		
+		CopyStateModule taxicValueCopy = new CopyStateModule(
+				"Taxic Value Estimation Before");
+		taxicValueCopy.addInPort("toCopy",
+				(Float1dPort) sumTaxicValue.getOutPort("jointState"), true);
+		addModule(taxicValueCopy);
 
 		if (voteType.equals("halfAndHalfConnection"))
 			rlValue = new HalfAndHalfConnectionValue("RL value estimation",
@@ -333,19 +344,13 @@ public class MultiScaleArtificialPCModel extends Model {
 		rlValue.addInPort("value", valuePort);
 		rlValue.addInPort("takenAction", takenActionPort); // just for
 															// dependency
-		valueEstimationPorts.add(rlValue.getOutPort("valueEst"));
 		addModule(rlValue);
 
-		JointStatesManySum sumValue = new JointStatesManySum(
-				"Joint value estimation");
-		sumValue.addInPorts(valueEstimationPorts);
-		addModule(sumValue);
-
-		CopyStateModule valueCopy = new CopyStateModule(
-				"Value Estimation Before");
-		valueCopy.addInPort("toCopy",
-				(Float1dPort) sumValue.getOutPort("jointState"), true);
-		addModule(valueCopy);
+		CopyStateModule rlValueCopy = new CopyStateModule(
+				"RL Value Estimation Before");
+		rlValueCopy.addInPort("toCopy",
+				(Float1dPort) rlValue.getOutPort("valueEst"), true);
+		addModule(rlValueCopy);
 
 		SubjectAte subAte = new SubjectAte("Subject Ate", subject);
 		subAte.addInPort("takenAction", takenActionPort); // just for dependency
@@ -410,10 +415,14 @@ public class MultiScaleArtificialPCModel extends Model {
 			mspac.addInPort("statesAfter",
 					jointPCHDIntentionState.getOutPort("jointState"));
 			mspac.addInPort("value", valuePort);
-			mspac.addInPort("valueEstimationAfter",
-					sumValue.getOutPort("jointState"));
-			mspac.addInPort("valueEstimationBefore",
-					getModule("Value Estimation Before").getOutPort("copy"));
+			mspac.addInPort("taxicValueEstimationAfter",
+					sumTaxicValue.getOutPort("jointState"));
+			mspac.addInPort("taxicValueEstimationBefore",
+					getModule("Taxic Value Estimation Before").getOutPort("copy"));
+			mspac.addInPort("rlValueEstimationAfter",
+					rlValue.getOutPort("valueEst"));
+			mspac.addInPort("rlValueEstimationBefore",
+					getModule("RL Value Estimation Before").getOutPort("copy"));
 			addModule(mspac);
 			// TODO: recover this assginments
 			// ql = mspql;

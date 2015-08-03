@@ -57,16 +57,19 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 			Int1dPort takenAction = (Int1dPort) getInPort("takenAction");
 			Float1dPort statesBefore = (Float1dPort) getInPort("statesBefore");
 			Float1dPort statesAfter = (Float1dPort) getInPort("statesAfter");
-			Float1dPort valueEstBefore = (Float1dPort) getInPort("valueEstimationBefore");
-			Float1dPort valueEstAfter = (Float1dPort) getInPort("valueEstimationAfter");
+			Float1dPort taxicValueEstBefore = (Float1dPort) getInPort("taxicValueEstimationBefore");
+			Float1dPort taxicValueEstAfter = (Float1dPort) getInPort("taxicValueEstimationAfter");
+			Float1dPort rlValueEstBefore = (Float1dPort) getInPort("rlValueEstimationBefore");
+			Float1dPort rlValueEstAfter = (Float1dPort) getInPort("rlValueEstimationAfter");
 			FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
 			// Gets the active state as computed at the beginning of the cycle
 			int a = takenAction.get();
 
-//			float delta = reward.get() + lambda * valueEstAfter.get(0)
-//					- valueEstBefore.get(0);
-			float delta = reward.get() + valueEstAfter.get(0)
-					- valueEstBefore.get(0);
+			// float delta = reward.get() + lambda * valueEstAfter.get(0)
+			// - valueEstBefore.get(0);
+			float delta = reward.get() + taxicValueEstAfter.get(0) + lambda
+					* rlValueEstAfter.get(0)
+					- (taxicValueEstBefore.get(0) + rlValueEstBefore.get(0));
 
 			if (Debug.printDelta)
 				if (delta < -.5)
@@ -75,24 +78,20 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 			if (Debug.printDelta)
 				System.out.println("Origianal Delta: " + delta);
 
-//			if (delta < 0)
-//				delta *= 2;
+			// if (delta < 0)
+			// delta *= 2;
 
-//			delta = Math.min(2, Math.max(delta, -2));
+			// delta = Math.min(2, Math.max(delta, -2));
 
 			// Do the update once for each state
 			for (int stateBefore = 0; stateBefore < statesBefore.getSize(); stateBefore++)
 				// Dont bother if the activation is to small
 				if (statesBefore.get(stateBefore) > 0 && a != -1)
-					updateLastAction(stateBefore, a, reward, statesBefore,
-							statesAfter, valueEstBefore, valueEstAfter, value,
-							delta);
+					updateLastAction(stateBefore, a, statesBefore, value, delta);
 		}
 	}
 
-	private void updateLastAction(int sBefore, int a, Float1dPortArray reward,
-			Float1dPort statesBefore, Float1dPort statesAfter,
-			Float1dPort valueEstBefore, Float1dPort valueEstAfter,
+	private void updateLastAction(int sBefore, int a, Float1dPort statesBefore,
 			FloatMatrixPort value, float delta) {
 		// Error in estimation
 		// float delta = reward.get() + lambda * valueEstAfter.get(0)
