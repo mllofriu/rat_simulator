@@ -1,7 +1,9 @@
 package edu.usf.ratsim.experiment.subject;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.vecmath.Point3f;
 
@@ -166,7 +168,7 @@ public class MultiScaleArtificialPCModel extends Model {
 					numHDCellsPerLayer, hdRadius, lRobot);
 			beforeHDs.add(hd);
 			addModule(hd);
-			radius += (maxHDRadius - minHDRadius) / (numHDLayers - 1);
+			hdRadius += (maxHDRadius - minHDRadius) / (numHDLayers - 1);
 		}
 
 		List<Integer> bpihdSizes = new LinkedList<Integer>();
@@ -549,7 +551,7 @@ public class MultiScaleArtificialPCModel extends Model {
 			e.setExplorationVal(explorationReward);
 	}
 
-	public float getValue(Point3f point, int inte, float angleInterval,
+	public Map<Float, Float> getValue(Point3f point, int inte, float angleInterval,
 			float distToWall) {
 		intentionGetter.simRun(inte);
 
@@ -559,6 +561,7 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		float avgVal = 0f;
 		int numAngles = 0;
+		Map<Float,Float> angleValue = new HashMap<Float, Float>();
 		for (float angle = 0; angle <= 2 * Math.PI; angle += angleInterval) {
 			for (ArtificialHDCellLayer hdcl : beforeHDs)
 				hdcl.simRun(angle);
@@ -577,10 +580,11 @@ public class MultiScaleArtificialPCModel extends Model {
 			// // if (val > maxVal) {
 			// avgVal = val;
 			// }
-			avgVal += votes[0];
+//			avgVal += votes[0];
+			angleValue.put(angle, votes[0]);
 			numAngles++;
 		}
-		avgVal /= numAngles;
+//		avgVal /= numAngles;
 
 		for (ArtificialPlaceCellLayer pcl : beforePcls)
 			// TODO: add feeder cells to policies
@@ -589,7 +593,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		for (ArtificialHDCellLayer hdcl : beforeHDs)
 			hdcl.clear();
 
-		return avgVal;
+		return angleValue;
 	}
 
 	public List<ArtificialPlaceCell> getPlaceCells() {

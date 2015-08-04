@@ -3,20 +3,33 @@ package edu.usf.ratsim.nsl.modules;
 public class ArtificialHDCell {
 
 	private static final double RADIUS_THRS = .2;
-	
+
 	private float preferredOrientation;
 	private float width;
+
+	private boolean agnostic;
 
 	public ArtificialHDCell(float preferredOrientation, float radius) {
 		super();
 		this.preferredOrientation = preferredOrientation;
-		this.width = (float) (-Math.pow(radius, 2) / Math.log(RADIUS_THRS));;
+		// System.out.println(radius);
+		if (radius >= 6.28) {
+			agnostic = true;
+			// System.out.println("agnostic");
+		} else {
+			agnostic = false;
+			this.width = (float) (-Math.pow(radius, 2) / Math.log(RADIUS_THRS));
+		}
+
 	}
 
 	public float getActivation(float currOrientation) {
-		return (float) Math.exp(-Math.pow(
-				angleDistance(currOrientation, preferredOrientation), 2)
-				/ width);
+		if (!agnostic)
+			return (float) Math.exp(-Math.pow(
+					angleDistance(currOrientation, preferredOrientation), 2)
+					/ width);
+		else
+			return 1;
 		// return Utiles.gaussian(angleDistance(currOrientation,
 		// preferredOrientation), width);
 	}

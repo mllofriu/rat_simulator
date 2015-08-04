@@ -2,6 +2,7 @@ package edu.usf.ratsim.experiment.subject;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.vecmath.Point3f;
 
@@ -102,7 +103,7 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	}
 
 	@Override
-	public float getValue(Point3f point, int intention, float angleInterval, float distToWall) {
+	public Map<Float,Float> getValue(Point3f point, int intention, float angleInterval, float distToWall) {
 		return model.getValue(point, intention, angleInterval, distToWall);
 	}
 

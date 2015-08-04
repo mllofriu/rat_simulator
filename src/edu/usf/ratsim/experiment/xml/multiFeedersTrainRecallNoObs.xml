@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-	<seed>32423</seed>
+	<seed>2342342321</seed>
 	
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
@@ -39,7 +39,7 @@
 			<numHDLayers>1</numHDLayers>
 			<numHDCellsPerLayer>256</numHDCellsPerLayer>
 			<minHDRadius>.314</minHDRadius>
-			<maxHDRadius>6.28</maxHDRadius>
+			<maxHDRadius>.314</maxHDRadius>
 			<numIntentions>8</numIntentions>
 			<deterministicActionSelection>true</deterministicActionSelection>
 			<foodReward>10000</foodReward>
@@ -341,7 +341,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>5000</max>
+						<max>15000</max>
 					</params>
 				</condition>
 				<condition>
