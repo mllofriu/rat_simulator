@@ -36,9 +36,9 @@
 			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
 			<goalCellProportion>0.5</goalCellProportion>
-			<numHDLayers>1</numHDLayers>
+			<numHDLayers>2</numHDLayers>
 			<numHDCellsPerLayer>256</numHDCellsPerLayer>
-			<minHDRadius>.314</minHDRadius>
+			<minHDRadius>.195</minHDRadius>
 			<maxHDRadius>.314</maxHDRadius>
 			<numIntentions>8</numIntentions>
 			<deterministicActionSelection>true</deterministicActionSelection>
