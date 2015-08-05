@@ -69,20 +69,17 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 			// float delta = reward.get() + lambda * valueEstAfter.get(0)
 			// - valueEstBefore.get(0);
-			float delta = reward.get() + taxicDiscountFactor
-					* taxicValueEstAfter.get(0) + rlDiscountFactor
-					* rlValueEstAfter.get(0)
-					- (taxicValueEstBefore.get(0) + rlValueEstBefore.get(0));
 
-			if (Debug.printDelta)
-				if (delta < -.5)
-					System.out.println("Big neg delta: " + delta);
-
-			if (Debug.printDelta)
-				System.out.println("Origianal Delta: " + delta);
+			//
+			// if (Debug.printDelta)
+			// if (delta < -.5)
+			// System.out.println("Big neg delta: " + delta);
+			//
+			// if (Debug.printDelta)
+			// System.out.println("Origianal Delta: " + delta);
 
 			// if (delta < 0)
-//			 delta *= 2;
+			// delta *= 2;
 
 			// delta = Math.min(2, Math.max(delta, -2));
 
@@ -90,18 +87,26 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 			for (int stateBefore = 0; stateBefore < statesBefore.getSize(); stateBefore++)
 				// Dont bother if the activation is to small
 				if (statesBefore.get(stateBefore) > 0 && a != -1)
-					updateLastAction(stateBefore, a, statesBefore, value, delta);
+					updateLastAction(stateBefore, a, statesBefore, value,
+							reward, taxicValueEstBefore, taxicValueEstAfter, rlValueEstAfter);
 		}
 	}
 
 	private void updateLastAction(int sBefore, int a, Float1dPort statesBefore,
-			FloatMatrixPort value, float delta) {
+			FloatMatrixPort value, Float1dPort reward,
+			Float1dPort taxicValueEstBefore, Float1dPort taxicValueEstAfter,
+			Float1dPort rlValueEstAfter) {
 		// Error in estimation
 		// float delta = reward.get() + lambda * valueEstAfter.get(0)
 		// - valueEstBefore.get(0);
 
 		// if (delta < 0)
 		// delta *= 2;
+
+		float delta = reward.get() + taxicDiscountFactor
+				* taxicValueEstAfter.get(0) + rlDiscountFactor
+				* rlValueEstAfter.get(0)
+				- (taxicValueEstBefore.get(0) + value.get(sBefore, numActions));
 
 		// Update action only if hasnt gone below inferior thrs
 		// if (value.get(sBefore, numActions) > -1) {
@@ -123,7 +128,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		// Update value
 		float currValue = value.get(sBefore, numActions);
 		float newValue = statesBefore.get(sBefore)
-				* (currValue + alpha * (delta - currValue))
+				* (currValue + alpha * delta)
 				+ (1 - statesBefore.get(sBefore)) * currValue;
 		// float newValue = currValue + alpha * statesBefore.get(sBefore)
 		// * delta;
