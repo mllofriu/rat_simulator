@@ -28,8 +28,8 @@
 		<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 		<params>
 			<step>.05</step>
-			<leftAngle>0.37</leftAngle>
-			<rightAngle>-0.37</rightAngle>
+			<leftAngle>0.195</leftAngle>
+			<rightAngle>-0.195</rightAngle>
 			<numPCLayers>2</numPCLayers>
 			<numPCCellsPerLayer>500</numPCCellsPerLayer>
 			<minPCRadius>.05</minPCRadius>
@@ -37,19 +37,20 @@
 			<placeCells>wallGoalExponential</placeCells>
 			<goalCellProportion>0.5</goalCellProportion>
 			<numHDLayers>2</numHDLayers>
-			<numHDCellsPerLayer>256</numHDCellsPerLayer>
+			<numHDCellsPerLayer>64</numHDCellsPerLayer>
 			<minHDRadius>.195</minHDRadius>
 			<maxHDRadius>.314</maxHDRadius>
 			<numIntentions>8</numIntentions>
 			<deterministicActionSelection>true</deterministicActionSelection>
 			<foodReward>10000</foodReward>
 			<nonFoodReward>0</nonFoodReward>
-			<discountFactor>.95</discountFactor>
+			<taxicDiscountFactor>.90</taxicDiscountFactor>
+			<rlDiscountFactor>.99</rlDiscountFactor>
 			<alpha>.9</alpha>
 			<initialValue>0</initialValue>
-			<flashingReward>5000</flashingReward>
+			<flashingReward>10000</flashingReward>
 			<nonFlashingReward>1000</nonFlashingReward>
-			<estimateValue>true</estimateValue>
+			<estimateValue>false</estimateValue>
 			<cellContribution>1</cellContribution>
 			<explorationReward>0</explorationReward>
 			<attentionExploringVal>100</attentionExploringVal>
@@ -61,7 +62,7 @@
 			<ymin>-.5</ymin>
 			<xmax>.5</xmax>
 			<ymax>.5</ymax>
-			<maxActionsSinceForward>20</maxActionsSinceForward>
+			<maxActionsSinceForward>50</maxActionsSinceForward>
 			<stillExplorationVal>10000</stillExplorationVal>
 		</params>
 	</model>
@@ -139,9 +140,7 @@
 		<plotter>
 			<name>edu.usf.experiment.plot.CSVConverter</name>
 		</plotter>
-		<!--<plotter>
-			<name>edu.usf.ratsim.experiment.plot.PCPlotter</name>
-		</plotter>-->
+		<!--<plotter> <name>edu.usf.ratsim.experiment.plot.PCPlotter</name> </plotter>-->
 	</beforeExperimentPlotters>
 	
 	<trial>
@@ -264,7 +263,7 @@
 	</trial>
 	
 	<trial>
-		<name>Testing</name>
+		<name>DelayedCue</name>
 		
 		<groups>
 			<group>Control</group>
@@ -304,10 +303,19 @@
 			</beforeCycleTasks>
 			<afterCycleTasks>
 				<task>
+					<name>edu.usf.experiment.task.UnFlashAllFeedersOnEating</name>
+				</task>
+				<task>
 					<name>edu.usf.experiment.task.SwitchFeeder</name>
 				</task>
 				<task>
 					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
+					<params>
+						<timeout>100</timeout>
+					</params>
 				</task>
 			</afterCycleTasks>
 			<afterCycleLoggers>
@@ -315,6 +323,9 @@
 					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
 					<params>
 					</params>
+				</logger>
+				<logger>
+					<name>edu.usf.experiment.log.FeedingLogger</name>
 				</logger>
 			</afterCycleLoggers>
 			
@@ -379,158 +390,6 @@
 		</afterTrialPlotters>
 	</trial>
 	
-	
-	
-	<trial>
-		<name>Recall</name>
-		
-		<groups>
-			<group>Control</group>
-			<group>Dorsal</group>
-			<group>Ventral</group>
-			<group>NegControl</group>
-			<group>TimeoutControl</group>
-		</groups>
-		<beforeTrialTasks>
-			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
-				<params>
-					<group>Dorsal</group>
-					<layers>0</layers>
-				</params>
-			</task>
-			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
-				<params>
-					<group>Ventral</group>
-					<layers>1</layers>
-				</params>
-			</task>
-			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
-				<params>
-					<group>NegControl</group>
-					<layers>0,1</layers>
-				</params>
-			</task>
-		</beforeTrialTasks>
-		<beforeTrialLoggers>
-		</beforeTrialLoggers>
-		<episodes>
-			<number>1</number>
-			<sleep>00</sleep>
-			<beforeEpisodeTasks>
-				<task>
-					<name>edu.usf.experiment.task.UnFlashAllFeeders</name>
-					<params>
-					</params>
-				</task>
-				<task>
-					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
-					<params>
-					</params>
-				</task>
-				<task>
-					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
-					<params>
-						<point>
-							<x>0</x>
-							<y>0</y>
-							<theta>3.14</theta>
-						</point>
-					</params>
-				</task>
-			</beforeEpisodeTasks>
-			<beforeCycleTasks>
-			</beforeCycleTasks>
-			<afterCycleTasks>
-				<task>
-					<name>edu.usf.experiment.task.SwitchFeeder</name>
-				</task>
-				<task>
-					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
-				</task>
-				<task>
-					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
-					<params>
-						<timeout>200</timeout>
-					</params>
-				</task>
-				<task>
-					<name>edu.usf.experiment.task.UnFlashAllFeedersOnEating</name>
-				</task>
-				
-			</afterCycleTasks>
-			<afterCycleLoggers>
-				<logger>
-					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
-					<params>
-					</params>
-				</logger>
-				
-				
-			</afterCycleLoggers>
-			
-			<afterEpisodeLoggers>
-				<logger>
-					<name>edu.usf.experiment.log.WallLogger</name>
-					<params>
-					</params>
-				</logger>
-				<logger>
-					<name>edu.usf.experiment.log.ValueLogger</name>
-					<params>
-						<circle>false</circle>
-						<interval>.1</interval>
-						<angleInterval>.78</angleInterval>
-						<numIntentions>1</numIntentions>
-					</params>
-				</logger>
-			</afterEpisodeLoggers>
-			<afterEpisdoeTasks>
-			</afterEpisdoeTasks>
-			<stopConditions>
-				<condition>
-					<name>edu.usf.experiment.condition.MaxCycles</name>
-					<params>
-						<max>50000</max>
-					</params>
-				</condition>
-				<condition>
-					<name>edu.usf.experiment.condition.FoundNFoodTimeoutStopCond</name>
-					<params>
-						<timeout>600</timeout>
-						<n>15</n>
-					</params>
-				</condition>
-			</stopConditions>
-			<afterEpisodePlotters>
-				<plotter>
-					<name>edu.usf.experiment.plot.CopyMazeFile</name>
-				</plotter>
-				<plotter>
-					<name>edu.usf.experiment.plot.CSVConverter</name>
-				</plotter>
-				<plotter>
-					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
-				</plotter>
-				<plotter>
-					<name>edu.usf.experiment.plot.PathPlotter</name>
-				</plotter>
-				<plotter>
-					<name>edu.usf.experiment.plot.ValuePlotter</name>
-				</plotter>
-			</afterEpisodePlotters>
-		</episodes>
-		
-		<afterTrialTasks>
-		</afterTrialTasks>
-		<afterTrialLoggers>
-			
-		</afterTrialLoggers>
-		<afterTrialPlotters>
-		</afterTrialPlotters>
-	</trial>
 	
 	<!-- 4 testing trials -->
 	<afterExperimentTasks>

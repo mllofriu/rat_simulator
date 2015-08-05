@@ -34,15 +34,17 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 	private int numActions;
 
-	private float lambda;
+	private float rlDiscountFactor;
+
+	private float taxicDiscountFactor;
 
 	public MultiStateProportionalAC(String name, Subject subject,
-			int numActions, float discountFactor, float alpha, float lambda,
-			float initialValue) {
+			int numActions, float taxicDiscountFactor, float rlDiscountFactor,
+			float alpha, float initialValue) {
 		super(name);
-		this.discountFactor = discountFactor;
 		this.alpha = alpha;
-		this.lambda = lambda;
+		this.rlDiscountFactor = rlDiscountFactor;
+		this.taxicDiscountFactor = taxicDiscountFactor;
 		this.subject = subject;
 
 		this.numActions = numActions;
@@ -67,7 +69,8 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 			// float delta = reward.get() + lambda * valueEstAfter.get(0)
 			// - valueEstBefore.get(0);
-			float delta = reward.get() + taxicValueEstAfter.get(0) + lambda
+			float delta = reward.get() + taxicDiscountFactor
+					* taxicValueEstAfter.get(0) + rlDiscountFactor
 					* rlValueEstAfter.get(0)
 					- (taxicValueEstBefore.get(0) + rlValueEstBefore.get(0));
 
@@ -79,7 +82,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 				System.out.println("Origianal Delta: " + delta);
 
 			// if (delta < 0)
-			// delta *= 2;
+//			 delta *= 2;
 
 			// delta = Math.min(2, Math.max(delta, -2));
 

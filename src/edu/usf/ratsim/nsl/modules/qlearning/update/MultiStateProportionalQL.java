@@ -41,11 +41,12 @@ public class MultiStateProportionalQL extends Module implements QLAlgorithm {
 	private Subject subject;
 
 	public MultiStateProportionalQL(String name, Subject subject,
-			int numActions, float discountFactor, float alpha,
+			int numActions, float taxicDiscountFactor, float rlDiscountFactor, float alpha,
 			float initialValue) {
 		super(name);
 
-		this.discountFactor = discountFactor;
+		// TODO: fix discount factor thing 
+		
 		this.alpha = alpha;
 		this.subject = subject;
 

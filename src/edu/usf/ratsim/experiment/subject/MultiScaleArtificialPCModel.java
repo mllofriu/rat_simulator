@@ -88,7 +88,8 @@ public class MultiScaleArtificialPCModel extends Model {
 		int numHDCellsPerLayer = params.getChildInt("numHDCellsPerLayer");
 		String placeCellType = params.getChildText("placeCells");
 		float goalCellProportion = params.getChildFloat("goalCellProportion");
-		float discountFactor = params.getChildFloat("discountFactor");
+		float rlDiscountFactor = params.getChildFloat("rlDiscountFactor");
+		float taxicDiscountFactor = params.getChildFloat("taxicDiscountFactor");
 		float alpha = params.getChildFloat("alpha");
 		float initialValue = params.getChildFloat("initialValue");
 		float foodReward = params.getChildFloat("foodReward");
@@ -207,8 +208,8 @@ public class MultiScaleArtificialPCModel extends Model {
 		int numStates = ((Float1dPort) jointPCHDIntentionState
 				.getOutPort("jointState")).getSize();
 		float[][] value = new float[numStates][numActions + 1];
-//		for (int i = 0; i < numStates; i++)
-//			value[i][numActions] = .5f;
+		// for (int i = 0; i < numStates; i++)
+		// value[i][numActions] = .5f;
 		FloatMatrixPort valuePort = new FloatMatrixPort((Module) null, value);
 
 		List<Port> votesPorts = new LinkedList<Port>();
@@ -223,7 +224,8 @@ public class MultiScaleArtificialPCModel extends Model {
 					(Float1dPortArray) jointPCHDIntentionState
 							.getOutPort("jointState"), valuePort, numActions);
 		else if (voteType.equals("halfAndHalfConnection"))
-			rlVotes = new HalfAndHalfConnectionVotes("RL votes", numActions, cellContribution);
+			rlVotes = new HalfAndHalfConnectionVotes("RL votes", numActions,
+					cellContribution);
 		else
 			throw new RuntimeException("Vote mechanism not implemented");
 		// RL votes are based on previous state
@@ -239,7 +241,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		// universe, numActions, flashingReward, nonFlashingReward);
 		TaxicFoodFinderSchema taxicff = new TaxicFoodFinderSchema(
 				"Taxic Food Finder", subject, lRobot, nonFlashingReward,
-				discountFactor, estimateValue);
+				taxicDiscountFactor, estimateValue);
 		taxicff.addInPort("goalFeeder",
 				lastTriedToEatGoalDecider.getOutPort("goalFeeder"), true);
 		addModule(taxicff);
@@ -247,7 +249,7 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		FlashingTaxicFoodFinderSchema flashingTaxicFF = new FlashingTaxicFoodFinderSchema(
 				"Flashing Taxic Food Finder", subject, lRobot, flashingReward,
-				discountFactor, estimateValue);
+				taxicDiscountFactor, estimateValue);
 		flashingTaxicFF.addInPort("goalFeeder",
 				lastAteGoalDecider.getOutPort("goalFeeder"), true);
 		addModule(flashingTaxicFF);
@@ -307,7 +309,7 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		List<Port> taxicValueEstimationPorts = new LinkedList<Port>();
 		TaxicValueSchema taxVal = new TaxicValueSchema("Taxic Value Estimator",
-				subject, lRobot, nonFlashingReward, discountFactor,
+				subject, lRobot, nonFlashingReward, taxicDiscountFactor,
 				estimateValue);
 		taxVal.addInPort("goalFeeder",
 				lastTriedToEatGoalDecider.getOutPort("goalFeeder"));
@@ -317,19 +319,19 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		FlashingTaxicValueSchema flashTaxVal = new FlashingTaxicValueSchema(
 				"Flashing Taxic Value Estimator", subject, lRobot,
-				flashingReward, discountFactor, estimateValue);
+				flashingReward, taxicDiscountFactor, estimateValue);
 		flashTaxVal.addInPort("goalFeeder",
 				lastAteGoalDecider.getOutPort("goalFeeder"));
 		flashTaxVal.addInPort("takenAction", takenActionPort); // just for
 																// dependency
 		taxicValueEstimationPorts.add(flashTaxVal.getOutPort("value"));
 		addModule(flashTaxVal);
-		
+
 		JointStatesManySum sumTaxicValue = new JointStatesManySum(
 				"Taxic joint value estimation");
 		sumTaxicValue.addInPorts(taxicValueEstimationPorts);
 		addModule(sumTaxicValue);
-		
+
 		CopyStateModule taxicValueCopy = new CopyStateModule(
 				"Taxic Value Estimation Before");
 		taxicValueCopy.addInPort("toCopy",
@@ -387,9 +389,8 @@ public class MultiScaleArtificialPCModel extends Model {
 			// QL_STR, this, subject, bAll.getSize(), numActions,
 			// discountFactor, alpha, initialValue);
 			MultiStateProportionalQL mspql = new MultiStateProportionalQL(
-					"RL Module",
-
-					subject, numActions, discountFactor, alpha, initialValue);
+					"RL Module", subject, numActions, taxicDiscountFactor,
+					rlDiscountFactor, alpha, initialValue);
 
 			mspql.addInPort("reward",
 					(Float1dPortArray) reward.getOutPort("reward"));
@@ -407,8 +408,8 @@ public class MultiScaleArtificialPCModel extends Model {
 			addModule(mspql);
 		} else if (rlType.equals("actorCritic")) {
 			MultiStateProportionalAC mspac = new MultiStateProportionalAC(
-					"RL Module", subject, numActions, discountFactor, alpha,
-					discountFactor, initialValue);
+					"RL Module", subject, numActions, taxicDiscountFactor,
+					rlDiscountFactor, alpha, initialValue);
 			mspac.addInPort("reward",
 					(Float1dPortArray) reward.getOutPort("reward"));
 			mspac.addInPort("takenAction", takenActionPort);
@@ -419,8 +420,10 @@ public class MultiScaleArtificialPCModel extends Model {
 			mspac.addInPort("value", valuePort);
 			mspac.addInPort("taxicValueEstimationAfter",
 					sumTaxicValue.getOutPort("jointState"));
-			mspac.addInPort("taxicValueEstimationBefore",
-					getModule("Taxic Value Estimation Before").getOutPort("copy"));
+			mspac.addInPort(
+					"taxicValueEstimationBefore",
+					getModule("Taxic Value Estimation Before").getOutPort(
+							"copy"));
 			mspac.addInPort("rlValueEstimationAfter",
 					rlValue.getOutPort("valueEst"));
 			mspac.addInPort("rlValueEstimationBefore",
@@ -551,8 +554,8 @@ public class MultiScaleArtificialPCModel extends Model {
 			e.setExplorationVal(explorationReward);
 	}
 
-	public Map<Float, Float> getValue(Point3f point, int inte, float angleInterval,
-			float distToWall) {
+	public Map<Float, Float> getValue(Point3f point, int inte,
+			float angleInterval, float distToWall) {
 		intentionGetter.simRun(inte);
 
 		for (ArtificialPlaceCellLayer pcl : beforePcls)
@@ -561,7 +564,7 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		float avgVal = 0f;
 		int numAngles = 0;
-		Map<Float,Float> angleValue = new HashMap<Float, Float>();
+		Map<Float, Float> angleValue = new HashMap<Float, Float>();
 		for (float angle = 0; angle <= 2 * Math.PI; angle += angleInterval) {
 			for (ArtificialHDCellLayer hdcl : beforeHDs)
 				hdcl.simRun(angle);
@@ -580,11 +583,11 @@ public class MultiScaleArtificialPCModel extends Model {
 			// // if (val > maxVal) {
 			// avgVal = val;
 			// }
-//			avgVal += votes[0];
+			// avgVal += votes[0];
 			angleValue.put(angle, votes[0]);
 			numAngles++;
 		}
-//		avgVal /= numAngles;
+		// avgVal /= numAngles;
 
 		for (ArtificialPlaceCellLayer pcl : beforePcls)
 			// TODO: add feeder cells to policies
@@ -597,11 +600,11 @@ public class MultiScaleArtificialPCModel extends Model {
 	}
 
 	public List<ArtificialPlaceCell> getPlaceCells() {
-		List <ArtificialPlaceCell> res = new LinkedList<ArtificialPlaceCell>();
-		for (ArtificialPlaceCellLayer pcl : beforePcls){
+		List<ArtificialPlaceCell> res = new LinkedList<ArtificialPlaceCell>();
+		for (ArtificialPlaceCellLayer pcl : beforePcls) {
 			res.addAll(pcl.getCells());
 		}
-	
+
 		return res;
 	}
 }
