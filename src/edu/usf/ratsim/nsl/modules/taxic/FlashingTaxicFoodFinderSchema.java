@@ -3,6 +3,7 @@ package edu.usf.ratsim.nsl.modules.taxic;
 import java.util.List;
 
 import javax.vecmath.Point3f;
+import javax.vecmath.Quat4f;
 
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.subject.Subject;
@@ -24,14 +25,14 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 
 	private Subject subject;
 	private LocalizableRobot robot;
-	private double lambda;
-	private boolean estimateValue;
+	private float negReward;
 
 	public FlashingTaxicFoodFinderSchema(String name, Subject subject,
-			LocalizableRobot robot, float reward, float lambda,
+			LocalizableRobot robot, float reward, float negReward, float lambda,
 			boolean estimateValue) {
 		super(name);
 		this.reward = reward;
+		this.negReward = negReward;
 
 		// Votes for action and value
 		votes = new float[subject.getPossibleAffordances().size()];
@@ -39,8 +40,6 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 
 		this.subject = subject;
 		this.robot = robot;
-		this.lambda = lambda;
-		this.estimateValue = estimateValue;
 	}
 
 	/**
@@ -76,17 +75,18 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 		for (Affordance af : affs) {
 			float value = 0;
 			if (af.isRealizable()) {
-				if (af instanceof TurnAffordance) {
+				if (af instanceof TurnAffordance || af instanceof ForwardAffordance) {
 					if (robot.seesFlashingFeeder() && !feederToEat) {
 						Feeder f = robot.getFlashingFeeder();
-						value += getFeederValue(GeomUtils.simulate(
-								f.getPosition(), af));
-					}
-				} else if (af instanceof ForwardAffordance) {
-					if (robot.seesFlashingFeeder() && !feederToEat) {
-						Feeder f = robot.getFlashingFeeder();
-						value += getFeederValue(GeomUtils.simulate(
-								f.getPosition(), af));
+						Point3f newPos = GeomUtils.simulate(
+								f.getPosition(), af);
+						Quat4f rotToNewPos = GeomUtils.angleToPoint(newPos);
+
+						float angleDiff = Math.abs(GeomUtils.rotToAngle(rotToNewPos)); 
+						if(angleDiff < robot.getHalfFieldView())
+							value += getFeederValue(newPos);
+						else
+							value += -getFeederValue(f.getPosition());
 					}
 				} else if (af instanceof EatAffordance) {
 					if (feederToEat) {
@@ -107,7 +107,7 @@ public class FlashingTaxicFoodFinderSchema extends Module {
 
 	private float getFeederValue(Point3f feederPos) {
 		float steps = GeomUtils.getStepsToFeeder(feederPos, subject);
-		return (float) (reward * Math.pow(lambda, steps));
+		return (float) Math.max(0f,(reward  + negReward * steps)) ; //* Math.pow(lambda, ));
 	}
 
 	@Override

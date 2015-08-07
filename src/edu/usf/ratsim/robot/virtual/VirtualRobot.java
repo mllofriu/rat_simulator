@@ -337,4 +337,9 @@ public class VirtualRobot extends LocalizableRobot {
 		return relativeWEnds;
 	}
 
+	@Override
+	public float getHalfFieldView() {
+		return halfFieldOfView;
+	}
+
 }

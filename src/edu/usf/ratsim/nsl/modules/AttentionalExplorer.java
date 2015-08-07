@@ -114,10 +114,10 @@ public class AttentionalExplorer extends Module {
 								GeomUtils.simulate(currentInterest, af),
 								exploringVal);
 					} else if (af instanceof EatAffordance) {
-						if (robot.isFeederClose()
-								&& robot.getClosestFeeder().getPosition()
-										.distance(currentInterest) < .2f)
-							value += exploringVal;
+//						if (robot.isFeederClose()
+//								&& robot.getClosestFeeder().getPosition()
+//										.distance(currentInterest) < .2f)
+//							value += exploringVal;
 					} else
 						throw new RuntimeException("Affordance "
 								+ af.getClass().getName()

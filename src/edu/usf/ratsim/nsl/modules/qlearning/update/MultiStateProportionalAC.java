@@ -69,7 +69,10 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 			// float delta = reward.get() + lambda * valueEstAfter.get(0)
 			// - valueEstBefore.get(0);
-
+//
+//			System.out.println("Taxic delta: " + (taxicValueEstAfter.get(0)
+//					- taxicValueEstBefore.get(0)));
+//			System.out.println("Taken action " + takenAction.get());
 			//
 			// if (Debug.printDelta)
 			// if (delta < -.5)
@@ -88,7 +91,8 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 				// Dont bother if the activation is to small
 				if (statesBefore.get(stateBefore) > 0 && a != -1)
 					updateLastAction(stateBefore, a, statesBefore, value,
-							reward, taxicValueEstBefore, taxicValueEstAfter, rlValueEstAfter);
+							reward, taxicValueEstBefore, taxicValueEstAfter,
+							rlValueEstAfter);
 		}
 	}
 
@@ -111,10 +115,19 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		// Update action only if hasnt gone below inferior thrs
 		// if (value.get(sBefore, numActions) > -1) {
 
+//		if ((taxicValueEstAfter.get(0)
+//					- taxicValueEstBefore.get(0))>2000)
+//			System.out.println("Delta " + delta);
 		float actionVal = value.get(sBefore, a);
-		float newActionValue = statesBefore.get(sBefore)
-				* (actionVal + alpha * (delta - actionVal))
-				+ (1 - statesBefore.get(sBefore)) * actionVal;
+//		float newActionValue = statesBefore.get(sBefore)
+//				* (actionVal + alpha * (delta))
+//				+ (1 - statesBefore.get(sBefore)) * actionVal;
+		float newActionValue = actionVal + alpha * statesBefore.get(sBefore) * (delta);
+		
+//		if (delta > 2000)
+//			System.out.println("Big delta: " + delta);
+		if (Debug.printDelta)
+			System.out.println("State: " + (float)sBefore/statesBefore.getSize() + " Delta: " + delta);
 		// float newActionValue = actionVal + alpha * statesBefore.get(sBefore)
 		// * delta;
 		// System.out.println(newActionValue);
@@ -128,8 +141,8 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		// Update value
 		float currValue = value.get(sBefore, numActions);
 		float newValue = statesBefore.get(sBefore)
-				* (currValue + alpha * delta)
-				+ (1 - statesBefore.get(sBefore)) * currValue;
+				* (currValue + alpha * delta) + (1 - statesBefore.get(sBefore))
+				* currValue;
 		// float newValue = currValue + alpha * statesBefore.get(sBefore)
 		// * delta;
 		if (Float.isInfinite(newValue) || Float.isNaN(newValue)) {

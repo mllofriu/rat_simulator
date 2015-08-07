@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
+	<seed>6489465</seed>
+	
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
 		<params>
@@ -14,7 +16,7 @@
 		<name>edu.usf.ratsim.robot.virtual.VirtualRobot</name>
 		<params>
 			<noise>.2</noise>
-			<translationRotationNoise>.37</translationRotationNoise>
+			<translationRotationNoise>.195</translationRotationNoise>
 			<lookaheadSteps>5</lookaheadSteps>
 			<halfFieldOfView>1.83</halfFieldOfView>
 			<visionDist>10</visionDist>
@@ -26,39 +28,41 @@
 		<name>edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject</name>
 		<params>
 			<step>.05</step>
-			<leftAngle>0.37</leftAngle>
-			<rightAngle>-0.37</rightAngle>
+			<leftAngle>0.195</leftAngle>
+			<rightAngle>-0.195</rightAngle>
 			<numPCLayers>2</numPCLayers>
-			<numPCCellsPerLayer>1000</numPCCellsPerLayer>
+			<numPCCellsPerLayer>500</numPCCellsPerLayer>
 			<minPCRadius>.05</minPCRadius>
 			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
 			<goalCellProportion>0.5</goalCellProportion>
-			<numHDLayers>4</numHDLayers>
-			<numHDCellsPerLayer>16</numHDCellsPerLayer>
-			<minHDRadius>0.39</minHDRadius>
-			<maxHDRadius>3.14</maxHDRadius>
+			<numHDLayers>2</numHDLayers>
+			<numHDCellsPerLayer>64</numHDCellsPerLayer>
+			<minHDRadius>.195</minHDRadius>
+			<maxHDRadius>.314</maxHDRadius>
 			<numIntentions>8</numIntentions>
 			<deterministicActionSelection>true</deterministicActionSelection>
 			<foodReward>10000</foodReward>
-			<nonFoodReward>0</nonFoodReward>
-			<discountFactor>.9</discountFactor>
-			<alpha>0.9</alpha>
+			<nonFoodReward>-100</nonFoodReward>
+			<taxicDiscountFactor>1</taxicDiscountFactor>
+			<rlDiscountFactor>1</rlDiscountFactor>
+			<alpha>.9</alpha>
 			<initialValue>0</initialValue>
 			<flashingReward>5000</flashingReward>
-			<nonFlashingReward>1000</nonFlashingReward>
-			<estimateValue>false</estimateValue>
+			<nonFlashingReward>500</nonFlashingReward>
+			<estimateValue>true</estimateValue>
+			<cellContribution>1</cellContribution>
 			<explorationReward>0</explorationReward>
-			<attentionExploringVal>100</attentionExploringVal>
+			<attentionExploringVal>0</attentionExploringVal>
 			<maxAttentionSpan>20</maxAttentionSpan>
-			<explorationHalfLifeVal>1</explorationHalfLifeVal>
+			<explorationHalfLifeVal>.125</explorationHalfLifeVal>
 			<rlType>actorCritic</rlType>
 			<voteType>halfAndHalfConnection</voteType>
 			<xmin>-.5</xmin>
 			<ymin>-.5</ymin>
 			<xmax>.5</xmax>
 			<ymax>.5</ymax>
-			<maxActionsSinceForward>20</maxActionsSinceForward>
+			<maxActionsSinceForward>50</maxActionsSinceForward>
 			<stillExplorationVal>10000</stillExplorationVal>
 		</params>
 	</model>
@@ -122,6 +126,23 @@
 		</task>
 	</beforeExperimentTasks>
 	
+	<beforeExperimentLoggers>
+		<logger>
+			<name>edu.usf.experiment.log.WallLogger</name>
+			<params>
+			</params>
+		</logger>
+		<logger>
+			<name>edu.usf.ratsim.experiment.log.PCLogger</name>
+		</logger>
+	</beforeExperimentLoggers>
+	<beforeExperimentPlotters>
+		<plotter>
+			<name>edu.usf.experiment.plot.CSVConverter</name>
+		</plotter>
+		<!--<plotter> <name>edu.usf.ratsim.experiment.plot.PCPlotter</name> </plotter>-->
+	</beforeExperimentPlotters>
+	
 	<trial>
 		<name>Training</name>
 		
@@ -174,7 +195,9 @@
 					<params>
 					</params>
 				</logger>
-				
+				<logger>
+					<name>edu.usf.experiment.log.FeedingLogger</name>
+				</logger>
 				
 			</afterCycleLoggers>
 			
@@ -185,14 +208,16 @@
 					</params>
 				</logger>
 				<logger>
+					
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
-						<interval>.05</interval>
-						<angleInterval>.37</angleInterval>
+						<interval>.1</interval>
+						<angleInterval>.78</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
 				</logger>
+				
 			</afterEpisodeLoggers>
 			<afterEpisodeTasks>
 				
@@ -201,7 +226,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>5000</max>
+						<max>50000</max>
 					</params>
 				</condition>
 				<condition>
@@ -240,7 +265,7 @@
 	</trial>
 	
 	<trial>
-		<name>Testing</name>
+		<name>DelayedCueNoObstacles</name>
 		
 		<groups>
 			<group>Control</group>
@@ -280,10 +305,19 @@
 			</beforeCycleTasks>
 			<afterCycleTasks>
 				<task>
+					<name>edu.usf.experiment.task.UnFlashAllFeedersOnEating</name>
+				</task>
+				<task>
 					<name>edu.usf.experiment.task.SwitchFeeder</name>
 				</task>
 				<task>
 					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
+					<params>
+						<timeout>300</timeout>
+					</params>
 				</task>
 			</afterCycleTasks>
 			<afterCycleLoggers>
@@ -291,6 +325,9 @@
 					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
 					<params>
 					</params>
+				</logger>
+				<logger>
+					<name>edu.usf.experiment.log.FeedingLogger</name>
 				</logger>
 			</afterCycleLoggers>
 			
@@ -304,8 +341,8 @@
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
-						<interval>.05</interval>
-						<angleInterval>.37</angleInterval>
+						<interval>.1</interval>
+						<angleInterval>.78</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
 				</logger>
@@ -317,7 +354,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>5000</max>
+						<max>15000</max>
 					</params>
 				</condition>
 				<condition>
@@ -356,14 +393,13 @@
 	</trial>
 	
 	<trial>
-		<name>Recall</name>
+		<name>DelayedCueObstacles</name>
 		
 		<groups>
 			<group>Control</group>
 			<group>Dorsal</group>
 			<group>Ventral</group>
 			<group>NegControl</group>
-			<group>TimeoutControl</group>
 		</groups>
 		<beforeTrialTasks>
 			<task>
@@ -393,8 +429,6 @@
 				</params>
 			</task>
 		</beforeTrialTasks>
-		<beforeTrialLoggers>
-		</beforeTrialLoggers>
 		<episodes>
 			<number>1</number>
 			<sleep>00</sleep>
@@ -409,6 +443,7 @@
 					<params>
 					</params>
 				</task>
+				
 				<task>
 					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
 					<params>
@@ -424,6 +459,9 @@
 			</beforeCycleTasks>
 			<afterCycleTasks>
 				<task>
+					<name>edu.usf.experiment.task.UnFlashAllFeedersOnEating</name>
+				</task>
+				<task>
 					<name>edu.usf.experiment.task.SwitchFeeder</name>
 				</task>
 				<task>
@@ -432,13 +470,9 @@
 				<task>
 					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
 					<params>
-						<timeout>200</timeout>
+						<timeout>300</timeout>
 					</params>
 				</task>
-				<task>
-					<name>edu.usf.experiment.task.UnFlashAllFeedersOnEating</name>
-				</task>
-				
 			</afterCycleTasks>
 			<afterCycleLoggers>
 				<logger>
@@ -446,8 +480,9 @@
 					<params>
 					</params>
 				</logger>
-				
-				
+				<logger>
+					<name>edu.usf.experiment.log.FeedingLogger</name>
+				</logger>
 			</afterCycleLoggers>
 			
 			<afterEpisodeLoggers>
@@ -460,25 +495,25 @@
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
-						<interval>.05</interval>
-						<angleInterval>.37</angleInterval>
+						<interval>.1</interval>
+						<angleInterval>.78</angleInterval>
 						<numIntentions>1</numIntentions>
 					</params>
 				</logger>
 			</afterEpisodeLoggers>
-			<afterEpisdoeTasks>
-			</afterEpisdoeTasks>
+			<afterEpisodeTasks>
+				
+			</afterEpisodeTasks>
 			<stopConditions>
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>50000</max>
+						<max>15000</max>
 					</params>
 				</condition>
 				<condition>
-					<name>edu.usf.experiment.condition.FoundNFoodTimeoutStopCond</name>
+					<name>edu.usf.experiment.condition.FoundNFoodNoMistakesStopCond</name>
 					<params>
-						<timeout>600</timeout>
 						<n>15</n>
 					</params>
 				</condition>
@@ -502,14 +537,15 @@
 			</afterEpisodePlotters>
 		</episodes>
 		
+		
 		<afterTrialTasks>
 		</afterTrialTasks>
 		<afterTrialLoggers>
-			
 		</afterTrialLoggers>
 		<afterTrialPlotters>
 		</afterTrialPlotters>
 	</trial>
+	
 	
 	<!-- 4 testing trials -->
 	<afterExperimentTasks>

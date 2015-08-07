@@ -14,7 +14,7 @@ import edu.usf.experiment.subject.affordance.EatAffordance;
 import edu.usf.experiment.subject.affordance.ForwardAffordance;
 import edu.usf.experiment.subject.affordance.TurnAffordance;
 import edu.usf.experiment.utils.ElementWrapper;
-import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
+import edu.usf.ratsim.nsl.modules.ExponentialConjCell;
 
 public class MultiScaleArtificialPCSubject extends Subject {
 
@@ -98,16 +98,11 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	}
 
 	@Override
-	public void restoreExploration() {
-		model.restoreExplorationVal();
-	}
-
-	@Override
 	public Map<Float,Float> getValue(Point3f point, int intention, float angleInterval, float distToWall) {
 		return model.getValue(point, intention, angleInterval, distToWall);
 	}
 
-	public List<ArtificialPlaceCell> getPlaceCells() {
+	public List<ExponentialConjCell> getPlaceCells() {
 		return model.getPlaceCells();
 	}
 	

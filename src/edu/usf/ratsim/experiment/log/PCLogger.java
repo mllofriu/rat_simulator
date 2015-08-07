@@ -9,15 +9,15 @@ import edu.usf.experiment.PropertyHolder;
 import edu.usf.experiment.Trial;
 import edu.usf.experiment.log.Logger;
 import edu.usf.experiment.subject.Subject;
-import edu.usf.experiment.universe.Wall;
 import edu.usf.experiment.utils.ElementWrapper;
 import edu.usf.ratsim.experiment.subject.MultiScaleArtificialPCSubject;
 import edu.usf.ratsim.nsl.modules.ArtificialPlaceCell;
+import edu.usf.ratsim.nsl.modules.ExponentialConjCell;
 
 public class PCLogger extends Logger {
 
 
-	private List<ArtificialPlaceCell> cells;
+	private List<ExponentialConjCell> cells;
 
 	public PCLogger(ElementWrapper params, String logPath) {
 		super(params, logPath);
@@ -58,10 +58,10 @@ public class PCLogger extends Logger {
 			String episode = props.getProperty("episode");
 			
 			PrintWriter writer = getWriter();
-			for (ArtificialPlaceCell cell : cells)
+			for (ExponentialConjCell cell : cells)
 				writer.println(trialName + '\t' + groupName + '\t' + subName
-						+ '\t' + episode + '\t' + cell.getCenter().x + "\t" + cell.getCenter().y
-						+ '\t' + cell.getRadius());
+						+ '\t' + episode + '\t' + cell.getPreferredLocation().x + "\t" + cell.getPreferredLocation().y
+						+ '\t' + cell.getPlaceRadius());
 
 			cells.clear();
 		}

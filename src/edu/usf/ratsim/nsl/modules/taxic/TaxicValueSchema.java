@@ -19,12 +19,14 @@ public class TaxicValueSchema extends Module {
 	private LocalizableRobot robot;
 	private double lambda;
 	private boolean estimateValue;
+	private float negReward;
 
 	public TaxicValueSchema(String name, Subject subject,
-			LocalizableRobot robot, float reward, float lambda,
+			LocalizableRobot robot, float reward, float negReward, float lambda,
 			boolean estimateValue) {
 		super(name);
 		this.reward = reward;
+		this.negReward = negReward;
 
 		// Value estimation
 		value = new float[1];
@@ -62,7 +64,7 @@ public class TaxicValueSchema extends Module {
 
 	private float getFeederValue(Point3f feederPos) {
 		float steps = GeomUtils.getStepsToFeeder(feederPos, subject);
-		return (float) (reward * Math.pow(lambda, steps));
+		return Math.max(0, (reward  + negReward * steps)) ; //* Math.pow(lambda, ));
 	}
 
 	@Override

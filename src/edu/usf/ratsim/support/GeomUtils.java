@@ -93,6 +93,30 @@ public class GeomUtils {
 		return rotToAngle(rotTo);
 	}
 
+	public static float angleDistance(float from, float to) {
+		// Create complex numbers for both orientations
+		double r1 = Math.cos(from);
+		double i1 = Math.sin(from);
+		double r2 = Math.cos(to);
+		double i2 = Math.sin(to);
+		// Conjugate from
+		i1 = -i1;
+		// Multiply them
+		double r = r1 * r2 - i1 * i2;
+		double i = i1 * r2 + r1 * i2;
+		// Get the argument and complementary
+		double arg = Math.atan2(i, r);
+		double argComp;
+
+		if (arg > 0)
+			argComp = -(2 * Math.PI - arg);
+		else
+			argComp = 2 * Math.PI + arg;
+
+		// Return the minimum of the absolute values
+		return (float) Math.min(Math.abs(arg), Math.abs(argComp));
+	}
+	
 	public static Vector3f pointsToVector(Point3f from, Point3f to) {
 		Vector3f fVect = new Vector3f(to);
 		fVect.sub(from);
@@ -108,7 +132,7 @@ public class GeomUtils {
 		return res;
 	}
 
-	private static float rotToAngle(Quat4f rot) {
+	public static float rotToAngle(Quat4f rot) {
 		rot.normalize();
 		float angle = (float) (2 * Math.acos(rot.w)) * Math.signum(rot.z);
 		// Get the shortest
