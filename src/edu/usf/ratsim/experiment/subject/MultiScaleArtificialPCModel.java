@@ -80,6 +80,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		int numIntentions = params.getChildInt("numIntentions");
 		float flashingReward = params.getChildFloat("flashingReward");
 		float nonFlashingReward = params.getChildFloat("nonFlashingReward");
+		boolean rememberLastTwo = params.getChildBoolean("rememberLastTwo");
 		boolean estimateValue = params.getChildBoolean("estimateValue");
 		float cellContribution = params.getChildFloat("cellContribution");
 		float explorationReward = params.getChildFloat("explorationReward");
@@ -188,7 +189,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		// universe, numActions, flashingReward, nonFlashingReward);
 		TaxicFoodFinderSchema taxicff = new TaxicFoodFinderSchema(
 				"Taxic Food Finder", subject, lRobot, nonFlashingReward,
-				nonFoodReward, taxicDiscountFactor, estimateValue);
+				nonFoodReward, taxicDiscountFactor, estimateValue, rememberLastTwo);
 		taxicff.addInPort("goalFeeder",
 				lastTriedToEatGoalDecider.getOutPort("goalFeeder"), true);
 		addModule(taxicff);

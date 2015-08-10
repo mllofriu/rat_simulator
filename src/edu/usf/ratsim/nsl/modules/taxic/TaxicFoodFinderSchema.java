@@ -25,13 +25,15 @@ public class TaxicFoodFinderSchema extends Module {
 	private Subject subject;
 	private LocalizableRobot robot;
 	private float negReward;
+	private boolean rememberLastTwo;
 
 	public TaxicFoodFinderSchema(String name, Subject subject,
 			LocalizableRobot robot, float reward, float negReward,
-			float lambda, boolean estimateValue) {
+			float lambda, boolean estimateValue, boolean rememberLastTwo) {
 		super(name);
 		this.reward = reward;
 		this.negReward = negReward;
+		this.rememberLastTwo = rememberLastTwo;
 
 		// Votes for action and value
 		votes = new float[subject.getPossibleAffordances().size()];
@@ -65,10 +67,14 @@ public class TaxicFoodFinderSchema extends Module {
 			closestFeeder = robot.getClosestFeeder().getId();
 		else
 			closestFeeder = -1;
-
-		boolean feederToEat = robot.isFeederClose()
-				&& closestFeeder != goalFeeder.get(0)
-				&& closestFeeder != goalFeeder.get(1);
+		boolean feederToEat;
+		if (rememberLastTwo)
+			feederToEat = robot.isFeederClose()
+					&& closestFeeder != goalFeeder.get(0)
+					&& closestFeeder != goalFeeder.get(1);
+		else 
+			feederToEat = robot.isFeederClose();
+		
 		for (Affordance af : affs) {
 			float value = 0;
 			if (af.isRealizable()) {
@@ -77,8 +83,8 @@ public class TaxicFoodFinderSchema extends Module {
 					if (!feederToEat)
 						for (Feeder f : robot.getVisibleFeeders(goalFeeder
 								.getData())) {
-							if (f.getId() != goalFeeder.get(0)
-									&& f.getId() != goalFeeder.get(1)) {
+							if (!rememberLastTwo || (f.getId() != goalFeeder.get(0)
+									&& f.getId() != goalFeeder.get(1))) {
 								Point3f newPos = GeomUtils.simulate(
 										f.getPosition(), af);
 								Quat4f rotToNewPos = GeomUtils

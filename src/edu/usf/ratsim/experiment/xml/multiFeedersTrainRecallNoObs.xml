@@ -8,7 +8,7 @@
 		<params>
 			<closeToFoodThrs>0.15</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
-			<display>false</display>
+			<display>true</display>
 		</params>
 	</universe>
 	
@@ -31,12 +31,12 @@
 			<leftAngle>0.195</leftAngle>
 			<rightAngle>-0.195</rightAngle>
 			<numCCLayers>2</numCCLayers>
-			<numCCCellsPerLayer>10000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>100000</numCCCellsPerLayer>
 			<minPCRadius>.05</minPCRadius>
 			<maxPCRadius>.15</maxPCRadius>
 			<placeCells>goalExponential</placeCells>
 			<goalCellProportion>0.3</goalCellProportion>
-			<minHDRadius>.195</minHDRadius>
+			<minHDRadius>.39</minHDRadius>
 			<maxHDRadius>1.56</maxHDRadius>
 			<numIntentions>8</numIntentions>
 			<deterministicActionSelection>true</deterministicActionSelection>
@@ -48,6 +48,7 @@
 			<initialValue>0</initialValue>
 			<flashingReward>5000</flashingReward>
 			<nonFlashingReward>500</nonFlashingReward>
+			<rememberLastTwo>true</rememberLastTwo>
 			<estimateValue>true</estimateValue>
 			<cellContribution>1</cellContribution>
 			<explorationReward>0</explorationReward>
