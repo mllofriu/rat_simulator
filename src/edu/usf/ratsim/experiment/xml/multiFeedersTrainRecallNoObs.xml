@@ -35,7 +35,7 @@
 			<minPCRadius>.05</minPCRadius>
 			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>goalExponential</placeCells>
-			<goalCellProportion>0.0</goalCellProportion>
+			<goalCellProportion>0.3</goalCellProportion>
 			<minHDRadius>.195</minHDRadius>
 			<maxHDRadius>1.56</maxHDRadius>
 			<numIntentions>8</numIntentions>
