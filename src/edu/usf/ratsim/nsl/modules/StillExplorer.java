@@ -23,14 +23,14 @@ import edu.usf.ratsim.micronsl.Module;
  */
 public class StillExplorer extends Module {
 
-	private static final int TIME_EXPLORING = 5;
+	private static final int TIME_EXPLORING = 1;
 	private int maxActionsSinceForward;
 	private Subject sub;
 	private int actionsSinceForward;
 	private Random r;
 	private float[] votes;
 	private float stillExploringVal;
-	private int timeToExplore;
+	public static int timeToExplore;
 	private Robot robot;
 
 	public StillExplorer(String name, int maxActionsSinceForward, Subject sub,

@@ -8,7 +8,7 @@
 		<params>
 			<closeToFoodThrs>0.15</closeToFoodThrs>
 			<maze>src/edu/usf/ratsim/experiment/mazes/multiFeeders.xml</maze>
-			<display>true</display>
+			<display>false</display>
 		</params>
 	</universe>
 	
@@ -33,10 +33,10 @@
 			<numCCLayers>2</numCCLayers>
 			<numCCCellsPerLayer>100000</numCCCellsPerLayer>
 			<minPCRadius>.05</minPCRadius>
-			<maxPCRadius>.15</maxPCRadius>
+			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>goalExponential</placeCells>
-			<goalCellProportion>0.3</goalCellProportion>
-			<minHDRadius>.39</minHDRadius>
+			<goalCellProportion>0.0</goalCellProportion>
+			<minHDRadius>.195</minHDRadius>
 			<maxHDRadius>1.56</maxHDRadius>
 			<numIntentions>8</numIntentions>
 			<deterministicActionSelection>true</deterministicActionSelection>
@@ -44,14 +44,14 @@
 			<nonFoodReward>-100</nonFoodReward>
 			<taxicDiscountFactor>1</taxicDiscountFactor>
 			<rlDiscountFactor>1</rlDiscountFactor>
-			<alpha>.9</alpha>
+			<alpha>.1</alpha>
 			<initialValue>0</initialValue>
 			<flashingReward>5000</flashingReward>
 			<nonFlashingReward>500</nonFlashingReward>
 			<rememberLastTwo>true</rememberLastTwo>
 			<estimateValue>true</estimateValue>
 			<cellContribution>1</cellContribution>
-			<explorationReward>0</explorationReward>
+			<explorationReward>100</explorationReward>
 			<attentionExploringVal>100</attentionExploringVal>
 			<maxAttentionSpan>20</maxAttentionSpan>
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
@@ -61,7 +61,7 @@
 			<ymin>-.5</ymin>
 			<xmax>.5</xmax>
 			<ymax>.5</ymax>
-			<maxActionsSinceForward>10</maxActionsSinceForward>
+			<maxActionsSinceForward>40</maxActionsSinceForward>
 			<stillExplorationVal>10000</stillExplorationVal>
 		</params>
 	</model>
@@ -157,11 +157,11 @@
 			<number>1</number>
 			<sleep>00</sleep>
 			<beforeEpisodeTasks>
-				<task>
+				<!--<task>
 					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
 					<params>
 					</params>
-				</task>
+				</task>-->
 				<task>
 					<name>edu.usf.experiment.task.FlashActivateRandomFeeder</name>
 					<params>
@@ -229,7 +229,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
 					<params>
-						<n>100</n>
+						<n>1000</n>
 					</params>
 				</condition>
 			</stopConditions>

@@ -50,9 +50,18 @@ public class ArtificialConjCellLayer extends Module {
 					y = r.nextFloat() * (ymax - ymin) + ymin;
 				}
 				float preferredDirection = (float) (r.nextFloat() * Math.PI * 2);
-				float directionRadius = r.nextFloat()
-						* (maxDirectionRadius - minDirectionRadius)
-						+ minDirectionRadius;
+				// float directionRadius = r.nextFloat()
+				// * (maxDirectionRadius - minDirectionRadius)
+				// + minDirectionRadius;
+				// Using Inverse transform sampling to sample from k/x between
+				// min and max
+				// https://en.wikipedia.org/wiki/Inverse_transform_sampling. k =
+				// 1/(ln (max) - ln(min)) due to normalization
+				float k = (float) (1 / (Math.log(maxDirectionRadius) - Math
+						.log(minDirectionRadius)));
+				float s = r.nextFloat();
+				float directionRadius = (float) Math.exp(s / k
+						+ Math.log(minDirectionRadius));
 
 				int preferredIntention = r.nextInt(numIntentions);
 				if (placeCellType.equals("goalExponential")) {
@@ -96,7 +105,7 @@ public class ArtificialConjCellLayer extends Module {
 		Float1dPort intention = (Float1dPort) getInPort("intention");
 		int intentionNum = -1;
 		int i = 0;
-		while (intentionNum == -1 && i < intention.getSize()){
+		while (intentionNum == -1 && i < intention.getSize()) {
 			if (intention.get(i) == 1)
 				intentionNum = i;
 			i++;

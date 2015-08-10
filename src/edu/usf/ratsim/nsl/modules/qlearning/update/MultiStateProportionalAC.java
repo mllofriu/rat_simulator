@@ -14,6 +14,7 @@ import edu.usf.ratsim.micronsl.Float1dPortArray;
 import edu.usf.ratsim.micronsl.FloatMatrixPort;
 import edu.usf.ratsim.micronsl.Int1dPort;
 import edu.usf.ratsim.micronsl.Module;
+import edu.usf.ratsim.nsl.modules.StillExplorer;
 import edu.usf.ratsim.support.Configuration;
 
 public class MultiStateProportionalAC extends Module implements QLAlgorithm {
@@ -54,7 +55,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 	public void run() {
 		// Updates may be disabled for data log reasons
-		if (update) {
+		if (update && StillExplorer.timeToExplore <= 0) {
 			Float1dPortArray reward = (Float1dPortArray) getInPort("reward");
 			Int1dPort takenAction = (Int1dPort) getInPort("takenAction");
 			Float1dPort statesBefore = (Float1dPort) getInPort("statesBefore");
@@ -83,6 +84,9 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 			// if (delta < 0)
 			// delta *= 2;
+			
+			if (Debug.printValueAfter)
+				System.out.println("Value after: " + rlValueEstAfter.get(0));
 
 			// delta = Math.min(2, Math.max(delta, -2));
 
@@ -92,14 +96,14 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 				if (statesBefore.get(stateBefore) > 0 && a != -1)
 					updateLastAction(stateBefore, a, statesBefore, value,
 							reward, taxicValueEstBefore, taxicValueEstAfter,
-							rlValueEstAfter);
+							rlValueEstBefore, rlValueEstAfter);
 		}
 	}
 
 	private void updateLastAction(int sBefore, int a, Float1dPort statesBefore,
 			FloatMatrixPort value, Float1dPort reward,
 			Float1dPort taxicValueEstBefore, Float1dPort taxicValueEstAfter,
-			Float1dPort rlValueEstAfter) {
+			Float1dPort rlValueEstBefore, Float1dPort rlValueEstAfter) {
 		// Error in estimation
 		// float delta = reward.get() + lambda * valueEstAfter.get(0)
 		// - valueEstBefore.get(0);
@@ -107,7 +111,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		float valueDelta = reward.get() + taxicDiscountFactor
 				* taxicValueEstAfter.get(0) + rlDiscountFactor
 				* rlValueEstAfter.get(0)
-				- (taxicValueEstBefore.get(0) + value.get(sBefore, numActions));
+				- (taxicValueEstBefore.get(0) + rlValueEstBefore.get(0));
 
 		// Update value
 		float currValue = value.get(sBefore, numActions);
@@ -121,7 +125,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		float actionDelta = reward.get() + taxicDiscountFactor
 				* taxicValueEstAfter.get(0) + rlDiscountFactor
 				* rlValueEstAfter.get(0)
-				- (taxicValueEstBefore.get(0) + value.get(sBefore, numActions));
+				- (taxicValueEstBefore.get(0) + rlValueEstBefore.get(0));
 		float actionVal = value.get(sBefore, a);
 		float newActionValue = actionVal + alpha * statesBefore.get(sBefore)
 				* (actionDelta);
