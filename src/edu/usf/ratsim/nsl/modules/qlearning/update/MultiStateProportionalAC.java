@@ -55,7 +55,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 	public void run() {
 		// Updates may be disabled for data log reasons
-		if (update && StillExplorer.timeToExplore <= 0) {
+		if (update) {
 			Float1dPortArray reward = (Float1dPortArray) getInPort("reward");
 			Int1dPort takenAction = (Int1dPort) getInPort("takenAction");
 			Float1dPort statesBefore = (Float1dPort) getInPort("statesBefore");
