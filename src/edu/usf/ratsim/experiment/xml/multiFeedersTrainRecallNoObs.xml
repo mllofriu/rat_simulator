@@ -34,7 +34,7 @@
 			<numCCCellsPerLayer>100000</numCCCellsPerLayer>
 			<minPCRadius>.05</minPCRadius>
 			<maxPCRadius>.3</maxPCRadius>
-			<placeCells>goalExponential</placeCells>
+			<placeCells>wallGoalExponential</placeCells>
 			<goalCellProportion>0.3</goalCellProportion>
 			<minHDRadius>.195</minHDRadius>
 			<maxHDRadius>1.56</maxHDRadius>
