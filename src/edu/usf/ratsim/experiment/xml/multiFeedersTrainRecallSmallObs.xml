@@ -30,7 +30,7 @@
 			<leftAngle>0.195</leftAngle>
 			<rightAngle>-0.195</rightAngle>
 			<numCCLayers>2</numCCLayers>
-			<numCCCellsPerLayer>50000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>100000</numCCCellsPerLayer>
 			<minPCRadius>.05</minPCRadius>
 			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
@@ -508,6 +508,9 @@
 				</plotter>
 				<plotter>
 					<name>edu.usf.experiment.plot.ValuePlotter</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.PlotGatherer</name>
 				</plotter>
 			</afterEpisodePlotters>
 		</episodes>
