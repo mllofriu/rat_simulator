@@ -62,7 +62,7 @@ public class VirtUniverse extends Universe {
 		wallNodes = new LinkedList<WallNode>();
 
 		// Just initialize the nodes we need
-		String dstMazeFile = logPath + "maze.xml";
+		String dstMazeFile = logPath + "/maze.xml";
 		IOUtils.copyFile(mazeFile, dstMazeFile);
 		Document doc = XMLDocReader.readDocument(dstMazeFile);
 		ElementWrapper maze = new ElementWrapper(doc.getDocumentElement());
