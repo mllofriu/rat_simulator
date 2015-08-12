@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="us-ascii"?>
 	
 <experiment>
-	<seed>6489465</seed>
 	
 	<universe>
 		<name>edu.usf.ratsim.experiment.universe.virtual.VirtUniverse</name>
@@ -30,39 +29,38 @@
 			<step>.05</step>
 			<leftAngle>0.195</leftAngle>
 			<rightAngle>-0.195</rightAngle>
-			<numPCLayers>2</numPCLayers>
-			<numPCCellsPerLayer>500</numPCCellsPerLayer>
+			<numCCLayers>2</numCCLayers>
+			<numCCCellsPerLayer>50000</numCCCellsPerLayer>
 			<minPCRadius>.05</minPCRadius>
 			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
-			<goalCellProportion>0.5</goalCellProportion>
-			<numHDLayers>2</numHDLayers>
-			<numHDCellsPerLayer>64</numHDCellsPerLayer>
+			<goalCellProportion>0.3</goalCellProportion>
 			<minHDRadius>.195</minHDRadius>
-			<maxHDRadius>.314</maxHDRadius>
+			<maxHDRadius>1.56</maxHDRadius>
 			<numIntentions>8</numIntentions>
 			<deterministicActionSelection>true</deterministicActionSelection>
 			<foodReward>10000</foodReward>
 			<nonFoodReward>-100</nonFoodReward>
 			<taxicDiscountFactor>1</taxicDiscountFactor>
 			<rlDiscountFactor>1</rlDiscountFactor>
-			<alpha>.9</alpha>
+			<alpha>.3</alpha>
 			<initialValue>0</initialValue>
 			<flashingReward>5000</flashingReward>
 			<nonFlashingReward>500</nonFlashingReward>
+			<rememberLastTwo>true</rememberLastTwo>
 			<estimateValue>true</estimateValue>
 			<cellContribution>1</cellContribution>
-			<explorationReward>0</explorationReward>
-			<attentionExploringVal>0</attentionExploringVal>
+			<explorationReward>100</explorationReward>
+			<attentionExploringVal>100</attentionExploringVal>
 			<maxAttentionSpan>20</maxAttentionSpan>
-			<explorationHalfLifeVal>.125</explorationHalfLifeVal>
+			<explorationHalfLifeVal>1</explorationHalfLifeVal>
 			<rlType>actorCritic</rlType>
 			<voteType>halfAndHalfConnection</voteType>
 			<xmin>-.5</xmin>
 			<ymin>-.5</ymin>
 			<xmax>.5</xmax>
 			<ymax>.5</ymax>
-			<maxActionsSinceForward>50</maxActionsSinceForward>
+			<maxActionsSinceForward>40</maxActionsSinceForward>
 			<stillExplorationVal>10000</stillExplorationVal>
 		</params>
 	</model>
@@ -158,11 +156,11 @@
 			<number>1</number>
 			<sleep>00</sleep>
 			<beforeEpisodeTasks>
-				<task>
+				<!--<task>
 					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
 					<params>
 					</params>
-				</task>
+				</task>-->
 				<task>
 					<name>edu.usf.experiment.task.FlashActivateRandomFeeder</name>
 					<params>
@@ -195,9 +193,7 @@
 					<params>
 					</params>
 				</logger>
-				<logger>
-					<name>edu.usf.experiment.log.FeedingLogger</name>
-				</logger>
+				
 				
 			</afterCycleLoggers>
 			
@@ -214,7 +210,7 @@
 						<circle>false</circle>
 						<interval>.1</interval>
 						<angleInterval>.78</angleInterval>
-						<numIntentions>1</numIntentions>
+						<numIntentions>8</numIntentions>
 					</params>
 				</logger>
 				
@@ -232,7 +228,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
 					<params>
-						<n>100</n>
+						<n>500</n>
 					</params>
 				</condition>
 			</stopConditions>
@@ -265,7 +261,7 @@
 	</trial>
 	
 	<trial>
-		<name>DelayedCueNoObstacles</name>
+		<name>DelayedCueNoObs</name>
 		
 		<groups>
 			<group>Control</group>
@@ -343,7 +339,7 @@
 						<circle>false</circle>
 						<interval>.1</interval>
 						<angleInterval>.78</angleInterval>
-						<numIntentions>1</numIntentions>
+						<numIntentions>8</numIntentions>
 					</params>
 				</logger>
 			</afterEpisodeLoggers>
@@ -354,7 +350,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>15000</max>
+						<max>50000</max>
 					</params>
 				</condition>
 				<condition>
@@ -392,6 +388,7 @@
 		</afterTrialPlotters>
 	</trial>
 	
+	
 	<trial>
 		<name>DelayedCueObstacles</name>
 		
@@ -402,32 +399,6 @@
 			<group>NegControl</group>
 		</groups>
 		<beforeTrialTasks>
-			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
-				<params>
-					<group>Dorsal</group>
-					<layers>0</layers>
-				</params>
-			</task>
-			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
-				<params>
-					<group>Ventral</group>
-					<layers>1</layers>
-				</params>
-			</task>
-			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
-				<params>
-					<group>NegControl</group>
-					<layers>0,1</layers>
-				</params>
-			</task>
-			<task>
-				<name>edu.usf.experiment.task.AddSmallWallsTask</name>
-				<params>
-				</params>
-			</task>
 		</beforeTrialTasks>
 		<episodes>
 			<number>1</number>
@@ -442,6 +413,10 @@
 					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
 					<params>
 					</params>
+				</task>
+				
+				<task>
+					<name>edu.usf.experiment.task.AddSmallWallsTask</name>
 				</task>
 				
 				<task>
@@ -495,9 +470,9 @@
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
-						<interval>.1</interval>
+						<interval>.05</interval>
 						<angleInterval>.78</angleInterval>
-						<numIntentions>1</numIntentions>
+						<numIntentions>8</numIntentions>
 					</params>
 				</logger>
 			</afterEpisodeLoggers>
@@ -508,7 +483,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>15000</max>
+						<max>50000</max>
 					</params>
 				</condition>
 				<condition>
