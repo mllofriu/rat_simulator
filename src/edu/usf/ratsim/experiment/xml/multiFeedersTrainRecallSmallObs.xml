@@ -30,7 +30,7 @@
 			<leftAngle>0.195</leftAngle>
 			<rightAngle>-0.195</rightAngle>
 			<numCCLayers>2</numCCLayers>
-			<numCCCellsPerLayer>100000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>500000</numCCCellsPerLayer>
 			<minPCRadius>.05</minPCRadius>
 			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
@@ -75,7 +75,7 @@
 		</tasks>
 	</group>
 	
-	<group>
+	<!-- <group>
 		<name>Dorsal</name>
 		<numMembers>16</numMembers>
 		<params>
@@ -112,7 +112,8 @@
 		<tasks>
 		</tasks>
 	</group>
-	
+	-->
+		
 	<beforeExperimentTasks>
 		<!--<task> <name>edu.usf.experiment.task.EnableRandomFeedersTriangle</name> <params>
 			</params> </task>-->
@@ -203,7 +204,7 @@
 					<params>
 					</params>
 				</logger>
-				<logger>
+				<!-- <logger>
 					
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
@@ -212,7 +213,7 @@
 						<angleInterval>.78</angleInterval>
 						<numIntentions>8</numIntentions>
 					</params>
-				</logger>
+				</logger> -->
 				
 			</afterEpisodeLoggers>
 			<afterEpisodeTasks>
@@ -222,7 +223,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>50000</max>
+						<max>100000</max>
 					</params>
 				</condition>
 				<condition>
@@ -245,9 +246,9 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.experiment.plot.ValuePlotter</name>
-				</plotter>
+				</plotter> -->
 			</afterEpisodePlotters>
 		</episodes>
 		
@@ -312,7 +313,7 @@
 				<task>
 					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
 					<params>
-						<timeout>300</timeout>
+						<timeout>150</timeout>
 					</params>
 				</task>
 			</afterCycleTasks>
@@ -333,15 +334,15 @@
 					<params>
 					</params>
 				</logger>
-				<logger>
+				<!-- <logger>
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
 						<interval>.1</interval>
 						<angleInterval>.78</angleInterval>
 						<numIntentions>8</numIntentions>
-					</params>
-				</logger>
+					</params> 
+				</logger> -->
 			</afterEpisodeLoggers>
 			<afterEpisodeTasks>
 				
@@ -350,7 +351,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>50000</max>
+						<max>200000</max>
 					</params>
 				</condition>
 				<condition>
@@ -373,9 +374,9 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.experiment.plot.ValuePlotter</name>
-				</plotter>
+				</plotter> -->
 			</afterEpisodePlotters>
 		</episodes>
 		
@@ -445,7 +446,7 @@
 				<task>
 					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
 					<params>
-						<timeout>300</timeout>
+						<timeout>150</timeout>
 					</params>
 				</task>
 			</afterCycleTasks>
@@ -466,7 +467,7 @@
 					<params>
 					</params>
 				</logger>
-				<logger>
+				<!-- <logger>
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
 						<circle>false</circle>
@@ -474,7 +475,7 @@
 						<angleInterval>.78</angleInterval>
 						<numIntentions>8</numIntentions>
 					</params>
-				</logger>
+				</logger> -->
 			</afterEpisodeLoggers>
 			<afterEpisodeTasks>
 				
@@ -483,7 +484,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>50000</max>
+						<max>200000</max>
 					</params>
 				</condition>
 				<condition>
@@ -506,9 +507,9 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
-				<plotter>
+				<!-- <plotter>
 					<name>edu.usf.experiment.plot.ValuePlotter</name>
-				</plotter>
+				</plotter> -->
 				<plotter>
 					<name>edu.usf.experiment.plot.PlotGatherer</name>
 				</plotter>
