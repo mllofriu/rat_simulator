@@ -51,14 +51,21 @@ public class TaxicValueSchema extends Module {
 		Int1dPort goalFeeder = (Int1dPort) getInPort("goalFeeder");
 
 
-		// Get the value of the current position
-		if (estimateValue) {
+		if (robot.getVisibleFeeders(goalFeeder.getData()).isEmpty())
 			value[0] = 0;
+		// Get the value of the current position
+		else if (estimateValue) {
+			value[0] = Float.NEGATIVE_INFINITY;
 			for (Feeder f : robot.getVisibleFeeders(goalFeeder.getData())) {
 //				if (robot.isFeederClose()
 //						&& robot.getClosestFeeder().getId() == f.getId())
-					value[0] += getFeederValue(f.getPosition());
+				float feederValue = getFeederValue(f.getPosition());
+				if (feederValue > value[0])
+					value[0] = feederValue;
+					
 			}
+			if (value[0] == Float.NEGATIVE_INFINITY)
+				value[0] = 0;
 		}
 	}
 

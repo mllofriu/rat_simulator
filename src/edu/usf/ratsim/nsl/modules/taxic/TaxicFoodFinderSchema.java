@@ -76,11 +76,11 @@ public class TaxicFoodFinderSchema extends Module {
 			feederToEat = robot.isFeederClose();
 		
 		for (Affordance af : affs) {
-			float value = 0;
+			float value = Float.NEGATIVE_INFINITY;
 			if (af.isRealizable()) {
 				if (af instanceof TurnAffordance
 						|| af instanceof ForwardAffordance) {
-					if (!feederToEat)
+					if (!feederToEat){
 						for (Feeder f : robot.getVisibleFeeders(goalFeeder
 								.getData())) {
 							if (!rememberLastTwo || (f.getId() != goalFeeder.get(0)
@@ -92,16 +92,22 @@ public class TaxicFoodFinderSchema extends Module {
 
 								float angleDiff = Math.abs(GeomUtils
 										.rotToAngle(rotToNewPos));
+								float feederVal;
 								if (angleDiff < robot.getHalfFieldView())
-									value += getFeederValue(newPos);
+									feederVal = getFeederValue(newPos);
 								else
-									value += -getFeederValue(f.getPosition());
+									feederVal = -getFeederValue(f.getPosition());
+								if (feederVal > value)
+									value = feederVal;
 							}
 						}
+					}
 				} else if (af instanceof EatAffordance) {
 					if (feederToEat) {
-						value += getFeederValue(robot.getClosestFeeder()
+						float feederValue = getFeederValue(robot.getClosestFeeder()
 								.getPosition());
+						if (feederValue > value)
+							value = feederValue;
 						// value += reward;
 					}
 				} else
@@ -110,7 +116,10 @@ public class TaxicFoodFinderSchema extends Module {
 							+ " not supported by robot");
 			}
 
-			votes[voteIndex] = value;
+			if (value != Float.NEGATIVE_INFINITY)
+				votes[voteIndex] = value;
+			else
+				votes[voteIndex] = 0;
 			voteIndex++;
 		}
 
