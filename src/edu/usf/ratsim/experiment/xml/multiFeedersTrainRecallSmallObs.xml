@@ -509,6 +509,9 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.ValuePlotter</name>
 				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.PlotGatherer</name>
+				</plotter>
 			</afterEpisodePlotters>
 		</episodes>
 		
