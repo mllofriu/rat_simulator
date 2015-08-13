@@ -30,7 +30,7 @@
 			<leftAngle>0.195</leftAngle>
 			<rightAngle>-0.195</rightAngle>
 			<numCCLayers>2</numCCLayers>
-			<numCCCellsPerLayer>500000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>100000</numCCCellsPerLayer>
 			<minPCRadius>.05</minPCRadius>
 			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
@@ -68,16 +68,16 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>16</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
 		</tasks>
 	</group>
 	
-	<!-- <group>
+	 <group>
 		<name>Dorsal</name>
-		<numMembers>16</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -86,7 +86,7 @@
 	
 	<group>
 		<name>Ventral</name>
-		<numMembers>16</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -95,7 +95,7 @@
 	
 	<group>
 		<name>NegControl</name>
-		<numMembers>16</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -106,13 +106,13 @@
 	
 	<group>
 		<name>TimeoutControl</name>
-		<numMembers>16</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
 		</tasks>
 	</group>
-	-->
+	
 		
 	<beforeExperimentTasks>
 		<!--<task> <name>edu.usf.experiment.task.EnableRandomFeedersTriangle</name> <params>
@@ -398,8 +398,30 @@
 			<group>Dorsal</group>
 			<group>Ventral</group>
 			<group>NegControl</group>
+			<group>TimeoutControl</group>
 		</groups>
 		<beforeTrialTasks>
+			<task>
+				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
+				<params>
+					<group>Dorsal</group>
+					<layers>0</layers>
+				</params>
+			</task>
+			<task>
+				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
+				<params>
+					<group>Ventral</group>
+					<layers>1</layers>
+				</params>
+			</task>
+			<task>
+				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
+				<params>
+					<group>NegControl</group>
+					<layers>0,1</layers>
+				</params>
+			</task>
 		</beforeTrialTasks>
 		<episodes>
 			<number>1</number>
@@ -532,7 +554,9 @@
 	<afterExperimentLoggers>
 	</afterExperimentLoggers>
 	<afterExperimentPlotters>
-		
+		<plotter>
+			<name>edu.usf.experiment.plot.RuntimePerTrialPlotter</name>
+		</plotter>
 		<!-- <plotter> <name>edu.usf.experiment.plot.PolicyPlotter</name> </plotter> -->
 	</afterExperimentPlotters>
 </experiment>
