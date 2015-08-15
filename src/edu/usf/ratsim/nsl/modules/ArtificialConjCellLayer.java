@@ -6,8 +6,6 @@ import java.util.Random;
 
 import javax.vecmath.Point3f;
 
-import com.sun.media.jai.opimage.ConjugateCRIF;
-
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.RandomSingleton;
