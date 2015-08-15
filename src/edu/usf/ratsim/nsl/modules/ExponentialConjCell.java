@@ -14,6 +14,7 @@ public class ExponentialConjCell {
 	private int preferredIntention;
 	private float placeRadius;
 	private float angleRadius;
+	private boolean active;
 
 	public ExponentialConjCell(Point3f preferredLocation,
 			float preferredDirection, float placeRadius, float angleRadius,
@@ -28,11 +29,13 @@ public class ExponentialConjCell {
 		this.angleDispersion = (float) (-Math.pow(angleRadius, 2) / Math
 				.log(RADIUS_THRS));
 		this.preferredIntention = preferredIntention;
+		active = true;
 	}
 
 	public float getActivation(Point3f currLocation, float currAngle,
 			int currIntention, float distanceToWall) {
-		if (currIntention != preferredIntention
+		if (!active
+				|| currIntention != preferredIntention
 				|| preferredLocation.distance(currLocation) > placeRadius
 				|| GeomUtils.angleDistance(currAngle, preferredDirection) > angleRadius)
 			return 0;
@@ -40,8 +43,8 @@ public class ExponentialConjCell {
 			return (float) (Math.exp(-Math.pow(
 					preferredLocation.distance(currLocation), 2)
 					/ placeDispersion) * Math.exp(-Math.pow(
-							GeomUtils.angleDistance(currAngle, preferredDirection) , 2)
-							/ angleDispersion));
+					GeomUtils.angleDistance(currAngle, preferredDirection), 2)
+					/ angleDispersion));
 	}
 
 	public Point3f getPreferredLocation() {
@@ -82,6 +85,10 @@ public class ExponentialConjCell {
 
 	public void setAngleRadius(float angleRadius) {
 		this.angleRadius = angleRadius;
+	}
+
+	public void deactivate() {
+		this.active = false;
 	}
 
 }

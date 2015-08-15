@@ -27,7 +27,6 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 	private float alpha;
 	private float discountFactor;
-	private int numStates;
 
 	private boolean update;
 
@@ -39,12 +38,19 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 	private float taxicDiscountFactor;
 
+	private float tracesDecay;
+
+	private float[] traces;
+
 	public MultiStateProportionalAC(String name, Subject subject,
-			int numActions, float taxicDiscountFactor, float rlDiscountFactor,
-			float alpha, float initialValue) {
+			int numActions, int numStates, float taxicDiscountFactor, float rlDiscountFactor,
+			float alpha, float tracesDecay, float initialValue) {
 		super(name);
 		this.alpha = alpha;
 		this.rlDiscountFactor = rlDiscountFactor;
+		this.tracesDecay = tracesDecay;
+		if (tracesDecay != 0)
+			traces = new float[numStates];
 		this.taxicDiscountFactor = taxicDiscountFactor;
 		this.subject = subject;
 
@@ -67,43 +73,30 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 			FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
 			// Gets the active state as computed at the beginning of the cycle
 			int a = takenAction.get();
-
-			// float delta = reward.get() + lambda * valueEstAfter.get(0)
-			// - valueEstBefore.get(0);
-			//
-			// System.out.println("Taxic delta: " + (taxicValueEstAfter.get(0)
-			// - taxicValueEstBefore.get(0)));
-			// System.out.println("Taken action " + takenAction.get());
-			//
-			// if (Debug.printDelta)
-			// if (delta < -.5)
-			// System.out.println("Big neg delta: " + delta);
-			//
-			// if (Debug.printDelta)
-			// System.out.println("Origianal Delta: " + delta);
-
-			// if (delta < 0)
-			// delta *= 2;
 			
 			if (Debug.printValueAfter)
 				System.out.println("Value after: " + rlValueEstAfter.get(0));
 
-			// delta = Math.min(2, Math.max(delta, -2));
-
+			if (tracesDecay != 0)
+				for (int state = 0; state < statesBefore.getSize(); state++){
+					traces[state] *= tracesDecay;
+					traces[state] += statesBefore.get(state);
+				}
+				
 			// Do the update once for each state
 			for (int stateBefore = 0; stateBefore < statesBefore.getSize(); stateBefore++)
 				// Dont bother if the activation is to small
 				if (statesBefore.get(stateBefore) > 0 && a != -1)
 					updateLastAction(stateBefore, a, statesBefore, value,
 							reward, taxicValueEstBefore, taxicValueEstAfter,
-							rlValueEstBefore, rlValueEstAfter);
+							rlValueEstBefore, rlValueEstAfter, traces);
 		}
 	}
 
 	private void updateLastAction(int sBefore, int a, Float1dPort statesBefore,
 			FloatMatrixPort value, Float1dPort reward,
 			Float1dPort taxicValueEstBefore, Float1dPort taxicValueEstAfter,
-			Float1dPort rlValueEstBefore, Float1dPort rlValueEstAfter) {
+			Float1dPort rlValueEstBefore, Float1dPort rlValueEstAfter, float[] traces) {
 		// Error in estimation
 		// float delta = reward.get() + lambda * valueEstAfter.get(0)
 		// - valueEstBefore.get(0);
@@ -115,7 +108,12 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 		// Update value
 		float currValue = value.get(sBefore, numActions);
-		float newValue = currValue + alpha * statesBefore.get(sBefore) * valueDelta;
+		float activation;
+		if (tracesDecay == 0)
+			activation = statesBefore.get(sBefore);
+		else
+			activation = traces[sBefore];
+		float newValue = currValue + alpha * activation * valueDelta;
 		if (Float.isInfinite(newValue) || Float.isNaN(newValue)) {
 			System.out.println("Numeric Error");
 			System.exit(1);
@@ -127,7 +125,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 				* rlValueEstAfter.get(0)
 				- (taxicValueEstBefore.get(0) + rlValueEstBefore.get(0));
 		float actionVal = value.get(sBefore, a);
-		float newActionValue = actionVal + alpha * statesBefore.get(sBefore)
+		float newActionValue = actionVal + alpha * activation
 				* (actionDelta);
 		
 		//

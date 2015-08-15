@@ -29,8 +29,8 @@
 			<step>.05</step>
 			<leftAngle>0.195</leftAngle>
 			<rightAngle>-0.195</rightAngle>
-			<numCCLayers>2</numCCLayers>
-			<numCCCellsPerLayer>500000</numCCCellsPerLayer>
+			<numCCLayers>3</numCCLayers>
+			<numCCCellsPerLayer>100000</numCCCellsPerLayer>
 			<minPCRadius>.05</minPCRadius>
 			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
@@ -43,7 +43,8 @@
 			<nonFoodReward>-100</nonFoodReward>
 			<taxicDiscountFactor>1</taxicDiscountFactor>
 			<rlDiscountFactor>1</rlDiscountFactor>
-			<alpha>.3</alpha>
+			<alpha>.5</alpha>
+			<tracesDecay>.5</tracesDecay>
 			<initialValue>0</initialValue>
 			<flashingReward>5000</flashingReward>
 			<nonFlashingReward>500</nonFlashingReward>
@@ -55,12 +56,14 @@
 			<maxAttentionSpan>20</maxAttentionSpan>
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
 			<rlType>actorCritic</rlType>
-			<voteType>halfAndHalfConnection</voteType>
+			<voteType>gradient</voteType>
+			<votesConnProbs>1,.5,0</votesConnProbs>
+			<valueConnProbs>0,.5,1</valueConnProbs>
 			<xmin>-.5</xmin>
 			<ymin>-.5</ymin>
 			<xmax>.5</xmax>
 			<ymax>.5</ymax>
-			<maxActionsSinceForward>40</maxActionsSinceForward>
+			<maxActionsSinceForward>10</maxActionsSinceForward>
 			<stillExplorationVal>10000</stillExplorationVal>
 		</params>
 	</model>
@@ -75,7 +78,7 @@
 		</tasks>
 	</group>
 	
-	<!-- <group>
+	<group>
 		<name>Dorsal</name>
 		<numMembers>16</numMembers>
 		<params>
@@ -112,7 +115,7 @@
 		<tasks>
 		</tasks>
 	</group>
-	-->
+	
 		
 	<beforeExperimentTasks>
 		<!--<task> <name>edu.usf.experiment.task.EnableRandomFeedersTriangle</name> <params>
@@ -204,7 +207,7 @@
 					<params>
 					</params>
 				</logger>
-				<!-- <logger>
+				 <logger>
 					
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
@@ -213,7 +216,7 @@
 						<angleInterval>.78</angleInterval>
 						<numIntentions>8</numIntentions>
 					</params>
-				</logger> -->
+				</logger> 
 				
 			</afterEpisodeLoggers>
 			<afterEpisodeTasks>
@@ -229,7 +232,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
 					<params>
-						<n>500</n>
+						<n>100</n>
 					</params>
 				</condition>
 			</stopConditions>
@@ -246,9 +249,9 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
-				<!-- <plotter>
+				 <plotter>
 					<name>edu.usf.experiment.plot.ValuePlotter</name>
-				</plotter> -->
+				</plotter>  
 			</afterEpisodePlotters>
 		</episodes>
 		
@@ -400,6 +403,27 @@
 			<group>NegControl</group>
 		</groups>
 		<beforeTrialTasks>
+			<task>
+				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
+				<params>
+					<group>Ventral</group>
+					<layers>2</layers>
+				</params>
+			</task>
+			<task>
+				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
+				<params>
+					<group>Dorsal</group>
+					<layers>0</layers>
+				</params>
+			</task>
+			<task>
+				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
+				<params>
+					<group>NegControl</group>
+					<layers>0,1</layers>
+				</params>
+			</task>
 		</beforeTrialTasks>
 		<episodes>
 			<number>1</number>
