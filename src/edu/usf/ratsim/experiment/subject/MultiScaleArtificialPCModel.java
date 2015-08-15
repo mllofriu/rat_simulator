@@ -34,10 +34,12 @@ import edu.usf.ratsim.nsl.modules.SubjectAte;
 import edu.usf.ratsim.nsl.modules.SubjectTriedToEat;
 import edu.usf.ratsim.nsl.modules.Voter;
 import edu.usf.ratsim.nsl.modules.qlearning.Reward;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.GradientValue;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.GradientVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.HalfAndHalfConnectionValue;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.HalfAndHalfConnectionVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.NoExploration;
+import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalValue;
 import edu.usf.ratsim.nsl.modules.qlearning.actionselection.ProportionalVotes;
 import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalAC;
 import edu.usf.ratsim.nsl.modules.qlearning.update.MultiStateProportionalQL;
@@ -53,7 +55,7 @@ public class MultiScaleArtificialPCModel extends Model {
 	private List<DecayingExplorationSchema> exploration;
 	private JointStatesManyConcatenate jointPCHDIntentionState;
 	private Intention intentionGetter;
-	private HalfAndHalfConnectionValue rlValue;
+	private Module rlValue;
 	private List<ArtificialConjCellLayer> conjCellLayers;
 
 	public MultiScaleArtificialPCModel() {
@@ -74,6 +76,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		float rlDiscountFactor = params.getChildFloat("rlDiscountFactor");
 		float taxicDiscountFactor = params.getChildFloat("taxicDiscountFactor");
 		float alpha = params.getChildFloat("alpha");
+		float tracesDecay = params.getChildFloat("tracesDecay");
 		float initialValue = params.getChildFloat("initialValue");
 		float foodReward = params.getChildFloat("foodReward");
 		float nonFoodReward = params.getChildFloat("nonFoodReward");
@@ -163,15 +166,11 @@ public class MultiScaleArtificialPCModel extends Model {
 		Module rlVotes;
 		// Take the value of each state and vote for an action
 		if (voteType.equals("proportional"))
-			if (rlType.equals("actorCritic"))
-				rlVotes = new ProportionalVotes("RL votes");
-			else
-				rlVotes = new ProportionalVotes("RL votes");
-		else if (voteType.equals("gradientConnection"))
-			rlVotes = new GradientVotes("RL votes",
-					(Float1dPortArray) jointPCHDIntentionState
-							.getOutPort("jointState"), valuePort, numActions);
-		else if (voteType.equals("halfAndHalfConnection"))
+			rlVotes = new ProportionalVotes("RL votes", numActions);
+		else if (voteType.equals("gradient")) {
+			List<Float> connProbs = params.getChildFloatList("votesConnProbs");
+			rlVotes = new GradientVotes("RL votes", numActions, numStates, numCCLayers,connProbs);
+		} else if (voteType.equals("halfAndHalfConnection"))
 			rlVotes = new HalfAndHalfConnectionVotes("RL votes", numActions,
 					cellContribution);
 		else
@@ -289,6 +288,12 @@ public class MultiScaleArtificialPCModel extends Model {
 		if (voteType.equals("halfAndHalfConnection"))
 			rlValue = new HalfAndHalfConnectionValue("RL value estimation",
 					numActions, cellContribution);
+		else if (voteType.equals("proportional"))
+			rlValue = new ProportionalValue("RL  estimation", numActions);
+		else if (voteType.equals("gradient")){
+			List<Float> connProbs = params.getChildFloatList("valueConnProbs");
+			rlValue = new GradientValue("RL value estimation", numActions, numStates, numCCLayers,connProbs);
+		}
 		else
 			throw new RuntimeException("Vote mechanism not implemented");
 		rlValue.addInPort("states",
@@ -354,8 +359,8 @@ public class MultiScaleArtificialPCModel extends Model {
 			addModule(mspql);
 		} else if (rlType.equals("actorCritic")) {
 			MultiStateProportionalAC mspac = new MultiStateProportionalAC(
-					"RL Module", subject, numActions, taxicDiscountFactor,
-					rlDiscountFactor, alpha, initialValue);
+					"RL Module", subject, numActions,numStates, taxicDiscountFactor,
+					rlDiscountFactor, alpha, tracesDecay, initialValue);
 			mspac.addInPort("reward",
 					(Float1dPortArray) reward.getOutPort("reward"));
 			mspac.addInPort("takenAction", takenActionPort);

@@ -6,6 +6,8 @@ import java.util.Random;
 
 import javax.vecmath.Point3f;
 
+import com.sun.media.jai.opimage.ConjugateCRIF;
+
 import edu.usf.experiment.robot.LocalizableRobot;
 import edu.usf.experiment.universe.Feeder;
 import edu.usf.experiment.utils.RandomSingleton;
@@ -19,9 +21,11 @@ public class ArtificialConjCellLayer extends Module {
 
 	private List<ExponentialConjCell> cells;
 
-	private boolean active;
+//	private boolean active;
 
 	private LocalizableRobot robot;
+
+	private Random random;
 
 	public ArtificialConjCellLayer(String name, LocalizableRobot robot,
 			float placeRadius, float minDirectionRadius,
@@ -30,26 +34,26 @@ public class ArtificialConjCellLayer extends Module {
 			float ymax, List<Feeder> goals, float nearGoalProb) {
 		super(name);
 
-		active = true;
+//		active = true;
 
 		cells = new LinkedList<ExponentialConjCell>();
-		Random r = RandomSingleton.getInstance();
+		random = RandomSingleton.getInstance();
 		int i = 0;
 		float x, y;
 		do {
 			if (placeCellType.equals("goalExponential") || placeCellType.equals("wallGoalExponential")) {
 				// || placeCellType.equals("wallGoalExponential")) {
-				if (r.nextFloat() < nearGoalProb) {
-					int fIndex = r.nextInt(goals.size());
+				if (random.nextFloat() < nearGoalProb) {
+					int fIndex = random.nextInt(goals.size());
 					Point3f p = goals.get(fIndex).getPosition();
-					x = (float) (p.x + r.nextFloat() * .2 - .1);
-					y = (float) (p.y + r.nextFloat() * .2 - .1);
+					x = (float) (p.x + random.nextFloat() * .2 - .1);
+					y = (float) (p.y + random.nextFloat() * .2 - .1);
 				} else {
 					// TODO change them to have different centers among layers
-					x = r.nextFloat() * (xmax - xmin) + xmin;
-					y = r.nextFloat() * (ymax - ymin) + ymin;
+					x = random.nextFloat() * (xmax - xmin) + xmin;
+					y = random.nextFloat() * (ymax - ymin) + ymin;
 				}
-				float preferredDirection = (float) (r.nextFloat() * Math.PI * 2);
+				float preferredDirection = (float) (random.nextFloat() * Math.PI * 2);
 				// float directionRadius = r.nextFloat()
 				// * (maxDirectionRadius - minDirectionRadius)
 				// + minDirectionRadius;
@@ -59,11 +63,11 @@ public class ArtificialConjCellLayer extends Module {
 				// 1/(ln (max) - ln(min)) due to normalization
 				float k = (float) (1 / (Math.log(maxDirectionRadius) - Math
 						.log(minDirectionRadius)));
-				float s = r.nextFloat();
+				float s = random.nextFloat();
 				float directionRadius = (float) Math.exp(s / k
 						+ Math.log(minDirectionRadius));
 
-				int preferredIntention = r.nextInt(numIntentions);
+				int preferredIntention = random.nextInt(numIntentions);
 				if (placeCellType.equals("goalExponential")) {
 					cells.add(new ExponentialConjCell(new Point3f(x, y, 0),
 							preferredDirection, placeRadius, directionRadius,
@@ -71,7 +75,7 @@ public class ArtificialConjCellLayer extends Module {
 				} else if (placeCellType.equals("wallGoalExponential")){
 					cells.add(new ExponentialWallConjCell(new Point3f(x, y, 0),
 							preferredDirection, placeRadius, directionRadius,
-							preferredIntention, r));
+							preferredIntention, random));
 				}
 			} else {
 				System.err.println("Place cell type not implemented");
@@ -140,7 +144,10 @@ public class ArtificialConjCellLayer extends Module {
 	}
 
 	public void deactivate() {
-		active = false;
+//		active = false;
+		for (ExponentialConjCell cell : cells)
+			if (random.nextFloat() < .9)
+				cell.deactivate();
 	}
 
 	public void simRun(Point3f pos, float direction, int intention,
@@ -151,7 +158,7 @@ public class ArtificialConjCellLayer extends Module {
 
 	public void simRun(Point3f pos, float direction, int intention,
 			boolean isFeederClose, float distanceToClosestWall) {
-		if (active) {
+//		if (active) {
 			int i = 0;
 			float total = 0;
 			for (ExponentialConjCell pCell : cells) {
@@ -172,10 +179,10 @@ public class ArtificialConjCellLayer extends Module {
 			// if (total != 0)
 			// for (i = 0; i < activation.length; i++)
 			// activation[i] = activation[i] / total * layerEnergy ;
-		} else {
-			for (int i = 0; i < activation.length; i++)
-				activation[i] = 0;
-		}
+//		} else {
+//			for (int i = 0; i < activation.length; i++)
+//				activation[i] = 0;
+//		}
 	}
 
 	@Override

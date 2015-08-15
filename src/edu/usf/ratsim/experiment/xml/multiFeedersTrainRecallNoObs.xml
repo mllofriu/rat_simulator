@@ -43,7 +43,7 @@
 			<nonFoodReward>-100</nonFoodReward>
 			<taxicDiscountFactor>1</taxicDiscountFactor>
 			<rlDiscountFactor>1</rlDiscountFactor>
-			<alpha>.1</alpha>
+			<alpha>.9</alpha>
 			<initialValue>0</initialValue>
 			<flashingReward>5000</flashingReward>
 			<nonFlashingReward>500</nonFlashingReward>
@@ -228,7 +228,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
 					<params>
-						<n>1000</n>
+						<n>100</n>
 					</params>
 				</condition>
 			</stopConditions>

@@ -14,23 +14,22 @@ import edu.usf.ratsim.nsl.modules.Voter;
  * @author ludo
  *
  */
-public class ProportionalVotes extends Module implements Voter {
+public class ProportionalValue extends Module implements Voter {
 
-	public float[] actionVote;
+	public float[] valueEst;
 	private int numActions;
 
-	public ProportionalVotes(String name, int numActions) {
+	public ProportionalValue(String name, int numActions) {
 		super(name);
+		valueEst = new float[1];
 		this.numActions = numActions;
-		actionVote = new float[numActions];
-		addOutPort("votes", new Float1dPortArray(this, actionVote));
+		addOutPort("valueEst", new Float1dPortArray(this, valueEst));
 	}
 
 	public void run() {
 		Float1dPort states = (Float1dPort) getInPort("states");
 		FloatMatrixPort value = (FloatMatrixPort) getInPort("value");
-		for (int action = 0; action < numActions; action++)
-			actionVote[action] = 0f;
+		valueEst[0] = 0f;
 
 		double sum = 0;
 		float cantStates = states.getSize();
@@ -38,25 +37,19 @@ public class ProportionalVotes extends Module implements Voter {
 			float stateVal = states.get(state);
 			if (stateVal != 0) {
 				sum += stateVal;
-				for (int action = 0; action < numActions; action++) {
-					float actionVal = value.get(state, action);
-					if (actionVal != 0)
-						actionVote[action] = actionVote[action] + stateVal
-								* actionVal;
-				}
+				float val = value.get(state, numActions);
+				if (val != 0)
+					valueEst[0] = valueEst[0] + stateVal * val;
 			}
 		}
 
 		// Normalize
 		if (sum != 0)
-			for (int action = 0; action < numActions; action++)
-				// Normalize with real value and revert previous normalization
-				actionVote[action] = (float) (actionVote[action] / sum);
+			valueEst[0] = (float) (valueEst[0] / sum);
 
 		if (Debug.printValues) {
-			System.out.println("RL votes");
-			for (int action = 0; action < numActions; action++)
-				System.out.print(actionVote[action] + " ");
+			System.out.println("RL value");
+			System.out.print(valueEst[0] + " ");
 			System.out.println();
 		}
 
@@ -64,7 +57,7 @@ public class ProportionalVotes extends Module implements Voter {
 
 	@Override
 	public float[] getVotes() {
-		return actionVote;
+		return valueEst;
 	}
 
 	@Override
