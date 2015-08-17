@@ -31,8 +31,8 @@
 			<rightAngle>-0.195</rightAngle>
 			<numCCLayers>2</numCCLayers>
 			<numCCCellsPerLayer>25000,10000</numCCCellsPerLayer>
-			<minPCRadius>.12</minPCRadius>
-			<maxPCRadius>.24</maxPCRadius>
+			<minPCRadius>.072</minPCRadius>
+			<maxPCRadius>.144</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
 			<goalCellProportion>0.3</goalCellProportion>
 			<minHDRadius>.195</minHDRadius>
@@ -57,8 +57,8 @@
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
 			<rlType>actorCritic</rlType>
 			<voteType>gradient</voteType>
-			<votesConnProbs>1,0</votesConnProbs>
-			<valueConnProbs>0,1</valueConnProbs>
+			<votesConnProbs>1,0.5</votesConnProbs>
+			<valueConnProbs>0.5,1</valueConnProbs>
 			<xmin>-.5</xmin>
 			<ymin>-.5</ymin>
 			<xmax>.5</xmax>
