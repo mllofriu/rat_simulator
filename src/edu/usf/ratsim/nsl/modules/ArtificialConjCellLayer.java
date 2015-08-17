@@ -141,10 +141,10 @@ public class ArtificialConjCellLayer extends Module {
 		return cells;
 	}
 
-	public void deactivate() {
+	public void deactivate(float proportion) {
 //		active = false;
 		for (ExponentialConjCell cell : cells)
-			if (random.nextFloat() < .9)
+			if (random.nextFloat() < proportion)
 				cell.deactivate();
 	}
 

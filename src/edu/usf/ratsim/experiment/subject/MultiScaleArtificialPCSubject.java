@@ -83,8 +83,8 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	}
 
 	@Override
-	public void deactivateHPCLayers(LinkedList<Integer> indexList) {
-		model.deactivatePCL(indexList);
+	public void deactivateHPCLayers(LinkedList<Integer> indexList, float proportion) {
+		model.deactivatePCL(indexList, proportion);
 	}
 
 	@Override

@@ -399,9 +399,9 @@ public class MultiScaleArtificialPCModel extends Model {
 			gs.newTrial();
 	}
 
-	public void deactivatePCL(List<Integer> feedersToDeactivate) {
+	public void deactivatePCL(List<Integer> feedersToDeactivate, float proportion) {
 		for (Integer layer : feedersToDeactivate) {
-			conjCellLayers.get(layer).deactivate();
+			conjCellLayers.get(layer).deactivate(proportion);
 		}
 	}
 
