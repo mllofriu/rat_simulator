@@ -68,7 +68,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		float maxPCRadius = params.getChildFloat("maxPCRadius");
 
 		int numCCLayers = params.getChildInt("numCCLayers");
-		int numCCCellsPerLayer = params.getChildInt("numCCCellsPerLayer");
+		List<Integer> numCCCellsPerLayer = params.getChildIntList("numCCCellsPerLayer");
 		float minHDRadius = params.getChildFloat("minHDRadius");
 		float maxHDRadius = params.getChildFloat("maxHDRadius");
 		String placeCellType = params.getChildText("placeCells");
@@ -138,7 +138,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		for (int i = 0; i < numCCLayers; i++) {
 			ArtificialConjCellLayer ccl = new ArtificialConjCellLayer("CCL "
 					+ i, lRobot, radius, minHDRadius, maxHDRadius,
-					numIntentions, numCCCellsPerLayer, placeCellType, xmin,
+					numIntentions, numCCCellsPerLayer.get(i), placeCellType, xmin,
 					ymin, xmax, ymax, lRobot.getAllFeeders(),
 					goalCellProportion);
 			ccl.addInPort("intention", intention.getOutPort("intention"));
