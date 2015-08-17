@@ -30,7 +30,7 @@
 			<leftAngle>0.195</leftAngle>
 			<rightAngle>-0.195</rightAngle>
 			<numCCLayers>3</numCCLayers>
-			<numCCCellsPerLayer>10000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>100000</numCCCellsPerLayer>
 			<minPCRadius>.05</minPCRadius>
 			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
@@ -57,8 +57,8 @@
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
 			<rlType>actorCritic</rlType>
 			<voteType>gradient</voteType>
-			<votesConnProbs>1,.5,0</votesConnProbs>
-			<valueConnProbs>0,.5,1</valueConnProbs>
+			<votesConnProbs>1,.1,0</votesConnProbs>
+			<valueConnProbs>0,.1,1</valueConnProbs>
 			<xmin>-.5</xmin>
 			<ymin>-.5</ymin>
 			<xmax>.5</xmax>
@@ -69,18 +69,11 @@
 	</model>
 	
 	
-	<group>
-		<name>Control</name>
-		<numMembers>16</numMembers>
-		<params>
-		</params>
-		<tasks>
-		</tasks>
-	</group>
+	
 	
 	 <group>
 		<name>Dorsal</name>
-		<numMembers>16</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -89,7 +82,16 @@
 	
 	<group>
 		<name>Ventral</name>
-		<numMembers>16</numMembers>
+		<numMembers>8</numMembers>
+		<params>
+		</params>
+		<tasks>
+		</tasks>
+	</group>
+	
+	<group>
+		<name>Control</name>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -98,7 +100,7 @@
 	
 	<group>
 		<name>NegControl</name>
-		<numMembers>16</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -109,7 +111,7 @@
 	
 	<group>
 		<name>TimeoutControl</name>
-		<numMembers>16</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -207,7 +209,7 @@
 					<params>
 					</params>
 				</logger>
-				 <logger>
+<!--	<logger>
 					
 					<name>edu.usf.experiment.log.ValueLogger</name>
 					<params>
@@ -216,7 +218,8 @@
 						<angleInterval>.78</angleInterval>
 						<numIntentions>8</numIntentions>
 					</params>
-				</logger> 
+				</logger> 			-->
+				 
 				
 			</afterEpisodeLoggers>
 			<afterEpisodeTasks>
@@ -249,9 +252,10 @@
 				<plotter>
 					<name>edu.usf.experiment.plot.PathPlotter</name>
 				</plotter>
-				 <plotter>
+<!--			<plotter>
 					<name>edu.usf.experiment.plot.ValuePlotter</name>
-				</plotter>  
+				</plotter>  	-->
+				 
 			</afterEpisodePlotters>
 		</episodes>
 		
