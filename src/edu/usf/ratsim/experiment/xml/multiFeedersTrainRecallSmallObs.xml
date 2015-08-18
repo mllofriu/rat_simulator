@@ -71,7 +71,7 @@
 	
 	<group>
 		<name>Ventral</name>
-		<numMembers>128</numMembers>
+		<numMembers>16</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -80,7 +80,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>128</numMembers>
+		<numMembers>16</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -92,7 +92,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>128</numMembers>
+		<numMembers>16</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -101,7 +101,7 @@
 	
 	<group>
 		<name>NegControl</name>
-		<numMembers>128</numMembers>
+		<numMembers>16</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -112,7 +112,7 @@
 	
 	<group>
 		<name>TimeoutControl</name>
-		<numMembers>128</numMembers>
+		<numMembers>16</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -568,7 +568,12 @@
 		<plotter>
 			<name>edu.usf.experiment.plot.RuntimePerTrialPlotter</name>
 		</plotter>
-		
+		<plotter>
+			<name>edu.usf.experiment.plot.RPlotter</name>
+			<params>
+				<plotScript>/edu/usf/experiment/plot/plotTimeouts.r</plotScript>
+			</params>
+		</plotter>
 		<plotter>
 			<name>edu.usf.experiment.plot.PlotGatherer</name>
 		</plotter>
