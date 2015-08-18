@@ -30,9 +30,9 @@
 			<leftAngle>0.195</leftAngle>
 			<rightAngle>-0.195</rightAngle>
 			<numCCLayers>2</numCCLayers>
-			<numCCCellsPerLayer>10000,4000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>100000,100000</numCCCellsPerLayer>
 			<minPCRadius>.072</minPCRadius>
-			<maxPCRadius>.144</maxPCRadius>
+			<maxPCRadius>.25</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
 			<goalCellProportion>0.3</goalCellProportion>
 			<minHDRadius>.195</minHDRadius>
@@ -44,7 +44,7 @@
 			<taxicDiscountFactor>1</taxicDiscountFactor>
 			<rlDiscountFactor>1</rlDiscountFactor>
 			<alpha>.5</alpha>
-			<tracesDecay>.5</tracesDecay>
+			<tracesDecay>.9</tracesDecay>
 			<initialValue>0</initialValue>
 			<flashingReward>5000</flashingReward>
 			<nonFlashingReward>500</nonFlashingReward>
@@ -57,8 +57,8 @@
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
 			<rlType>actorCritic</rlType>
 			<voteType>gradient</voteType>
-			<votesConnProbs>1,0.5</votesConnProbs>
-			<valueConnProbs>0.5,1</valueConnProbs>
+			<votesConnProbs>1,0.0</votesConnProbs>
+			<valueConnProbs>0.0,1</valueConnProbs>
 			<xmin>-.5</xmin>
 			<ymin>-.5</ymin>
 			<xmax>.5</xmax>
@@ -567,6 +567,10 @@
 	<afterExperimentPlotters>
 		<plotter>
 			<name>edu.usf.experiment.plot.RuntimePerTrialPlotter</name>
+		</plotter>
+		
+		<plotter>
+			<name>edu.usf.experiment.plot.PlotGatherer</name>
 		</plotter>
 		<!-- <plotter> <name>edu.usf.experiment.plot.PolicyPlotter</name> </plotter> -->
 	</afterExperimentPlotters>
