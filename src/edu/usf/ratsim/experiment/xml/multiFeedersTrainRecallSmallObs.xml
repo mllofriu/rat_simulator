@@ -30,7 +30,7 @@
 			<leftAngle>0.195</leftAngle>
 			<rightAngle>-0.195</rightAngle>
 			<numCCLayers>2</numCCLayers>
-			<numCCCellsPerLayer>25000,10000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>10000,4000</numCCCellsPerLayer>
 			<minPCRadius>.072</minPCRadius>
 			<maxPCRadius>.144</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
@@ -71,7 +71,7 @@
 	
 	<group>
 		<name>Ventral</name>
-		<numMembers>8</numMembers>
+		<numMembers>128</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -80,7 +80,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>8</numMembers>
+		<numMembers>128</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -92,7 +92,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>8</numMembers>
+		<numMembers>128</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -101,7 +101,7 @@
 	
 	<group>
 		<name>NegControl</name>
-		<numMembers>8</numMembers>
+		<numMembers>128</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -112,7 +112,7 @@
 	
 	<group>
 		<name>TimeoutControl</name>
-		<numMembers>8</numMembers>
+		<numMembers>128</numMembers>
 		<params>
 		</params>
 		<tasks>
