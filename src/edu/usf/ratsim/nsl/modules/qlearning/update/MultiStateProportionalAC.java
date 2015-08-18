@@ -79,6 +79,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 
 			if (tracesDecay != 0)
 				for (int state = 0; state < statesBefore.getSize(); state++){
+					// TODO: add replacing traces
 					traces[state] *= tracesDecay;
 					traces[state] += statesBefore.get(state);
 				}
@@ -125,6 +126,7 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 				* rlValueEstAfter.get(0)
 				- (taxicValueEstBefore.get(0) + rlValueEstBefore.get(0));
 		float actionVal = value.get(sBefore, a);
+		// TODO: change activation to use traces specific to state action pair
 		float newActionValue = actionVal + alpha * activation
 				* (actionDelta);
 		
