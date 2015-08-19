@@ -30,9 +30,9 @@
 			<leftAngle>0.195</leftAngle>
 			<rightAngle>-0.195</rightAngle>
 			<numCCLayers>2</numCCLayers>
-			<numCCCellsPerLayer>100000,100000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>250000,100000</numCCCellsPerLayer>
 			<minPCRadius>.072</minPCRadius>
-			<maxPCRadius>.25</maxPCRadius>
+			<maxPCRadius>.144</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
 			<goalCellProportion>0.3</goalCellProportion>
 			<minHDRadius>.195</minHDRadius>
