@@ -135,42 +135,30 @@ public class MultiStateProportionalAC extends Module implements QLAlgorithm {
 		}
 		value.set(sBefore, numActions, newValue);
 
-		float actionDelta = reward.get() + taxicDiscountFactor
-				* taxicValueEstAfter.get(0) + rlDiscountFactor
-				* rlValueEstAfter.get(0)
-				- (taxicValueEstBefore.get(0) + rlValueEstBefore.get(0));
-		float actionVal = value.get(sBefore, a);
-		if (tracesDecay == 0)
-			activation = statesBefore.get(sBefore);
-		else
-			activation = actionTraces[sBefore][a];
-		float newActionValue = actionVal + alpha * activation * (actionDelta);
+		for (int updateAction = 0; updateAction < numActions; updateAction++){
+			float actionDelta = reward.get() + taxicDiscountFactor
+					* taxicValueEstAfter.get(0) + rlDiscountFactor
+					* rlValueEstAfter.get(0)
+					- (taxicValueEstBefore.get(0) + rlValueEstBefore.get(0));
+			float actionVal = value.get(sBefore, updateAction);
+			if (tracesDecay == 0)
+				activation = statesBefore.get(sBefore);
+			else
+				activation = actionTraces[sBefore][updateAction];
+			float newActionValue = actionVal + alpha * activation * (actionDelta);
 
-		//
-		// if (delta < 0)
-		// delta *= 2;
-		// Update action only if hasnt gone below inferior thrs
-		// if (value.get(sBefore, numActions) > -1) {
+			if (Debug.printDelta)
+				System.out.println("State: " + (float) sBefore
+						/ statesBefore.getSize() + " V Delta: " + valueDelta
+						+ " A Delta: " + actionDelta);
 
-		// if ((taxicValueEstAfter.get(0)
-		// - taxicValueEstBefore.get(0))>2000)
-		// System.out.println("Delta " + delta);
-
-		// if (delta > 2000)
-		// System.out.println("Big delta: " + delta);
-		if (Debug.printDelta)
-			System.out.println("State: " + (float) sBefore
-					/ statesBefore.getSize() + " V Delta: " + valueDelta
-					+ " A Delta: " + actionDelta);
-		// float newActionValue = actionVal + alpha * statesBefore.get(sBefore)
-		// * delta;
-		// System.out.println(newActionValue);
-
-		if (Float.isInfinite(newActionValue) || Float.isNaN(newActionValue)) {
-			System.out.println("Numeric Error");
-			System.exit(1);
+			if (Float.isInfinite(newActionValue) || Float.isNaN(newActionValue)) {
+				System.out.println("Numeric Error");
+				System.exit(1);
+			}
+			value.set(sBefore, updateAction, newActionValue);
 		}
-		value.set(sBefore, a, newActionValue);
+		
 
 		// } else {
 		// // value.set(sBefore, numActions, -3);
