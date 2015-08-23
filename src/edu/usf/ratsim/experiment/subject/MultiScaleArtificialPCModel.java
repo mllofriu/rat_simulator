@@ -382,8 +382,6 @@ public class MultiScaleArtificialPCModel extends Model {
 			addModule(mspac);
 		} else
 			throw new RuntimeException("RL mechanism not implemented");
-
-		System.out.println("Building run order");
 	}
 
 	public List<ArtificialConjCellLayer> getPCLLayers() {
@@ -401,6 +399,7 @@ public class MultiScaleArtificialPCModel extends Model {
 
 	public void deactivatePCL(List<Integer> layersToDeactivate, float proportion, boolean remap) {
 		for (Integer layer : layersToDeactivate) {
+			System.out.println("[+] Deactivating layer " + layer);
 			conjCellLayers.get(layer).deactivate(proportion, remap);
 		}
 	}

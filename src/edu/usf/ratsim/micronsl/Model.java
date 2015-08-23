@@ -106,8 +106,9 @@ public class Model {
 			if (m.usesRandom()) {
 				if (lastUsingRandom != null) {
 					m.addPreReq(lastUsingRandom);
-					System.out.println("Adding random dep from "
-							+ lastUsingRandom.getName() + " to " + m.getName());
+					if (Debug.printExecutionOrder)
+						System.out.println("Adding random dep from "
+								+ lastUsingRandom.getName() + " to " + m.getName());
 				}
 				lastUsingRandom = m;
 			}
