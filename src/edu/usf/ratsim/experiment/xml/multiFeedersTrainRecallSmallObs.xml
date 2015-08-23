@@ -48,7 +48,7 @@
 			<initialValue>0</initialValue>
 			<flashingReward>5000</flashingReward>
 			<nonFlashingReward>500</nonFlashingReward>
-			<rememberLastTwo>true</rememberLastTwo>
+			<rememberLastTwo>false</rememberLastTwo>
 			<estimateValue>true</estimateValue>
 			<cellContribution>1</cellContribution>
 			<explorationReward>100</explorationReward>
