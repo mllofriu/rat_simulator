@@ -52,7 +52,7 @@
 			<estimateValue>true</estimateValue>
 			<cellContribution>1</cellContribution>
 			<explorationReward>100</explorationReward>
-			<attentionExploringVal>100</attentionExploringVal>
+			<wallTaxicVal>100</wallTaxicVal>
 			<maxAttentionSpan>20</maxAttentionSpan>
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
 			<rlType>actorCritic</rlType>
