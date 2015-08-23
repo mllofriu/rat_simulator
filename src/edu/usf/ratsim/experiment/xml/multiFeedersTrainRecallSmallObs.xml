@@ -414,7 +414,8 @@
 				<params>
 					<group>Ventral</group>
 					<layers>1</layers>
-					<proportion>.9</proportion>
+					<proportion>.5</proportion>
+					<remap>true</remap>
 				</params>
 			</task>
 			<task>
@@ -422,7 +423,8 @@
 				<params>
 					<group>Dorsal</group>
 					<layers>0</layers>
-					<proportion>.9</proportion>
+					<proportion>.5</proportion>
+					<remap>true</remap>
 				</params>
 			</task>
 			<task>
@@ -430,7 +432,8 @@
 				<params>
 					<group>NegControl</group>
 					<layers>0,1</layers>
-					<proportion>.9</proportion>
+					<proportion>.5</proportion>
+					<remap>true</remap>
 				</params>
 			</task>
 		</beforeTrialTasks>

@@ -91,4 +91,8 @@ public class ExponentialConjCell {
 		this.active = false;
 	}
 
+	public void remap() {
+		
+	}
+
 }

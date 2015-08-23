@@ -19,11 +19,23 @@ public class ArtificialConjCellLayer extends Module {
 
 	private List<ExponentialConjCell> cells;
 
-//	private boolean active;
+	// private boolean active;
 
 	private LocalizableRobot robot;
 
 	private Random random;
+
+	private float ymax;
+
+	private float ymin;
+
+	private float xmax;
+
+	private float xmin;
+
+	private float nearGoalProb;
+
+	private List<Feeder> goals;
 
 	public ArtificialConjCellLayer(String name, LocalizableRobot robot,
 			float placeRadius, float minDirectionRadius,
@@ -32,26 +44,26 @@ public class ArtificialConjCellLayer extends Module {
 			float ymax, List<Feeder> goals, float nearGoalProb) {
 		super(name);
 
-//		active = true;
+		this.goals = goals;
+		this.nearGoalProb = nearGoalProb;
+		this.xmin = xmin;
+		this.xmax = xmax;
+		this.ymin = ymin;
+		this.ymax = ymax;
+		// active = true;
 
 		cells = new LinkedList<ExponentialConjCell>();
 		random = RandomSingleton.getInstance();
 		int i = 0;
 		float x, y;
 		do {
-			if (placeCellType.equals("goalExponential") || placeCellType.equals("wallGoalExponential")) {
+			if (placeCellType.equals("goalExponential")
+					|| placeCellType.equals("wallGoalExponential")) {
 				// || placeCellType.equals("wallGoalExponential")) {
-				if (random.nextFloat() < nearGoalProb) {
-					int fIndex = random.nextInt(goals.size());
-					Point3f p = goals.get(fIndex).getPosition();
-					x = (float) (p.x + random.nextFloat() * .2 - .1);
-					y = (float) (p.y + random.nextFloat() * .2 - .1);
-				} else {
-					// TODO change them to have different centers among layers
-					x = random.nextFloat() * (xmax - xmin) + xmin;
-					y = random.nextFloat() * (ymax - ymin) + ymin;
-				}
-				float preferredDirection = (float) (random.nextFloat() * Math.PI * 2);
+				Point3f prefLocation = createrPreferredLocation(nearGoalProb,
+						goals, xmin, xmax, ymin, ymax);
+				float preferredDirection = (float) (random.nextFloat()
+						* Math.PI * 2);
 				// float directionRadius = r.nextFloat()
 				// * (maxDirectionRadius - minDirectionRadius)
 				// + minDirectionRadius;
@@ -67,11 +79,11 @@ public class ArtificialConjCellLayer extends Module {
 
 				int preferredIntention = random.nextInt(numIntentions);
 				if (placeCellType.equals("goalExponential")) {
-					cells.add(new ExponentialConjCell(new Point3f(x, y, 0),
+					cells.add(new ExponentialConjCell(prefLocation,
 							preferredDirection, placeRadius, directionRadius,
 							preferredIntention));
-				} else if (placeCellType.equals("wallGoalExponential")){
-					cells.add(new ExponentialWallConjCell(new Point3f(x, y, 0),
+				} else if (placeCellType.equals("wallGoalExponential")) {
+					cells.add(new ExponentialWallConjCell(prefLocation,
 							preferredDirection, placeRadius, directionRadius,
 							preferredIntention, random));
 				}
@@ -104,6 +116,22 @@ public class ArtificialConjCellLayer extends Module {
 		addOutPort("activation", new Float1dPortArray(this, activation));
 
 		this.robot = robot;
+	}
+
+	private Point3f createrPreferredLocation(float nearGoalProb,
+			List<Feeder> goals, float xmin, float xmax, float ymin, float ymax) {
+		float x, y;
+		if (random.nextFloat() < nearGoalProb) {
+			int fIndex = random.nextInt(goals.size());
+			Point3f p = goals.get(fIndex).getPosition();
+			x = (float) (p.x + random.nextFloat() * .2 - .1);
+			y = (float) (p.y + random.nextFloat() * .2 - .1);
+		} else {
+			// TODO change them to have different centers among layers
+			x = random.nextFloat() * (xmax - xmin) + xmin;
+			y = random.nextFloat() * (ymax - ymin) + ymin;
+		}
+		return new Point3f(x, y, 0);
 	}
 
 	public void run() {
@@ -141,11 +169,16 @@ public class ArtificialConjCellLayer extends Module {
 		return cells;
 	}
 
-	public void deactivate(float proportion) {
-//		active = false;
+	public void deactivate(float proportion, boolean remap) {
+		// active = false;
 		for (ExponentialConjCell cell : cells)
 			if (random.nextFloat() < proportion)
 				cell.deactivate();
+			else if (remap) {
+				cell.setPreferredLocation(createrPreferredLocation(
+						nearGoalProb, goals, xmin, xmax, ymin, ymax));
+			}
+
 	}
 
 	public void simRun(Point3f pos, float direction, int intention,
@@ -156,31 +189,31 @@ public class ArtificialConjCellLayer extends Module {
 
 	public void simRun(Point3f pos, float direction, int intention,
 			boolean isFeederClose, float distanceToClosestWall) {
-//		if (active) {
-			int i = 0;
-			float total = 0;
-			for (ExponentialConjCell pCell : cells) {
-				float val = pCell.getActivation(pos, direction, intention,
-						distanceToClosestWall);
-				// if (val < 0 || val > 1)
-				// System.err
-				// .println("Activation less than 0 or greater than 1: "
-				// + val);
-				activation[i] = val;
-				total += val;
-				i++;
-			}
+		// if (active) {
+		int i = 0;
+		float total = 0;
+		for (ExponentialConjCell pCell : cells) {
+			float val = pCell.getActivation(pos, direction, intention,
+					distanceToClosestWall);
+			// if (val < 0 || val > 1)
+			// System.err
+			// .println("Activation less than 0 or greater than 1: "
+			// + val);
+			activation[i] = val;
+			total += val;
+			i++;
+		}
 
-			if (Float.isNaN(total))
-				System.out.println("Numeric error");
+		if (Float.isNaN(total))
+			System.out.println("Numeric error");
 
-			// if (total != 0)
-			// for (i = 0; i < activation.length; i++)
-			// activation[i] = activation[i] / total * layerEnergy ;
-//		} else {
-//			for (int i = 0; i < activation.length; i++)
-//				activation[i] = 0;
-//		}
+		// if (total != 0)
+		// for (i = 0; i < activation.length; i++)
+		// activation[i] = activation[i] / total * layerEnergy ;
+		// } else {
+		// for (int i = 0; i < activation.length; i++)
+		// activation[i] = 0;
+		// }
 	}
 
 	@Override
