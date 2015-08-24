@@ -32,11 +32,11 @@
 			<numCCLayers>2</numCCLayers>
 			<numCCCellsPerLayer>20000,8000</numCCCellsPerLayer>
 			<minPCRadius>.072</minPCRadius>
-			<maxPCRadius>.144</maxPCRadius>
+			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
 			<goalCellProportion>0.3</goalCellProportion>
-			<minHDRadius>.195</minHDRadius>
-			<maxHDRadius>1.56</maxHDRadius>
+			<minHDRadius>0.195</minHDRadius>
+			<maxHDRadius>1.57</maxHDRadius>
 			<numIntentions>8</numIntentions>
 			<deterministicActionSelection>true</deterministicActionSelection>
 			<foodReward>10000</foodReward>
@@ -51,7 +51,7 @@
 			<rememberLastTwo>false</rememberLastTwo>
 			<estimateValue>true</estimateValue>
 			<cellContribution>1</cellContribution>
-			<explorationReward>100</explorationReward>
+			<explorationReward>50</explorationReward>
 			<wallTaxicVal>100</wallTaxicVal>
 			<maxAttentionSpan>20</maxAttentionSpan>
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
