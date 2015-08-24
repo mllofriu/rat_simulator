@@ -30,7 +30,7 @@
 			<leftAngle>0.195</leftAngle>
 			<rightAngle>-0.195</rightAngle>
 			<numCCLayers>2</numCCLayers>
-			<numCCCellsPerLayer>50000,20000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>20000,8000</numCCCellsPerLayer>
 			<minPCRadius>.072</minPCRadius>
 			<maxPCRadius>.144</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
@@ -520,7 +520,7 @@
 				<condition>
 					<name>edu.usf.experiment.condition.MaxCycles</name>
 					<params>
-						<max>200000</max>
+						<max>50000</max>
 					</params>
 				</condition>
 				<condition>
