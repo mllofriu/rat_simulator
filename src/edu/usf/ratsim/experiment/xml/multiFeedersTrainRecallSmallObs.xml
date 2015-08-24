@@ -30,7 +30,7 @@
 			<leftAngle>0.195</leftAngle>
 			<rightAngle>-0.195</rightAngle>
 			<numCCLayers>2</numCCLayers>
-			<numCCCellsPerLayer>200000,80000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>50000,20000</numCCCellsPerLayer>
 			<minPCRadius>.072</minPCRadius>
 			<maxPCRadius>.144</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
@@ -47,7 +47,7 @@
 			<tracesDecay>.9</tracesDecay>
 			<initialValue>0</initialValue>
 			<flashingReward>5000</flashingReward>
-			<nonFlashingReward>500</nonFlashingReward>
+			<nonFlashingReward>250</nonFlashingReward>
 			<rememberLastTwo>false</rememberLastTwo>
 			<estimateValue>true</estimateValue>
 			<cellContribution>1</cellContribution>
@@ -415,7 +415,7 @@
 					<group>Ventral</group>
 					<layers>1</layers>
 					<proportion>.5</proportion>
-					<remap>true</remap>
+					<remap>false</remap>
 				</params>
 			</task>
 			<task>
@@ -424,7 +424,7 @@
 					<group>Dorsal</group>
 					<layers>0</layers>
 					<proportion>.5</proportion>
-					<remap>true</remap>
+					<remap>false</remap>
 				</params>
 			</task>
 			<task>
@@ -433,7 +433,7 @@
 					<group>NegControl</group>
 					<layers>0,1</layers>
 					<proportion>.5</proportion>
-					<remap>true</remap>
+					<remap>false</remap>
 				</params>
 			</task>
 		</beforeTrialTasks>
