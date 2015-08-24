@@ -16,7 +16,7 @@
 		<params>
 			<noise>.2</noise>
 			<translationRotationNoise>.195</translationRotationNoise>
-			<lookaheadSteps>5</lookaheadSteps>
+			<lookaheadSteps>2</lookaheadSteps>
 			<halfFieldOfView>1.83</halfFieldOfView>
 			<visionDist>10</visionDist>
 			<closeThrs>.1</closeThrs>
