@@ -17,8 +17,8 @@ public class GradientValue extends Module implements Voter {
 	private int numActions;
 	private boolean[] connected;
 
-	public GradientValue(String name, int numActions, int numStates,
-			int numLayers, List<Float> connProbs) {
+	public GradientValue(String name, int numActions, List<Float> connProbs,
+			List<Integer> statesPerLayer) {
 		super(name);
 
 		valueEst = new float[1];
@@ -26,15 +26,20 @@ public class GradientValue extends Module implements Voter {
 
 		this.numActions = numActions;
 
-		int statesPerLayer = (numStates / numLayers);
+		int numStates = 0;
+		for (Integer stateLen : statesPerLayer)
+			numStates += stateLen;
 		connected = new boolean[numStates];
 		Random r = RandomSingleton.getInstance();
-		for (int layer = 0; layer < numLayers; layer++) {
+		int layer = 0;
+		int stateIndex = 0;
+		for (Integer layerNumStates : statesPerLayer) {
 			float prob = connProbs.get(layer);
-			for (int state = statesPerLayer * layer; state < statesPerLayer
-					* (layer + 1); state++) {
-				connected[state] = r.nextFloat() < prob;
+			for (int i = 0; i < layerNumStates; i++) {
+				connected[stateIndex] = r.nextFloat() < prob;
+				stateIndex++;
 			}
+			layer++;
 		}
 	}
 
@@ -52,16 +57,15 @@ public class GradientValue extends Module implements Voter {
 					sum += stateVal;
 					float actionVal = value.get(state, numActions);
 					if (actionVal != 0)
-						valueEst[0] = valueEst[0] + stateVal
-								* actionVal;
+						valueEst[0] = valueEst[0] + stateVal * actionVal;
 				}
 			}
 		}
 
 		// Normalize
 		if (sum != 0)
-				// Normalize with real value and revert previous normalization
-				valueEst[0] = (float) (valueEst[0] / sum);
+			// Normalize with real value and revert previous normalization
+			valueEst[0] = (float) (valueEst[0] / sum);
 
 		if (Debug.printValues) {
 			System.out.println("RL value");

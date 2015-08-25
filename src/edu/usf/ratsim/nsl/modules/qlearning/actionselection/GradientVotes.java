@@ -17,8 +17,7 @@ public class GradientVotes extends Module implements Voter {
 	private int numActions;
 	private boolean[] connected;
 
-	public GradientVotes(String name, int numActions, int numStates,
-			int numLayers, List<Float> connProbs) {
+	public GradientVotes(String name, int numActions, List<Float> connProbs, List<Integer> statesPerLayer) {
 		super(name);
 
 		actionVote = new float[numActions];
@@ -26,15 +25,20 @@ public class GradientVotes extends Module implements Voter {
 
 		this.numActions = numActions;
 
-		int statesPerLayer = (numStates / numLayers);
+		int numStates = 0;
+		for (Integer stateLen : statesPerLayer)
+			numStates += stateLen;
 		connected = new boolean[numStates];
 		Random r = RandomSingleton.getInstance();
-		for (int layer = 0; layer < numLayers; layer++) {
+		int layer = 0;
+		int stateIndex = 0;
+		for (Integer layerNumStates : statesPerLayer) {
 			float prob = connProbs.get(layer);
-			for (int state = statesPerLayer * layer; state < statesPerLayer
-					* (layer + 1); state++) {
-				connected[state] = r.nextFloat() < prob;
+			for (int i = 0; i < layerNumStates; i++) {
+				connected[stateIndex] = r.nextFloat() < prob;
+				stateIndex++;
 			}
+			layer++;
 		}
 	}
 

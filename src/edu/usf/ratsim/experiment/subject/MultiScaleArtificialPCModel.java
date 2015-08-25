@@ -171,8 +171,7 @@ public class MultiScaleArtificialPCModel extends Model {
 			rlVotes = new ProportionalVotes("RL votes", numActions);
 		else if (voteType.equals("gradient")) {
 			List<Float> connProbs = params.getChildFloatList("votesConnProbs");
-			rlVotes = new GradientVotes("RL votes", numActions, numStates,
-					numCCLayers, connProbs);
+			rlVotes = new GradientVotes("RL votes", numActions,connProbs, numCCCellsPerLayer);
 		} else if (voteType.equals("halfAndHalfConnection"))
 			rlVotes = new HalfAndHalfConnectionVotes("RL votes", numActions,
 					cellContribution);
@@ -301,7 +300,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		else if (voteType.equals("gradient")) {
 			List<Float> connProbs = params.getChildFloatList("valueConnProbs");
 			rlValue = new GradientValue("RL value estimation", numActions,
-					numStates, numCCLayers, connProbs);
+					 connProbs, numCCCellsPerLayer);
 		} else
 			throw new RuntimeException("Vote mechanism not implemented");
 		rlValue.addInPort("states",
