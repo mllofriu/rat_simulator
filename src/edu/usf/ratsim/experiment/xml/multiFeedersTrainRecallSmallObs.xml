@@ -16,7 +16,7 @@
 		<params>
 			<noise>.2</noise>
 			<translationRotationNoise>.195</translationRotationNoise>
-			<lookaheadSteps>2</lookaheadSteps>
+			<lookaheadSteps>1.5</lookaheadSteps>
 			<halfFieldOfView>1.83</halfFieldOfView>
 			<visionDist>10</visionDist>
 			<closeThrs>.1</closeThrs>
@@ -30,7 +30,7 @@
 			<leftAngle>0.195</leftAngle>
 			<rightAngle>-0.195</rightAngle>
 			<numCCLayers>2</numCCLayers>
-			<numCCCellsPerLayer>20000,8000</numCCCellsPerLayer>
+			<numCCCellsPerLayer>200000,80000</numCCCellsPerLayer>
 			<minPCRadius>.072</minPCRadius>
 			<maxPCRadius>.3</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
