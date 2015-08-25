@@ -69,6 +69,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		float maxPCRadius = params.getChildFloat("maxPCRadius");
 
 		int numCCLayers = params.getChildInt("numCCLayers");
+		List<Integer> layerLengths = params.getChildIntList("layerLengths");
 		List<Integer> numCCCellsPerLayer = params
 				.getChildIntList("numCCCellsPerLayer");
 		float minHDRadius = params.getChildFloat("minHDRadius");
@@ -141,7 +142,7 @@ public class MultiScaleArtificialPCModel extends Model {
 					+ i, lRobot, radius, minHDRadius, maxHDRadius,
 					numIntentions, numCCCellsPerLayer.get(i), placeCellType,
 					xmin, ymin, xmax, ymax, lRobot.getAllFeeders(),
-					goalCellProportion);
+					goalCellProportion, layerLengths.get(i));
 			ccl.addInPort("intention", intention.getOutPort("intention"));
 			conjCellLayers.add(ccl);
 			conjCellLayersPorts.add(ccl.getOutPort("activation"));
@@ -406,10 +407,10 @@ public class MultiScaleArtificialPCModel extends Model {
 	}
 
 	public void deactivatePCL(List<Integer> layersToDeactivate,
-			float proportion, boolean remap) {
+			boolean remap) {
 		for (Integer layer : layersToDeactivate) {
 			System.out.println("[+] Deactivating layer " + layer);
-			conjCellLayers.get(layer).deactivate(proportion, remap);
+			conjCellLayers.get(layer).anesthtize(remap);
 		}
 	}
 

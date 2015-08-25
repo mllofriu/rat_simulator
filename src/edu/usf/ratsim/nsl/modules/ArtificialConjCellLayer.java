@@ -37,11 +37,13 @@ public class ArtificialConjCellLayer extends Module {
 
 	private List<Feeder> goals;
 
+	private float layerLength;
+
 	public ArtificialConjCellLayer(String name, LocalizableRobot robot,
 			float placeRadius, float minDirectionRadius,
 			float maxDirectionRadius, int numIntentions, int numCells,
 			String placeCellType, float xmin, float ymin, float xmax,
-			float ymax, List<Feeder> goals, float nearGoalProb) {
+			float ymax, List<Feeder> goals, float nearGoalProb, float layerLength) {
 		super(name);
 
 		this.goals = goals;
@@ -50,6 +52,7 @@ public class ArtificialConjCellLayer extends Module {
 		this.xmax = xmax;
 		this.ymin = ymin;
 		this.ymax = ymax;
+		this.layerLength = layerLength;
 		// active = true;
 
 		cells = new LinkedList<ExponentialConjCell>();
@@ -169,16 +172,10 @@ public class ArtificialConjCellLayer extends Module {
 		return cells;
 	}
 
-	public void deactivate(float proportion, boolean remap) {
+	public void anesthtize(boolean remap) {
 		// active = false;
 		for (ExponentialConjCell cell : cells){
-//			if (random.nextFloat() < proportion)
-//				cell.deactivate();
-//			else if (remap) {
-//				cell.setPreferredLocation(createrPreferredLocation(
-//						nearGoalProb, goals, xmin, xmax, ymin, ymax));
-//			}
-			float distanceFromInj = random.nextFloat() * 2;
+			float distanceFromInj = random.nextFloat() * layerLength/2;
 			float deact = (float) Math.max(1, 1 / Math.pow(distanceFromInj, 3));
 			cell.setBupiModulation(1 - deact);
 		}

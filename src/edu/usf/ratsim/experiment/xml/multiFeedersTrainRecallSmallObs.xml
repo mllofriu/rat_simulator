@@ -29,10 +29,11 @@
 			<step>.05</step>
 			<leftAngle>0.195</leftAngle>
 			<rightAngle>-0.195</rightAngle>
-			<numCCLayers>2</numCCLayers>
-			<numCCCellsPerLayer>200000,80000</numCCCellsPerLayer>
-			<minPCRadius>.072</minPCRadius>
-			<maxPCRadius>.3</maxPCRadius>
+			<numCCLayers>3</numCCLayers>
+			<layerLengths>3,3,3</layerLengths>
+			<numCCCellsPerLayer>200000,120000,80000</numCCCellsPerLayer>
+			<minPCRadius>.0924</minPCRadius>
+			<maxPCRadius>.1848</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
 			<goalCellProportion>0.3</goalCellProportion>
 			<minHDRadius>0.195</minHDRadius>
@@ -57,8 +58,8 @@
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
 			<rlType>actorCritic</rlType>
 			<voteType>gradient</voteType>
-			<votesConnProbs>1,0.0</votesConnProbs>
-			<valueConnProbs>0.0,1</valueConnProbs>
+			<votesConnProbs>1,.5,0.0</votesConnProbs>
+			<valueConnProbs>0.0,.5,1</valueConnProbs>
 			<xmin>-.5</xmin>
 			<ymin>-.5</ymin>
 			<xmax>.5</xmax>
@@ -71,7 +72,7 @@
 	
 	<group>
 		<name>Ventral</name>
-		<numMembers>16</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -80,7 +81,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>16</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -92,7 +93,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>16</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -101,7 +102,7 @@
 	
 	<group>
 		<name>NegControl</name>
-		<numMembers>16</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -112,7 +113,7 @@
 	
 	<group>
 		<name>TimeoutControl</name>
-		<numMembers>16</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
