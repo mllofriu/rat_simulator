@@ -171,13 +171,17 @@ public class ArtificialConjCellLayer extends Module {
 
 	public void deactivate(float proportion, boolean remap) {
 		// active = false;
-		for (ExponentialConjCell cell : cells)
-			if (random.nextFloat() < proportion)
-				cell.deactivate();
-			else if (remap) {
-				cell.setPreferredLocation(createrPreferredLocation(
-						nearGoalProb, goals, xmin, xmax, ymin, ymax));
-			}
+		for (ExponentialConjCell cell : cells){
+//			if (random.nextFloat() < proportion)
+//				cell.deactivate();
+//			else if (remap) {
+//				cell.setPreferredLocation(createrPreferredLocation(
+//						nearGoalProb, goals, xmin, xmax, ymin, ymax));
+//			}
+			float distanceFromInj = random.nextFloat() * 2;
+			float deact = (float) Math.max(1, 1 / Math.pow(distanceFromInj, 3));
+			cell.setBupiModulation(1 - deact);
+		}
 
 	}
 
