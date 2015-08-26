@@ -235,4 +235,15 @@ public class ArtificialConjCellLayer extends Module {
 		((Float1dPortArray) getOutPort("activation")).set(0);
 	}
 
+	public void remap() {
+		for (ExponentialConjCell cell : cells){
+			Point3f prefLocation = createrPreferredLocation(nearGoalProb,
+					goals, xmin, xmax, ymin, ymax);
+			float preferredDirection = (float) (random.nextFloat()
+					* Math.PI * 2);
+			cell.setPreferredLocation(prefLocation);
+			cell.setPreferredDirection(preferredDirection);
+		}
+	}
+
 }

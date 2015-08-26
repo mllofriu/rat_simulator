@@ -422,21 +422,30 @@
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
 				<params>
 					<group>Dorsal</group>
 					<layers>0</layers>
 					<proportion>.5</proportion>
 				</params>
 			</task>
+			<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
+				<params>
+					<group>Dorsal</group>
+					<layers>0</layers>
+					<proportion>.5</proportion>
+				</params>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
 				<params>
 					<group>NegControl</group>
 					<layers>0,1,2</layers>
 					<proportion>.5</proportion>
 				</params>
 			</task>
+			
+			
+			
 		</beforeTrialTasks>
 		<episodes>
 			<number>1</number>

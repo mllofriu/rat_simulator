@@ -93,10 +93,6 @@ public class ExponentialConjCell {
 		this.active = false;
 	}
 
-	public void remap() {
-		
-	}
-
 	public void setBupiModulation(float modulation) {
 		this.modulation = modulation;
 	}

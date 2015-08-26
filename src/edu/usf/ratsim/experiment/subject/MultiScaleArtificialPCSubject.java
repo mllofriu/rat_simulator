@@ -111,6 +111,11 @@ public class MultiScaleArtificialPCSubject extends Subject {
 			float proportion) {
 		model.deactivatePCLProportion(indexList, proportion);
 	}
+
+	@Override
+	public void remapLayers(LinkedList<Integer> indexList) {
+		model.remapLayers(indexList);
+	}
 	
 
 }

@@ -471,4 +471,11 @@ public class MultiScaleArtificialPCModel extends Model {
 
 		return res;
 	}
+
+	public void remapLayers(LinkedList<Integer> indexList) {
+		for (Integer layer : indexList) {
+			System.out.println("[+] Remapping layer " + layer);
+			conjCellLayers.get(layer).remap();
+		}
+	}
 }

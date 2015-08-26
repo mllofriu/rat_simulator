@@ -22,7 +22,7 @@ public class ExponentialWallConjCell extends ExponentialConjCell {
 		float activation =  super.getActivation(currLocation, currAngle, currIntention,
 				distanceToWall);
 		if (activation != 0) {
-			float d = distanceToWall / (getPlaceRadius());
+			float d = distanceToWall / (getPlaceRadius()*2);
 			float dAcross = Math.max(0, (d - getPreferredLocation().distance(currLocation)
 					/ getPlaceRadius()));
 			if (wallCell) {
