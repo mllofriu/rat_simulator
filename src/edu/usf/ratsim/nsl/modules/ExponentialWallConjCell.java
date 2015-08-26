@@ -29,12 +29,12 @@ public class ExponentialWallConjCell extends ExponentialConjCell {
 				// If it is a wall cell, it activates more near walls but no
 				// across also
 				return (float) (activation
-						* (1 - 1 / (Math.exp(-10 * (d - .7)) + 1)) * (1 / (Math
-						.exp(-10 * (dAcross - .3)) + 1)));
+						* (1 - 1 / (Math.exp(-10 * (d - 1)) + 1)) * (1 / (Math
+						.exp(-10 * (dAcross - .01)) + 1)));
 			} else {
 				// If it is not a wall cell, it should activate less near walls
 				return (float) (activation * (1 / (Math.exp(-10
-						* (dAcross - .3)) + 1)));
+						* (dAcross - .5)) + 1)));
 			}
 
 		} else

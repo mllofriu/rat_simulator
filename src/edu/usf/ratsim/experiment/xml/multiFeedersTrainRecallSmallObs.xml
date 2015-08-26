@@ -111,14 +111,14 @@
 	
 	
 	
-	<group>
+	<!--<group>
 		<name>TimeoutControl</name>
 		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
 		</tasks>
-	</group>
+	</group>-->
 	
 		
 	<beforeExperimentTasks>
@@ -146,9 +146,9 @@
 		<plotter>
 			<name>edu.usf.experiment.plot.CSVConverter</name>
 		</plotter>
-		<plotter>
+		<!-- <plotter>
 					<name>edu.usf.experiment.plot.PlotGatherer</name>
-				</plotter>
+				</plotter> -->
 		<!--<plotter> <name>edu.usf.ratsim.experiment.plot.PCPlotter</name> </plotter>-->
 	</beforeExperimentPlotters>
 	
@@ -414,7 +414,7 @@
 		</groups>
 		<beforeTrialTasks>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
 				<params>
 					<group>Ventral</group>
 					<layers>2</layers>
@@ -422,7 +422,7 @@
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
 				<params>
 					<group>Dorsal</group>
 					<layers>0</layers>
@@ -430,7 +430,7 @@
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
 				<params>
 					<group>NegControl</group>
 					<layers>0,1,2</layers>
