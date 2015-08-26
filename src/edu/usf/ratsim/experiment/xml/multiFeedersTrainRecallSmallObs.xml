@@ -35,7 +35,7 @@
 			<minPCRadius>.0924</minPCRadius>
 			<maxPCRadius>.1848</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
-			<goalCellProportion>0.3</goalCellProportion>
+			<goalCellProportion>0.5</goalCellProportion>
 			<minHDRadius>0.195</minHDRadius>
 			<maxHDRadius>1.57</maxHDRadius>
 			<numIntentions>8</numIntentions>
@@ -146,6 +146,9 @@
 		<plotter>
 			<name>edu.usf.experiment.plot.CSVConverter</name>
 		</plotter>
+		<plotter>
+					<name>edu.usf.experiment.plot.PlotGatherer</name>
+				</plotter>
 		<!--<plotter> <name>edu.usf.ratsim.experiment.plot.PCPlotter</name> </plotter>-->
 	</beforeExperimentPlotters>
 	
@@ -411,30 +414,27 @@
 		</groups>
 		<beforeTrialTasks>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
 				<params>
 					<group>Ventral</group>
 					<layers>2</layers>
 					<proportion>.5</proportion>
-					<remap>false</remap>
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
 				<params>
 					<group>Dorsal</group>
 					<layers>0</layers>
 					<proportion>.5</proportion>
-					<remap>false</remap>
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
 				<params>
 					<group>NegControl</group>
 					<layers>0,1,2</layers>
 					<proportion>.5</proportion>
-					<remap>false</remap>
 				</params>
 			</task>
 		</beforeTrialTasks>

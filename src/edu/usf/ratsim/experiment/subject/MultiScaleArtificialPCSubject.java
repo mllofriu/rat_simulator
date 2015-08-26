@@ -83,8 +83,8 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	}
 
 	@Override
-	public void deactivateHPCLayers(LinkedList<Integer> indexList, boolean remap) {
-		model.deactivatePCL(indexList, remap);
+	public void deactivateHPCLayersRadial(LinkedList<Integer> indexList) {
+		model.deactivatePCLRadial(indexList);
 	}
 
 	@Override
@@ -104,6 +104,12 @@ public class MultiScaleArtificialPCSubject extends Subject {
 
 	public List<ExponentialConjCell> getPlaceCells() {
 		return model.getPlaceCells();
+	}
+
+	@Override
+	public void deactivateHPCLayersProportion(LinkedList<Integer> indexList,
+			float proportion) {
+		model.deactivatePCLProportion(indexList, proportion);
 	}
 	
 

@@ -172,12 +172,21 @@ public class ArtificialConjCellLayer extends Module {
 		return cells;
 	}
 
-	public void anesthtize(boolean remap) {
+	public void anesthtizeRadial() {
 		// active = false;
 		for (ExponentialConjCell cell : cells){
 			float distanceFromInj = random.nextFloat() * layerLength/2;
 			float deact = (float) Math.max(1, 1 / Math.pow(distanceFromInj, 3));
 			cell.setBupiModulation(1 - deact);
+		}
+
+	}
+	
+	public void anesthtizeProportion(float proportion) {
+		// active = false;
+		for (ExponentialConjCell cell : cells){
+			if (random.nextFloat() < proportion)
+				cell.setBupiModulation(0);
 		}
 
 	}
