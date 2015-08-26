@@ -72,7 +72,7 @@
 	
 	<group>
 		<name>Ventral</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -81,7 +81,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -93,7 +93,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -102,7 +102,7 @@
 	
 	<group>
 		<name>NegControl</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -113,7 +113,7 @@
 	
 	<group>
 		<name>TimeoutControl</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -414,7 +414,7 @@
 				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
 				<params>
 					<group>Ventral</group>
-					<layers>1</layers>
+					<layers>2</layers>
 					<proportion>.5</proportion>
 					<remap>false</remap>
 				</params>
@@ -432,7 +432,7 @@
 				<name>edu.usf.experiment.task.DeactivateHPCLayers</name>
 				<params>
 					<group>NegControl</group>
-					<layers>0,1</layers>
+					<layers>0,1,2</layers>
 					<proportion>.5</proportion>
 					<remap>false</remap>
 				</params>
