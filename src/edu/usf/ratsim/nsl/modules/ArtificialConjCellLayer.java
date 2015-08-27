@@ -43,7 +43,7 @@ public class ArtificialConjCellLayer extends Module {
 			float placeRadius, float minDirectionRadius,
 			float maxDirectionRadius, int numIntentions, int numCells,
 			String placeCellType, float xmin, float ymin, float xmax,
-			float ymax, List<Feeder> goals, float nearGoalProb, float layerLength) {
+			float ymax, List<Feeder> goals, float nearGoalProb, float layerLength, float wallDistanceNormalizer) {
 		super(name);
 
 		this.goals = goals;
@@ -88,7 +88,7 @@ public class ArtificialConjCellLayer extends Module {
 				} else if (placeCellType.equals("wallGoalExponential")) {
 					cells.add(new ExponentialWallConjCell(prefLocation,
 							preferredDirection, placeRadius, directionRadius,
-							preferredIntention, random));
+							preferredIntention, wallDistanceNormalizer, random));
 				}
 			} else {
 				System.err.println("Place cell type not implemented");

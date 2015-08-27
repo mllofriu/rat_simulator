@@ -93,7 +93,7 @@ public class MultiScaleArtificialPCModel extends Model {
 		// float wallFollowingVal = params.getChildFloat("wallFollowingVal");
 		float wallTaxicVal = params.getChildFloat("wallTaxicVal");
 		int maxAttentionSpan = params.getChildInt("maxAttentionSpan");
-
+		float wallDistanceNormalizer = params.getChildFloat("wallDistanceNormalizer");
 		float explorationHalfLifeVal = params
 				.getChildFloat("explorationHalfLifeVal");
 		float xmin = params.getChildFloat("xmin");
@@ -142,7 +142,7 @@ public class MultiScaleArtificialPCModel extends Model {
 					+ i, lRobot, radius, minHDRadius, maxHDRadius,
 					numIntentions, numCCCellsPerLayer.get(i), placeCellType,
 					xmin, ymin, xmax, ymax, lRobot.getAllFeeders(),
-					goalCellProportion, layerLengths.get(i));
+					goalCellProportion, layerLengths.get(i), wallDistanceNormalizer);
 			ccl.addInPort("intention", intention.getOutPort("intention"));
 			conjCellLayers.add(ccl);
 			conjCellLayersPorts.add(ccl.getOutPort("activation"));

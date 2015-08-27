@@ -7,13 +7,15 @@ import javax.vecmath.Point3f;
 public class ExponentialWallConjCell extends ExponentialConjCell {
 
 	private boolean wallCell;
+	private float wallDistanceNormalizer;
 
 	public ExponentialWallConjCell(Point3f preferredLocation,
 			float preferredDirection, float placeRadius, float angleRadius,
-			int preferredIntention, Random r) {
+			int preferredIntention, float wallDistanceNormalizer, Random r) {
 		super(preferredLocation, preferredDirection, placeRadius, angleRadius,
 				preferredIntention);
 		wallCell = r.nextBoolean();
+		this.wallDistanceNormalizer = wallDistanceNormalizer;
 	}
 
 	@Override
@@ -22,7 +24,7 @@ public class ExponentialWallConjCell extends ExponentialConjCell {
 		float activation =  super.getActivation(currLocation, currAngle, currIntention,
 				distanceToWall);
 		if (activation != 0) {
-			float d = distanceToWall / (getPlaceRadius()*2);
+			float d = distanceToWall / (getPlaceRadius()*wallDistanceNormalizer);
 			float dAcross = Math.max(0, (d - getPreferredLocation().distance(currLocation)
 					/ getPlaceRadius()));
 			if (wallCell) {

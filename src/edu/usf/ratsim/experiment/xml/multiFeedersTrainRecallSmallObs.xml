@@ -35,6 +35,7 @@
 			<minPCRadius>.0924</minPCRadius>
 			<maxPCRadius>.1848</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
+			<wallDistanceNormalizer>3</wallDistanceNormalizer>
 			<goalCellProportion>0.5</goalCellProportion>
 			<minHDRadius>0.195</minHDRadius>
 			<maxHDRadius>1.57</maxHDRadius>
