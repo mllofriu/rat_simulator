@@ -83,8 +83,8 @@ public class MultiScaleArtificialPCSubject extends Subject {
 	}
 
 	@Override
-	public void deactivateHPCLayersRadial(LinkedList<Integer> indexList) {
-		model.deactivatePCLRadial(indexList);
+	public void deactivateHPCLayersRadial(LinkedList<Integer> indexList, float constant) {
+		model.deactivatePCLRadial(indexList, constant);
 	}
 
 	@Override

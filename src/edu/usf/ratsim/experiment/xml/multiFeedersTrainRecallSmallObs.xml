@@ -35,7 +35,7 @@
 			<minPCRadius>.0924</minPCRadius>
 			<maxPCRadius>.1848</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
-			<wallDistanceNormalizer>3</wallDistanceNormalizer>
+			<wallDistanceNormalizer>2</wallDistanceNormalizer>
 			<goalCellProportion>0.5</goalCellProportion>
 			<minHDRadius>0.195</minHDRadius>
 			<maxHDRadius>1.57</maxHDRadius>
@@ -73,7 +73,7 @@
 	
 	<group>
 		<name>Ventral</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -82,7 +82,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -94,16 +94,16 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
 		</tasks>
 	</group>
 	
-	<group>
+	<!-- <group>
 		<name>NegControl</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -114,12 +114,12 @@
 	
 	<group>
 		<name>TimeoutControl</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
 		</tasks>
-	</group>
+	</group> -->
 	
 		
 	<beforeExperimentTasks>
@@ -415,27 +415,30 @@
 		</groups>
 		<beforeTrialTasks>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
 				<params>
 					<group>Ventral</group>
 					<layers>1</layers>
 					<proportion>.5</proportion>
+					<constant>.25</constant>
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
 				<params>
 					<group>Dorsal</group>
 					<layers>0</layers>
 					<proportion>.5</proportion>
+					<constant>.25</constant>
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
 				<params>
 					<group>NegControl</group>
 					<layers>0,1</layers>
 					<proportion>.5</proportion>
+					<constant>.25</constant>
 				</params>
 			</task>
 			

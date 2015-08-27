@@ -405,10 +405,10 @@ public class MultiScaleArtificialPCModel extends Model {
 			gs.newTrial();
 	}
 
-	public void deactivatePCLRadial(List<Integer> layersToDeactivate) {
+	public void deactivatePCLRadial(List<Integer> layersToDeactivate, float constant) {
 		for (Integer layer : layersToDeactivate) {
 			System.out.println("[+] Deactivating layer " + layer);
-			conjCellLayers.get(layer).anesthtizeRadial();
+			conjCellLayers.get(layer).anesthtizeRadial(constant);
 		}
 	}
 	

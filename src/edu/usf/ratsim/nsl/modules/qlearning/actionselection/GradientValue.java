@@ -58,6 +58,10 @@ public class GradientValue extends Module implements Voter {
 					float actionVal = value.get(state, numActions);
 					if (actionVal != 0)
 						valueEst[0] = valueEst[0] + stateVal * actionVal;
+					if (Float.isInfinite(valueEst[0]) || Float.isNaN(valueEst[0])) {
+						System.out.println("Numeric Error in Gradient value");
+						System.exit(1);
+					}
 				}
 			}
 		}
@@ -66,6 +70,11 @@ public class GradientValue extends Module implements Voter {
 		if (sum != 0)
 			// Normalize with real value and revert previous normalization
 			valueEst[0] = (float) (valueEst[0] / sum);
+		
+		if (Float.isInfinite(valueEst[0]) || Float.isNaN(valueEst[0])) {
+			System.out.println("Numeric Error in Gradient value");
+			System.exit(1);
+		}
 
 		if (Debug.printValues) {
 			System.out.println("RL value");
