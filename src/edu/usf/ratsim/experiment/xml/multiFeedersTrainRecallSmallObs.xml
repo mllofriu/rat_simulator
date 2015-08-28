@@ -32,6 +32,10 @@
 			<numCCLayers>2</numCCLayers>
 			<layerLengths>3,3</layerLengths>
 			<numCCCellsPerLayer>200000,80000</numCCCellsPerLayer>
+			<rlType>actorCritic</rlType>
+			<voteType>gradient</voteType>
+			<votesConnProbs>1,0.0</votesConnProbs>
+			<valueConnProbs>0.0,1</valueConnProbs>
 			<minPCRadius>.0924</minPCRadius>
 			<maxPCRadius>.1848</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
@@ -49,7 +53,7 @@
 			<tracesDecay>.9</tracesDecay>
 			<initialValue>0</initialValue>
 			<flashingReward>5000</flashingReward>
-			<nonFlashingReward>250</nonFlashingReward>
+			<nonFlashingReward>500</nonFlashingReward>
 			<rememberLastTwo>false</rememberLastTwo>
 			<estimateValue>true</estimateValue>
 			<cellContribution>1</cellContribution>
@@ -57,10 +61,6 @@
 			<wallTaxicVal>100</wallTaxicVal>
 			<maxAttentionSpan>20</maxAttentionSpan>
 			<explorationHalfLifeVal>1</explorationHalfLifeVal>
-			<rlType>actorCritic</rlType>
-			<voteType>gradient</voteType>
-			<votesConnProbs>1,0.0</votesConnProbs>
-			<valueConnProbs>0.0,1</valueConnProbs>
 			<xmin>-.5</xmin>
 			<ymin>-.5</ymin>
 			<xmax>.5</xmax>
@@ -73,7 +73,7 @@
 	
 	<group>
 		<name>Ventral</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -82,7 +82,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -94,7 +94,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -103,7 +103,7 @@
 	
 	<!-- <group>
 		<name>NegControl</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -114,7 +114,7 @@
 	
 	<group>
 		<name>TimeoutControl</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
