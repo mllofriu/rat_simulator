@@ -73,7 +73,7 @@
 	
 	<group>
 		<name>Ventral</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -82,7 +82,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -94,7 +94,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -103,7 +103,7 @@
 	
 	<!-- <group>
 		<name>NegControl</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -114,7 +114,7 @@
 	
 	<group>
 		<name>TimeoutControl</name>
-		<numMembers>64</numMembers>
+		<numMembers>8</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -153,7 +153,254 @@
 		<!--<plotter> <name>edu.usf.ratsim.experiment.plot.PCPlotter</name> </plotter>-->
 	</beforeExperimentPlotters>
 	
+	<trial>
+		<name>Training</name>
+		
+		<groups>
+			<group>Control</group>
+			<group>Dorsal</group>
+			<group>Ventral</group>
+			<group>NegControl</group>
+		</groups>
+		<beforeTrialTasks>
+		</beforeTrialTasks>
+		<episodes>
+			<number>1</number>
+			<sleep>00</sleep>
+			<beforeEpisodeTasks>
+				<!--<task>
+					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
+					<params>
+					</params>
+				</task>-->
+				<task>
+					<name>edu.usf.experiment.task.FlashActivateRandomFeeder</name>
+					<params>
+					</params>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<params>
+						<point>
+							<x>0</x>
+							<y>0</y>
+							<theta>3.14</theta>
+						</point>
+					</params>
+				</task>
+			</beforeEpisodeTasks>
+			<beforeCycleTasks>
+			</beforeCycleTasks>
+			<afterCycleTasks>
+				<task>
+					<name>edu.usf.experiment.task.SwitchFlashingFeeder</name>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+				</task>
+			</afterCycleTasks>
+			<afterCycleLoggers>
+				<logger>
+					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
+					<params>
+					</params>
+				</logger>
+				
+				
+			</afterCycleLoggers>
+			
+			<afterEpisodeLoggers>
+				<logger>
+					<name>edu.usf.experiment.log.WallLogger</name>
+					<params>
+					</params>
+				</logger>
+<!--	<logger>
+					
+					<name>edu.usf.experiment.log.ValueLogger</name>
+					<params>
+						<circle>false</circle>
+						<interval>.1</interval>
+						<angleInterval>.78</angleInterval>
+						<numIntentions>8</numIntentions>
+					</params>
+				</logger> 			-->
+				 
+				
+			</afterEpisodeLoggers>
+			<afterEpisodeTasks>
+				
+			</afterEpisodeTasks>
+			<stopConditions>
+				<condition>
+					<name>edu.usf.experiment.condition.MaxCycles</name>
+					<params>
+						<max>100000</max>
+					</params>
+				</condition>
+				<condition>
+					<name>edu.usf.experiment.condition.FoundNFoodStopCond</name>
+					<params>
+						<n>100</n>
+					</params>
+				</condition>
+			</stopConditions>
+			<afterEpisodePlotters>
+				<plotter>
+					<name>edu.usf.experiment.plot.CopyMazeFile</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.CSVConverter</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.PathPlotter</name>
+				</plotter>
+<!--			<plotter>
+					<name>edu.usf.experiment.plot.ValuePlotter</name>
+				</plotter>  	-->
+				 
+			</afterEpisodePlotters>
+		</episodes>
+		
+		
+		<afterTrialTasks>
+		</afterTrialTasks>
+		<afterTrialLoggers>
+		</afterTrialLoggers>
+		<afterTrialPlotters>
+		</afterTrialPlotters>
+	</trial>
 	
+	<trial>
+		<name>DelayedCueNoObs</name>
+		
+		<groups>
+			<group>Control</group>
+			<group>Dorsal</group>
+			<group>Ventral</group>
+			<group>NegControl</group>
+		</groups>
+		<beforeTrialTasks>
+		</beforeTrialTasks>
+		<episodes>
+			<number>1</number>
+			<sleep>00</sleep>
+			<beforeEpisodeTasks>
+				<task>
+					<name>edu.usf.experiment.task.UnFlashAllFeeders</name>
+					<params>
+					</params>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.ActivateAllEnabledFeeders</name>
+					<params>
+					</params>
+				</task>
+				
+				<task>
+					<name>edu.usf.experiment.task.PlaceRobotInitally</name>
+					<params>
+						<point>
+							<x>0</x>
+							<y>0</y>
+							<theta>3.14</theta>
+						</point>
+					</params>
+				</task>
+			</beforeEpisodeTasks>
+			<beforeCycleTasks>
+			</beforeCycleTasks>
+			<afterCycleTasks>
+				<task>
+					<name>edu.usf.experiment.task.UnFlashAllFeedersOnEating</name>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.SwitchFeeder</name>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.ReleaseFoodFromFeeders</name>
+				</task>
+				<task>
+					<name>edu.usf.experiment.task.TimeoutFlashFeeder</name>
+					<params>
+						<timeout>150</timeout>
+					</params>
+				</task>
+			</afterCycleTasks>
+			<afterCycleLoggers>
+				<logger>
+					<name>edu.usf.experiment.log.SubjectPositionLogger</name>
+					<params>
+					</params>
+				</logger>
+				<logger>
+					<name>edu.usf.experiment.log.FeedingLogger</name>
+				</logger>
+			</afterCycleLoggers>
+			
+			<afterEpisodeLoggers>
+				<logger>
+					<name>edu.usf.experiment.log.WallLogger</name>
+					<params>
+					</params>
+				</logger>
+				<!-- <logger>
+					<name>edu.usf.experiment.log.ValueLogger</name>
+					<params>
+						<circle>false</circle>
+						<interval>.1</interval>
+						<angleInterval>.78</angleInterval>
+						<numIntentions>8</numIntentions>
+					</params> 
+				</logger> -->
+			</afterEpisodeLoggers>
+			<afterEpisodeTasks>
+				
+			</afterEpisodeTasks>
+			<stopConditions>
+				<condition>
+					<name>edu.usf.experiment.condition.MaxCycles</name>
+					<params>
+						<max>200000</max>
+					</params>
+				</condition>
+				<condition>
+					<name>edu.usf.experiment.condition.FoundNFoodNoMistakesStopCond</name>
+					<params>
+						<n>15</n>
+					</params>
+				</condition>
+			</stopConditions>
+			<afterEpisodePlotters>
+				<plotter>
+					<name>edu.usf.experiment.plot.CopyMazeFile</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.CSVConverter</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.SummarizeRuntimes</name>
+				</plotter>
+				<plotter>
+					<name>edu.usf.experiment.plot.PathPlotter</name>
+				</plotter>
+				<!-- <plotter>
+					<name>edu.usf.experiment.plot.ValuePlotter</name>
+				</plotter> -->
+			</afterEpisodePlotters>
+		</episodes>
+		
+		
+		<afterTrialTasks>
+		</afterTrialTasks>
+		<afterTrialLoggers>
+		</afterTrialLoggers>
+		<afterTrialPlotters>
+		</afterTrialPlotters>
+	</trial>
 	
 	
 	<trial>
