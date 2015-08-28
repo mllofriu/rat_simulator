@@ -73,7 +73,7 @@
 	
 	<group>
 		<name>Ventral</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -82,7 +82,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -94,7 +94,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -103,7 +103,7 @@
 	
 	<!-- <group>
 		<name>NegControl</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -114,7 +114,7 @@
 	
 	<group>
 		<name>TimeoutControl</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -415,29 +415,29 @@
 		</groups>
 		<beforeTrialTasks>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
 				<params>
 					<group>Ventral</group>
 					<layers>1</layers>
-					<proportion>.5</proportion>
+					<proportion>.75</proportion>
 					<constant>.3</constant>
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
 				<params>
 					<group>Dorsal</group>
 					<layers>0</layers>
-					<proportion>.5</proportion>
+					<proportion>.75</proportion>
 					<constant>.3</constant>
 				</params>
 			</task>
 			<task>
-				<name>edu.usf.experiment.task.DeactivateHPCLayersRadial</name>
+				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
 				<params>
 					<group>NegControl</group>
 					<layers>0,1</layers>
-					<proportion>.5</proportion>
+					<proportion>.75</proportion>
 					<constant>.3</constant>
 				</params>
 			</task>
