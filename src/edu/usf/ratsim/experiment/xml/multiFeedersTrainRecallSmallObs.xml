@@ -29,13 +29,13 @@
 			<step>.05</step>
 			<leftAngle>0.195</leftAngle>
 			<rightAngle>-0.195</rightAngle>
-			<numCCLayers>2</numCCLayers>
-			<layerLengths>3,3</layerLengths>
-			<numCCCellsPerLayer>200000,80000</numCCCellsPerLayer>
+			<numCCLayers>3</numCCLayers>
+			<layerLengths>3,3,3</layerLengths>
+			<numCCCellsPerLayer>200000,120000,80000</numCCCellsPerLayer>
 			<rlType>actorCritic</rlType>
 			<voteType>gradient</voteType>
-			<votesConnProbs>1,0.0</votesConnProbs>
-			<valueConnProbs>0.0,1</valueConnProbs>
+			<votesConnProbs>1,0.5, 0</votesConnProbs>
+			<valueConnProbs>0.0,.5,1</valueConnProbs>
 			<minPCRadius>.0924</minPCRadius>
 			<maxPCRadius>.1848</maxPCRadius>
 			<placeCells>wallGoalExponential</placeCells>
@@ -73,7 +73,7 @@
 	
 	<group>
 		<name>Ventral</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -82,44 +82,39 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
 		</tasks>
 	</group>
 	 
-	
-
-	
 	<group>
 		<name>Control</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
 		</tasks>
 	</group>
 	
-	<!-- <group>
+	<group>
 		<name>NegControl</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
 		</tasks>
 	</group>
-	
-	
 	
 	<group>
 		<name>TimeoutControl</name>
-		<numMembers>8</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
 		</tasks>
-	</group> -->
+	</group> 
 	
 		
 	<beforeExperimentTasks>
@@ -418,8 +413,8 @@
 				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
 				<params>
 					<group>Ventral</group>
-					<layers>1</layers>
-					<proportion>.75</proportion>
+					<layers>2</layers>
+					<proportion>1</proportion>
 					<constant>.25</constant>
 				</params>
 			</task>
@@ -428,7 +423,7 @@
 				<params>
 					<group>Dorsal</group>
 					<layers>0</layers>
-					<proportion>.75</proportion>
+					<proportion>1</proportion>
 					<constant>.25</constant>
 				</params>
 			</task>
@@ -436,8 +431,8 @@
 				<name>edu.usf.experiment.task.DeactivateHPCLayersProportion</name>
 				<params>
 					<group>NegControl</group>
-					<layers>0,1</layers>
-					<proportion>.75</proportion>
+					<layers>0,1,3</layers>
+					<proportion>.99</proportion>
 					<constant>.25</constant>
 				</params>
 			</task>
