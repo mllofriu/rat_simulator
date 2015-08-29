@@ -52,6 +52,7 @@ public class VirtUniverse extends Universe {
 	private List<WallNode> wallNodes;
 	private boolean display;
 	private List<Wall> initialWalls;
+	private List<WallNode> wallsToRevert;
 
 	public VirtUniverse(ElementWrapper params, String logPath) {
 		super(params, logPath);
@@ -80,6 +81,7 @@ public class VirtUniverse extends Universe {
 			bg = new BranchGroup();
 			bg.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
 			bg.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
+			bg.setCapability(BranchGroup.ALLOW_DETACH);
 			l.addBranchGraph(bg);
 
 			// Add previously created elements, but not added to the 3d universe
@@ -131,6 +133,8 @@ public class VirtUniverse extends Universe {
 		}
 
 		instance = this;
+		
+		wallsToRevert = new LinkedList<WallNode>();
 	}
 
 	public void addWall(float x1, float y1, float x2, float y2) {
@@ -138,9 +142,27 @@ public class VirtUniverse extends Universe {
 
 		if (display) {
 			WallNode w = new WallNode(x1, y1, 0, x2, y2, 0, 0.025f);
+			wallsToRevert.add(w);
 			bg.addChild(w);
 			wallNodes.add(w);
 		}
+	}
+
+	@Override
+	public void setRevertWallPoint() {
+		super.setRevertWallPoint();
+		
+		wallsToRevert.clear();
+	}
+
+	@Override
+	public void revertWalls() {
+		super.revertWalls();
+		if (display)
+			for (WallNode wn : wallsToRevert){
+				wallNodes.remove(wn);
+				bg.removeChild(wn);
+			}
 	}
 
 	public void addWall(LineSegment wSegment) {
@@ -148,6 +170,7 @@ public class VirtUniverse extends Universe {
 
 		if (display) {
 			WallNode w = new WallNode(wSegment, 0.025f);
+			wallsToRevert.add(w);
 			bg.addChild(w);
 			wallNodes.add(w);
 		}

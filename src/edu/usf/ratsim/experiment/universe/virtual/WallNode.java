@@ -1,5 +1,6 @@
 package edu.usf.ratsim.experiment.universe.virtual;
 
+import javax.media.j3d.BranchGroup;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
 
@@ -47,6 +48,7 @@ public class WallNode extends ExpUniverseNode {
 		segment = new LineSegment(new Coordinate(x1, y1),
 				new Coordinate(x2, y2));
 
+		setCapability(BranchGroup.ALLOW_DETACH);
 	}
 
 	public WallNode(float x1, float y1, float z1, float x2, float y2, float z2,
@@ -71,6 +73,7 @@ public class WallNode extends ExpUniverseNode {
 		segment = new LineSegment(new Coordinate(x1, y1),
 				new Coordinate(x2, y2));
 
+		setCapability(BranchGroup.ALLOW_DETACH);
 	}
 
 	public WallNode(Wall wn) {
@@ -93,6 +96,8 @@ public class WallNode extends ExpUniverseNode {
 
 		segment = new LineSegment(new Coordinate(x1, y1),
 				new Coordinate(x2, y2));
+		
+		setCapability(BranchGroup.ALLOW_DETACH);
 	}
 
 	public WallNode(LineSegment wSegment, float h) {
