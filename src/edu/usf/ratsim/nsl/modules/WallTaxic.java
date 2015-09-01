@@ -87,7 +87,10 @@ public class WallTaxic extends Module {
 
 	private float getPointValue(Point3f feederPos, float reward) {
 		float steps = GeomUtils.getStepsToFeeder(feederPos, sub);
-		return (float) (reward * Math.pow(.9, steps));
+		if (steps < 10)
+			return 0;
+		else 
+			return (float) (reward * Math.pow(.9, steps));
 	}
 
 	@Override
