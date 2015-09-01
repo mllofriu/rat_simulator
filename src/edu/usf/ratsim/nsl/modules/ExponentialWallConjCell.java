@@ -7,15 +7,15 @@ import javax.vecmath.Point3f;
 public class ExponentialWallConjCell extends ExponentialConjCell {
 
 	private boolean wallCell;
-	private float wallDistanceNormalizer;
+	private float wallInhibition;
 
 	public ExponentialWallConjCell(Point3f preferredLocation,
 			float preferredDirection, float placeRadius, float angleRadius,
-			int preferredIntention, float wallDistanceNormalizer, Random r) {
+			int preferredIntention, float wallInhibition, Random r) {
 		super(preferredLocation, preferredDirection, placeRadius, angleRadius,
 				preferredIntention);
 		wallCell = r.nextBoolean();
-		this.wallDistanceNormalizer = wallDistanceNormalizer;
+		this.wallInhibition = wallInhibition;
 	}
 
 	@Override
@@ -24,19 +24,19 @@ public class ExponentialWallConjCell extends ExponentialConjCell {
 		float activation =  super.getActivation(currLocation, currAngle, currIntention,
 				distanceToWall);
 		if (activation != 0) {
-			float d = distanceToWall / (getPlaceRadius()*wallDistanceNormalizer);
+			float d = distanceToWall / (getPlaceRadius());
 			float dAcross = Math.max(0, (d - getPreferredLocation().distance(currLocation)
 					/ getPlaceRadius()));
 			if (wallCell) {
 				// If it is a wall cell, it activates more near walls but no
 				// across also
 				return (float) (activation
-						* (1 - 1 / (Math.exp(-10 * (d - 1)) + 1)) * (1 / (Math
+						* (1 - 1 / (Math.exp(-10 * (d - wallInhibition)) + 1)) * (1 / (Math
 						.exp(-10 * (dAcross - .01)) + 1)));
 			} else {
 				// If it is not a wall cell, it should activate less near walls
 				return (float) (activation * (1 / (Math.exp(-10
-						* (dAcross - 1)) + 1)));
+						* (dAcross - wallInhibition)) + 1)));
 			}
 
 		} else

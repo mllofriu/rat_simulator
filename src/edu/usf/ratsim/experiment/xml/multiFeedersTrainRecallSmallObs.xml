@@ -64,9 +64,8 @@
 			<maxPCRadius>.1848</maxPCRadius>
 			<!-- Type of conjunctive cell -->
 			<placeCells>wallGoalExponential</placeCells>
-			<!-- Wall cell modulation. How far a wall starts modulating cell activity expressed
-				in cell radius -->
-			<wallDistanceNormalizer>1</wallDistanceNormalizer>
+			<!-- Wall cell modulation. How much does a wall modulate the place field. Greater means less activity -->
+			<wallInhibition>1</wallInhibition>
 			<!-- Amount of cells placed near the goal -->
 			<goalCellProportion>0.5</goalCellProportion>
 			<!-- Minimum angular radius of conjuntive cells -->
@@ -124,7 +123,7 @@
 	<!-- Group definition. The order determines order of execution -->
 	<group>
 		<name>Ventral</name>
-		<numMembers>64</numMembers>
+		<numMembers>1</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -133,7 +132,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>64</numMembers>
+		<numMembers>1</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -142,7 +141,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>64</numMembers>
+		<numMembers>1</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -173,7 +172,6 @@
 		<task>
 			<name>edu.usf.experiment.task.EnableRandomFeedersTriangle</name>
 			<params>
-				<feeders>0,2,5</feeders>
 			</params>
 		</task>
 	</beforeExperimentTasks>
