@@ -16,7 +16,6 @@ import edu.usf.ratsim.nsl.modules.ExponentialConjCell;
 
 public class PCLogger extends Logger {
 
-
 	private List<ExponentialConjCell> cells;
 
 	public PCLogger(ElementWrapper params, String logPath) {
@@ -25,13 +24,14 @@ public class PCLogger extends Logger {
 
 	public void log(Subject sub) {
 		if (!(sub instanceof MultiScaleArtificialPCSubject))
-			throw new IllegalArgumentException("PC logger can only be used with MultiScaleArtificialPCSubjects");
-		
+			throw new IllegalArgumentException(
+					"PC logger can only be used with MultiScaleArtificialPCSubjects");
+
 		MultiScaleArtificialPCSubject msapcs = (MultiScaleArtificialPCSubject) sub;
-		
+
 		cells = msapcs.getPlaceCells();
 	}
-	
+
 	@Override
 	public void log(Episode episode) {
 		log(episode.getSubject());
@@ -41,8 +41,6 @@ public class PCLogger extends Logger {
 	public void log(Trial trial) {
 		log(trial.getSubject());
 	}
-	
-	
 
 	public String getFileName() {
 		return "placecells.csv";
@@ -56,12 +54,19 @@ public class PCLogger extends Logger {
 			String groupName = props.getProperty("group");
 			String subName = props.getProperty("subject");
 			String episode = props.getProperty("episode");
-			
+
 			PrintWriter writer = getWriter();
-			for (ExponentialConjCell cell : cells)
-				writer.println(trialName + '\t' + groupName + '\t' + subName
-						+ '\t' + episode + '\t' + cell.getPreferredLocation().x + "\t" + cell.getPreferredLocation().y
-						+ '\t' + cell.getPlaceRadius());
+			int cellNum = 0;
+			for (ExponentialConjCell cell : cells) {
+				writer.println(groupName + '\t' + subName + '\t'
+						+ cell.getPreferredLocation().x + "\t" + cellNum + '\t'
+						+ cell.getPreferredLocation().y + '\t'
+						+ cell.getPlaceRadius() + '\t'
+						+ cell.getPreferredDirection() + '\t'
+						+ cell.getAngleRadius() + '\t'
+						+ cell.getPreferredIntention());
+				cellNum++;
+			}
 
 			cells.clear();
 		}
@@ -69,14 +74,12 @@ public class PCLogger extends Logger {
 
 	@Override
 	public String getHeader() {
-		return "trial\tgroup\tsubject\trepetition\tx\ty\tradius";
+		return "tgroup\tsubject\tcellNum\tx\ty\tplaceradius\ttheta\tthetaRadius\tmap";
 	}
 
 	@Override
 	public void log(Experiment experiment) {
-		log(experiment.getSubject());		
+		log(experiment.getSubject());
 	}
-
-	
 
 }

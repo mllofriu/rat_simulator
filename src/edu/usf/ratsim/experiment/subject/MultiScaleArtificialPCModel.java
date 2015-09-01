@@ -478,4 +478,11 @@ public class MultiScaleArtificialPCModel extends Model {
 			conjCellLayers.get(layer).remap();
 		}
 	}
+
+	public List<float[]> getCellActivation() {
+		List<float[]> activation = new LinkedList<float[]>();
+		for (ArtificialConjCellLayer layer : conjCellLayers)
+			activation.add(((Float1dPortArray)layer.getOutPort("activation")).getData());
+		return activation;
+	}
 }
