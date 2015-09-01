@@ -123,7 +123,7 @@
 	<!-- Group definition. The order determines order of execution -->
 	<group>
 		<name>Ventral</name>
-		<numMembers>1</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -132,7 +132,7 @@
 	
 	<group>
 		<name>Dorsal</name>
-		<numMembers>1</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -141,7 +141,7 @@
 	
 	<group>
 		<name>Control</name>
-		<numMembers>1</numMembers>
+		<numMembers>64</numMembers>
 		<params>
 		</params>
 		<tasks>
@@ -185,9 +185,9 @@
 			</params>
 		</logger>
 		<!-- Log conjunctive cells -->
-		<logger>
+		<!--<logger>
 			<name>edu.usf.ratsim.experiment.log.PCLogger</name>
-		</logger>
+		</logger>-->
 	</beforeExperimentLoggers>
 	<!-- Plots to perform before the experiment -->
 	<beforeExperimentPlotters>
