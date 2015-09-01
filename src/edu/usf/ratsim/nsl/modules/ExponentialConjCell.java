@@ -14,8 +14,8 @@ public class ExponentialConjCell {
 	private int preferredIntention;
 	private float placeRadius;
 	private float angleRadius;
-	private boolean active;
 	private float modulation;
+	private float placeRadiusSquared;
 
 	public ExponentialConjCell(Point3f preferredLocation,
 			float preferredDirection, float placeRadius, float angleRadius,
@@ -24,13 +24,13 @@ public class ExponentialConjCell {
 		this.preferredDirection = preferredDirection;
 		this.placeRadius = placeRadius;
 		this.angleRadius = angleRadius;
+		this.placeRadiusSquared = (float) Math.pow(placeRadius, 2);
 		// min_thrs = e^(-x_min_thrs^2/w) -> ...
 		this.placeDispersion = (float) (-Math.pow(placeRadius, 2) / Math
 				.log(RADIUS_THRS));
 		this.angleDispersion = (float) (-Math.pow(angleRadius, 2) / Math
 				.log(RADIUS_THRS));
 		this.preferredIntention = preferredIntention;
-		active = true;
 		this.modulation = 1;
 	}
 
@@ -38,7 +38,7 @@ public class ExponentialConjCell {
 			int currIntention, float distanceToWall) {
 		if (modulation == 0
 				|| currIntention != preferredIntention
-				|| preferredLocation.distance(currLocation) > placeRadius
+				|| preferredLocation.distanceSquared(currLocation) > placeRadiusSquared
 				|| GeomUtils.angleDistance(currAngle, preferredDirection) > angleRadius)
 			return 0;
 		else
@@ -87,10 +87,6 @@ public class ExponentialConjCell {
 
 	public void setAngleRadius(float angleRadius) {
 		this.angleRadius = angleRadius;
-	}
-
-	public void deactivate() {
-		this.active = false;
 	}
 
 	public void setBupiModulation(float modulation) {
